@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# Canonical SNCK PANEL installer.
-# The historical ShiroNex-panel raw URL is intentionally kept compatible so
-# existing deployment commands continue to install/update the current SNCK build.
+# Canonical SNCK PANEL installer bootstrapper.
 CANONICAL_INSTALLER="${SNCK_INSTALLER_URL:-https://raw.githubusercontent.com/SnckBoy/snck-panel/main/scripts/install-panel.sh}"
 
 if [[ "$EUID" -ne 0 ]]; then
