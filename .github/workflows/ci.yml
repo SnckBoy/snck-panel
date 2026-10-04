@@ -1,126 +1,47 @@
-name: ShiroNex CI
-
-
+name: SNCK PANEL CI
 
 on:
-
   push:
-  
     branches: [main]
-    
   pull_request:
-  
     branches: [main]
-    
-
 
 permissions:
-
   contents: read
-  
-
 
 jobs:
-
   build:
-  
     runs-on: ubuntu-latest
-    
-
-
     steps:
-    
       - name: Checkout
-      
         uses: actions/checkout@v4
-        
-
 
       - name: Setup Node.js
-      
         uses: actions/setup-node@v4
-        
         with:
-        
           node-version: 22
-          
           cache: npm
-          
-
 
       - name: Install panel dependencies
-      
         run: npm ci
-        
-
 
       - name: Lint panel
-      
         run: npm run lint
-        
-
 
       - name: Build panel
-      
         run: npm run build
-        
-
 
       - name: Install node daemon dependencies
-      
         working-directory: node-daemon
-        
         run: npm ci
-        
-
 
       - name: Build node daemon
-      
         working-directory: node-daemon
-        
         run: npm run build
-        
-
 
       - name: Shell syntax checks
-      
         run: |
-        
           bash -n install.sh
-          
+          bash -n scripts/snck-menu.sh
           bash -n node-install.sh
-          
           bash -n shironex
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
