@@ -13,6 +13,7 @@ DB_NAME="${SNCK_DB_NAME:-snck_panel}"
 DB_USER="${SNCK_DB_USER:-snck_panel}"
 DB_HOST="${SNCK_DB_HOST:-127.0.0.1}"
 DB_PORT="${SNCK_DB_PORT:-5432}"
+NODE_VERSION="${SNCK_NODE_VERSION:-22.14.0}"
 
 log(){ printf '[SNCK] %s\n' "$*" | tee -a "$LOG_FILE"; }
 die(){ log "ERROR: $*"; exit 1; }
@@ -39,20 +40,51 @@ case "$(dpkg --print-architecture)" in amd64|arm64) ;; *) die "Supported archite
 export DEBIAN_FRONTEND=noninteractive
 log "Installing system prerequisites..."
 apt-get update >>"$LOG_FILE" 2>&1
-apt-get install -y ca-certificates curl git openssl build-essential postgresql postgresql-client >>"$LOG_FILE" 2>&1
+apt-get install -y ca-certificates curl git openssl build-essential postgresql postgresql-client xz-utils >>"$LOG_FILE" 2>&1
 
-if ! command -v node >/dev/null 2>&1 || [[ "$(node -p 'Number(process.versions.node.split(".")[0])')" -lt 20 ]]; then
-  log "Installing Node.js 22..."
-  curl -fsSL --retry 3 --connect-timeout 10 https://deb.nodesource.com/setup_22.x -o /tmp/nodesource_setup.sh
-  bash /tmp/nodesource_setup.sh >>"$LOG_FILE" 2>&1
-  rm -f /tmp/nodesource_setup.sh
-  apt-get update >>"$LOG_FILE" 2>&1
-  apt-get install -y nodejs >>"$LOG_FILE" 2>&1
+# NodeSource is not required. Some VPS networks/firewalls block deb.nodesource.com,
+# while GitHub is reachable. Prefer an existing Node >=20, otherwise install the
+# pinned official Node 22 binary with a GitHub release fallback.
+node_major=0
+if command -v node >/dev/null 2>&1; then
+  node_major="$(node -p 'Number(process.versions.node.split(".")[0])' 2>/dev/null || echo 0)"
 fi
+
+if (( node_major < 20 )); then
+  log "Installing Node.js ${NODE_VERSION} without NodeSource..."
+  arch="$(dpkg --print-architecture)"
+  case "$arch" in
+    amd64) node_arch="x64" ;;
+    arm64) node_arch="arm64" ;;
+    *) die "Unsupported architecture for Node.js: $arch" ;;
+  esac
+
+  node_file="node-v${NODE_VERSION}-linux-${node_arch}.tar.xz"
+  node_tmp="/tmp/${node_file}"
+  node_url_primary="https://nodejs.org/dist/v${NODE_VERSION}/${node_file}"
+  node_url_fallback="https://github.com/nodejs/node/releases/download/v${NODE_VERSION}/${node_file}"
+
+  if ! curl -fL --retry 2 --connect-timeout 8 --max-time 60 "$node_url_primary" -o "$node_tmp" >>"$LOG_FILE" 2>&1; then
+    log "nodejs.org is unreachable; trying GitHub release mirror..."
+    curl -fL --retry 3 --connect-timeout 8 --max-time 120 "$node_url_fallback" -o "$node_tmp" >>"$LOG_FILE" 2>&1 || die "Could not download Node.js ${NODE_VERSION}. Your VPS network is blocking both Node.js download endpoints."
+  fi
+
+  rm -rf /opt/node-v${NODE_VERSION}
+  mkdir -p /opt/node-v${NODE_VERSION}
+  tar -xJf "$node_tmp" -C /opt
+  rm -f "$node_tmp"
+  ln -sfn "/opt/node-v${NODE_VERSION}" /opt/node
+  ln -sfn /opt/node/bin/node /usr/local/bin/node
+  ln -sfn /opt/node/bin/npm /usr/local/bin/npm
+  ln -sfn /opt/node/bin/npx /usr/local/bin/npx
+  hash -r 2>/dev/null || true
+fi
+
 command -v node >/dev/null 2>&1 || die "Node.js installation failed."
 command -v npm >/dev/null 2>&1 || die "npm installation failed."
 node_major="$(node -p 'Number(process.versions.node.split(".")[0])')"
 (( node_major >= 20 )) || die "Node.js 20 or newer is required; found $(node --version)."
+log "Using Node.js $(node --version) and npm $(npm --version)."
 
 if ! command -v docker >/dev/null 2>&1; then
   log "Installing Docker..."
@@ -71,7 +103,6 @@ if command -v systemctl >/dev/null 2>&1 && [[ -d /run/systemd/system ]]; then
 fi
 command -v psql >/dev/null 2>&1 || die "PostgreSQL client installation failed."
 
-# Create a dedicated local PostgreSQL role/database without printing the password.
 if [[ -z "${SNCK_DB_PASSWORD:-}" ]]; then
   SNCK_DB_PASSWORD="$(openssl rand -hex 32)"
 fi
@@ -88,7 +119,6 @@ else
 fi
 DATABASE_URL="postgresql://${DB_USER}:${SNCK_DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
 
-# Validate database connectivity before touching the application.
 PGPASSWORD="$SNCK_DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -v ON_ERROR_STOP=1 -c 'SELECT 1;' >>"$LOG_FILE" 2>&1 || die "PostgreSQL connection test failed."
 
 mkdir -p "$BACKUP_DIR"
