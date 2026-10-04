@@ -3,7 +3,7 @@ set -Eeuo pipefail
 
 APP_NAME="shironex-panel"
 NODE_SERVICE="shironex-node"
-APP_DIR="${SHIRONEX_PANEL_DIR:-/opt/shironex-panel}"
+APP_DIR="${SHIRONEX_PANEL_DIR:-/opt/snck-panel}"
 
 root(){ [[ "$EUID" -eq 0 ]] || { echo "Use: sudo shironex" >&2; exit 1; }; }
 
