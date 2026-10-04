@@ -94,6 +94,13 @@ if ! command -v node >/dev/null 2>&1 || [[ "$(node -p 'process.versions.node.spl
   fi
 fi
 
+NODE_BIN="$(command -v node)"
+NPM_BIN="$(command -v npm)"
+[[ -x "$NODE_BIN" ]] || fail "Node.js installation failed."
+[[ -x "$NPM_BIN" ]] || fail "npm installation failed."
+NODE_MAJOR="$($NODE_BIN -p 'Number(process.versions.node.split(".")[0])')"
+(( NODE_MAJOR >= 20 )) || fail "Node.js 20 or newer is required; found $($NODE_BIN --version)."
+
 if ! command -v docker >/dev/null 2>&1; then
   DOCKER_READY=false
   install -m 0755 -d /etc/apt/keyrings
@@ -111,7 +118,7 @@ EOF
     if apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin; then
       DOCKER_READY=true
     else
-      printf '\033[1;33m[WARN]\033[0m Docker’s upstream repository has no package for this OS codename; using the distribution Docker package.\n'
+      printf '\033[1;33m[WARN]\033[0m Docker upstream packages are unavailable; using distribution Docker packages.\n'
     fi
   fi
   if [[ "$DOCKER_READY" != true ]]; then
@@ -135,7 +142,7 @@ curl -fsSL "$PANEL_URL/shironex-node.tar.gz" -o "$TMP/node.tar.gz" \
 
 tar -xzf "$TMP/node.tar.gz" -C "$NODE_DIR"
 cd "$NODE_DIR"
-npm ci --no-audit --no-fund 2>/dev/null || npm install --no-audit --no-fund
+"$NPM_BIN" ci --no-audit --no-fund 2>/dev/null || "$NPM_BIN" install --no-audit --no-fund
 
 info "Registering node..."
 RESPONSE="$(curl -fsS --retry 3 \
@@ -144,7 +151,7 @@ RESPONSE="$(curl -fsS --retry 3 \
   -d "{\"nodeId\":\"$NODE_ID\",\"setupToken\":\"$SETUP_TOKEN\",\"daemonVersion\":\"$DAEMON_VERSION\"}")" \
   || fail "Node registration failed."
 
-CREDENTIAL="$(printf '%s' "$RESPONSE" | node -e '
+CREDENTIAL="$(printf '%s' "$RESPONSE" | "$NODE_BIN" -e '
 let s="";
 process.stdin.on("data",d=>s+=d).on("end",()=>{
   try {
@@ -156,7 +163,7 @@ process.stdin.on("data",d=>s+=d).on("end",()=>{
   }
 })' 2>/dev/null)" || fail "Panel did not return a node credential."
 
-node -e '
+"$NODE_BIN" -e '
 const fs=require("fs");
 const path=process.argv[1];
 const obj=JSON.parse(process.argv[2]);
@@ -164,7 +171,7 @@ fs.writeFileSync(path, JSON.stringify(obj)+"\n", {mode:0o600});
 ' "$CONFIG_DIR/config.json" \
   "{\"panelUrl\":\"$PANEL_URL\",\"nodeId\":\"$NODE_ID\",\"credential\":\"$CREDENTIAL\",\"port\":$NODE_PORT,\"serverDirectory\":\"$DATA_DIR\",\"dockerSocket\":\"/var/run/docker.sock\",\"heartbeatIntervalMs\":10000,\"daemonVersion\":\"$DAEMON_VERSION\"}"
 
-npm run build
+"$NPM_BIN" run build
 
 cat >"/etc/systemd/system/$SERVICE.service" <<EOF
 [Unit]
@@ -175,7 +182,7 @@ Requires=docker.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/node $NODE_DIR/dist/index.js
+ExecStart=$NODE_BIN $NODE_DIR/dist/index.js
 Restart=always
 RestartSec=3
 User=root

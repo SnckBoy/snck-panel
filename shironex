@@ -1,19 +1,20 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-APP_NAME="shironex-panel"
-NODE_SERVICE="shironex-node"
-APP_DIR="${SHIRONEX_PANEL_DIR:-/opt/shironex-panel}"
+PANEL_SERVICE="snck-panel.service"
+NODE_SERVICE="shironex-node.service"
+APP_DIR="${SHIRONEX_PANEL_DIR:-/opt/snck-panel}"
 
 root(){ [[ "$EUID" -eq 0 ]] || { echo "Use: sudo shironex" >&2; exit 1; }; }
 
 panel(){
+  root
   case "${1:-status}" in
-    start) pm2 start "$APP_NAME" ;;
-    stop) pm2 stop "$APP_NAME" ;;
-    restart) pm2 restart "$APP_NAME" --update-env ;;
-    status) pm2 status "$APP_NAME" ;;
-    logs) pm2 logs "$APP_NAME" --lines 100 ;;
+    start) systemctl start "$PANEL_SERVICE" ;;
+    stop) systemctl stop "$PANEL_SERVICE" ;;
+    restart) systemctl restart "$PANEL_SERVICE" ;;
+    status) systemctl status "$PANEL_SERVICE" --no-pager ;;
+    logs) journalctl -u "$PANEL_SERVICE" -n 100 --no-pager ;;
     *) echo "Usage: shironex panel {start|stop|restart|status|logs}"; exit 2 ;;
   esac
 }
@@ -36,7 +37,7 @@ menu(){
     clear 2>/dev/null || true
     cat <<'EOF'
 ╔══════════════════════════════════════════════╗
-║            SHIRONEX CONTROL CENTER           ║
+║              SNCK PANEL CONTROL CENTER       ║
 ╚══════════════════════════════════════════════╝
 
 [1] Start Panel
@@ -48,15 +49,15 @@ menu(){
 [7] Restart Node
 [8] Node Status
 [9] View Node Logs
-[10] Update ShiroNex
-[11] Repair ShiroNex
+[10] Update Panel
+[11] Repair Panel
 [12] System Information
 [13] Backup
 [14] Configure HTTPS
 [15] Diagnostics
 [0] Exit
 EOF
-    read -r -p $'\nSelect an option: ' choice
+    read -r -p $'\nSelect an option: ' choice || exit 0
     case "$choice" in
       1) panel start ;;
       2) panel stop ;;
@@ -76,7 +77,7 @@ EOF
       0) exit 0 ;;
       *) echo "Invalid option." ;;
     esac
-    read -r -p $'\nPress Enter to continue...' _
+    read -r -p $'\nPress Enter to continue...' _ || true
   done
 }
 
@@ -90,7 +91,7 @@ case "${1:-menu}" in
   menu) menu ;;
   --help|-h)
     cat <<'EOF'
-ShiroNex CLI
+SNCK PANEL CLI
 
 sudo shironex
 sudo shironex panel status
