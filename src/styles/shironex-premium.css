@@ -422,3 +422,90 @@ button, a, input, textarea, select {
 @media (prefers-reduced-motion: no-preference) {
   .snx-card, .snx-panel, .snx-surface { contain: layout style; }
 }
+
+
+/* SNCK mobile overflow + telemetry ring containment fix (2026-10-09).
+   Keep SVG progress indicators inside their own boxes; prevent mobile horizontal bleed. */
+.snx-pulse-ring {
+  position: relative !important;
+  display: inline-flex !important;
+  flex: 0 0 var(--snx-ring-size, 64px) !important;
+  width: var(--snx-ring-size, 64px) !important;
+  height: var(--snx-ring-size, 64px) !important;
+  min-width: var(--snx-ring-size, 64px) !important;
+  min-height: var(--snx-ring-size, 64px) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  isolation: isolate;
+  vertical-align: middle;
+}
+.snx-pulse-ring__svg {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  pointer-events: none;
+}
+.snx-pulse-ring__track,
+.snx-pulse-ring__progress {
+  vector-effect: non-scaling-stroke;
+}
+.snx-pulse-ring__center {
+  position: relative !important;
+  z-index: 1 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  line-height: 1;
+}
+.snx-pulse-ring__center > * { max-width: 100%; }
+
+html, body, #root {
+  max-width: 100%;
+}
+body { overflow-x: clip; }
+#root { overflow-x: clip; }
+.snx-app-content, .snx-server-content, .snx-server-route-surface,
+.snx-dashboard-token-card, .snx-dashboard-token-card-inner {
+  min-width: 0;
+  max-width: 100%;
+}
+.snx-dashboard-token-card { overflow: hidden; }
+.snx-dashboard-token-card-inner { overflow: hidden; }
+
+@media (max-width: 767px) {
+  .snx-app-content {
+    width: 100%;
+    max-width: 100vw;
+    min-width: 0;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .snx-server-content, .snx-server-route-surface {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
+  }
+  .snx-server-topbar {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .snx-server-topbar > * { min-width: 0; max-width: 100%; }
+  .snx-dashboard-token-card-inner { padding: 16px !important; }
+  .snx-dashboard-token-card h3 { overflow-wrap: anywhere; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .snx-pulse-ring *, .snx-dashboard-token-card * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
