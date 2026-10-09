@@ -165,6 +165,22 @@ async function searchHangar(q: string, limit: number) {
   }).filter((item: any) => item.id && item.name);
 }
 
+router.get("/marketplace/filters", async (_req, res) => {
+  try {
+    const response = await axios.get("https://api.modrinth.com/v2/tag/game_version", {
+      timeout: 10000,
+      headers: { "User-Agent": marketplaceUserAgent },
+    });
+    const versions = asArray(response.data)
+      .filter((item: any) => item.version && (item.version_type === "release" || !item.version_type))
+      .map((item: any) => String(item.version))
+      .filter((version: string, index: number, all: string[]) => all.indexOf(version) === index);
+    return res.json({ versions });
+  } catch {
+    return res.status(502).json({ error: "Unable to load Minecraft versions from Modrinth." });
+  }
+});
+
 router.get("/marketplace/search", async (req, res) => {
   const q = String(req.query.q || "").trim().slice(0, 120);
   const provider = String(req.query.provider || "all").toLowerCase();
