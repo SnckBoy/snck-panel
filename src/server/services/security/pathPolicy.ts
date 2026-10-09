@@ -17,11 +17,11 @@ function normalizeRelativeInput(input: string): string {
     throw new UnsafePathError('Null bytes are not allowed.');
   }
 
-  const normalized = input.replaceAll('\\', '/');
+  const normalized = input.replace(/\\/g, '/');
   if (normalized.startsWith('/') || /^[A-Za-z]:\//.test(normalized)) {
     throw new UnsafePathError('Absolute paths are not allowed.');
   }
-  if (normalized.split('/').some((segment) => segment === '..')) {
+  if (normalized.split('/').some((segment: string) => segment === '..')) {
     throw new UnsafePathError('Path traversal is not allowed.');
   }
   return normalized;

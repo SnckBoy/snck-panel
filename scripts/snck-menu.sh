@@ -118,7 +118,7 @@ system_info(){
   printf 'Node:     %s\n' "$(node --version 2>/dev/null || echo not-installed)"
   printf 'npm:      %s\n' "$(npm --version 2>/dev/null || echo not-installed)"
   printf 'Docker:   %s\n' "$(docker --version 2>/dev/null || echo not-installed)"
-  printf 'Postgres: %s\n' "$(psql --version 2>/dev/null || echo not-installed)"
+  printf 'Storage:  JSON files in %s/.data\n' "$APP_DIR"
   printf 'Panel:    %s\n' "$(installed && echo installed || echo not-installed)"
   pause
 }
@@ -135,10 +135,19 @@ uninstall_panel(){
     systemctl daemon-reload
     systemctl reset-failed "$SERVICE" 2>/dev/null || true
   fi
+  mkdir -p "$BACKUP_DIR"
+  chmod 700 "$BACKUP_DIR"
+  local stamp dest
+  stamp="$(date +%Y%m%d-%H%M%S)"
+  dest="$BACKUP_DIR/pre-uninstall-$stamp"
+  mkdir -p "$dest"
+  [[ ! -d "$APP_DIR/.data" ]] || cp -a "$APP_DIR/.data" "$dest/.data"
+  [[ ! -f "$APP_DIR/.env" ]] || cp -a "$APP_DIR/.env" "$dest/.env"
+  chmod 700 "$dest"
   rm -rf "$APP_DIR"
   rm -f /usr/local/bin/snck-panel
   printf '\033[1;32mSNCK PANEL application/service removed.\033[0m\n'
-  printf 'PostgreSQL database and backups were NOT removed.\n'
+  printf 'Data and environment backup: %s\n' "$dest"
   pause
 }
 

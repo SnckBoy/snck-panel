@@ -2,7 +2,9 @@ name: SNCK PANEL CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - "repair/**"
   pull_request:
     branches: [main]
 
@@ -43,5 +45,6 @@ jobs:
         run: |
           bash -n install.sh
           bash -n scripts/snck-menu.sh
+          bash -n scripts/install-panel.sh
           bash -n node-install.sh
           bash -n shironex
