@@ -250,3 +250,151 @@ button[class*="primary"]:not(:disabled):hover, .auth-submit:not(:disabled):hover
 .snx-server-route-surface { min-height: 0; }
 .snx-server-sidebar .snx-quick-action { border-radius: 8px !important; min-height: 34px; padding: 8px 10px !important; }
 @media (max-width: 767px) { .snx-server-topbar { padding: 12px !important; } .snx-server-topbar .snx-quick-action { min-height: 34px; padding: 8px 10px !important; } }
+
+/* SNCK WATER THEME — GLOBAL TOKENS */
+:root,
+html[data-appearance="dark"] {
+  --abyss-black: #000000;
+  --water-dark: #0a0d10;
+  --water-mid: #1c2226;
+  --glow: #e8ecec;
+  --glow-dim: rgba(232, 236, 236, 0.5);
+  --text-primary: #eef0f0;
+  --text-secondary: #7a8386;
+  --border: rgba(255, 255, 255, 0.08);
+  --radius: 4px;
+
+  --snx-bg: var(--abyss-black);
+  --snx-bg-deep: var(--abyss-black);
+  --snx-surface: #050607;
+  --snx-surface-solid: #050607;
+  --snx-surface-raised: var(--water-mid);
+  --snx-border: var(--border);
+  --snx-border-soft: var(--border);
+  --snx-text: var(--text-primary);
+  --snx-text-muted: var(--text-secondary);
+  --snx-text-dim: var(--text-secondary);
+  --snx-primary: var(--glow);
+  --snx-primary-soft: rgba(255, 255, 255, 0.06);
+  --snx-primary-line: var(--glow-dim);
+  --snx-radius: var(--radius);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--abyss-black) !important;
+  color: var(--text-primary);
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  background-image: none !important;
+}
+
+.ripple {
+  position: relative;
+  isolation: isolate;
+  background: var(--water-dark);
+  overflow: hidden;
+}
+.ripple::before,
+.ripple::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ripple::before {
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,.05), transparent 40%),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,.04), transparent 45%),
+    repeating-linear-gradient(115deg, rgba(255,255,255,.025) 0, rgba(255,255,255,.025) 1px, transparent 2px, transparent 6px);
+  mix-blend-mode: screen;
+  opacity: .8;
+}
+.ripple::after {
+  background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.65));
+}
+.ripple > * { position: relative; z-index: 1; }
+
+.label {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  font-size: .7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.panel {
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #050607;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.card h3 { margin: 0 0 4px; color: var(--glow); font-size: 1.6rem; }
+.card span {
+  color: var(--text-secondary);
+  font-size: .75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.btn {
+  padding: 12px 26px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: .8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color .25s ease, border-color .25s ease, color .25s ease;
+}
+.btn:hover { background: rgba(255,255,255,.06); border-color: var(--glow-dim); }
+.btn.primary { background: var(--glow); color: #000; border-color: var(--glow); }
+.btn.primary:hover { background: #fff; }
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #050607;
+  color: var(--text-primary);
+  font-size: .85rem;
+}
+.input::placeholder { color: var(--text-secondary); }
+
+button, input, textarea, select { font-family: inherit; }
+:where(button, a, input, textarea, select):focus-visible {
+  outline: 2px solid var(--glow-dim);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .panel { padding: 16px; }
+  .card { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
