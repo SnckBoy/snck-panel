@@ -189,7 +189,7 @@ const HOST = process.env.HOST || "0.0.0.0";
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cors(corsOptions));
-app.get("/health", (_req, res) => res.json({ ok: true, service: "shironex-panel", timestamp: new Date().toISOString() }));
+app.get("/health", (_req, res) => res.json({ ok: true, service: "snck-panel", timestamp: new Date().toISOString() }));
 
 import apiRoutes from "./src/server/routes/api.js";
 app.use("/api", apiRoutes);
