@@ -34,13 +34,22 @@ router.post("/", async (req, res) => {
     const { label, scopes, expires_at } = req.body;
     const user = (req as any).user;
 
-    // Generate random API key (14 chars)
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const randomBytes = crypto.randomBytes(14);
-    let rawKey = '';
-    for (let i = 0; i < 14; i++) {
-      rawKey += chars[randomBytes[i] % chars.length];
+    if (label !== undefined && (typeof label !== "string" || label.trim().length < 1 || label.length > 100)) {
+      return res.status(400).json({ error: "Label must be a non-empty string of at most 100 characters" });
     }
+    if (scopes !== undefined && (!Array.isArray(scopes) || scopes.length === 0 || scopes.length > 50 || !scopes.every((scope: unknown) => typeof scope === "string" && scope.length > 0 && scope.length <= 100))) {
+      return res.status(400).json({ error: "Scopes must be a non-empty array of valid strings" });
+    }
+    let normalizedExpiry: string | null = null;
+    if (expires_at !== undefined && expires_at !== null && expires_at !== "") {
+      if (typeof expires_at !== "string" || !Number.isFinite(Date.parse(expires_at)) || Date.parse(expires_at) <= Date.now()) {
+        return res.status(400).json({ error: "Expiry must be a valid future date" });
+      }
+      normalizedExpiry = new Date(expires_at).toISOString();
+    }
+
+    // Generate a high-entropy API key using cryptographically secure random bytes.
+    const rawKey = crypto.randomBytes(32).toString("base64url");
     const keyString = `shironex-${rawKey}`;
     
     // Hash the key for storage
@@ -51,11 +60,11 @@ router.post("/", async (req, res) => {
     const newKey = {
       id: crypto.randomUUID(),
       key_hash: keyHash,
-      label: label || "Unnamed Key",
-      scopes: scopes || ["*"],
+      label: label?.trim() || "Unnamed Key",
+      scopes: scopes === undefined ? ["*"] : scopes,
       created_by: user.id,
       created_at: new Date().toISOString(),
-      expires_at: expires_at || null,
+      expires_at: normalizedExpiry,
       last_used_at: null,
       revoked: false
     };
