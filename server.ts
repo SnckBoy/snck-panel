@@ -8,7 +8,8 @@ import { Server as SocketIOServer } from "socket.io";
 import { createServer as createViteServer } from "vite";
 import fs from "fs-extra";
 import jwt from "jsonwebtoken";
-import archiver from "archiver";
+import * as archiverModule from "archiver";
+const archiver: any = (archiverModule as any).default || archiverModule;
 
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 16) {
   console.error(
