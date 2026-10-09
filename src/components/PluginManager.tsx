@@ -72,10 +72,13 @@ export default function PluginManager({ serverId }: { serverId: string }) {
       setLoading(true);
       setError("");
       setNotice("");
-      const response = await axios.get<{ items: MarketplacePlugin[] }>("/api/marketplace/search", {
-        params: { q: query.trim(), kind: "plugin", provider, gameVersion: gameVersion.trim(), loader: loader.trim(), limit: 40 },
+      const response = await axios.get<{ items: MarketplacePlugin[]; failedProviders?: string[]; featured?: boolean }>("/api/marketplace/search", {
+        params: { q: query.trim(), kind: "plugin", provider, sort, gameVersion: gameVersion.trim(), loader: loader.trim(), limit: 40 },
       });
       setPlugins(response.data.items || []);
+      if (response.data.failedProviders?.length) {
+        setNotice("Some providers are temporarily unavailable: " + response.data.failedProviders.join(", ") + ". Showing available results.");
+      }
     } catch (requestError: any) {
       setError(requestError.response?.data?.error || "Marketplace providers are temporarily unavailable.");
       setPlugins([]);
@@ -109,7 +112,7 @@ export default function PluginManager({ serverId }: { serverId: string }) {
   useEffect(() => {
     const timer = window.setTimeout(() => void searchPlugins(), 350);
     return () => window.clearTimeout(timer);
-  }, [query, provider, gameVersion, loader]);
+  }, [query, provider, sort, gameVersion, loader]);
 
   useEffect(() => {
     void loadInstalled();
@@ -182,6 +185,7 @@ export default function PluginManager({ serverId }: { serverId: string }) {
         </section>
         {!loading && !error && sortedPlugins.length === 0 && <div className="rounded-2xl border border-dashed border-border p-12 text-center text-muted-foreground"><SlidersHorizontal className="mx-auto mb-3 h-7 w-7" /><p>No plugins found for this search.</p><p className="mt-1 text-xs">Try another provider, version, or search term.</p></div>}
 
+        <section className="flex flex-wrap items-end justify-between gap-2"><div><h3 className="text-lg font-bold text-foreground">{query.trim() ? "Search Results" : "Popular Plugins"}</h3><p className="mt-1 text-xs text-muted-foreground">{query.trim() ? `Matches for “${query.trim()}”` : "Popular plugins are loaded automatically — no search required."}</p></div><span className="text-xs text-muted-foreground">{sortedPlugins.length} results</span></section>
         <div className="grid gap-4 xl:grid-cols-2">
           {sortedPlugins.map((plugin) => (
             <article key={`${plugin.provider}-${plugin.id}`} className="snx-console-surface group flex min-w-0 flex-col gap-4 rounded-2xl border border-border-subtle p-4 transition hover:border-cyan-400/30 md:p-5">
