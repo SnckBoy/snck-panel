@@ -1,10 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
-import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Key, Activity, Box, Cloud, ShieldCheck, ChevronDown, LifeBuoy } from "lucide-react";
+import type { ReactNode } from "react";
+import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Key, Activity, Box, Cloud, ShieldCheck, LifeBuoy } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useSettings } from "../context/SettingsContext";
 import { motion } from "framer-motion";
 
-type SidebarLink = { name: string; path: string; icon: React.ReactNode };
+type SidebarLink = { name: string; path: string; icon: ReactNode };
 
 export function Sidebar({ onClose, isCollapsed, toggleCollapse }: { onClose?: () => void; isCollapsed?: boolean; toggleCollapse?: () => void }) {
   const location = useLocation();
@@ -55,21 +56,6 @@ export function Sidebar({ onClose, isCollapsed, toggleCollapse }: { onClose?: ()
       </div>
 
       <nav className="snx-app-nav flex-1 w-full px-3 pt-2 pb-4 overflow-y-auto custom-scrollbar">
-        {!isCollapsed && (
-          <div className="px-1 mb-2">
-            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground mb-2">Currently managing</p>
-            <div className="snx-sidebar-manage-card flex items-center gap-3 px-3 py-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/[0.045] text-muted-foreground">
-                <Server size={17} />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-foreground truncate">{panelName || "Your panel"}</p>
-                <p className="text-xs text-muted-foreground truncate">Infrastructure</p>
-              </div>
-              <ChevronDown size={16} className="shrink-0 text-muted-foreground" />
-            </div>
-          </div>
-        )}
         {sections.map((section) => (
           <div key={section.title} className="mb-2">
             {!isCollapsed && <p className="snx-sidebar-section-label">{section.title}</p>}
