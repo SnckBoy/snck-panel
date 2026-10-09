@@ -53,9 +53,29 @@ function getAllowedOrigins(): string[] {
   return Array.from(origins);
 }
 
-function originAllowed(origin: string | undefined): boolean {
+function normalizeOrigin(value: string): string | null {
+  try {
+    const parsed = new URL(value);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+    return parsed.origin;
+  } catch {
+    return null;
+  }
+}
+
+function originAllowed(origin: string | undefined, request?: import("http").IncomingMessage): boolean {
   if (!origin) return true;
-  return getAllowedOrigins().includes(String(origin).trim().replace(/\/+$/, ""));
+  const normalized = normalizeOrigin(String(origin).trim());
+  if (!normalized) return false;
+  if (getAllowedOrigins().some((allowed) => normalizeOrigin(allowed) === normalized)) return true;
+  // Support direct IP:port and custom-host deployments without requiring PANEL_PUBLIC_URL.
+  // The origin must still match the actual Host and scheme of this request.
+  if (request?.headers.host) {
+    const scheme = (request.socket as import("tls").TLSSocket).encrypted ? "https:" : "http:";
+    const requestOrigin = normalizeOrigin(scheme + "//" + request.headers.host);
+    if (requestOrigin && requestOrigin === normalized) return true;
+  }
+  return false;
 }
 
 const corsOptions = {
@@ -70,10 +90,15 @@ const corsOptions = {
 
 const httpServer = process.env.PANEL_TLS_KEY && process.env.PANEL_TLS_CERT ? createHttpsServer({key:fs.readFileSync(process.env.PANEL_TLS_KEY),cert:fs.readFileSync(process.env.PANEL_TLS_CERT)},app) : createHttpServer(app);
 export const io = new SocketIOServer(httpServer, {
+  // The request-aware gate enables same-origin IP:port deployments while keeping
+  // unrelated browser origins blocked.
+  allowRequest(req, callback) {
+    callback(null, originAllowed(req.headers.origin, req));
+  },
   cors: {
+    // Socket.IO CORS does not expose request Host; allowRequest is the authoritative gate.
     origin(origin: string | undefined, callback: (err: Error | null, ok?: boolean) => void) {
-      if (originAllowed(origin)) return callback(null, true);
-      callback(new Error("Origin not allowed by the panel CORS policy"));
+      callback(null, Boolean(origin));
     },
     credentials: true,
     methods: ["GET", "POST"],

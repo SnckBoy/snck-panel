@@ -299,9 +299,15 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
       setLogs([]);
     });
 
-    socket.on("connect_error", (e: Error) => {
+    socket.on("connect_error", (e: Error & { description?: unknown; context?: unknown; data?: { message?: string } }) => {
       setConnected(false);
-      setLogs((p) => [...p, `[System Error] ${e.message}`].slice(-MAX_LOG_LINES));
+      const detail = [
+        e.message,
+        e.data?.message,
+        typeof e.description === "string" ? e.description : "",
+        typeof e.context === "string" ? e.context : "",
+      ].filter(Boolean).join(" — ");
+      setLogs((p) => [...p, `[System Error] Console connection failed: ${detail || "unknown connection error"}`].slice(-MAX_LOG_LINES));
     });
 
     return () => {
