@@ -5,27 +5,27 @@
 
 :root,
 html[data-appearance="dark"] {
-  --snx-bg: #090813;
-  --snx-bg-deep: #060510;
-  --snx-surface: rgba(22, 20, 34, 0.68);
-  --snx-surface-solid: #131120;
-  --snx-surface-raised: rgba(30, 27, 46, 0.88);
-  --snx-border: #28223b;
-  --snx-border-soft: rgba(148, 132, 194, 0.16);
-  --snx-text: #f6f4fd;
-  --snx-text-muted: #b4aecb;
-  --snx-text-dim: #837c9c;
-  --snx-primary: #8b7bf7;
-  --snx-primary-soft: rgba(139, 123, 247, 0.12);
-  --snx-primary-line: rgba(139, 123, 247, 0.44);
+  --snx-bg: #0a0a0f;
+  --snx-bg-deep: #08080d;
+  --snx-surface: #111117;
+  --snx-surface-solid: #111117;
+  --snx-surface-raised: #191920;
+  --snx-border: #25252d;
+  --snx-border-soft: rgba(180, 180, 195, 0.10);
+  --snx-text: #f4f4f6;
+  --snx-text-muted: #a4a4ae;
+  --snx-text-dim: #777781;
+  --snx-primary: #b8b8c2;
+  --snx-primary-soft: rgba(255, 255, 255, 0.055);
+  --snx-primary-line: rgba(255, 255, 255, 0.10);
   --snx-success: #43e08c;
   --snx-warning: #f7b84b;
   --snx-danger: #f4586a;
-  --snx-radius: 14px;
+  --snx-radius: 17px;
   --snx-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --snx-shadow-card: 0 1px 2px rgba(4, 3, 10, 0.4), 0 12px 32px -12px rgba(4, 3, 10, 0.6);
-  --snx-shadow-pop: 0 8px 40px -8px rgba(0, 0, 0, 0.55);
-  --snx-glass-blur: 16px;
+  --snx-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.18), 0 8px 24px -16px rgba(0, 0, 0, 0.5);
+  --snx-shadow-pop: 0 8px 24px -14px rgba(0, 0, 0, 0.5);
+  --snx-glass-blur: 6px;
 }
 
 html[data-appearance="light"] {
@@ -51,10 +51,7 @@ html[data-accent="red"] { --snx-primary: #ee7382; }
 
 body {
   background-color: var(--snx-bg) !important;
-  background-image:
-    radial-gradient(1100px 520px at 12% -8%, rgba(139, 123, 247, 0.14), transparent 60%),
-    radial-gradient(900px 460px at 88% 0%, rgba(83, 158, 232, 0.10), transparent 55%),
-    radial-gradient(760px 520px at 50% 115%, rgba(139, 123, 247, 0.08), transparent 60%) !important;
+  background-image: none !important;
   background-attachment: fixed !important;
   font-feature-settings: "cv02", "cv03", "cv04", "ss01";
   -webkit-font-smoothing: antialiased;
@@ -68,16 +65,16 @@ html[data-appearance="light"] body {
 
 .snx-app-sidebar,
 .snx-global-topbar {
-  backdrop-filter: blur(var(--snx-glass-blur)) saturate(1.35);
-  -webkit-backdrop-filter: blur(var(--snx-glass-blur)) saturate(1.35);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
-.snx-app-nav-link { border-radius: 11px; transition: background .2s var(--snx-ease), border-color .2s var(--snx-ease), transform .2s var(--snx-ease); }
-.snx-app-nav-link:hover { transform: translateX(2px); }
+.snx-app-nav-link { border-radius: 13px; transition: background .18s var(--snx-ease), color .18s var(--snx-ease); }
+.snx-app-nav-link:hover { transform: none; }
 .snx-app-nav-active {
-  background: linear-gradient(135deg, var(--snx-primary-soft), transparent 78%);
-  border-color: var(--snx-primary-line) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 14px -6px var(--snx-primary-soft);
+  background: #1a1a21;
+  border-color: transparent !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
 }
 
 button, a, input, textarea, select { transition-timing-function: var(--snx-ease); }
@@ -113,29 +110,29 @@ input:focus, textarea:focus, select:focus {
 }
 
 button[class*="primary"], button[class*="submit"], .auth-submit {
-  background: linear-gradient(135deg, var(--snx-primary) 0%, #62a4f2 100%) !important;
+  background: var(--snx-surface-raised) !important;
   border: 0 !important;
   color: #fff !important;
   font-weight: 600;
   border-radius: 11px !important;
-  box-shadow: 0 6px 20px -6px rgba(139, 123, 247, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+  box-shadow: none !important;
   transition: box-shadow .2s var(--snx-ease), transform .15s var(--snx-ease), filter .2s var(--snx-ease) !important;
 }
 button[class*="primary"]:not(:disabled):hover, .auth-submit:not(:disabled):hover {
   filter: brightness(1.06);
-  box-shadow: 0 10px 28px -8px rgba(139, 123, 247, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+  box-shadow: none !important;
 }
 
-* { scrollbar-width: thin; scrollbar-color: rgba(139, 123, 247, 0.35) transparent; }
+* { scrollbar-width: thin; scrollbar-color: #34343d transparent; }
 *::-webkit-scrollbar { width: 9px; height: 9px; }
 *::-webkit-scrollbar-track { background: transparent; }
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(139, 123, 247, 0.45), rgba(98, 164, 242, 0.35));
+  background: #34343d;
   border-radius: 8px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
-*::-webkit-scrollbar-thumb:hover { background: rgba(139, 123, 247, 0.6); background-clip: padding-box; }
+*::-webkit-scrollbar-thumb:hover { background: #4a4a55; background-clip: padding-box; }
 
 .auth-form, .auth-field, .auth-input { border-radius: 11px; }
 .auth-input {
@@ -160,3 +157,40 @@ button[class*="primary"]:not(:disabled):hover, .auth-submit:not(:disabled):hover
     scroll-behavior: auto !important;
   }
 }
+
+
+/* Calm dark SaaS sidebar: flat drawer, grouped navigation, quiet active state. */
+.snx-app-sidebar {
+  background: var(--snx-bg-deep) !important;
+  border-right: 1px solid rgba(255,255,255,.055) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.snx-app-sidebar-header { border-bottom: 0 !important; }
+.snx-app-sidebar-footer { border-top: 0 !important; }
+.snx-sidebar-section-label {
+  padding: 0 12px;
+  margin: 22px 0 8px;
+  color: var(--snx-text-dim);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.snx-sidebar-manage-card {
+  background: #141419;
+  border: 1px solid rgba(255,255,255,.065);
+  border-radius: 15px;
+}
+.snx-sidebar-promo {
+  background: #141419;
+  border: 1px solid rgba(255,255,255,.055);
+  border-radius: 15px;
+}
+.snx-app-nav-link { min-height: 46px; border: 1px solid transparent !important; }
+.snx-app-nav-link:hover { background: rgba(255,255,255,.035) !important; }
+.snx-app-nav-active { background: #1a1a21 !important; border-color: transparent !important; }
+.snx-app-nav-link .text-\[var\(--accent-color\)\] { color: var(--snx-text) !important; }
+.snx-app-sidebar .bg-gradient-to-br { background: #24242d !important; box-shadow: none !important; }
+.snx-app-sidebar .shironex-gradient-text { color: var(--snx-text); background: none; -webkit-text-fill-color: initial; }
