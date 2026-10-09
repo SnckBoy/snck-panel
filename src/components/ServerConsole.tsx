@@ -222,7 +222,11 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
     setResourceHistory((previous) => [...previous, {
       cpu: resourceSnapshot.cpu.visualPercent,
       ram: resourceSnapshot.memory.visualPercent,
-      network: Number.isFinite(resourceSnapshot.network.downloadTotalBytes + resourceSnapshot.network.uploadTotalBytes) ? resourceSnapshot.network.downloadTotalBytes + resourceSnapshot.network.uploadTotalBytes : null,
+      network: (() => {
+        const download = resourceSnapshot.network.downloadTotalBytes;
+        const upload = resourceSnapshot.network.uploadTotalBytes;
+        return download == null || upload == null ? null : download + upload;
+      })(),
     }].slice(-36));
   }, [resourceSnapshot]);
   const [windowOffset, setWindowOffset] = useState({ x: 0, y: 0 });
