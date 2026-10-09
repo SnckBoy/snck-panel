@@ -61,6 +61,8 @@ export default function PluginManager({ serverId }: { serverId: string }) {
   const [sort, setSort] = useState<SortMode>("downloads");
   const [gameVersion, setGameVersion] = useState("");
   const [loader, setLoader] = useState("");
+  const [availableVersions, setAvailableVersions] = useState<string[]>([]);
+  const platformOptions = ["Paper", "Purpur", "Folia", "Spigot", "Bukkit", "Velocity", "Fabric", "Forge", "NeoForge"];
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [installed, setInstalled] = useState<InstalledPlugin[]>([]);
@@ -108,6 +110,14 @@ export default function PluginManager({ serverId }: { serverId: string }) {
       setError(requestError.response?.data?.error || "Unable to remove plugin.");
     }
   };
+
+  useEffect(() => {
+    let cancelled = false;
+    axios.get<{ versions: string[] }>("/api/marketplace/filters")
+      .then((response) => { if (!cancelled) setAvailableVersions(response.data.versions || []); })
+      .catch(() => { if (!cancelled) setAvailableVersions(["1.21.10", "1.21.9", "1.21.8", "1.21.7", "1.21.6", "1.21.5", "1.21.4", "1.21.3", "1.21.1", "1.20.6", "1.20.4", "1.20.1", "1.19.4", "1.18.2", "1.16.5"]); });
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     const timer = window.setTimeout(() => void searchPlugins(), 350);
@@ -171,8 +181,8 @@ export default function PluginManager({ serverId }: { serverId: string }) {
           </form>
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
             <label className="text-xs text-muted-foreground"><span className="mb-1.5 flex items-center gap-1.5"><Filter className="h-3.5 w-3.5" /> Provider</span><select value={provider} onChange={(event) => setProvider(event.target.value as Provider)} className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm text-foreground outline-none">{Object.keys(sourceLabels).map((key) => <option key={key} value={key}>{sourceLabels[key as Provider]}</option>)}</select></label>
-            <label className="text-xs text-muted-foreground"><span className="mb-1.5 block">Minecraft version</span><input value={gameVersion} onChange={(event) => setGameVersion(event.target.value)} placeholder="e.g. 1.21.1" className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm text-foreground outline-none" /></label>
-            <label className="text-xs text-muted-foreground"><span className="mb-1.5 block">Platform / loader</span><input value={loader} onChange={(event) => setLoader(event.target.value)} placeholder="Paper, Purpur, Folia" className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm text-foreground outline-none" /></label>
+            <label className="text-xs text-muted-foreground"><span className="mb-1.5 block">Minecraft version</span><select value={gameVersion} onChange={(event) => setGameVersion(event.target.value)} className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm text-foreground outline-none"><option value="">All versions</option>{availableVersions.map((version) => <option key={version} value={version}>{version}</option>)}</select></label>
+            <label className="text-xs text-muted-foreground"><span className="mb-1.5 block">Platform / loader</span><select value={loader} onChange={(event) => setLoader(event.target.value)} className="w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm text-foreground outline-none"><option value="">All platforms</option>{platformOptions.map((platform) => <option key={platform} value={platform}>{platform}</option>)}</select></label>
           </div>
         </section>
 
