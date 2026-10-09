@@ -5,12 +5,16 @@ import {
   Check,
   Trash2,
   ChevronDown,
-
+  Wifi,
+  Activity,
+  Cpu,
+  MemoryStick,
+  HardDrive,
 } from "lucide-react";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
-import { normalizeTelemetry, formatBytes, formatCpu, formatPercent } from "../utils/telemetry";
+import { normalizeTelemetry, formatBytes, formatCpu } from "../utils/telemetry";
 
 /* ═══════════════════════════════════════════════════════
    TYPES
@@ -57,7 +61,16 @@ const STYLES = `
 @keyframes qx-blink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }
 .qx-enter-right, .qx-log-line { animation: none; }
 .qx-tail-in { animation: qx-tail-in .18s ease both; }
-.qx-panel { background: #0b1017; border: 1px solid rgba(148,163,184,.16); border-radius: 14px; box-shadow: 0 8px 28px rgba(0,0,0,.12); }
+.qx-panel { background: #080808; border: 1px solid rgba(255,255,255,.045); border-radius: 4px; box-shadow: none; }
+.qx-console-window-bar { background: #080808; border-bottom: 1px solid rgba(255,255,255,.055); }
+.qx-console-toolbar { background: #080808; border-color: rgba(255,255,255,.055); }
+.qx-console-body { background: #080808; }
+.snx-server-workspace-card { background: #202020; border: 1px solid rgba(255,255,255,.025); border-radius: 4px; }
+.snx-server-workspace-card-label { color: #b8b8b8; font-size: 12px; }
+.snx-server-workspace-card-value { color: #f3f3f3; font-weight: 650; font-size: 15px; }
+.snx-server-workspace-icon { display:grid;place-items:center;width:42px;height:42px;flex:0 0 auto;border-radius:9px;background:#171717;color:#e6e6e6; }
+.snx-server-chart { min-width:0; background:#202020; border:1px solid rgba(255,255,255,.025); border-radius:4px; overflow:hidden; }
+.snx-server-chart-grid { background-image:linear-gradient(to bottom, transparent calc(100% - 1px), rgba(255,255,255,.035) calc(100% - 1px));background-size:100% 33.333%; }
 .qx-console-window-bar { background: #0d141d; border-bottom: 1px solid rgba(148,163,184,.12); }
 .qx-console-body { background: #080d13; }
 .qx-console-toolbar { background: #0b1017; border-color: rgba(148,163,184,.12); }
@@ -165,18 +178,22 @@ function Clock() {
    MAIN COMPONENT
 ═══════════════════════════════════════════════════════ */
 
-function ResourceMetric({ label, value, detail, percent, tone }: { label: string; value: string; detail: string; percent: number | null; tone: string }) {
-  return <div className="border-b border-white/[0.07] py-3 last:border-b-0"><div className="mb-1.5 flex items-baseline justify-between gap-3"><p className="qx-display text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">{label}</p><p className="qx-mono text-xs font-medium text-slate-200">{value}</p></div><div className="h-1.5 overflow-hidden rounded-full bg-white/[0.08]"><div className="h-full rounded-full transition-[width] duration-500" style={{ width: percent === null ? "0%" : `${Math.max(0, Math.min(100, percent))}%`, backgroundColor: tone }} /></div><p className="mt-1.5 text-[10px] text-slate-500">{detail}</p></div>;
-}
-
-function ResourceStatus({ snapshot }: { snapshot: ReturnType<typeof normalizeTelemetry> }) {
+function ResourceStatus({ snapshot, server }: { snapshot: ReturnType<typeof normalizeTelemetry>; server?: ServerConsoleProps["server"] }) {
   const live = snapshot.status === "live";
   const statusLabel = live ? "Live node data" : snapshot.status === "stale" ? "Data is stale" : "Waiting for node data";
   const memoryValue = formatBytes(snapshot.memory.usedBytes);
-  const memoryDetail = snapshot.memory.limitBytes === null ? "No memory limit reported" : `${memoryValue} of ${formatBytes(snapshot.memory.limitBytes)} used`;
+  const memoryDetail = snapshot.memory.limitBytes === null ? "No memory limit reported" : memoryValue + " of " + formatBytes(snapshot.memory.limitBytes) + " used";
   const diskValue = formatBytes(snapshot.disk.usedBytes);
-  const diskDetail = snapshot.disk.limitBytes === null ? "No disk limit reported" : `${diskValue} of ${formatBytes(snapshot.disk.limitBytes)} used`;
-  return <section className="qx-panel p-4 sm:p-5"><div className="mb-3 flex items-center justify-between gap-3"><h2 className="qx-display text-xs font-semibold uppercase tracking-[0.16em] text-slate-300">Resource usage</h2><span className={`text-[10px] ${live ? "text-emerald-300" : "text-slate-500"}`}>{statusLabel}</span></div><ResourceMetric label="CPU" value={formatCpu(snapshot.cpu.usagePercent)} detail={snapshot.cpu.capacityPercent === null ? "Waiting for capacity" : `Capacity ${formatPercent(snapshot.cpu.capacityPercent)}`} percent={snapshot.cpu.visualPercent} tone="#818cf8" /><ResourceMetric label="RAM" value={memoryValue} detail={memoryDetail} percent={snapshot.memory.visualPercent} tone="#818cf8" /><ResourceMetric label="Disk" value={diskValue} detail={diskDetail} percent={snapshot.disk.visualPercent} tone="#818cf8" /><div className="pt-3"><div className="mb-2 flex items-center justify-between"><p className="qx-display text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">Network</p><span className="text-[10px] text-slate-500">live totals</span></div><div className="flex justify-between gap-3 font-mono text-[11px] text-slate-300"><span>↓ {formatBytes(snapshot.network.downloadTotalBytes)}</span><span>↑ {formatBytes(snapshot.network.uploadTotalBytes)}</span></div></div></section>;
+  const diskDetail = snapshot.disk.limitBytes === null ? "No disk limit reported" : diskValue + " of " + formatBytes(snapshot.disk.limitBytes) + " used";
+  const address = server?.ipAlias ? String(server.ipAlias) + ":" + String(server.port ?? "") : server?.port ? window.location.hostname + ":" + String(server.port) : "Address unavailable";
+  return <section className="flex flex-col gap-3">
+    <article className="snx-server-workspace-card flex items-center gap-3 p-3"><div className="snx-server-workspace-icon"><Wifi size={22} /></div><div className="min-w-0"><p className="snx-server-workspace-card-label">Address (click to copy)</p><button type="button" onClick={() => { void navigator.clipboard?.writeText(address); }} className="snx-server-workspace-card-value mt-1 block max-w-full truncate text-left" title="Copy server address">{address}</button></div></article>
+    <article className="snx-server-workspace-card flex items-center gap-3 p-3"><div className="snx-server-workspace-icon" style={{ background: live ? "#254c35" : "#5a2927" }}><Activity size={22} /></div><div className="min-w-0"><p className="snx-server-workspace-card-label">Server status</p><p className="snx-server-workspace-card-value mt-1 capitalize">{String(server?.status || (live ? "Online" : "Offline"))}</p></div></article>
+    <article className="snx-server-workspace-card p-3"><div className="mb-2 flex items-center gap-3"><div className="snx-server-workspace-icon"><Cpu size={21} /></div><div className="min-w-0"><p className="snx-server-workspace-card-label">CPU Usage</p><p className="snx-server-workspace-card-value mt-1">{formatCpu(snapshot.cpu.usagePercent)}</p></div></div><div className="h-1 overflow-hidden rounded-full bg-white/[0.08]"><div className="h-full rounded-full bg-[#b99a45]" style={{ width: String(Math.max(0, Math.min(100, snapshot.cpu.visualPercent ?? 0))) + "%" }} /></div></article>
+    <article className="snx-server-workspace-card p-3"><div className="mb-2 flex items-center gap-3"><div className="snx-server-workspace-icon"><MemoryStick size={21} /></div><div className="min-w-0"><p className="snx-server-workspace-card-label">RAM Usage</p><p className="snx-server-workspace-card-value mt-1">{memoryValue}</p></div></div><p className="text-[10px] text-white/45">{memoryDetail}</p><div className="mt-2 h-1 overflow-hidden rounded-full bg-white/[0.08]"><div className="h-full rounded-full bg-[#b99a45]" style={{ width: String(Math.max(0, Math.min(100, snapshot.memory.visualPercent ?? 0))) + "%" }} /></div></article>
+    <article className="snx-server-workspace-card p-3"><div className="mb-2 flex items-center gap-3"><div className="snx-server-workspace-icon"><HardDrive size={21} /></div><div className="min-w-0"><p className="snx-server-workspace-card-label">Storage Usage</p><p className="snx-server-workspace-card-value mt-1">{diskValue}</p></div></div><p className="text-[10px] text-white/45">{diskDetail}</p><div className="mt-2 h-1 overflow-hidden rounded-full bg-white/[0.08]"><div className="h-full rounded-full bg-[#b99a45]" style={{ width: String(Math.max(0, Math.min(100, snapshot.disk.visualPercent ?? 0))) + "%" }} /></div></article>
+    <article className="snx-server-workspace-card p-3"><div className="mb-2 flex items-center gap-2"><Activity size={16} /><p className="snx-server-workspace-card-label">Network Usage</p></div><div className="flex justify-between gap-3 font-mono text-[11px] text-white/80"><span>↓ {formatBytes(snapshot.network.downloadTotalBytes)}</span><span>↑ {formatBytes(snapshot.network.uploadTotalBytes)}</span></div><p className="mt-1 text-[10px] text-white/40">{statusLabel}</p></article>
+  </section>;
 }
 
 export default function ServerConsole({ serverId, server, actionNotice }: ServerConsoleProps) {
@@ -199,7 +216,15 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
   const [wrapLines, setWrapLines] = useState(true);
   const [terminalFontSize, setTerminalFontSize] = useState<"small" | "normal" | "large">("normal");
   const [resourceSnapshot, setResourceSnapshot] = useState(() => normalizeTelemetry(null));
+  const [resourceHistory, setResourceHistory] = useState<Array<{ cpu: number | null; ram: number | null; network: number | null }>>([]);
   const lastActionNotice = useRef("");
+  useEffect(() => {
+    setResourceHistory((previous) => [...previous, {
+      cpu: resourceSnapshot.cpu.visualPercent,
+      ram: resourceSnapshot.memory.visualPercent,
+      network: Number.isFinite(resourceSnapshot.network.downloadTotalBytes + resourceSnapshot.network.uploadTotalBytes) ? resourceSnapshot.network.downloadTotalBytes + resourceSnapshot.network.uploadTotalBytes : null,
+    }].slice(-36));
+  }, [resourceSnapshot]);
   const [windowOffset, setWindowOffset] = useState({ x: 0, y: 0 });
   const dragRef = useRef<{ startX: number; startY: number; originX: number; originY: number } | null>(null);
 
@@ -515,13 +540,14 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
     <>
       <style>{STYLES}</style>
       <div className="absolute inset-0 overflow-y-auto text-foreground touch-auto overscroll-y-auto qx-scroll bg-transparent">
-        <div className="relative flex flex-col xl:flex-row w-full max-w-[1440px] mx-auto min-h-full gap-3 md:gap-5 p-3 md:p-6 pb-20 md:pb-10">
+        <div className="relative flex flex-col w-full max-w-[1600px] mx-auto min-h-full gap-3 md:gap-4 p-3 md:p-4 pb-8">
           
           {/* ═══════════ DEDICATED CONSOLE AREA ═══════════ */}
-          <div className="flex flex-1 flex-col gap-4 w-full xl:w-[76%] min-w-0">
-            <header className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/[0.08] bg-black/25 px-4 py-3 md:px-5">
+          <div className="flex min-w-0 flex-col xl:flex-row gap-3 md:gap-5">
+          <div className="flex flex-1 flex-col gap-3 w-full xl:flex-1 min-w-0">
+            <header className="flex flex-wrap items-center justify-between gap-3 px-1 py-1 md:px-0 md:py-0">
               <div className="min-w-0">
-                <p className="qx-display text-[9px] font-bold uppercase tracking-[0.2em] text-slate-500">Server console</p>
+                
                 <h1 className="mt-1 truncate text-base font-semibold text-slate-100">{server?.name || `Server ${serverId}`}</h1>
               </div>
               <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] ${statusLabel === "Online" ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-300" : statusLabel === "Starting" || statusLabel === "Stopping" ? "border-amber-400/25 bg-amber-400/10 text-amber-200" : "border-slate-400/20 bg-slate-400/10 text-slate-300"}`}>
@@ -530,7 +556,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
               </span>
             </header>
             <section
-              className={`snx-console-window flex flex-col h-[520px] xs:h-[580px] md:h-[68vh] xl:h-[calc(100vh-120px)] qx-panel rounded-xl overflow-hidden relative ${
+              className={`snx-console-window flex flex-col h-[460px] xs:h-[500px] md:h-[58vh] xl:h-[calc(100vh-390px)] qx-panel rounded-xl overflow-hidden relative ${
                 ready ? "qx-enter-right" : "opacity-0"
               } ${isFloating ? "qx-console-floating fixed z-[60] w-[min(92vw,980px)]" : ""} ${isMinimized ? "qx-console-minimized" : ""}`}
               style={{
@@ -694,10 +720,26 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
               </form>
               {serverOffline && <p className="px-3 pb-3 text-[11px] text-amber-200/70">The server is offline. Start it before sending console commands.</p>}
             </section>
+
           </div>
-          <aside className="w-full xl:w-[24%] xl:sticky xl:top-6 xl:self-start">
-            <ResourceStatus snapshot={resourceSnapshot} />
+          <aside className="w-full xl:w-[24%] xl:sticky xl:top-3 xl:self-start">
+            <ResourceStatus snapshot={resourceSnapshot} server={server} />
           </aside>
+          </div>
+            <section className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              {([{ key: "cpu", title: "CPU Usage", values: resourceHistory.map((point) => point.cpu) }, { key: "ram", title: "RAM Usage", values: resourceHistory.map((point) => point.ram) }, { key: "network", title: "Network Usage", values: resourceHistory.map((point) => point.network) }] as const).map((chart) => {
+                const valid = chart.values.filter((value): value is number => value !== null && Number.isFinite(value));
+                const min = valid.length ? Math.min(...valid) : 0;
+                const max = valid.length ? Math.max(...valid) : 1;
+                const points = chart.values.map((value, index) => { const x = chart.values.length <= 1 ? 0 : (index / (chart.values.length - 1)) * 100; const y = value === null ? null : max === min ? 50 : 92 - ((value - min) / (max - min)) * 78; return y === null ? null : String(x) + "," + String(y); }).filter((point): point is string => point !== null).join(" ");
+                return <article key={chart.key} className="snx-server-chart p-3 md:p-4">
+                  <div className="mb-3 flex items-center justify-between gap-3"><h2 className="text-sm font-semibold text-white/80">{chart.title}</h2><Activity size={15} className="text-[#c5a84e]" /></div>
+                  <p className="mb-2 text-[10px] text-white/45">{valid.length > 1 ? (chart.key === "network" ? "Traffic history · bytes" : "Observed utilization") : "Waiting for live samples"}</p>
+                  <div className="snx-server-chart-grid h-24 overflow-hidden">{valid.length > 1 ? <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full" aria-label={chart.title + " history"} role="img"><polyline points={points} fill="none" stroke="#b99a45" strokeWidth="1.5" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round" /></svg> : <div className="flex h-full items-end"><div className="h-px w-full bg-[#b99a45]/60" /></div>}</div>
+                  <div className="mt-2 flex justify-between text-[10px] text-white/40"><span>Older</span><span>Latest</span></div>
+                </article>;
+              })}
+            </section>
         </div>
       </div>
     </>
