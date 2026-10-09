@@ -4,7 +4,7 @@
  */
 
 import React, { lazy, Suspense, useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
@@ -21,7 +21,7 @@ const Nodes = lazy(() => import("./pages/Nodes"));
 const Allocations = lazy(() => import("./pages/Allocations"));
 const Cloudflare = lazy(() => import("./pages/Cloudflare"));
 import Layout from "./components/Layout";
-import { motion, AnimatePresence, MotionConfig } from "framer-motion";
+import { MotionConfig } from "framer-motion";
 import { SettingsProvider, useSettings } from "./context/SettingsContext";
 import { GlobalBackground } from "./components/GlobalBackground";
 import { SystemUpdateListener } from "./components/SystemUpdateListener";
@@ -33,11 +33,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading, setupRequired } = useAuth();
   if (loading || setupRequired === null) return (
     <div className="h-[100dvh] w-full flex items-center justify-center bg-transparent text-foreground">
-      <motion.div
-        animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full"
-      />
+      <div aria-label="Loading" className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
     </div>
   );
   if (!user) return <Navigate to={setupRequired ? "/setup" : "/login"} replace />;
@@ -57,42 +53,30 @@ const PublicAuthRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-const AnimatedRoutes = () => {
-  const location = useLocation();
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div 
-        key={location.pathname} 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.3 }}
-        className="h-full w-full flex flex-col"
-      >
-        <Suspense fallback={<div role="status" className="snx-route-loading"><span className="snx-live-dot" /> Loading workspace…</div>}>
-        <Routes location={location}>
-          <Route path="/setup" element={<Setup />} />
-          <Route path="/core-checkpoint" element={<CoreCheckpoint />} />
-          <Route path="/login" element={<PublicAuthRoute><Login /></PublicAuthRoute>} />
-          <Route path="/register" element={<PublicAuthRoute><Register /></PublicAuthRoute>} />
-          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/nodes" element={<ProtectedRoute><AdminOnlyRoute><Nodes /></AdminOnlyRoute></ProtectedRoute>} />
-          <Route path="/allocations" element={<ProtectedRoute><AdminOnlyRoute><Allocations /></AdminOnlyRoute></ProtectedRoute>} />
-          <Route path="/cloudflare" element={<ProtectedRoute><AdminOnlyRoute><Cloudflare /></AdminOnlyRoute></ProtectedRoute>} />
-          <Route path="/servers" element={<ProtectedRoute><ServerList /></ProtectedRoute>} />
-          <Route path="/servers/create" element={<ProtectedRoute><CreateServer /></ProtectedRoute>} />
-          <Route path="/servers/:id/*" element={<ProtectedRoute><ServerView /></ProtectedRoute>} />
-          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-          <Route path="/api-keys" element={<ProtectedRoute><AdminOnlyRoute><ApiKeysPage /></AdminOnlyRoute></ProtectedRoute>} />
-          <Route path="/admin" element={<ProtectedRoute><AdminOnlyRoute><AdminDashboard /></AdminOnlyRoute></ProtectedRoute>} />
-          <Route path="/admin/servers" element={<ProtectedRoute><AdminOnlyRoute><AdminServers /></AdminOnlyRoute></ProtectedRoute>} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-        </Suspense>
-      </motion.div>
-    </AnimatePresence>
-  );
-};
+const AnimatedRoutes = () => (
+  <div className="h-full w-full flex flex-col">
+    <Suspense fallback={<div role="status" className="snx-route-loading"><span className="snx-live-dot" /> Loading workspace…</div>}>
+      <Routes>
+        <Route path="/setup" element={<Setup />} />
+        <Route path="/core-checkpoint" element={<CoreCheckpoint />} />
+        <Route path="/login" element={<PublicAuthRoute><Login /></PublicAuthRoute>} />
+        <Route path="/register" element={<PublicAuthRoute><Register /></PublicAuthRoute>} />
+        <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/nodes" element={<ProtectedRoute><AdminOnlyRoute><Nodes /></AdminOnlyRoute></ProtectedRoute>} />
+        <Route path="/allocations" element={<ProtectedRoute><AdminOnlyRoute><Allocations /></AdminOnlyRoute></ProtectedRoute>} />
+        <Route path="/cloudflare" element={<ProtectedRoute><AdminOnlyRoute><Cloudflare /></AdminOnlyRoute></ProtectedRoute>} />
+        <Route path="/servers" element={<ProtectedRoute><ServerList /></ProtectedRoute>} />
+        <Route path="/servers/create" element={<ProtectedRoute><CreateServer /></ProtectedRoute>} />
+        <Route path="/servers/:id/*" element={<ProtectedRoute><ServerView /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+        <Route path="/api-keys" element={<ProtectedRoute><AdminOnlyRoute><ApiKeysPage /></AdminOnlyRoute></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><AdminOnlyRoute><AdminDashboard /></AdminOnlyRoute></ProtectedRoute>} />
+        <Route path="/admin/servers" element={<ProtectedRoute><AdminOnlyRoute><AdminServers /></AdminOnlyRoute></ProtectedRoute>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Suspense>
+  </div>
+);
 
 const TutorialManager = () => {
   const { panelName, enableTutorial } = useSettings();
