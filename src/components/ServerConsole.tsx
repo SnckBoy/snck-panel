@@ -212,7 +212,15 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
   const [wrapLines, setWrapLines] = useState(true);
   const [terminalFontSize, setTerminalFontSize] = useState<"small" | "normal" | "large">("normal");
   const [resourceSnapshot, setResourceSnapshot] = useState(() => normalizeTelemetry(null));
+  const [resourceHistory, setResourceHistory] = useState<Array<{ cpu: number | null; ram: number | null; network: number | null }>>([]);
   const lastActionNotice = useRef("");
+  useEffect(() => {
+    setResourceHistory((previous) => [...previous, {
+      cpu: resourceSnapshot.cpu.visualPercent,
+      ram: resourceSnapshot.memory.visualPercent,
+      network: Number.isFinite(resourceSnapshot.network.downloadTotalBytes + resourceSnapshot.network.uploadTotalBytes) ? resourceSnapshot.network.downloadTotalBytes + resourceSnapshot.network.uploadTotalBytes : null,
+    }].slice(-36));
+  }, [resourceSnapshot]);
   const [windowOffset, setWindowOffset] = useState({ x: 0, y: 0 });
   const dragRef = useRef<{ startX: number; startY: number; originX: number; originY: number } | null>(null);
 
@@ -706,6 +714,20 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
                 </button>
               </form>
               {serverOffline && <p className="px-3 pb-3 text-[11px] text-amber-200/70">The server is offline. Start it before sending console commands.</p>}
+            </section>
+            <section className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              {([{ key: "cpu", title: "CPU Usage", values: resourceHistory.map((point) => point.cpu) }, { key: "ram", title: "RAM Usage", values: resourceHistory.map((point) => point.ram) }, { key: "network", title: "Network Usage", values: resourceHistory.map((point) => point.network) }] as const).map((chart) => {
+                const valid = chart.values.filter((value): value is number => value !== null && Number.isFinite(value));
+                const min = valid.length ? Math.min(...valid) : 0;
+                const max = valid.length ? Math.max(...valid) : 1;
+                const points = chart.values.map((value, index) => { const x = chart.values.length <= 1 ? 0 : (index / (chart.values.length - 1)) * 100; const y = value === null ? null : max === min ? 50 : 92 - ((value - min) / (max - min)) * 78; return y === null ? null : String(x) + "," + String(y); }).filter((point): point is string => point !== null).join(" ");
+                return <article key={chart.key} className="snx-server-chart p-3 md:p-4">
+                  <div className="mb-3 flex items-center justify-between gap-3"><h2 className="text-sm font-semibold text-white/80">{chart.title}</h2><Activity size={15} className="text-[#c5a84e]" /></div>
+                  <p className="mb-2 text-[10px] text-white/45">{valid.length > 1 ? (chart.key === "network" ? "Traffic history · bytes" : "Observed utilization") : "Waiting for live samples"}</p>
+                  <div className="snx-server-chart-grid h-24 overflow-hidden">{valid.length > 1 ? <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full" aria-label={chart.title + " history"} role="img"><polyline points={points} fill="none" stroke="#b99a45" strokeWidth="1.5" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round" /></svg> : <div className="flex h-full items-end"><div className="h-px w-full bg-[#b99a45]/60" /></div>}</div>
+                  <div className="mt-2 flex justify-between text-[10px] text-white/40"><span>Older</span><span>Latest</span></div>
+                </article>;
+              })}
             </section>
           </div>
           <aside className="w-full xl:w-[24%] xl:sticky xl:top-3 xl:self-start">
