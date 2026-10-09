@@ -1,117 +1,140 @@
 import { Link, useLocation } from "react-router-dom";
-import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Key, User, Activity, Box, Search, Bell, Cloud, ShieldCheck } from "lucide-react";
+import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Key, Activity, Box, Cloud, ShieldCheck, ChevronDown, LifeBuoy } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useSettings } from "../context/SettingsContext";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
-export function Sidebar({ onClose, isCollapsed, toggleCollapse }: { onClose?: () => void, isCollapsed?: boolean, toggleCollapse?: () => void }) {
+type SidebarLink = { name: string; path: string; icon: React.ReactNode };
+
+export function Sidebar({ onClose, isCollapsed, toggleCollapse }: { onClose?: () => void; isCollapsed?: boolean; toggleCollapse?: () => void }) {
   const location = useLocation();
   const { user, logout } = useAuth();
   const { panelName, panelLogo } = useSettings();
-  
-  const links = [
-    { name: "Overview", path: "/", icon: <LayoutDashboard size={20} /> },
-    { name: "Nodes", path: "/nodes", icon: <Activity size={20} /> },
-    { name: "Servers", path: "/servers", icon: <Server size={20} /> },
-  ];
-  
-  const canAdminister = user?.role === "admin" || user?.role === "owner";
 
-  if (canAdminister) {
-    links.push({ name: "Deploy", path: "/servers/create", icon: <Plus size={20} /> });
-    links.push({ name: "Admin control", path: "/admin", icon: <ShieldCheck size={20} /> });
-    links.push({ name: "Fleet", path: "/admin/servers", icon: <Box size={20} /> });
-    links.push({ name: "API Keys", path: "/api-keys", icon: <Key size={20} /> });
-    links.push({ name: "Cloudflare", path: "/cloudflare", icon: <Cloud size={20} /> });
-  }
-  links.push({ name: "Settings", path: "/settings", icon: <Settings size={20} /> });
+  const canAdminister = user?.role === "admin" || user?.role === "owner";
+  const primaryLinks: SidebarLink[] = [
+    { name: "Overview", path: "/", icon: <LayoutDashboard size={19} /> },
+    { name: "Nodes", path: "/nodes", icon: <Activity size={19} /> },
+    { name: "Servers", path: "/servers", icon: <Server size={19} /> },
+  ];
+  const adminLinks: SidebarLink[] = canAdminister ? [
+    { name: "Deploy", path: "/servers/create", icon: <Plus size={19} /> },
+    { name: "Admin control", path: "/admin", icon: <ShieldCheck size={19} /> },
+    { name: "Fleet", path: "/admin/servers", icon: <Box size={19} /> },
+    { name: "API Keys", path: "/api-keys", icon: <Key size={19} /> },
+    { name: "Cloudflare", path: "/cloudflare", icon: <Cloud size={19} /> },
+  ] : [];
+  const sections: { title: string; links: SidebarLink[] }[] = [
+    { title: "Your server", links: primaryLinks },
+    ...(adminLinks.length ? [{ title: "Admin", links: adminLinks }] : []),
+    { title: "Config", links: [{ name: "Settings", path: "/settings", icon: <Settings size={19} /> }] },
+  ];
 
   return (
-    <div className={`snx-app-sidebar h-full flex flex-col transition-all duration-300 shironex-aurora z-20 ${isCollapsed ? 'w-20' : 'w-64'}`}>
-      {/* Header */}
-      <div className={`snx-app-sidebar-header h-16 flex items-center ${isCollapsed ? 'justify-center' : 'px-6'} flex-shrink-0 relative`}>
+    <div className={`snx-app-sidebar h-full flex flex-col transition-all duration-300 z-20 ${isCollapsed ? "w-20" : "w-64"}`}>
+      <div className={`snx-app-sidebar-header h-16 flex items-center flex-shrink-0 relative ${isCollapsed ? "justify-center" : "px-5"}`}>
         {onClose && (
-          <button onClick={onClose} className="md:hidden flex items-center justify-center absolute top-5 right-4 p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
-            <X size={20} />
+          <button onClick={onClose} aria-label="Close navigation" className="md:hidden flex items-center justify-center absolute top-4 right-3 p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-colors">
+            <X size={19} />
           </button>
         )}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           {panelLogo ? (
-            <img src={panelLogo} alt="Logo" className="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
+            <img src={panelLogo} alt="Logo" className="w-8 h-8 rounded-xl object-cover flex-shrink-0" />
           ) : (
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-fuchsia-500 via-violet-500 to-cyan-400 shadow-[0_0_22px_rgba(168,85,247,.25)] flex-shrink-0 text-white">
+            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#24242d] flex-shrink-0 text-white">
               <Server className="w-4 h-4" />
             </div>
           )}
           {!isCollapsed && (
-            <motion.h1 
-              initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: 'auto' }}
-              exit={{ opacity: 0, width: 0 }}
-              className="text-lg font-black tracking-tight truncate whitespace-nowrap shironex-gradient-text"
-            >
+            <motion.h1 initial={{ opacity: 0, width: 0 }} animate={{ opacity: 1, width: "auto" }} className="text-lg font-bold tracking-tight truncate whitespace-nowrap text-foreground">
               {panelName}
             </motion.h1>
           )}
         </div>
       </div>
-      
-      {/* Navigation */}
-      <nav className="snx-app-nav flex-1 w-full px-3 py-6 space-y-1 overflow-y-auto custom-scrollbar">
-        {!isCollapsed && <p className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Menu</p>}
-        {links.map(link => {
-          const isActive = location.pathname === link.path || (link.path !== '/' && location.pathname.startsWith(link.path));
-          return (
-            <Link 
-              key={link.path} 
-              to={link.path} 
-              onClick={onClose}
-              title={isCollapsed ? link.name : undefined}
-              className={`snx-app-nav-link relative flex items-center ${isCollapsed ? 'justify-center' : 'px-3'} py-2.5 rounded-lg transition-colors group overflow-hidden`}
-            >
-              {isActive && (
-                <motion.div 
-                  layoutId="activeTabSidebar" 
-                  className="snx-app-nav-active absolute inset-0 rounded-lg"
-                  initial={false} 
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                />
-              )}
-              {isActive && !isCollapsed && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[var(--accent-color)] rounded-r-full shadow-[0_0_12px_var(--accent-color)]" />
-              )}
-              <div className={`relative z-10 transition-colors duration-200 ${isActive ? 'text-[var(--accent-color)]' : 'text-muted-foreground group-hover:text-foreground'}`}>
-                {link.icon}
+
+      <nav className="snx-app-nav flex-1 w-full px-3 pt-2 pb-4 overflow-y-auto custom-scrollbar">
+        {!isCollapsed && (
+          <div className="px-1 mb-2">
+            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground mb-2">Currently managing</p>
+            <div className="snx-sidebar-manage-card flex items-center gap-3 px-3 py-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/[0.045] text-muted-foreground">
+                <Server size={17} />
               </div>
-              {!isCollapsed && (
-                <span className={`ml-3 relative z-10 font-medium text-sm transition-colors duration-200 ${isActive ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground'}`}>
-                  {link.name}
-                </span>
-              )}
-            </Link>
-          );
-        })}
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-foreground truncate">{panelName || "Your panel"}</p>
+                <p className="text-xs text-muted-foreground truncate">Infrastructure</p>
+              </div>
+              <ChevronDown size={16} className="shrink-0 text-muted-foreground" />
+            </div>
+          </div>
+        )}
+        {sections.map((section) => (
+          <div key={section.title} className="mb-2">
+            {!isCollapsed && <p className="snx-sidebar-section-label">{section.title}</p>}
+            <div className="space-y-1">
+              {section.links.map((link) => {
+                const isActive = location.pathname === link.path || (link.path !== "/" && location.pathname.startsWith(link.path));
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    onClick={onClose}
+                    title={isCollapsed ? link.name : undefined}
+                    className={`snx-app-nav-link relative flex items-center ${isCollapsed ? "justify-center" : "px-3"} py-3.5 rounded-[13px] transition-colors group overflow-hidden`}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeTabSidebar"
+                        className="snx-app-nav-active absolute inset-0 rounded-[13px]"
+                        initial={false}
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                    )}
+                    <div className={`relative z-10 transition-colors duration-200 ${isActive ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}>
+                      {link.icon}
+                    </div>
+                    {!isCollapsed && (
+                      <span className={`ml-3 relative z-10 font-medium text-sm transition-colors duration-200 ${isActive ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}>
+                        {link.name}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
-      
-      {/* User Profile */}
-      <div className="snx-app-sidebar-footer w-full p-4 mt-auto bg-transparent">
+
+      <div className="snx-app-sidebar-footer w-full p-3 mt-auto bg-transparent">
+        {!isCollapsed && (
+          <div className="snx-sidebar-promo flex items-start gap-3 p-3 mb-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/[0.05] text-muted-foreground">
+              <LifeBuoy size={17} />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-foreground">Need a hand?</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Your servers and settings are available from this panel.</p>
+            </div>
+          </div>
+        )}
         {isCollapsed ? (
-          <button onClick={logout} title="Logout" className="flex items-center justify-center w-full p-2 rounded-lg text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors">
-            <LogOut size={20} />
+          <button onClick={logout} title="Logout" aria-label="Logout" className="flex items-center justify-center w-full p-3 rounded-xl text-muted-foreground hover:bg-white/[0.04] hover:text-foreground transition-colors">
+            <LogOut size={19} />
           </button>
         ) : (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 overflow-hidden">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-sm flex-shrink-0">
-                {user?.username?.[0]?.toUpperCase()}
-              </div>
-              <div className="truncate">
-                <p className="font-semibold text-foreground text-sm truncate">{user?.username}</p>
-                <p className="text-xs text-muted-foreground capitalize truncate">{user?.role || "Admin"}</p>
-              </div>
+          <div className="flex items-center gap-3 rounded-xl px-2 py-2">
+            <div className="w-9 h-9 rounded-full bg-[#24242d] flex items-center justify-center text-foreground font-semibold text-sm flex-shrink-0">
+              {user?.username?.[0]?.toUpperCase()}
             </div>
-            <button onClick={logout} className="p-2 rounded-lg text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors flex-shrink-0">
-              <LogOut size={18} />
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold text-foreground text-sm truncate">{user?.username}</p>
+              <p className="text-xs text-muted-foreground truncate">{user?.email || user?.role || "Account"}</p>
+            </div>
+            <button onClick={logout} title="Logout" aria-label="Logout" className="p-2 rounded-xl text-muted-foreground hover:bg-white/[0.04] hover:text-foreground transition-colors flex-shrink-0">
+              <LogOut size={17} />
             </button>
           </div>
         )}
