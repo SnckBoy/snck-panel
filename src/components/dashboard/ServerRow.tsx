@@ -41,7 +41,7 @@ export function ServerRow({ server, index }: { server: ServerSummary; index: num
           px.set((e.clientX - rect.left) / rect.width);
           py.set((e.clientY - rect.top) / rect.height);
         }}
-        className="group relative flex items-center justify-between overflow-hidden p-5 transition-colors hover:bg-muted md:p-6"
+        className="snx-dashboard-token-row group relative flex items-center justify-between overflow-hidden p-5 transition-colors md:p-6"
       >
         <RippleLayer ripples={ripples} />
         {!reduce && (
