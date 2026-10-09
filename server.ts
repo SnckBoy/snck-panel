@@ -68,12 +68,26 @@ function originAllowed(origin: string | undefined, request?: import("http").Inco
   const normalized = normalizeOrigin(String(origin).trim());
   if (!normalized) return false;
   if (getAllowedOrigins().some((allowed) => normalizeOrigin(allowed) === normalized)) return true;
-  // Support direct IP:port and custom-host deployments without requiring PANEL_PUBLIC_URL.
-  // The origin must still match the actual Host and scheme of this request.
-  if (request?.headers.host) {
-    const scheme = (request.socket as import("tls").TLSSocket).encrypted ? "https:" : "http:";
-    const requestOrigin = normalizeOrigin(scheme + "//" + request.headers.host);
-    if (requestOrigin && requestOrigin === normalized) return true;
+  // Behind Cloudflare Tunnel / Zero Trust, the origin-side Host and socket
+  // scheme can be private HTTP values while the browser Origin is the public
+  // HTTPS hostname. Prefer the proxy-forwarded public host/scheme when present.
+  // PANEL_PUBLIC_URL and PANEL_ALLOWED_ORIGINS remain the explicit allow-list.
+  if (request) {
+    const forwardedHost = String(request.headers["x-forwarded-host"] || "").split(",")[0].trim();
+    const forwardedProto = String(request.headers["x-forwarded-proto"] || "").split(",")[0].trim().toLowerCase();
+    const cfVisitor = String(request.headers["cf-visitor"] || "");
+    let cfScheme = "";
+    try { cfScheme = String(JSON.parse(cfVisitor).scheme || "").toLowerCase(); } catch { /* absent or non-JSON */ }
+    const publicHost = forwardedHost || String(request.headers.host || "").trim();
+    const publicScheme = forwardedProto === "https" || forwardedProto === "http"
+      ? forwardedProto
+      : cfScheme === "https" || cfScheme === "http"
+        ? cfScheme
+        : (request.socket as import("tls").TLSSocket).encrypted ? "https" : "http";
+    if (publicHost) {
+      const requestOrigin = normalizeOrigin(publicScheme + "://" + publicHost);
+      if (requestOrigin && requestOrigin === normalized) return true;
+    }
   }
   return false;
 }
