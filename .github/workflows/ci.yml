@@ -2,7 +2,9 @@ name: SNCK PANEL CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - "repair/**"
   pull_request:
     branches: [main]
 
