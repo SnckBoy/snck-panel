@@ -194,3 +194,33 @@ button[class*="primary"]:not(:disabled):hover, .auth-submit:not(:disabled):hover
 .snx-app-nav-link .text-\[var\(--accent-color\)\] { color: var(--snx-text) !important; }
 .snx-app-sidebar .bg-gradient-to-br { background: #24242d !important; box-shadow: none !important; }
 .snx-app-sidebar .shironex-gradient-text { color: var(--snx-text); background: none; -webkit-text-fill-color: initial; }
+
+
+/* Shared token surfaces for dashboard cards that previously used bespoke Tailwind colors/shadows. */
+.snx-dashboard-token-card {
+  border: 1px solid var(--snx-border) !important;
+  border-radius: var(--snx-radius) !important;
+  background: var(--snx-surface) !important;
+  box-shadow: var(--snx-shadow-card) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.snx-dashboard-token-card-inner {
+  border-radius: calc(var(--snx-radius) - 1px) !important;
+  background: var(--snx-surface) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.snx-dashboard-token-card:hover {
+  border-color: var(--snx-border-soft) !important;
+  box-shadow: var(--snx-shadow-pop) !important;
+}
+.snx-dashboard-token-row {
+  border: 1px solid var(--snx-border);
+  border-radius: var(--snx-radius);
+  background: var(--snx-surface);
+}
+.snx-dashboard-token-row:hover {
+  background: var(--snx-surface-raised) !important;
+}
