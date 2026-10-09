@@ -33,9 +33,12 @@ export const requireAdmin = async (req: Request, res: Response, next: NextFuncti
         res.status(401).json({ error: "Invalid or revoked API key" });
         return;
       }
-      if (apiKey.expires_at && new Date(apiKey.expires_at) < new Date()) {
-        res.status(401).json({ error: "API key expired" });
-        return;
+      if (apiKey.expires_at) {
+        const expiryTime = Date.parse(apiKey.expires_at);
+        if (!Number.isFinite(expiryTime) || expiryTime <= Date.now()) {
+          res.status(401).json({ error: "API key expired or has an invalid expiry" });
+          return;
+        }
       }
 
       // Update last_used_at
@@ -120,9 +123,12 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
         res.status(401).json({ error: "Invalid or revoked API key" });
         return;
       }
-      if (apiKey.expires_at && new Date(apiKey.expires_at) < new Date()) {
-        res.status(401).json({ error: "API key expired" });
-        return;
+      if (apiKey.expires_at) {
+        const expiryTime = Date.parse(apiKey.expires_at);
+        if (!Number.isFinite(expiryTime) || expiryTime <= Date.now()) {
+          res.status(401).json({ error: "API key expired or has an invalid expiry" });
+          return;
+        }
       }
 
       // Update last_used_at
