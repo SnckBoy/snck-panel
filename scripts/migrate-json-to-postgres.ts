@@ -8,8 +8,39 @@ if (!databaseUrl) throw new Error("DATABASE_URL is required");
 const dataDir = path.resolve(process.env.SNCK_DATA_DIR || ".data");
 const backupDir = path.resolve(process.env.SNCK_MIGRATION_BACKUP_DIR || ".migration-backups");
 const pool = new Pool({ connectionString: databaseUrl });
-const id = (value: any) => String(value?.id || crypto.randomUUID());
-const read = async (name: string) => { try { return JSON.parse(await fs.readFile(path.join(dataDir, name), "utf8")); } catch { return []; } };
+const id = (value: any) => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error("Migration data contains a non-object record");
+  }
+  // Assign once so fallback IDs remain consistent across all foreign-key fields.
+  if (typeof value.id !== "string" || value.id.length === 0) value.id = crypto.randomUUID();
+  return value.id;
+};
+const read = async (name: string): Promise<any[]> => {
+  const filePath = path.join(dataDir, name);
+  let raw: string;
+  try {
+    raw = await fs.readFile(filePath, "utf8");
+  } catch (error: any) {
+    if (error?.code === "ENOENT") return [];
+    throw new Error(`Unable to read ${filePath}: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    throw new Error(`Refusing migration: ${filePath} contains invalid JSON. Restore or repair this file before retrying.`);
+  }
+  if (!Array.isArray(parsed)) {
+    throw new Error(`Refusing migration: ${filePath} must contain a JSON array.`);
+  }
+  for (const record of parsed) {
+    if (!record || typeof record !== "object" || Array.isArray(record)) {
+      throw new Error(`Refusing migration: ${filePath} contains a record that is not a JSON object.`);
+    }
+  }
+  return parsed;
+};
 const safeBackup = async () => {
   await fs.mkdir(backupDir, { recursive: true });
   const target = path.join(backupDir, new Date().toISOString().replace(/[:.]/g, "-") + "-json-backup");
