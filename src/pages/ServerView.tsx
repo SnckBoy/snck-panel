@@ -158,7 +158,13 @@ export default function ServerView() {
 
   const navTabs: any[] = [
     { name: "Back to Dashboard", path: `/servers`, exactPath: "back", icon: <LogOut size={18} /> }
-  ];
+  ];  const primaryTabNames = ["Overview", "Terminal", "Players", "File Manager"];
+  const configTabNames = ["Properties", "Settings", "Backup"];
+  const tabGroups = [
+    { title: "YOUR SERVER", tabs: tabs.filter((tab) => primaryTabNames.includes(tab.name)) },
+    { title: "TOOLS", tabs: tabs.filter((tab) => !primaryTabNames.includes(tab.name) && !configTabNames.includes(tab.name)) },
+    { title: "CONFIG", tabs: tabs.filter((tab) => configTabNames.includes(tab.name)) },
+  ].filter((group) => group.tabs.length > 0);
 
   return (
     <motion.div 
@@ -233,31 +239,20 @@ export default function ServerView() {
              </div>
           </div>
           
-          <div className="snx-divider h-px mb-3" />
-          
-          <div className="text-xs font-semibold text-muted-foreground mb-2 px-3 tracking-wider uppercase">Menu</div>
-
-          {tabs.map(tab => {
-             const isActive = location.pathname === tab.path || location.pathname === `${tab.path}/`;
-             return (
-              <Link 
-                key={tab.name}
-                to={tab.path}
-                onClick={() => setSidebarOpen(false)}
-                className={`snx-server-nav-link flex items-center space-x-3 px-3 py-2.5 text-sm font-medium transition-all rounded-lg ${isActive ? 'is-active' : ''}`}
-              >
-                <div className={`${isActive ? 'text-indigo-400' : 'text-muted-foreground'} transition-colors`}>
-                  {React.cloneElement(tab.icon, { className: "w-4 h-4" })}
-                </div>
-                <span>{tab.name}</span>
-              </Link>
-            );
-          })}
-          
-          <div className="snx-divider h-px my-4" />
-          
-          <div className="text-xs font-semibold text-muted-foreground mb-2 px-3 tracking-wider uppercase">Navigation</div>
-
+          {tabGroups.map((group) => (
+            <section key={group.title} className="snx-server-nav-group mb-3">
+              <div className="snx-sidebar-section-label text-[10px] font-bold tracking-[0.12em] uppercase px-3 mb-2">{group.title}</div>
+              {group.tabs.map((tab) => {
+                const isActive = location.pathname === tab.path || location.pathname === `${tab.path}/`;
+                return <Link key={tab.name} to={tab.path} onClick={() => setSidebarOpen(false)} className={`snx-server-nav-link flex items-center space-x-3 px-3 py-3.5 text-sm font-medium transition-all rounded-[13px] ${isActive ? "is-active" : ""}`}>
+                  <div className="transition-colors">{React.cloneElement(tab.icon, { className: "w-4 h-4" })}</div>
+                  <span>{tab.name}</span>
+                </Link>;
+              })}
+            </section>
+          ))}
+          <div className="snx-divider h-px my-3" />
+          <div className="snx-sidebar-section-label text-[10px] font-bold tracking-[0.12em] uppercase px-3 mb-2">NAVIGATION</div>
           {navTabs.map(tab => {
              return (
               <Link 
