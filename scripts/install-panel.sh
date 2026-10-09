@@ -11,6 +11,8 @@ BACKUP_DIR="${SNCK_BACKUP_DIR:-/var/backups/snck-panel}"
 LOG_FILE="/var/log/snck-panel-installer.log"
 NODE_VERSION="${SNCK_NODE_VERSION:-22.14.0}"
 
+[[ "$PORT" =~ ^[0-9]{1,5}$ ]] && (( PORT >= 1 && PORT <= 65535 )) || { printf '[SNCK] ERROR: SNCK_PORT must be an integer from 1 to 65535.\n' >&2; exit 1; }
+
 log(){ printf '[SNCK] %s\n' "$*" | tee -a "$LOG_FILE"; }
 die(){ log "ERROR: $*"; exit 1; }
 
