@@ -14,7 +14,7 @@ import {
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
-import { normalizeTelemetry, formatBytes, formatCpu, formatPercent } from "../utils/telemetry";
+import { normalizeTelemetry, formatBytes, formatCpu } from "../utils/telemetry";
 
 /* ═══════════════════════════════════════════════════════
    TYPES
@@ -177,10 +177,6 @@ function Clock() {
 /* ═══════════════════════════════════════════════════════
    MAIN COMPONENT
 ═══════════════════════════════════════════════════════ */
-
-function ResourceMetric({ label, value, detail, percent, tone }: { label: string; value: string; detail: string; percent: number | null; tone: string }) {
-  return <div className="snx-server-workspace-card mb-2 px-3 py-3 last:mb-0"><div className="mb-1.5 flex items-baseline justify-between gap-3"><p className="qx-display text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">{label}</p><p className="qx-mono text-xs font-medium text-slate-200">{value}</p></div><div className="h-1.5 overflow-hidden rounded-full bg-white/[0.08]"><div className="h-full rounded-full transition-[width] duration-500" style={{ width: percent === null ? "0%" : `${Math.max(0, Math.min(100, percent))}%`, backgroundColor: tone }} /></div><p className="mt-1.5 text-[10px] text-slate-500">{detail}</p></div>;
-}
 
 function ResourceStatus({ snapshot, server }: { snapshot: ReturnType<typeof normalizeTelemetry>; server?: ServerConsoleProps["server"] }) {
   const live = snapshot.status === "live";
@@ -559,7 +555,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
               </span>
             </header>
             <section
-              className={`snx-console-window flex flex-col h-[460px] xs:h-[500px] md:h-[58vh] xl:h-[calc(100vh-120px)] qx-panel rounded-xl overflow-hidden relative ${
+              className={`snx-console-window flex flex-col h-[460px] xs:h-[500px] md:h-[58vh] xl:h-[calc(100vh-390px)] qx-panel rounded-xl overflow-hidden relative ${
                 ready ? "qx-enter-right" : "opacity-0"
               } ${isFloating ? "qx-console-floating fixed z-[60] w-[min(92vw,980px)]" : ""} ${isMinimized ? "qx-console-minimized" : ""}`}
               style={{
