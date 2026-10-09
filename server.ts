@@ -8,7 +8,7 @@ import { Server as SocketIOServer } from "socket.io";
 import { createServer as createViteServer } from "vite";
 import fs from "fs-extra";
 import jwt from "jsonwebtoken";
-import { TarArchive } from "archiver";
+import archiver from "archiver";
 
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 16) {
   console.error(
@@ -206,7 +206,7 @@ app.get("/shironex-node.tar.gz", (_req, res) => {
   const daemonDir = path.join(process.cwd(), "node-daemon");
   if (!fs.existsSync(path.join(daemonDir, "package.json"))) return res.status(404).send("Node daemon unavailable");
   res.type("application/gzip");
-  const archive = new TarArchive({ gzip: true });
+  const archive = archiver("tar", { gzip: true });
   archive.on("error", (err: Error) => {
     console.error("Node bundle archive error:", err);
     if (!res.headersSent) res.status(500);
@@ -241,7 +241,7 @@ async function startServer() {
   }
 
   httpServer.listen(PORT, HOST, () => {
-    console.log(`ShiroNex Panel running on http://${HOST}:${PORT}`);
+    console.log(`SNCK PANEL running on http://${HOST}:${PORT}`);
   });
 }
 
