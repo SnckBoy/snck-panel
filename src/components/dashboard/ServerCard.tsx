@@ -17,7 +17,7 @@ export function ServerCard({ server }: ServerCardProps) {
   return (
     <Link
       to={`/servers/${server.id}`}
-      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-card/80 p-5 shadow-lg backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/40 hover:shadow-2xl hover:shadow-indigo-500/10 cursor-pointer"
+      className="snx-dashboard-token-card group relative flex flex-col justify-between overflow-hidden p-5 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
     >
       <div>
         <div className="flex items-start justify-between gap-3 mb-3">
