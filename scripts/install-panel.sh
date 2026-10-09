@@ -139,7 +139,7 @@ if ! grep -q '^NODE_AUTH_SECRET=' .env; then printf 'NODE_AUTH_SECRET="%s"\n' "$
 if ! grep -q '^NODE_ENCRYPTION_KEY=' .env; then printf 'NODE_ENCRYPTION_KEY="%s"\n' "$(openssl rand -hex 32)" >> .env; fi
 
 log "Installing Node dependencies..."
-npm ci --no-audit --no-fund >>"$LOG_FILE" 2>&1 || { log "npm ci failed; retrying with npm install..."; npm install --no-audit --no-fund >>"$LOG_FILE" 2>&1 || die "Node dependency installation failed."; }
+npm ci --no-audit --no-fund >>"$LOG_FILE" 2>&1 || die "Locked dependency installation failed. Check package-lock.json and the installer log before retrying."
 log "Preparing the JSON data store..."
 install -d -o root -g root -m 750 "$APP_DIR/.data"
 [[ -f .data/users.json ]] || printf '[]\n' > .data/users.json
