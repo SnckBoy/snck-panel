@@ -40,7 +40,12 @@ const canManageServer = (req: Request, server: any) => {
 const serverBasePath = (serverId: string) => path.resolve(process.cwd(), ".data", "servers", serverId);
 const resolveServerPath = (serverId: string, requestedPath: unknown) => {
   const base = serverBasePath(serverId);
-  const target = path.resolve(base, String(requestedPath || ""));
+  // The file manager uses POSIX-style paths such as "/" and "/server.properties".
+  // path.resolve(base, "/...") treats those as host-absolute paths, which makes
+  // the root listing fail and can break every file operation. Normalize to a
+  // server-relative path before resolving, then enforce the workspace boundary.
+  const relativePath = String(requestedPath || "").replace(/\\/g, "/").replace(/^\/+/, "");
+  const target = path.resolve(base, relativePath || ".");
   return target === base || target.startsWith(`${base}${path.sep}`) ? target : null;
 };
 const backupBasePath = (serverId: string) => path.resolve(process.cwd(), ".data", "backups", serverId);
