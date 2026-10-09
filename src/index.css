@@ -738,3 +738,36 @@ html.reduce-motion .effect-animated-gradient { animation: none !important; }
     scroll-behavior: auto !important;
   }
 }
+
+/* Fast-navigation profile: avoid expensive continuous effects on phones and touch devices. */
+@media (max-width: 900px), (pointer: coarse) {
+  .qx-enter,
+  .qx-enter-left,
+  .qx-enter-right,
+  .qx-log-line {
+    animation-duration: 140ms !important;
+  }
+
+  .qx-grid-bg {
+    animation: none !important;
+  }
+
+  .qx-glass {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .global-live-wallpaper,
+  .dashboard-ambient::before,
+  .dashboard-ambient::after,
+  .wallpaper-orb,
+  .effect-animated-gradient {
+    animation: none !important;
+  }
+}
+
+/* Route changes are immediate; retain only lightweight feedback for interactive controls. */
+html {
+  scroll-behavior: auto;
+}
+
