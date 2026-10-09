@@ -27,6 +27,11 @@ jobs:
       - name: Install panel dependencies
         run: npm ci
 
+      - name: Report production dependency advisories
+        run: |
+          npm audit --omit=dev --json > /tmp/snck-npm-audit.json || true
+          node -e 'const report=require("/tmp/snck-npm-audit.json"); const entries=Object.entries(report.vulnerabilities || {}); if (!entries.length) { console.log("No production dependency advisories reported."); process.exit(0); } for (const [name, item] of entries) console.log(name + ": severity=" + item.severity + ", direct=" + item.isDirect + ", fixAvailable=" + JSON.stringify(item.fixAvailable)); console.log("Production advisory summary:", JSON.stringify(report.metadata?.vulnerabilities || {}));'
+
       - name: Lint panel
         run: npm run lint
 
