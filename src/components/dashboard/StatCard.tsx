@@ -60,7 +60,7 @@ export function StatCard({ title, value, icon, trend, chartColor, percentage }: 
       whileHover={reduce ? undefined : { y: -8, scale: 1.015 }}
       transition={SPRING_SNAPPY}
       style={reduce ? undefined : { rotateX, rotateY, transformPerspective: 1100, willChange: "transform" }}
-      className="group relative rounded-2xl p-[1px] z-10 shadow-[0_24px_70px_-30px_rgba(0,0,0,0.95)]"
+      className="snx-dashboard-token-card group relative z-10"
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
         <m.span
@@ -73,7 +73,7 @@ export function StatCard({ title, value, icon, trend, chartColor, percentage }: 
       </div>
       <span aria-hidden className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-b from-foreground/10 to-transparent" />
 
-      <div className="relative h-full overflow-hidden rounded-2xl bg-card/80 p-5 backdrop-blur-2xl transition-colors duration-500 sm:p-6">
+      <div className="snx-dashboard-token-card-inner relative h-full overflow-hidden p-5 transition-colors duration-300 sm:p-6">
         <m.div
           aria-hidden
           animate={reduce ? undefined : { backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
