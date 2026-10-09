@@ -17,6 +17,17 @@ NODE_VERSION="${SNCK_NODE_VERSION:-22.14.0}"
 
 log(){ printf '[SNCK] %s\n' "$*" | tee -a "$LOG_FILE"; }
 die(){ log "ERROR: $*"; exit 1; }
+
+# Validate values that are later embedded in PostgreSQL commands or connection URLs.
+# The default password is generated as hex; custom passwords must remain URL/SQL-safe.
+[[ "$DB_NAME" =~ ^[A-Za-z_][A-Za-z0-9_]{0,62}$ ]] || die "SNCK_DB_NAME must start with a letter/underscore and contain only letters, digits, or underscores (max 63 chars)."
+[[ "$DB_USER" =~ ^[A-Za-z_][A-Za-z0-9_]{0,62}$ ]] || die "SNCK_DB_USER must start with a letter/underscore and contain only letters, digits, or underscores (max 63 chars)."
+[[ "$DB_HOST" =~ ^[A-Za-z0-9._:-]+$ ]] || die "SNCK_DB_HOST contains unsupported characters."
+[[ "$DB_PORT" =~ ^[0-9]{1,5}$ ]] && (( DB_PORT >= 1 && DB_PORT <= 65535 )) || die "SNCK_DB_PORT must be an integer from 1 to 65535."
+if [[ -n "${SNCK_DB_PASSWORD:-}" ]]; then
+  [[ "$SNCK_DB_PASSWORD" =~ ^[A-Za-z0-9_-]{32,128}$ ]] || die "SNCK_DB_PASSWORD must be 32-128 characters using letters, digits, underscore, or hyphen."
+fi
+
 trap 'rc=$?; if [[ $rc -ne 0 ]]; then log "Installation failed with exit code $rc. See $LOG_FILE"; fi' EXIT
 
 [[ "$EUID" -eq 0 ]] || die "Run with sudo/root."
