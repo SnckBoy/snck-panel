@@ -13,8 +13,11 @@ export const readJSON = async (filename: string) => {
   const filePath = dataPath(filename);
   try {
     return await fs.readJson(filePath);
-  } catch (err) {
-    return null;
+  } catch (err: any) {
+    // A missing file is an empty optional store; malformed JSON and I/O errors
+    // must surface instead of silently replacing real data with defaults.
+    if (err?.code === "ENOENT") return null;
+    throw new Error(`Failed to read data file "${filename}": ${err?.message || String(err)}`);
   }
 };
 
