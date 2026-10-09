@@ -169,6 +169,7 @@ cat >"/etc/systemd/system/$SERVICE" <<EOF
 Description=SNCK PANEL
 After=network-online.target docker.service
 Wants=network-online.target
+Requires=docker.service
 
 [Service]
 Type=simple
