@@ -1,294 +1,68 @@
-# ShiroNex Hosting Panel
+# SNCK PANEL
 
-ShiroNex is a self-hosted game-server control panel with a distributed Linux node daemon.
+SNCK PANEL is a self-hosted web control panel for managing Minecraft servers and remote Docker nodes.
 
-## One-command Ubuntu installer
+## One-command installer
 
-On a fresh Ubuntu 20.04 or newer VPS, run. Ubuntu 22.04 and 24.04 are the primary CI-tested releases; other Ubuntu releases use the installer’s generic compatibility fallbacks:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/SnckBoy/ShiroNex-panel/main/install.sh | sudo bash
-```
-
-The installer opens a menu with panel, node, panel-plus-node, update, repair, uninstall, system information, and **Create / Update Users** actions. After the panel starts, a fresh installation redirects to `/setup` to create the first Owner account. Non-interactive modes are also available:
+On a fresh Ubuntu 20.04+ or supported Debian VPS with a root/sudo account, run:
 
 ```bash
-sudo bash install.sh panel
-sudo bash install.sh node
-sudo bash install.sh both
-sudo bash install.sh update
-sudo bash install.sh repair
-sudo bash install.sh uninstall
-sudo bash install.sh users
+curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/install.sh | sudo bash
 ```
 
-After installation, the management command is available as `sudo shironex`. Use `sudo shironex --help` for panel/node service controls, logs, updates, repairs, backups, and health information.
+This opens the **SNCK PANEL CONTROL CENTER** menu. It does not silently install on launch.
 
-For a panel-only VPS, select **Install ShiroNex Panel**. For a separate node-only VPS, select **Install ShiroNex Node** or use the node command generated in the panel under **Nodes → Create Node**. On the first visit to a fresh panel, open `/setup` and create the Owner account with a unique username, email, and password of at least 8 characters. `/setup` closes permanently as soon as the first user is written; the panel then uses `/login`. There is no default password and passwords are never printed to installer logs. Run the installer again and choose option 11, or run `sudo bash /opt/shironex-panel/install.sh users`, to create or update multiple Owner, Admin, and User accounts; the first account is forced to Owner. The **Panel + Node** option installs the panel first and then asks for node credentials; if credentials are not supplied, it prints the safe generated node-registration workflow instead of inventing credentials. It is designed so one panel can manage **many independent VPS nodes**, each running Docker containers locally.
+Menu options:
 
-## Login options
+1. Install SNCK PANEL
+2. Update SNCK PANEL
+3. Repair / reinstall application files
+4. Status and health check
+5. Restart panel
+6. View panel and installer logs
+7. Create a data/config backup
+8. System information
+9. Uninstall panel (requires typing `UNINSTALL`)
+0. Exit
 
-ShiroNex supports ordinary username/password login with a simple 8-256 character minimum-length rule. Passwords are still bcrypt-hashed and no password is printed or stored in plain text. Optional **Sign in with Google** is available on the production login page after enabling Google Login and entering the Firebase web-app settings in the Owner Settings page. Firebase Google Authentication must be enabled and the panel hostname must be added to Firebase Authorized domains. The browser sends a Firebase ID token and the backend verifies it with Google before accepting the login. Google sign-in creates normal User accounts; it does not replace the first Owner setup.
+Supported OS targets in the installer are Ubuntu 20.04+ and Debian 11/12/13 on `amd64` or `arm64`. A fresh install requires internet access to package repositories and GitHub. The installer installs Node.js when needed, Docker, builds the application, configures a systemd service, and checks `/health` before reporting success.
 
-## Architecture
+## Access and operations
+
+Default application port: `6767`.
+
+After installation, open:
 
 ```text
-                    ShiroNex Panel VPS
-               ┌──────────────────────┐
-               │ Web UI + API + DB     │
-               │ Node management       │
-               │ Allocations           │
-               │ Cloudflare            │
-               └──────────┬───────────┘
-                          │ HTTPS
-          ┌───────────────┼────────────────┐
-          │               │                │
-          ▼               ▼                ▼
-     ShiroNex Node 1     ShiroNex Node 2      ShiroNex Node N
-     VPS / Docker    VPS / Docker     VPS / Docker
-       │ │ │            │ │ │            │ │ │
-     Server ...       Server ...       Server ...
+http://YOUR_SERVER_IP:6767
 ```
 
-There is **no hard two-node limit**. Create as many nodes as your infrastructure and database can support. Every node has its own credential and daemon process.
-
-ShiroNex's daemon is an independent implementation. It does not copy proprietary code from Pterodactyl/Wings. The architecture is intentionally similar at a high level: a central panel schedules servers and a per-node daemon owns Docker operations.
-
-## Panel installation on Ubuntu
-
-1. Copy the ShiroNex project ZIP to your panel VPS and extract it.
-2. Enter the project directory.
-3. Run:
-
-```bash
-sudo bash install.sh
-```
-
-The installer detects Ubuntu by distribution rather than requiring one exact release. It supports Ubuntu 20.04 and newer on `amd64` or `arm64`, installs Node.js 22 through NodeSource when available, and falls back to the official Node.js binary when a release codename has no NodeSource package. Docker similarly falls back to the Ubuntu/Debian distribution package when Docker’s upstream repository does not publish the detected codename. It installs dependencies, creates `.env` secrets when missing, builds ShiroNex, and starts it with PM2 on port `6767`. Ubuntu versions older than 20.04 are intentionally rejected because their system libraries are too old for the current Node.js 22 production runtime; upgrade the VPS rather than bypassing this check.
-
-Open:
-
-```text
-http://YOUR_PANEL_IP:6767
-```
-
-For production, put ShiroNex behind HTTPS using your preferred reverse proxy and firewall the application appropriately.
-
-## Create and connect a node
-
-1. Log in as an administrator.
-2. Open **Nodes → Create Node**.
-3. Enter the node name, hostname/FQDN, public IP and API port.
-4. Enable TLS when the node endpoint has a valid certificate.
-5. Create the node.
-6. ShiroNex displays a **temporary setup command**.
-7. Copy that command and run it as root on the separate Ubuntu/Debian node VPS.
-
-The command is conceptually. The node bootstrap supports Ubuntu 20.04+ on `amd64` or `arm64`; it applies the same Node.js and Docker fallbacks as the panel installer. The current one-click node command is:
-
-```bash
-curl -fsSL https://YOUR-SHIRONEX-DOMAIN/node.sh | bash -s -- \
-  --panel https://YOUR-SHIRONEX-DOMAIN \
-  --node-id NODE_ID \
-  --setup-token TEMPORARY_TOKEN \
-  --port 6768
-```
-
-The setup token is single-use and expires quickly. The installer registers the node, receives a per-node credential, installs Docker and Node.js if required, builds the daemon, creates `shironex-node.service`, and starts it.
-
-Check the node:
-
-```bash
-sudo systemctl status shironex-node
-sudo journalctl -u shironex-node -f
-```
-
-## Multiple nodes
-
-Repeat the same process for Node 2, Node 3, Node 4, and so on. Each node gets a different node ID and credential.
-
-Example:
-
-```text
-Panel VPS
-  ├── Nepal Node 1
-  ├── Singapore Node 1
-  ├── India Node 1
-  └── US Node 1
-```
-
-When creating a server, select the desired online node and an available allocation. The panel sends Docker operations to that selected node daemon.
-
-## Node daemon
-
-Installed at:
-
-```text
-/opt/shironex-node
-/etc/shironex-node/config.json
-/var/lib/shironex/servers
-```
-
-Service:
-
-```text
-shironex-node.service
-```
+Use the server's firewall and a reverse proxy with HTTPS for public deployments. Do not expose a panel or node daemon to the public internet without reviewing firewall rules and TLS configuration.
 
 Useful commands:
 
 ```bash
-sudo systemctl status shironex-node
-sudo systemctl restart shironex-node
-sudo journalctl -u shironex-node -f
+sudo systemctl status snck-panel --no-pager
+sudo systemctl restart snck-panel
+sudo journalctl -u snck-panel -n 100 --no-pager
+curl -fsS http://127.0.0.1:6767/health
 ```
 
-Update:
+Run the same one-command installer again to open the menu for updates, repair, diagnostics, backups, or removal. Backups are stored under `/var/backups/snck-panel`. Uninstall creates a final backup of `.data` and `.env` before removing the application directory; it does not delete Docker images or containers.
 
-```bash
-sudo /opt/shironex-node/update.sh
-```
+## Runtime data and database note
 
-Uninstall the daemon without deleting server data:
+The current application reads and writes JSON files under `/opt/snck-panel/.data`. The installer therefore provisions this JSON store and does **not** claim to switch the application to PostgreSQL. The repository contains PostgreSQL schema/migration work, but that is not the active runtime storage path. Do not treat a PostgreSQL migration as complete until all application routes and services have been moved to and tested against the database.
 
-```bash
-sudo /opt/shironex-node/uninstall.sh
-```
+## Repository checks
 
-### Edit an existing node
+GitHub Actions runs dependency installation, TypeScript checking, the production build, node-daemon build, and shell syntax checks on the configured branches. A green CI run is required before treating a particular commit as verified. The installer itself also runs TypeScript validation and the production build before restarting the service.
 
-Open **Nodes → Edit** on the panel. The edit form lets an Owner or Admin update the node name, description, hostname/FQDN, public and internal IPs, daemon and SFTP ports, location, visibility, TLS/proxy mode, Cloudflare Access Client ID/Secret, resource limits, server directory, and Docker socket. The existing ShiroNex node credential is preserved when saving changes. After changing the public endpoint, use **Test health** and then **Reconnect**.
+## Security basics
 
-For a Cloudflare Tunnel, use the public hostname without the local daemon port, for example `https://node.example.com`, with TLS and **Behind a reverse proxy** enabled. The Tunnel should forward to `http://127.0.0.1:6768`. For temporary direct-IP testing, use `http://103.6.168.143:6768` with TLS and proxy mode disabled.
-
-### Reconfigure and restart a node from one command
-
-Run this on the node VPS after changing local daemon settings. It preserves the node credential, server worlds, containers, and allocations:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/SnckBoy/ShiroNex-panel/main/install.sh | sudo bash -s -- node-update --port 6768
-```
-
-Additional supported options are:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/SnckBoy/ShiroNex-panel/main/install.sh | sudo bash -s -- node-update \
-  --panel https://panel.example.com \
-  --node-id NODE_ID \
-  --port 6768 \
-  --server-directory /var/lib/shironex/servers \
-  --docker-socket /var/run/docker.sock
-```
-
-The command updates only the supplied fields, validates the JSON configuration, atomically writes it with mode 600, and restarts `shironex-node.service`. Use `--no-restart` when you want to review the configuration change before restarting. A direct restart command is:
-
-```bash
-sudo systemctl restart shironex-node
-sudo systemctl status shironex-node --no-pager
-```
-
-### Uninstall only what you choose
-
-Running `sudo bash install.sh uninstall` now opens a component menu:
-
-```text
-[1] Panel only
-[2] Node only
-[3] Panel and node
-[0] Cancel
-```
-
-Panel-only removal leaves the node service and node data untouched. Node-only removal leaves the panel untouched and asks separately whether Minecraft server data should be deleted. The installer creates a private backup before removal, and server data is preserved unless you explicitly confirm its deletion.
-
-
-## Security model
-
-- Per-node credentials
-- Temporary node setup tokens
-- Encrypted node secrets on the panel
-- Constant-time daemon credential comparison
-- Owner/admin-only node management
-- Docker access remains on the node daemon
-- Server paths are restricted to the configured server directory
-- Infrastructure actions can be audited
-- Cloudflare credentials stay server-side
-- TLS is supported for node connections
-
-Do not expose the Docker socket directly to end users.
-
-## Docker
-
-Each managed Minecraft server is created as its own Docker container on its selected node. The daemon controls lifecycle, logs, resource telemetry and server files.
-
-Install Docker from Docker's official Ubuntu repository for production deployments rather than relying on an unreviewed third-party installer. Docker's current Ubuntu documentation lists supported Ubuntu releases and provides the repository installation procedure. citeturn0search0
-
-## Cloudflare and Minecraft
-
-ShiroNex can manage Cloudflare DNS records and proxy state. Normal Cloudflare HTTP proxying is not treated as a generic Minecraft TCP proxy. For ordinary Minecraft DNS records, use DNS-only unless an appropriate Cloudflare TCP proxy service is actually available to the account.
-
-## Environment variables
-
-The installer creates `.env` and generates missing production secrets. If configuring manually, create `.env` and set production secrets, especially:
-
-```text
-JWT_SECRET=
-NODE_ENCRYPTION_KEY=
-CLOUDFLARE_API_TOKEN=
-CLOUDFLARE_ACCOUNT_ID=
-```
-
-Never commit real secrets.
-
-## Production checklist
-
-- Use HTTPS for the panel.
-- Use a valid TLS certificate for node FQDNs.
-- Open only the required panel/node ports.
-- Keep Docker and Ubuntu updated.
-- Back up the ShiroNex data directory and database files.
-- Rotate node credentials when a node is compromised.
-- Never give normal users Docker socket or host-shell access.
-
-## Production source layout
-
-The repository source distribution contains the panel application under `src/`, static assets under `public/`, the node daemon under `node-daemon/`, and the production entrypoints `install.sh`, `node-install.sh`, and `shironex`. Runtime data, environment files, dependencies, builds, logs, credentials, and archives are excluded by `.gitignore`.
-
-## HTTPS
-
-After the panel is installed and its DNS A record points to the VPS, run:
-
-```bash
-sudo shironex ssl
-```
-
-The command asks for the domain and ACME email, installs Nginx and Certbot, configures reverse proxying to `127.0.0.1:6767`, enables HTTP-to-HTTPS redirection, adds secure headers, and removes the public firewall rule for the application port. Keep ports 80 and 443 open for certificate issuance and renewal.
-
-## Diagnostics and operations
-
-Use the following commands when checking a deployment:
-
-```bash
-sudo shironex diagnostics
-sudo shironex backup
-sudo shironex logs
-sudo shironex update
-sudo shironex repair
-```
-
-The diagnostics command checks the panel health endpoint, PM2, Docker, the optional node service, disk, memory, and listening ports. Backups are written below `/var/backups/shironex` with restrictive permissions.
-
-## Appearance system
-
-The Settings page now supports immediate theme presets, dark/light/system appearance, accent colors, background effects, and reduced motion. Preferences are applied through document attributes and CSS variables without requiring a reload. The reduced-motion setting also respects the operating system preference.
-
-## Source integration and CI
-
-The repository includes the production installer set (`install.sh`, `node-install.sh`, and `shironex`), the repository `.gitignore`, and a GitHub Actions workflow at `.github/workflows/ci.yml`. CI runs panel dependency installation, TypeScript lint, production build, node-daemon dependency installation, node-daemon build, and shell syntax checks. The installer bootstraps from the real GitHub source tree and does not depend on a source archive.
-
-## Node status, maintenance, and allocations
-
-Node status is derived from authenticated daemon heartbeats rather than a frontend timer. A node is `ONLINE` only while its most recent authenticated heartbeat is within the configured timeout (45 seconds by default); otherwise it is `OFFLINE`. The panel also reports `MAINTENANCE`, `INSTALLING`, `ERROR`, and `DISABLED` states when those server-side flags apply, together with the last-heartbeat age.
-
-Allocations belong to a node. Open **Nodes**, choose **Allocations** for the target node, and add a valid IPv4 or IPv6 address with a single port or range. The panel rejects invalid ports, overlapping ranges, cross-node assignments, duplicate server assignments, and server ports outside the selected allocation. A node can have one primary allocation at a time. New server creation on a disabled or maintenance node is rejected by the API, and remote-node creation requires an available allocation.
-
-The combined installer path now performs local-node bootstrap automatically after the panel starts. It registers the built-in loopback node with a short-lived bootstrap secret, installs the daemon under `/opt/shironex-node`, writes a mode-600 configuration, enables `shironex-node.service`, and verifies that the service is active. The `/node.sh` endpoint serves the same hardened installer logic as the repository `node-install.sh` script.
+- Use a strong unique admin password and keep `.env` private.
+- Use HTTPS for public deployments and a firewall to restrict access.
+- Keep Ubuntu, Docker, Node.js dependencies, and this repository updated.
+- Keep backups outside the application directory.
+- Never expose the Docker socket directly to untrusted users.
+- Review node daemon TLS and network exposure before connecting remote nodes.
