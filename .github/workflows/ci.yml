@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - "repair/**"
+      - "security/**"
   pull_request:
     branches: [main]
 
@@ -27,10 +28,8 @@ jobs:
       - name: Install panel dependencies
         run: npm ci
 
-      - name: Report production dependency advisories
-        run: |
-          npm audit --omit=dev --json > /tmp/snck-npm-audit.json || true
-          node -e 'let report={}; try { report=require("/tmp/snck-npm-audit.json"); } catch (e) { console.log("Audit report unavailable:", e.message); process.exit(0); } if (report.error) { console.log("npm audit error:", JSON.stringify(report.error)); process.exit(0); } const entries=Object.entries(report.vulnerabilities || {}); if (!entries.length) { console.log("No production dependency advisories reported."); process.exit(0); } for (const [name, item] of entries) console.log(name + ": severity=" + item.severity + ", direct=" + item.isDirect + ", fixAvailable=" + JSON.stringify(item.fixAvailable)); console.log("Production advisory summary:", JSON.stringify(report.metadata?.vulnerabilities || {}));'
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
 
       - name: Lint panel
         run: npm run lint
@@ -41,6 +40,10 @@ jobs:
       - name: Install node daemon dependencies
         working-directory: node-daemon
         run: npm ci
+
+      - name: Audit node daemon production dependencies
+        working-directory: node-daemon
+        run: npm audit --omit=dev --audit-level=high
 
       - name: Build node daemon
         working-directory: node-daemon
