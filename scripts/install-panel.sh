@@ -9,26 +9,14 @@ PORT="${SNCK_PORT:-6767}"
 SERVICE="snck-panel.service"
 BACKUP_DIR="${SNCK_BACKUP_DIR:-/var/backups/snck-panel}"
 LOG_FILE="/var/log/snck-panel-installer.log"
-DB_NAME="${SNCK_DB_NAME:-snck_panel}"
-DB_USER="${SNCK_DB_USER:-snck_panel}"
-DB_HOST="${SNCK_DB_HOST:-127.0.0.1}"
-DB_PORT="${SNCK_DB_PORT:-5432}"
 NODE_VERSION="${SNCK_NODE_VERSION:-22.14.0}"
 
 log(){ printf '[SNCK] %s\n' "$*" | tee -a "$LOG_FILE"; }
 die(){ log "ERROR: $*"; exit 1; }
 
-# Validate values that are later embedded in PostgreSQL commands or connection URLs.
-# The default password is generated as hex; custom passwords must remain URL/SQL-safe.
-[[ "$DB_NAME" =~ ^[A-Za-z_][A-Za-z0-9_]{0,62}$ ]] || die "SNCK_DB_NAME must start with a letter/underscore and contain only letters, digits, or underscores (max 63 chars)."
-[[ "$DB_USER" =~ ^[A-Za-z_][A-Za-z0-9_]{0,62}$ ]] || die "SNCK_DB_USER must start with a letter/underscore and contain only letters, digits, or underscores (max 63 chars)."
-[[ "$DB_HOST" =~ ^[A-Za-z0-9._:-]+$ ]] || die "SNCK_DB_HOST contains unsupported characters."
-[[ "$DB_PORT" =~ ^[0-9]{1,5}$ ]] && (( DB_PORT >= 1 && DB_PORT <= 65535 )) || die "SNCK_DB_PORT must be an integer from 1 to 65535."
-if [[ -n "${SNCK_DB_PASSWORD:-}" ]]; then
-  [[ "$SNCK_DB_PASSWORD" =~ ^[A-Za-z0-9_-]{32,128}$ ]] || die "SNCK_DB_PASSWORD must be 32-128 characters using letters, digits, underscore, or hyphen."
-fi
-
-trap 'rc=$?; if [[ $rc -ne 0 ]]; then log "Installation failed with exit code $rc. See $LOG_FILE"; fi' EXIT
+TMP=""
+cleanup(){ [[ -z "$TMP" ]] || rm -rf "$TMP"; }
+trap 'rc=$?; cleanup; if [[ $rc -ne 0 ]]; then log "Installation failed with exit code $rc. See $LOG_FILE"; fi' EXIT
 
 [[ "$EUID" -eq 0 ]] || die "Run with sudo/root."
 mkdir -p "$(dirname "$LOG_FILE")"
@@ -51,7 +39,7 @@ case "$(dpkg --print-architecture)" in amd64|arm64) ;; *) die "Supported archite
 export DEBIAN_FRONTEND=noninteractive
 log "Installing system prerequisites..."
 apt-get update >>"$LOG_FILE" 2>&1
-apt-get install -y ca-certificates curl git openssl build-essential postgresql postgresql-client xz-utils >>"$LOG_FILE" 2>&1
+apt-get install -y ca-certificates curl git openssl build-essential xz-utils >>"$LOG_FILE" 2>&1
 
 # NodeSource is not required. Some VPS networks/firewalls block deb.nodesource.com,
 # while GitHub is reachable. Prefer an existing Node >=20, otherwise install the
@@ -109,28 +97,8 @@ if command -v systemctl >/dev/null 2>&1 && [[ -d /run/systemd/system ]]; then
   docker info >>"$LOG_FILE" 2>&1 || die "Docker is installed but not operational."
 fi
 
-if command -v systemctl >/dev/null 2>&1 && [[ -d /run/systemd/system ]]; then
-  systemctl enable --now postgresql >>"$LOG_FILE" 2>&1 || die "PostgreSQL service could not be started."
-fi
-command -v psql >/dev/null 2>&1 || die "PostgreSQL client installation failed."
-
-if [[ -z "${SNCK_DB_PASSWORD:-}" ]]; then
-  SNCK_DB_PASSWORD="$(openssl rand -hex 32)"
-fi
-export PGPASSWORD=""
-if ! runuser -u postgres -- psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='${DB_USER//'/''}'" | grep -qx 1; then
-  runuser -u postgres -- psql -v ON_ERROR_STOP=1 -c "CREATE ROLE \"$DB_USER\" LOGIN PASSWORD '$SNCK_DB_PASSWORD';" >>"$LOG_FILE" 2>&1 || die "Could not create PostgreSQL role."
-else
-  runuser -u postgres -- psql -v ON_ERROR_STOP=1 -c "ALTER ROLE \"$DB_USER\" WITH LOGIN PASSWORD '$SNCK_DB_PASSWORD';" >>"$LOG_FILE" 2>&1 || die "Could not update PostgreSQL role."
-fi
-if ! runuser -u postgres -- psql -tAc "SELECT 1 FROM pg_database WHERE datname='${DB_NAME//'/'}'" | grep -qx 1; then
-  runuser -u postgres -- createdb -O "$DB_USER" "$DB_NAME" >>"$LOG_FILE" 2>&1 || die "Could not create PostgreSQL database."
-else
-  runuser -u postgres -- psql -v ON_ERROR_STOP=1 -c "ALTER DATABASE \"$DB_NAME\" OWNER TO \"$DB_USER\";" >>"$LOG_FILE" 2>&1 || die "Could not verify PostgreSQL database ownership."
-fi
-DATABASE_URL="postgresql://${DB_USER}:${SNCK_DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
-
-PGPASSWORD="$SNCK_DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -v ON_ERROR_STOP=1 -c 'SELECT 1;' >>"$LOG_FILE" 2>&1 || die "PostgreSQL connection test failed."
+# The current application uses its JSON file store (.data); do not provision an
+# unused PostgreSQL database or run a one-way migration during installation.
 
 mkdir -p "$BACKUP_DIR"
 timestamp="$(date +%Y%m%d-%H%M%S)"
@@ -142,13 +110,10 @@ if [[ -f "$APP_DIR/.env" ]]; then cp -a "$APP_DIR/.env" "$backup/.env"; fi
 log "Backup created: $backup"
 
 TMP="$(mktemp -d /tmp/snck-panel-install.XXXXXX)"
-cleanup(){ rm -rf "$TMP"; }
-trap cleanup EXIT
 
 log "Fetching SNCK PANEL source..."
 git clone --depth 1 --branch "$BRANCH" "$REPO_URL" "$TMP/repo" >>"$LOG_FILE" 2>&1 || die "Could not download SNCK PANEL from $REPO_URL."
 [[ -f "$TMP/repo/package.json" ]] || die "Downloaded repository is not a valid SNCK PANEL source tree."
-[[ -f "$TMP/repo/database/schema.sql" ]] || die "Database schema is missing from the downloaded source tree."
 
 mkdir -p "$APP_DIR"
 find "$APP_DIR" -mindepth 1 -maxdepth 1 ! -name .data ! -name .env -exec rm -rf -- {} +
@@ -167,24 +132,17 @@ set_env(){
 }
 set_env NODE_ENV production
 set_env PORT "$PORT"
-set_env DATABASE_URL "$DATABASE_URL"
-set_env PGHOST "$DB_HOST"
-set_env PGPORT "$DB_PORT"
-set_env PGDATABASE "$DB_NAME"
-set_env PGUSER "$DB_USER"
 if ! grep -q '^JWT_SECRET=' .env; then printf 'JWT_SECRET="%s"\n' "$(openssl rand -hex 32)" >> .env; fi
 if ! grep -q '^NODE_AUTH_SECRET=' .env; then printf 'NODE_AUTH_SECRET="%s"\n' "$(openssl rand -hex 32)" >> .env; fi
 if ! grep -q '^NODE_ENCRYPTION_KEY=' .env; then printf 'NODE_ENCRYPTION_KEY="%s"\n' "$(openssl rand -hex 32)" >> .env; fi
 
 log "Installing Node dependencies..."
 npm ci --no-audit --no-fund >>"$LOG_FILE" 2>&1 || { log "npm ci failed; retrying with npm install..."; npm install --no-audit --no-fund >>"$LOG_FILE" 2>&1 || die "Node dependency installation failed."; }
-log "Applying PostgreSQL schema..."
-PGPASSWORD="$SNCK_DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -v ON_ERROR_STOP=1 -f database/schema.sql >>"$LOG_FILE" 2>&1 || die "Database schema installation failed."
-
-if [[ -d .data ]] && compgen -G '.data/*.json' >/dev/null 2>&1; then
-  log "Legacy JSON data detected; running transactional migration..."
-  DATABASE_URL="$DATABASE_URL" SNCK_DATA_DIR="$APP_DIR/.data" npm run migrate:json >>"$LOG_FILE" 2>&1 || die "Legacy JSON migration failed; application update was not started."
-fi
+log "Preparing the JSON data store..."
+install -d -o root -g root -m 750 "$APP_DIR/.data"
+[[ -f .data/users.json ]] || printf '[]\n' > .data/users.json
+[[ -f .data/servers.json ]] || printf '[]\n' > .data/servers.json
+[[ -f .data/settings.json ]] || printf '{}\n' > .data/settings.json
 
 log "Running TypeScript validation..."
 npm run lint >>"$LOG_FILE" 2>&1 || die "TypeScript validation failed."
@@ -194,6 +152,8 @@ npm run build >>"$LOG_FILE" 2>&1 || die "Application build failed."
 
 id -u snck >/dev/null 2>&1 || useradd --system --home-dir "$APP_DIR" --shell /usr/sbin/nologin snck
 chown -R snck:snck "$APP_DIR"
+chmod 750 "$APP_DIR/.data"
+find "$APP_DIR/.data" -maxdepth 1 -type f -name '*.json' -exec chmod 640 {} +
 if getent group docker >/dev/null 2>&1; then usermod -aG docker snck || die "Could not grant SNCK service user Docker access."; fi
 mkdir -p /var/lib/snck
 chown snck:snck /var/lib/snck
@@ -205,9 +165,8 @@ fi
 cat >"/etc/systemd/system/$SERVICE" <<EOF
 [Unit]
 Description=SNCK PANEL
-After=network-online.target docker.service postgresql.service
+After=network-online.target docker.service
 Wants=network-online.target
-Requires=postgresql.service
 
 [Service]
 Type=simple
@@ -243,7 +202,7 @@ else
 fi
 
 log "SNCK PANEL installation/update completed successfully."
-printf '\nSNCK PANEL\n  Directory: %s\n  Service:   %s\n  Port:      %s\n  Database:  %s@%s:%s/%s\n  Backup:    %s\n\n' "$APP_DIR" "$SERVICE" "$PORT" "$DB_USER" "$DB_HOST" "$DB_PORT" "$DB_NAME" "$backup"
+printf '\nSNCK PANEL\n  Directory: %s\n  Service:   %s\n  Port:      %s\n  Storage:   %s/.data\n  Backup:    %s\n\n' "$APP_DIR" "$SERVICE" "$PORT" "$APP_DIR" "$backup"
 printf 'Open:   http://SERVER-IP:%s\n' "$PORT"
 printf 'Status: systemctl status %s --no-pager\n' "$SERVICE"
 printf 'Logs:   journalctl -u %s -f\n' "$SERVICE"
