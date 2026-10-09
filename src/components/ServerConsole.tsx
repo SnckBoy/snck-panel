@@ -57,7 +57,11 @@ const STYLES = `
 @keyframes qx-blink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }
 .qx-enter-right, .qx-log-line { animation: none; }
 .qx-tail-in { animation: qx-tail-in .18s ease both; }
-.qx-panel { background: #111116; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; box-shadow: none; }
+.qx-panel { background: #0b1017; border: 1px solid rgba(148,163,184,.16); border-radius: 14px; box-shadow: 0 8px 28px rgba(0,0,0,.12); }
+.qx-console-window-bar { background: #0d141d; border-bottom: 1px solid rgba(148,163,184,.12); }
+.qx-console-body { background: #080d13; }
+.qx-console-toolbar { background: #0b1017; border-color: rgba(148,163,184,.12); }
+.snx-connection-badge { border: 1px solid rgba(148,163,184,.14); background: rgba(148,163,184,.05); }
 .qx-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
 .qx-scroll::-webkit-scrollbar-track { background: #09090b; }
 .qx-scroll::-webkit-scrollbar-thumb { background: #2a2a31; border-radius: 4px; }
@@ -86,10 +90,13 @@ const levelOf = (raw: string): LogLevel => {
 };
 
 const isImportantLog = (raw: string) => {
-  const l = stripAnsi(raw);
-  if (/ERROR|Exception|FATAL|WARN|Can't keep up|behind/i.test(l)) return true;
-  if (/^>|\[System|joined the game|left the game|starting|started|stopping|stopped|ready|done|loading|loaded|world|plugin|mod|fabric|forge|velocity|paper/i.test(l)) return true;
-  return !/TPS|tick rate|heartbeat|debug|worker|thread|performance|resource|keep.?alive|network message|container stats|metrics/i.test(l);
+  const l = stripAnsi(raw).trim();
+  // Default view is intentionally quiet: actionable events only.
+  if (/^>/.test(l)) return true;
+  if (/\b(ERROR|FATAL|SEVERE|EXCEPTION|WARN|WARNING)\b|Can't keep up|crash|failed|failure|timed out|timeout|out of memory/i.test(l)) return true;
+  if (/joined the game|left the game|lost connection|logged in|logged out|server started|server stopped|saving worlds|saving players|stopping server|ready for connections/i.test(l)) return true;
+  if (/^\[System Error\]/i.test(l)) return true;
+  return false;
 };
 
 /* ═══════════════════════════════════════════════════════
@@ -273,7 +280,6 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
 
     socket.on("server_joined", () => {
       setConnected(true);
-      setLogs(p => [...p, "[System] Connected to authorized console stream."].slice(-MAX_LOG_LINES));
     });
 
     socket.on("server_access_denied", (payload: { error?: string }) => {
@@ -307,7 +313,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
         typeof e.description === "string" ? e.description : "",
         typeof e.context === "string" ? e.context : "",
       ].filter(Boolean).join(" — ");
-      setLogs((p) => [...p, `[System Error] Console connection failed: ${detail || "unknown connection error"}`].slice(-MAX_LOG_LINES));
+      setAccessDenied(`Console connection failed: ${detail || "unknown connection error"}`);
     });
 
     return () => {
@@ -568,11 +574,11 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
                 </div>
               </header>
 
-              <div className="flex flex-wrap items-center gap-2 border-y border-white/[0.06] bg-[#111116] px-3 py-2">
+              <div className="qx-console-toolbar flex flex-wrap items-center gap-2 border-y px-3 py-2">
                 <div className="flex items-center gap-1 rounded-lg border border-white/[0.07] bg-black/20 p-0.5">
                   {FILTERS.map((item) => <button key={item.key} type="button" onClick={() => setFilter(item.key)} className={`rounded-md px-2.5 py-1 text-[10px] font-medium transition-colors ${filter === item.key ? "bg-indigo-500/15 text-indigo-200" : "text-slate-500 hover:text-slate-300"}`}>{item.label}</button>)}
                 </div>
-                <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search logs" aria-label="Search logs" className="ml-auto min-w-[150px] flex-1 rounded-md border border-white/[0.07] bg-black/20 px-2.5 py-1.5 font-mono text-[11px] text-slate-200 outline-none placeholder:text-slate-600 focus:border-indigo-400/40 sm:flex-none" />
+                <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Filter output…" aria-label="Filter console output" className="ml-auto min-w-[150px] flex-1 rounded-md border border-white/[0.07] bg-black/20 px-2.5 py-1.5 font-mono text-[11px] text-slate-200 outline-none placeholder:text-slate-600 focus:border-indigo-400/40 sm:flex-none" />
               </div>
 
               {/* ── Log body ── */}
