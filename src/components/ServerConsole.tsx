@@ -5,7 +5,11 @@ import {
   Check,
   Trash2,
   ChevronDown,
-
+  Wifi,
+  Activity,
+  Cpu,
+  MemoryStick,
+  HardDrive,
 } from "lucide-react";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "../context/AuthContext";
@@ -57,7 +61,16 @@ const STYLES = `
 @keyframes qx-blink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }
 .qx-enter-right, .qx-log-line { animation: none; }
 .qx-tail-in { animation: qx-tail-in .18s ease both; }
-.qx-panel { background: #0b1017; border: 1px solid rgba(148,163,184,.16); border-radius: 14px; box-shadow: 0 8px 28px rgba(0,0,0,.12); }
+.qx-panel { background: #080808; border: 1px solid rgba(255,255,255,.045); border-radius: 4px; box-shadow: none; }
+.qx-console-window-bar { background: #080808; border-bottom: 1px solid rgba(255,255,255,.055); }
+.qx-console-toolbar { background: #080808; border-color: rgba(255,255,255,.055); }
+.qx-console-body { background: #080808; }
+.snx-server-workspace-card { background: #202020; border: 1px solid rgba(255,255,255,.025); border-radius: 4px; }
+.snx-server-workspace-card-label { color: #b8b8b8; font-size: 12px; }
+.snx-server-workspace-card-value { color: #f3f3f3; font-weight: 650; font-size: 15px; }
+.snx-server-workspace-icon { display:grid;place-items:center;width:42px;height:42px;flex:0 0 auto;border-radius:9px;background:#171717;color:#e6e6e6; }
+.snx-server-chart { min-width:0; background:#202020; border:1px solid rgba(255,255,255,.025); border-radius:4px; overflow:hidden; }
+.snx-server-chart-grid { background-image:linear-gradient(to bottom, transparent calc(100% - 1px), rgba(255,255,255,.035) calc(100% - 1px));background-size:100% 33.333%; }
 .qx-console-window-bar { background: #0d141d; border-bottom: 1px solid rgba(148,163,184,.12); }
 .qx-console-body { background: #080d13; }
 .qx-console-toolbar { background: #0b1017; border-color: rgba(148,163,184,.12); }
@@ -166,7 +179,7 @@ function Clock() {
 ═══════════════════════════════════════════════════════ */
 
 function ResourceMetric({ label, value, detail, percent, tone }: { label: string; value: string; detail: string; percent: number | null; tone: string }) {
-  return <div className="border-b border-white/[0.07] py-3 last:border-b-0"><div className="mb-1.5 flex items-baseline justify-between gap-3"><p className="qx-display text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">{label}</p><p className="qx-mono text-xs font-medium text-slate-200">{value}</p></div><div className="h-1.5 overflow-hidden rounded-full bg-white/[0.08]"><div className="h-full rounded-full transition-[width] duration-500" style={{ width: percent === null ? "0%" : `${Math.max(0, Math.min(100, percent))}%`, backgroundColor: tone }} /></div><p className="mt-1.5 text-[10px] text-slate-500">{detail}</p></div>;
+  return <div className="snx-server-workspace-card mb-2 px-3 py-3 last:mb-0"><div className="mb-1.5 flex items-baseline justify-between gap-3"><p className="qx-display text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">{label}</p><p className="qx-mono text-xs font-medium text-slate-200">{value}</p></div><div className="h-1.5 overflow-hidden rounded-full bg-white/[0.08]"><div className="h-full rounded-full transition-[width] duration-500" style={{ width: percent === null ? "0%" : `${Math.max(0, Math.min(100, percent))}%`, backgroundColor: tone }} /></div><p className="mt-1.5 text-[10px] text-slate-500">{detail}</p></div>;
 }
 
 function ResourceStatus({ snapshot }: { snapshot: ReturnType<typeof normalizeTelemetry> }) {
@@ -515,13 +528,13 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
     <>
       <style>{STYLES}</style>
       <div className="absolute inset-0 overflow-y-auto text-foreground touch-auto overscroll-y-auto qx-scroll bg-transparent">
-        <div className="relative flex flex-col xl:flex-row w-full max-w-[1440px] mx-auto min-h-full gap-3 md:gap-5 p-3 md:p-6 pb-20 md:pb-10">
+        <div className="relative flex flex-col xl:flex-row w-full max-w-[1600px] mx-auto min-h-full gap-3 md:gap-4 p-3 md:p-4 pb-8">
           
           {/* ═══════════ DEDICATED CONSOLE AREA ═══════════ */}
-          <div className="flex flex-1 flex-col gap-4 w-full xl:w-[76%] min-w-0">
-            <header className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/[0.08] bg-black/25 px-4 py-3 md:px-5">
+          <div className="flex flex-1 flex-col gap-3 w-full xl:w-[76%] min-w-0">
+            <header className="flex flex-wrap items-center justify-between gap-3 px-1 py-1 md:px-0 md:py-0">
               <div className="min-w-0">
-                <p className="qx-display text-[9px] font-bold uppercase tracking-[0.2em] text-slate-500">Server console</p>
+                
                 <h1 className="mt-1 truncate text-base font-semibold text-slate-100">{server?.name || `Server ${serverId}`}</h1>
               </div>
               <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] ${statusLabel === "Online" ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-300" : statusLabel === "Starting" || statusLabel === "Stopping" ? "border-amber-400/25 bg-amber-400/10 text-amber-200" : "border-slate-400/20 bg-slate-400/10 text-slate-300"}`}>
@@ -530,7 +543,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
               </span>
             </header>
             <section
-              className={`snx-console-window flex flex-col h-[520px] xs:h-[580px] md:h-[68vh] xl:h-[calc(100vh-120px)] qx-panel rounded-xl overflow-hidden relative ${
+              className={`snx-console-window flex flex-col h-[460px] xs:h-[500px] md:h-[58vh] xl:h-[calc(100vh-120px)] qx-panel rounded-xl overflow-hidden relative ${
                 ready ? "qx-enter-right" : "opacity-0"
               } ${isFloating ? "qx-console-floating fixed z-[60] w-[min(92vw,980px)]" : ""} ${isMinimized ? "qx-console-minimized" : ""}`}
               style={{
@@ -695,7 +708,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
               {serverOffline && <p className="px-3 pb-3 text-[11px] text-amber-200/70">The server is offline. Start it before sending console commands.</p>}
             </section>
           </div>
-          <aside className="w-full xl:w-[24%] xl:sticky xl:top-6 xl:self-start">
+          <aside className="w-full xl:w-[24%] xl:sticky xl:top-3 xl:self-start">
             <ResourceStatus snapshot={resourceSnapshot} />
           </aside>
         </div>
