@@ -540,10 +540,11 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
     <>
       <style>{STYLES}</style>
       <div className="absolute inset-0 overflow-y-auto text-foreground touch-auto overscroll-y-auto qx-scroll bg-transparent">
-        <div className="relative flex flex-col xl:flex-row w-full max-w-[1600px] mx-auto min-h-full gap-3 md:gap-4 p-3 md:p-4 pb-8">
+        <div className="relative flex flex-col w-full max-w-[1600px] mx-auto min-h-full gap-3 md:gap-4 p-3 md:p-4 pb-8">
           
           {/* ═══════════ DEDICATED CONSOLE AREA ═══════════ */}
-          <div className="flex flex-1 flex-col gap-3 w-full xl:w-[76%] min-w-0">
+          <div className="flex min-w-0 flex-col xl:flex-row gap-3 md:gap-5">
+          <div className="flex flex-1 flex-col gap-3 w-full xl:flex-1 min-w-0">
             <header className="flex flex-wrap items-center justify-between gap-3 px-1 py-1 md:px-0 md:py-0">
               <div className="min-w-0">
                 
@@ -719,6 +720,12 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
               </form>
               {serverOffline && <p className="px-3 pb-3 text-[11px] text-amber-200/70">The server is offline. Start it before sending console commands.</p>}
             </section>
+
+          </div>
+          <aside className="w-full xl:w-[24%] xl:sticky xl:top-3 xl:self-start">
+            <ResourceStatus snapshot={resourceSnapshot} server={server} />
+          </aside>
+          </div>
             <section className="grid grid-cols-1 gap-3 md:grid-cols-3">
               {([{ key: "cpu", title: "CPU Usage", values: resourceHistory.map((point) => point.cpu) }, { key: "ram", title: "RAM Usage", values: resourceHistory.map((point) => point.ram) }, { key: "network", title: "Network Usage", values: resourceHistory.map((point) => point.network) }] as const).map((chart) => {
                 const valid = chart.values.filter((value): value is number => value !== null && Number.isFinite(value));
@@ -733,10 +740,6 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
                 </article>;
               })}
             </section>
-          </div>
-          <aside className="w-full xl:w-[24%] xl:sticky xl:top-3 xl:self-start">
-            <ResourceStatus snapshot={resourceSnapshot} server={server} />
-          </aside>
         </div>
       </div>
     </>
