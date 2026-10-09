@@ -118,7 +118,7 @@ system_info(){
   printf 'Node:     %s\n' "$(node --version 2>/dev/null || echo not-installed)"
   printf 'npm:      %s\n' "$(npm --version 2>/dev/null || echo not-installed)"
   printf 'Docker:   %s\n' "$(docker --version 2>/dev/null || echo not-installed)"
-  printf 'Postgres: %s\n' "$(psql --version 2>/dev/null || echo not-installed)"
+  printf 'Storage:  JSON files in %s/.data\n' "$APP_DIR"
   printf 'Panel:    %s\n' "$(installed && echo installed || echo not-installed)"
   pause
 }
