@@ -5,7 +5,10 @@ import { getJwtSecret } from "../services/security.js";
 const JWT_SECRET = getJwtSecret();
 
 const scopeAllows = (scopes: unknown, required: string) => {
-  if (!Array.isArray(scopes) || scopes.length === 0 || scopes.includes("*")) return true;
+  // Missing or malformed scopes must never grant access by default.
+  if (!Array.isArray(scopes) || !scopes.every((scope) => typeof scope === "string")) return false;
+  if (scopes.includes("*")) return true;
+  if (scopes.length === 0) return false;
   const family = required.split(":")[0];
   return scopes.includes(required) || scopes.includes(`${family}:*`);
 };
