@@ -198,8 +198,16 @@ router.get("/marketplace/search", async (req, res) => {
     if (source === "hangar") return searchHangar(q, limit);
     return searchSpiget(q, limit);
   }));
-  const items = searches.flatMap((result) => result.status === "fulfilled" ? result.value : []);
+  let items = searches.flatMap((result) => result.status === "fulfilled" ? result.value : []);
   const failedProviders = searches.flatMap((result, index) => result.status === "rejected" ? [providers[index]] : []);
+  if (gameVersion) {
+    // Only show results with an explicit match; providers without version metadata must not look compatible by guesswork.
+    items = items.filter((item) => item.gameVersions.includes(gameVersion));
+  }
+  if (loader) {
+    const selectedPlatform = normalizedLoader(loader);
+    items = items.filter((item) => [...item.loaders, ...item.platforms].some((value) => normalizedLoader(value) === selectedPlatform));
+  }
   const deduped = new Map<string, ReturnType<typeof marketplaceItem>>();
   for (const item of items) {
     if (!item.id || !item.name) continue;
