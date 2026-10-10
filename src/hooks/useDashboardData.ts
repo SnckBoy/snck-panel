@@ -22,8 +22,8 @@ export function useDashboardData() {
 
     try {
       const [statsRes, serversRes] = await Promise.allSettled([
-        axios.get<SystemStats>("/api/system/stats", { signal: controller.signal, timeout: 20000 }),
-        axios.get<ServerSummary[]>("/api/servers", { signal: controller.signal, timeout: 20000 }),
+        axios.get<SystemStats>("/api/system/stats", { signal: controller.signal, timeout: 8000 }),
+        axios.get<ServerSummary[]>("/api/servers", { signal: controller.signal, timeout: 8000 }),
       ]);
 
       if (!mountedRef.current || controller.signal.aborted) return;
