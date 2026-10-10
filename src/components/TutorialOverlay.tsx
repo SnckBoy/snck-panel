@@ -98,7 +98,7 @@ export const TutorialOverlay: React.FC<{ onComplete: () => void, panelName: stri
       { scale: 0.8, opacity: 0 },
       { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.7)' }
     );
-    gsap.fromTo('.birds-container', 
+    gsap.fromTo('.devil-mascot', 
       { y: 100, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.6, delay: 0.2, ease: 'power2.out' }
     );
@@ -148,7 +148,7 @@ export const TutorialOverlay: React.FC<{ onComplete: () => void, panelName: stri
       setStep(step + 1);
     } else {
       // Animate birds walking off
-      gsap.to('.birds-container', {
+      gsap.to('.devil-mascot', {
         x: '100vw',
         duration: 2,
         ease: 'power2.inOut'
@@ -197,43 +197,21 @@ export const TutorialOverlay: React.FC<{ onComplete: () => void, panelName: stri
       </div>
 
       <div className="tutorial-cartoon-container">
-        <div className="birds-container">
-          <div className="red">
-            <div className="tail"></div>
-            <div className="head"></div>
-            <div className="eye left">
-              <div className="pupil"></div>
-              <div className="eyebrow"></div>
-            </div>
-            <div className="mouth"></div>
-            <div className="eye right">
-              <div className="pupil"></div>
-              <div className="eyebrow"></div>
-            </div>
-            <div className="hair"></div>
+        <div className="devil-mascot" role="img" aria-label="Original black and crimson devil mascot">
+          <div className="devil-aura" />
+          <div className="devil-horn devil-horn--left" />
+          <div className="devil-horn devil-horn--right" />
+          <div className="devil-head">
+            <div className="devil-brow devil-brow--left" />
+            <div className="devil-brow devil-brow--right" />
+            <div className="devil-eye devil-eye--left"><span /></div>
+            <div className="devil-eye devil-eye--right"><span /></div>
+            <div className="devil-nose" />
+            <div className="devil-mouth"><span className="devil-fang devil-fang--left" /><span className="devil-fang devil-fang--right" /></div>
           </div>
-          
-          <div className="minion">
-            <div className="ear left"></div>
-            <div className="ear right"></div>
-            <div className="eye left"></div>
-            <div className="eye right"></div>
-            <div className="nose"></div>
-          </div>
-          
-          <div className="black">
-            <div className="hair"></div>
-            <div className="head"></div>
-            <div className="eye left">
-              <div className="pupil"></div>
-              <div className="eyebrow"></div>
-            </div>
-            <div className="eye right">
-              <div className="pupil"></div>
-              <div className="eyebrow"></div>
-            </div>
-            <div className="mouth"></div>
-          </div>
+          <div className="devil-body"><span /><span /></div>
+          <div className="devil-tail"><i /></div>
+          <div className="devil-ground-glow" />
         </div>
       </div>
     </div>
