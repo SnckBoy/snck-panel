@@ -124,32 +124,51 @@ system_info(){
 }
 
 uninstall_panel(){
-  printf '\n\033[1;31mWARNING: This removes the SNCK PANEL service and application files.\033[0m\n'
-  printf 'Backups in %s are preserved.\n\n' "$BACKUP_DIR"
-  read -r -p 'Type UNINSTALL to continue: ' confirm
-  [[ "$confirm" == "UNINSTALL" ]] || { printf 'Cancelled.\n'; pause; return; }
-
-  if service_exists; then
-    systemctl disable --now "$SERVICE" 2>/dev/null || true
-    rm -f "/etc/systemd/system/$SERVICE"
-    systemctl daemon-reload
-    systemctl reset-failed "$SERVICE" 2>/dev/null || true
+  if [[ ! -r /dev/tty ]]; then
+    printf 'ERROR: Uninstall requires an interactive terminal for confirmation.\n' >&2
+    return 2
   fi
+  printf '\n\033[1;31mWARNING: This removes SNCK PANEL application files and its systemd service.\033[0m\n'
+  printf 'The app data and .env will be backed up first. Existing backups in %s are preserved.\n\n' "$BACKUP_DIR"
+  local confirm stamp dest
+  read -r -p 'Type UNINSTALL to continue: ' confirm </dev/tty
+  [[ "$confirm" == "UNINSTALL" ]] || { printf 'Cancelled; nothing was removed.\n'; return 0; }
+
   mkdir -p "$BACKUP_DIR"
   chmod 700 "$BACKUP_DIR"
-  local stamp dest
   stamp="$(date +%Y%m%d-%H%M%S)"
   dest="$BACKUP_DIR/pre-uninstall-$stamp"
   mkdir -p "$dest"
   [[ ! -d "$APP_DIR/.data" ]] || cp -a "$APP_DIR/.data" "$dest/.data"
   [[ ! -f "$APP_DIR/.env" ]] || cp -a "$APP_DIR/.env" "$dest/.env"
   chmod 700 "$dest"
-  rm -rf "$APP_DIR"
+
+  if command -v systemctl >/dev/null 2>&1; then
+    systemctl disable --now "$SERVICE" 2>/dev/null || true
+    rm -f "/etc/systemd/system/$SERVICE"
+    systemctl daemon-reload
+    systemctl reset-failed "$SERVICE" 2>/dev/null || true
+  fi
+  rm -rf -- "$APP_DIR"
   rm -f /usr/local/bin/snck-panel
-  printf '\033[1;32mSNCK PANEL application/service removed.\033[0m\n'
-  printf 'Data and environment backup: %s\n' "$dest"
-  pause
+  printf '\033[1;32mSNCK PANEL application and service removed.\033[0m\n'
+  printf 'Backup saved at: %s\n' "$dest"
+  printf 'Docker and Node.js are intentionally left installed because other apps may use them.\n'
 }
+
+# Direct command mode: install.sh uninstall or snck-menu.sh uninstall.
+case "${1:-}" in
+  uninstall|remove|--uninstall|9) uninstall_panel; exit $? ;;
+  status) status_panel; exit $? ;;
+  restart) restart_panel; exit $? ;;
+  logs) logs_panel; exit $? ;;
+  backup) backup_panel; exit $? ;;
+  install) install_panel; exit $? ;;
+  update) update_panel; exit $? ;;
+  repair) repair_panel; exit $? ;;
+  "") ;;
+  *) printf 'Unknown command: %s\\nUsage: %s [install|update|repair|status|restart|logs|backup|uninstall]\\n' "$1" "$0" >&2; exit 2 ;;
+esac
 
 while true; do
   header
@@ -163,7 +182,7 @@ while true; do
   printf '  \033[1;97m8)\033[0m System information\n'
   printf '  \033[1;97m9)\033[0m Uninstall panel\n'
   printf '  \033[1;97m0)\033[0m Exit\n\n'
-  read -r -p '  Select an option [0-9]: ' choice || exit 0
+  read -r -p '  Select an option [0-9]: ' choice </dev/tty || exit 0
   case "$choice" in
     1) install_panel ;;
     2) update_panel ;;
