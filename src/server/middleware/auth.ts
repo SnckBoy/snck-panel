@@ -72,12 +72,11 @@ export const requireAdmin = async (req: Request, res: Response, next: NextFuncti
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any;
-    if (decoded.role !== 'admin' && decoded.role !== 'owner') {
-       res.status(403).json({ error: "Forbidden: Admin access only" });
-       return;
-    }
-    
+
     if (decoded.id !== "temp-admin") {
+      // Treat the database as the source of truth for the current role. JWT role
+      // claims can be stale (for example, if an account was promoted to admin
+      // while a browser still holds an older token on a different hostname).
       const { readJSON } = await import("../services/db.js");
       const users = await readJSON("users.json") || [];
       const user = users.find((u: any) => u.id === decoded.id);
@@ -95,6 +94,11 @@ export const requireAdmin = async (req: Request, res: Response, next: NextFuncti
       }
       (req as any).user = { ...decoded, role: user.role, username: user.username };
     } else {
+      // The temporary bootstrap account has no database user record.
+      if (decoded.role !== "admin" && decoded.role !== "owner") {
+        res.status(403).json({ error: "Forbidden: Admin access only" });
+        return;
+      }
       (req as any).user = decoded;
     }
     next();
