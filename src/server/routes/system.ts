@@ -209,7 +209,7 @@ router.put("/settings", async (req, res) => {
     enablePlayit, enableTutorial, enableLoginAnimation, enableRegistration, theme,
     appearance, accent, backgroundEffect, reducedMotion,
     enableGoogleLogin, firebaseApiKey, firebaseAuthDomain, firebaseProjectId,
-    firebaseStorageBucket, firebaseMessagingSenderId, firebaseAppId 
+    firebaseStorageBucket, firebaseMessagingSenderId, firebaseAppId, freeService
   } = req.body;
   const settings = await readJSON("settings.json") || {};
   if (panelName !== undefined) {
@@ -253,6 +253,19 @@ router.put("/settings", async (req, res) => {
   if (firebaseStorageBucket !== undefined) settings.firebaseStorageBucket = firebaseStorageBucket;
   if (firebaseMessagingSenderId !== undefined) settings.firebaseMessagingSenderId = firebaseMessagingSenderId;
   if (firebaseAppId !== undefined) settings.firebaseAppId = firebaseAppId;
+  if (freeService !== undefined) {
+    if (user.role !== "owner") return res.status(403).json({ error: "Only the Owner can change free-service limits." });
+    const enabled = Boolean(freeService?.enabled);
+    const ram = Number(freeService?.ram);
+    const cpu = Number(freeService?.cpu);
+    const disk = Number(freeService?.disk);
+    const maxServers = Number(freeService?.maxServers);
+    const durationHours = Number(freeService?.durationHours);
+    if (![ram,cpu,disk,maxServers,durationHours].every(Number.isFinite) || ram < 1 || ram > 256 || cpu < 1 || cpu > 6400 || disk < 1 || disk > 4096 || maxServers < 1 || maxServers > 100 || durationHours < 0 || durationHours > 87600) {
+      return res.status(400).json({ error: "Invalid free-service limits. RAM 1–256 GB, CPU 1–6400%, disk 1–4096 GB, servers 1–100, duration 0–87600 hours." });
+    }
+    settings.freeService = { enabled, ram, cpu, disk, maxServers: Math.floor(maxServers), durationHours: Math.floor(durationHours) };
+  }
   await writeJSON("settings.json", settings);
   req.app.get("io")?.emit("settings_updated");
   res.json({ success: true });
