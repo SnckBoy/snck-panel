@@ -125,20 +125,20 @@ system_info(){
 
 uninstall_panel(){
   if [[ ! -r /dev/tty ]]; then
-    printf 'ERROR: Uninstall requires an interactive terminal for confirmation.\\n' >&2
+    printf 'ERROR: Uninstall requires an interactive terminal for confirmation.\n' >&2
     return 2
   fi
 
-  printf '\\n\\033[1;31mDANGER: COMPLETE SNCK PANEL REMOVAL\\033[0m\\n'
-  printf 'This permanently deletes SNCK Panel application data, configuration, logs, and ALL backups.\\n'
-  printf 'No final backup will be kept.\\n'
-  printf 'Docker containers, images, volumes, and Minecraft server files outside these SNCK paths will not be intentionally removed.\\n\\n'
+  printf '\n\033[1;31mDANGER: COMPLETE SNCK PANEL REMOVAL\033[0m\n'
+  printf 'This permanently deletes SNCK Panel application data, configuration, logs, and ALL backups.\n'
+  printf 'No final backup will be kept.\n'
+  printf 'Docker containers, images, volumes, and Minecraft server files outside these SNCK paths will not be intentionally removed.\n\n'
 
   local confirm
   read -r -p 'Type DELETE-SNCK to permanently remove SNCK Panel and all its backups: ' confirm </dev/tty
-  [[ "$confirm" == "DELETE-SNCK" ]] || { printf 'Cancelled; nothing was removed.\\n'; return 0; }
+  [[ "$confirm" == "DELETE-SNCK" ]] || { printf 'Cancelled; nothing was removed.\n'; return 0; }
 
-  printf '\\nStopping SNCK Panel service...\\n'
+  printf '\nStopping SNCK Panel service...\n'
   if command -v systemctl >/dev/null 2>&1; then
     systemctl disable --now "$SERVICE" 2>/dev/null || true
     rm -f "/etc/systemd/system/$SERVICE"
@@ -146,7 +146,7 @@ uninstall_panel(){
     systemctl reset-failed "$SERVICE" 2>/dev/null || true
   fi
 
-  printf 'Removing SNCK Panel application, settings, logs, and backups...\\n'
+  printf 'Removing SNCK Panel application, settings, logs, and backups...\n'
   rm -rf -- \
     "$APP_DIR" \
     "$BACKUP_DIR" \
@@ -155,9 +155,9 @@ uninstall_panel(){
     /var/log/snck-panel
   rm -f -- /usr/local/bin/snck-panel "$LOG_FILE"
 
-  printf '\\n\\033[1;32mSNCK PANEL and its backups have been removed.\\033[0m\\n'
-  printf 'Docker and Node.js are intentionally left installed because other apps may use them.\\n'
-  printf 'Minecraft containers, images, and volumes were not targeted.\\n'
+  printf '\n\033[1;32mSNCK PANEL and its backups have been removed.\033[0m\n'
+  printf 'Docker and Node.js are intentionally left installed because other apps may use them.\n'
+  printf 'Minecraft containers, images, and volumes were not targeted.\n'
 }
 
 # Direct command mode: install.sh uninstall or snck-menu.sh uninstall.
