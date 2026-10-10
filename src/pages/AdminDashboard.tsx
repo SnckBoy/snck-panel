@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import type { FormEvent } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Activity, AlertTriangle, Box, CheckCircle2, Clock3, Database, KeyRound, RefreshCw, Search, Server, ShieldCheck, Users, Wifi } from "lucide-react";
@@ -46,7 +47,7 @@ export default function AdminDashboard() {
     try { const res = await axios.get("/api/system/users"); setUsers(Array.isArray(res.data) ? res.data : []); }
     catch (e: any) { setError(e.response?.data?.error || "Could not refresh users."); }
   };
-  const createUser = async (e: React.FormEvent) => {
+  const createUser = async (e: FormEvent) => {
     e.preventDefault();
     if (password.length < 8 || password.length > 256) { window.alert("Password must be 8–256 characters."); return; }
     setIsCreatingUser(true);
