@@ -60,14 +60,13 @@ const PublicAuthRoute = ({ children }: { children: React.ReactNode }) => {
 const AnimatedRoutes = () => {
   const location = useLocation();
   return (
-    <AnimatePresence mode="wait">
-      <motion.div 
-        key={location.pathname} 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.3 }}
-        className="h-full w-full flex flex-col"
+    <AnimatePresence initial={false}>
+      <motion.div
+        key={location.pathname}
+        initial={false}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.12 }}
+        className="min-h-0 w-full flex flex-col"
       >
         <Suspense fallback={<div role="status" className="snx-route-loading"><span className="snx-live-dot" /> Loading workspace…</div>}>
         <Routes location={location}>
