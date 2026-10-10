@@ -2,10 +2,20 @@ import express, { Request, Response } from "express";
 import crypto from "crypto";
 import net from "net";
 import { readJSON, writeJSON } from "../services/db.js";
-import { requireAdmin } from "../middleware/auth.js";
+import { requireAdmin, requireAuth } from "../middleware/auth.js";
 import { audit, rateLimit } from "../services/security.js";
 
 const router = express.Router();
+// Authenticated users may see only free, unassigned allocations on public nodes.
+router.get("/available", requireAuth, async (req: Request, res: Response) => {
+  const user = (req as any).user;
+  const settings = await readJSON("settings.json") || {};
+  if (user.role !== "admin" && user.role !== "owner" && !settings.freeService?.enabled) return res.status(403).json({ error: "Free server creation is disabled." });
+  const nodes = await readJSON("nodes.json") || [];
+  const visibleIds = new Set(nodes.filter((n:any) => n.visibility !== "private" && !n.disabled && !n.maintenance && (user.role === "admin" || user.role === "owner" || !n.freeServiceLocked)).map((n:any) => String(n.id)));
+  const allocations = await readJSON(file) || [];
+  res.json(allocations.filter((a:any) => visibleIds.has(String(a.nodeId)) && !a.assignedServerId));
+});
 router.use(requireAdmin, rateLimit());
 const file = "allocations.json";
 
