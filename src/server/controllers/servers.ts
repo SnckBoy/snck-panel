@@ -304,7 +304,6 @@ export const createServer = async (req: Request, res: Response) => {
   }
 
   const users = await readJSON("users.json") || [];
-  const isStaff = user.role === "admin" || user.role === "owner";
   const requestedOwner = isStaff && owner ? String(owner) : String(user.id);
   if (!users.some((candidate: any) => candidate.id === requestedOwner)) return res.status(400).json({ error: "Selected server owner was not found" });
 
@@ -334,6 +333,7 @@ export const createServer = async (req: Request, res: Response) => {
     theme: theme || "default",
     status: "installing",
     createdAt: new Date().toISOString(),
+    expiresAt,
     containerId: null as string | null,
   };
 
