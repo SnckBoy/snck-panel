@@ -40,6 +40,8 @@ export default function AdminPlatformControls() {
     setSenderId(settings.firebaseMessagingSenderId || ""); setAppId(settings.firebaseAppId || "");
   }, [settings.panelName, settings.enablePlayit, settings.enableTutorial, settings.enableLoginAnimation, settings.enableRegistration, settings.theme, settings.enableGoogleLogin, settings.firebaseApiKey, settings.firebaseAuthDomain, settings.firebaseProjectId, settings.firebaseStorageBucket, settings.firebaseMessagingSenderId, settings.firebaseAppId]);
 
+  useEffect(() => { axios.get("/api/system/settings").then(({ data }) => { const free = data?.freeService || {}; setFreeEnabled(Boolean(free.enabled)); setFreeRam(String(free.ram ?? 2)); setFreeCpu(String(free.cpu ?? 100)); setFreeDisk(String(free.disk ?? 5)); setFreeMaxServers(String(free.maxServers ?? 1)); setFreeDurationHours(String(free.durationHours ?? 168)); }).catch((e:any) => setMessage({text:e.response?.data?.error || "Could not load free-service settings.",ok:false})); }, []);
+
   const save = async (payload: Record<string, unknown>, success: string) => {
     setBusy(true); setMessage(null);
     try { await axios.put("/api/system/settings", payload); await settings.fetchSettings(); setMessage({text:success,ok:true}); }
