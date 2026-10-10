@@ -240,11 +240,11 @@ export const createServer = async (req: Request, res: Response) => {
       return res.status(403).json({ error: `Free plan limits: ${free.ram} GB RAM, ${free.cpu}% CPU, ${free.disk} GB disk.` });
     }
   }
-  const requestedLifetime = lifetimeHours === "" || lifetimeHours === undefined || lifetimeHours === null ? null : Number(lifetimeHours);
+  const useServiceDefault = lifetimeHours === "default";
+  const requestedLifetime = lifetimeHours === "" || lifetimeHours === undefined || lifetimeHours === null || useServiceDefault ? null : Number(lifetimeHours);
   if (requestedLifetime !== null && (!Number.isFinite(requestedLifetime) || requestedLifetime < 1 || requestedLifetime > 87600)) return res.status(400).json({ error: "Lifetime must be blank for permanent or between 1 and 87600 hours." });
-  const allowedLifetime = !isStaff ? Number(free.durationHours || 0) : requestedLifetime;
-  if (requestedLifetime !== null && isStaff) expiresAt = new Date(Date.now() + requestedLifetime * 3600000).toISOString();
-  else if (!isStaff && allowedLifetime > 0) expiresAt = new Date(Date.now() + allowedLifetime * 3600000).toISOString();
+  const effectiveLifetime = useServiceDefault && !isStaff ? Number(free.durationHours || 0) : requestedLifetime;
+  if (effectiveLifetime !== null && effectiveLifetime > 0) expiresAt = new Date(Date.now() + effectiveLifetime * 3600000).toISOString();
   const normalizedJavaVersion = javaVersion ? String(javaVersion) : "";
   if (normalizedJavaVersion && !SUPPORTED_JAVA_VERSIONS.includes(normalizedJavaVersion as typeof SUPPORTED_JAVA_VERSIONS[number])) {
     return res.status(400).json({ error: `Unsupported Java version. Choose one of: ${SUPPORTED_JAVA_VERSIONS.join(", ")}` });
