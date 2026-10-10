@@ -85,15 +85,18 @@ export default function AdminPlatformControls() {
       <h2 className="text-xl font-bold mb-1 flex items-center gap-3 text-foreground"><Gift className="text-emerald-400" size={20}/> Free Minecraft Service</h2>
       <p className="text-sm text-muted-foreground mb-5">Owner-configured limits for regular users creating free servers.</p>
       <label className="flex items-center justify-between gap-4 rounded-xl border border-border bg-muted/40 p-4 mb-5"><span><strong className="block text-sm text-foreground">Enable free server creation</strong><span className="block text-xs text-muted-foreground mt-1">Allow normal users to create servers within these limits.</span></span><input type="checkbox" className="h-4 w-4 accent-emerald-500" checked={freeEnabled} disabled={busy || user?.role !== "owner"} onChange={e=>setFreeEnabled(e.target.checked)} /></label>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {field("RAM per server (GB)",freeRam,setFreeRam,"2","number")}
-        {field("CPU limit (%)",freeCpu,setFreeCpu,"100","number")}
-        {field("Disk per server (GB)",freeDisk,setFreeDisk,"5","number")}
-        {field("Servers per user",freeMaxServers,setFreeMaxServers,"1","number")}
-        {field("Default lifetime (hours)",freeDurationHours,setFreeDurationHours,"168 (7 days)","number")}
-      </div>
-      <p className="mt-3 text-xs text-muted-foreground">Lifetime 0 means permanent by default. No selected lifetime means permanent.</p>
-      <button type="button" disabled={busy || settings.role !== "owner"} onClick={()=>void save({freeService:{enabled:freeEnabled,ram:Number(freeRam),cpu:Number(freeCpu),disk:Number(freeDisk),maxServers:Number(freeMaxServers),durationHours:Number(freeDurationHours)}}, "Free service limits saved.")} className="mt-5 rounded-xl px-5 py-2.5 bg-emerald-600 text-white disabled:opacity-50">{busy?"Saving…":"Save free service limits"}</button>
+      {freeEnabled && <div className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {field("RAM per server (GB)",freeRam,setFreeRam,"2","number")}
+          {field("CPU limit (%)",freeCpu,setFreeCpu,"100","number")}
+          {field("Disk per server (GB)",freeDisk,setFreeDisk,"5","number")}
+          {field("Servers per user",freeMaxServers,setFreeMaxServers,"1","number")}
+          {field("Default lifetime (hours)",freeDurationHours,setFreeDurationHours,"168 (7 days)","number")}
+        </div>
+        <p className="text-xs text-muted-foreground">Set duration to 0 for no default expiry. Users can still choose Permanent when creating a server.</p>
+      </div>}
+      <p className="mt-3 text-xs text-muted-foreground">{freeEnabled ? "Regular users can create servers within these limits and only on nodes not locked for free service." : "Free server creation is off. Limits stay saved and appear again when you enable the service."}</p>
+      <button type="button" disabled={busy || user?.role !== "owner"} onClick={()=>void save({freeService:{enabled:freeEnabled,ram:Number(freeRam),cpu:Number(freeCpu),disk:Number(freeDisk),maxServers:Number(freeMaxServers),durationHours:Number(freeDurationHours)}}, "Free service settings saved.")} className="mt-5 rounded-xl px-5 py-2.5 bg-emerald-600 text-white disabled:opacity-50">{busy?"Saving…":"Save free service settings"}</button>
     </section>
     <section className="bg-card border border-border-subtle rounded-2xl p-5 md:p-7 shadow-xl">
       <h2 className="text-xl font-bold mb-1 flex items-center gap-3 text-foreground"><KeyRound className="text-amber-400" size={20}/> Google & Firebase Authentication</h2>
