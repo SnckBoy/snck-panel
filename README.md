@@ -22,7 +22,7 @@ Menu options:
 6. View panel and installer logs
 7. Create a data/config backup
 8. System information
-9. Uninstall panel (requires typing `UNINSTALL`)
+9. Complete uninstall (requires typing `DELETE-SNCK`; permanently removes panel data and all SNCK Panel backups)
 0. Exit
 
 Supported OS targets in the installer are Ubuntu 20.04+ and Debian 11/12/13 on `amd64` or `arm64`. A fresh install requires internet access to package repositories and GitHub. The installer installs Node.js when needed, Docker, builds the application, configures a systemd service, and checks `/health` before reporting success.
@@ -48,7 +48,7 @@ sudo journalctl -u snck-panel -n 100 --no-pager
 curl -fsS http://127.0.0.1:6767/health
 ```
 
-Run the same one-command installer again to open the menu for updates, repair, diagnostics, backups, or removal. Backups are stored under `/var/backups/snck-panel`. Uninstall creates a final backup of `.data` and `.env` before removing the application directory; it does not delete Docker images or containers.
+Run the same one-command installer again to open the menu for updates, repair, diagnostics, backups, or removal. Backups are stored under `/var/backups/snck-panel`. Complete uninstall permanently removes the SNCK Panel application, panel data/configuration/logs, and all backups under `/var/backups/snck-panel` after you type `DELETE-SNCK`. It does not target Docker containers, images, volumes, or Minecraft server files. No final backup is retained, so export anything you need before uninstalling.
 
 ## Runtime data and database note
 
