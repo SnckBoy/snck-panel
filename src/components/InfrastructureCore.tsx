@@ -59,10 +59,12 @@ function clamp(value: number, min = 0, max = 100) {
 function getFallbackReason() {
   if (typeof window === "undefined" || typeof navigator === "undefined") return "server";
   const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const mobileOrCoarsePointer = window.matchMedia?.("(max-width: 820px), (pointer: coarse)").matches;
   const saveData = Boolean((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData);
   const lowMemory = typeof (navigator as Navigator & { deviceMemory?: number }).deviceMemory === "number"
     && ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) <= 2;
-  return reducedMotion ? "reduced-motion" : saveData ? "data-saver" : lowMemory ? "low-power" : "";
+  // Keep continuous WebGL rendering off phones/tablets; it can compete with scrolling.
+  return reducedMotion ? "reduced-motion" : mobileOrCoarsePointer ? "mobile-low-power" : saveData ? "data-saver" : lowMemory ? "low-power" : "";
 }
 
 function createFallbackTexture(THREE: ThreeRuntime, color: number): CanvasTexture {
