@@ -500,16 +500,16 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
     const ts = log.match(/^(\[\d{2}:\d{2}:\d{2}\s[^\]]+\]|\d{2}:\d{2}:\d{2})/);
     const level = levelOf(raw);
 
-    let text = "text-slate-300";
-    let rail = "bg-slate-600/40";
-    let badge = "INFO";
-    let badgeClass = "text-sky-300 bg-sky-400/10 border-sky-400/20";
+    let text = "text-zinc-300";
+    let rail = "bg-zinc-600/50";
+    let badge = "LOG";
+    let badgeClass = "text-zinc-400 bg-white/[0.03] border-white/[0.08]";
 
-    if (level === "error") { text = "text-rose-300 font-medium"; rail = "bg-rose-500/70"; badge = "ERROR"; badgeClass = "text-rose-300 bg-rose-400/10 border-rose-400/25"; }
-    else if (level === "warn") { text = "text-amber-200"; rail = "bg-amber-400/70"; badge = "WARN"; badgeClass = "text-amber-200 bg-amber-400/10 border-amber-400/25"; }
-    else if (log.startsWith(">")) { text = "text-emerald-300 font-semibold"; rail = "bg-emerald-400/70"; badge = "CMD"; badgeClass = "text-emerald-300 bg-emerald-400/10 border-emerald-400/25"; }
-    else if (log.startsWith("[System")) { text = "text-violet-200/90 italic"; rail = "bg-violet-400/60"; badge = "SYSTEM"; badgeClass = "text-violet-200 bg-violet-400/10 border-violet-400/25"; }
-    else if (log.includes("INFO")) { text = "text-sky-200/90"; rail = "bg-sky-500/50"; }
+    if (level === "error") { text = "text-red-300"; rail = "bg-red-400/70"; badge = "ERROR"; badgeClass = "text-red-300 bg-red-400/[0.06] border-red-400/15"; }
+    else if (level === "warn") { text = "text-zinc-200"; rail = "bg-zinc-400/70"; badge = "WARN"; badgeClass = "text-zinc-300 bg-white/[0.04] border-white/[0.1]"; }
+    else if (log.startsWith(">")) { text = "text-zinc-100 font-medium"; rail = "bg-zinc-300/70"; badge = "CMD"; badgeClass = "text-zinc-200 bg-white/[0.06] border-white/[0.12]"; }
+    else if (log.startsWith("[System")) { text = "text-zinc-400"; rail = "bg-zinc-500/60"; badge = "SYSTEM"; badgeClass = "text-zinc-400 bg-white/[0.03] border-white/[0.08]"; }
+    else if (log.includes("INFO")) { text = "text-zinc-300"; rail = "bg-zinc-500/50"; }
 
     const lineSize = terminalFontSize === "small" ? "text-[10px]" : terminalFontSize === "large" ? "text-sm" : "text-[11px] sm:text-xs";
     return (
@@ -572,7 +572,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
               {/* ── Header ── */}
               <header className="snx-console-window-bar qx-window-drag-handle px-3 md:px-5 py-2.5 sm:py-3 flex items-center justify-between gap-2 relative z-10 cursor-default select-none" onPointerDown={startDrag}>
                 <div className="flex items-center gap-[7px] shrink-0">
-                  {["bg-[#ff5f57]", "bg-[#febc2e]", "bg-[#28c840]"].map((c, i) => (
+                  {["bg-zinc-500", "bg-zinc-400", "bg-zinc-300"].map((c, i) => (
                     <span
                       key={i}
                       className={`w-2.5 h-2.5 sm:w-[11px] sm:h-[11px] rounded-full ${c} opacity-80 hover:opacity-100 transition-all cursor-default`}
@@ -581,7 +581,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
                 </div>
 
                 <div className="snx-console-title flex items-center gap-2 min-w-0">
-                  <XTerm size={13} className="text-emerald-400/80 shrink-0" />
+                  <XTerm size={13} className="text-zinc-400 shrink-0" />
                   <div className="min-w-0 text-center">
                     <h1 className="qx-display text-[10px] sm:text-[11px] font-bold tracking-[0.2em] sm:tracking-[0.3em] text-slate-200 uppercase truncate">
                       System Console
@@ -606,7 +606,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
 
               <div className="qx-console-toolbar flex flex-wrap items-center gap-2 border-y px-3 py-2">
                 <div className="flex items-center gap-1 rounded-lg border border-white/[0.07] bg-black/20 p-0.5">
-                  {FILTERS.map((item) => <button key={item.key} type="button" onClick={() => setFilter(item.key)} className={`rounded-md px-2.5 py-1 text-[10px] font-medium transition-colors ${filter === item.key ? "bg-indigo-500/15 text-indigo-200" : "text-slate-500 hover:text-slate-300"}`}>{item.label}</button>)}
+                  {FILTERS.map((item) => <button key={item.key} type="button" onClick={() => setFilter(item.key)} className={`rounded-md px-2.5 py-1 text-[10px] font-medium transition-colors ${filter === item.key ? "bg-white/[0.08] text-zinc-100" : "text-zinc-500 hover:text-zinc-300"}`}>{item.label}</button>)}
                 </div>
                 <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Filter output…" aria-label="Filter console output" className="ml-auto min-w-[150px] flex-1 rounded-md border border-white/[0.07] bg-black/20 px-2.5 py-1.5 font-mono text-[11px] text-slate-200 outline-none placeholder:text-slate-600 focus:border-indigo-400/40 sm:flex-none" />
               </div>
@@ -623,7 +623,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
               >
                 {logs.length === 0 && (
                   <div className="flex items-center gap-2 text-foreground/25 py-2 text-xs">
-                    <span className="text-emerald-400/70">❯</span>
+                    <span className="text-zinc-400">❯</span>
                     <span>Awaiting connection</span>
                     <span className="flex gap-[3px] ml-1">
                       {[0, 1, 2].map((i) => (
@@ -663,7 +663,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
                   <div className="flex items-center py-[2px] sm:py-[3px] px-1 sm:px-2 -mx-1 sm:-mx-2">
                     <span className="hidden sm:inline-block w-7 sm:w-9 mr-2 sm:mr-3 shrink-0" />
                     <span
-                      className="text-emerald-400/50 text-xs select-none"
+                      className="text-zinc-400/70 text-xs select-none"
                       style={{ animation: "qx-blink 1.1s step-end infinite" }}
                     >
                       ▋
@@ -677,9 +677,9 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
                 <button
                   type="button"
                   onClick={jumpToBottom}
-                  className="qx-tail-in absolute bottom-28 sm:bottom-32 right-4 sm:right-5 z-20 flex items-center gap-1.5 qx-display text-[9px] font-bold uppercase tracking-[0.14em] px-2.5 py-1.5 bg-black/80 backdrop-blur-md text-emerald-300 border border-emerald-400/30 rounded-lg shadow-[0_4px_20px_-4px_rgba(52,211,153,0.4)] hover:bg-emerald-400/10 transition-colors"
+                  className="qx-tail-in absolute bottom-28 sm:bottom-32 right-4 sm:right-5 z-20 flex items-center gap-1.5 qx-display text-[9px] font-bold uppercase tracking-[0.14em] px-2.5 py-1.5 bg-zinc-950 text-zinc-200 border border-white/15 rounded-md hover:bg-white/[0.06] transition-colors"
                 >
-                  <ChevronDown size={11} className="animate-bounce" />
+                  <ChevronDown size={11} />
                   Tail
                 </button>
               )}
@@ -690,7 +690,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
                 className="snx-command-bar qx-console-command p-2 sm:p-3 md:p-4 flex gap-2 relative z-10"
               >
                 <div className="snx-command-input qx-input-shell flex-1 flex items-center rounded-xl px-2.5 sm:px-4 transition-all duration-300 min-w-0">
-                  <span className="text-emerald-400/80 qx-mono text-xs mr-1.5 sm:mr-3 select-none font-semibold whitespace-nowrap shrink-0">
+                  <span className="text-zinc-300 qx-mono text-xs mr-1.5 sm:mr-3 select-none font-semibold whitespace-nowrap shrink-0">
                     <span className="hidden sm:inline">server&gt;</span>
                     <span className="sm:hidden">&gt;</span>
                   </span>
@@ -700,7 +700,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
                     value={command}
                     onChange={(e) => setCommand(e.target.value)}
                     onKeyDown={onInputKey}
-                    className="flex-1 bg-transparent py-2.5 sm:py-3 text-emerald-50/90 focus:outline-none qx-mono text-xs placeholder:text-foreground/25 caret-emerald-400 min-w-0"
+                    className="flex-1 bg-transparent py-2.5 sm:py-3 text-emerald-50/90 focus:outline-none qx-mono text-xs placeholder:text-foreground/25 caret-zinc-200 min-w-0"
                     placeholder="Type a command…"
                     spellCheck={false}
                     autoComplete="off"
