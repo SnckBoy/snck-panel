@@ -341,7 +341,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
       pendingLogs.current = [...pendingLogs.current, ...lines].slice(-MAX_LOG_LINES);
     });
 
-    socket.on("disconnect", (r: string) => {
+    socket.on("disconnect", () => {
       setConnected(false);
       // Connection state is shown by the live indicator; do not pollute Minecraft logs.
     });
