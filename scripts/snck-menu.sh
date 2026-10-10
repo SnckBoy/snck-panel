@@ -125,75 +125,39 @@ system_info(){
 
 uninstall_panel(){
   if [[ ! -r /dev/tty ]]; then
-    printf 'ERROR: Uninstall requires an interactive terminal for confirmation.\n' >&2
+    printf 'ERROR: Uninstall requires an interactive terminal for confirmation.\\n' >&2
     return 2
   fi
-  printf '\n\033[1;31mWARNING: This removes SNCK PANEL application files and its systemd service.\033[0m\n'
-  printf 'App data and .env will be preserved in %s before removal. Existing backups are preserved.\n\n' "$BACKUP_DIR"
-  local confirm stamp dest data_size_kb free_kb app_dev backup_dev
-  read -r -p 'Type UNINSTALL to continue: ' confirm </dev/tty
-  [[ "$confirm" == "UNINSTALL" ]] || { printf 'Cancelled; nothing was removed.\n'; return 0; }
 
-  mkdir -p "$BACKUP_DIR"
-  chmod 700 "$BACKUP_DIR"
-  stamp="$(date +%Y%m%d-%H%M%S)"
-  dest="$BACKUP_DIR/pre-uninstall-$stamp"
-  mkdir -m 700 "$dest"
+  printf '\\n\\033[1;31mDANGER: COMPLETE SNCK PANEL REMOVAL\\033[0m\\n'
+  printf 'This permanently deletes SNCK Panel application data, configuration, logs, and ALL backups.\\n'
+  printf 'No final backup will be kept.\\n'
+  printf 'Docker containers, images, volumes, and Minecraft server files outside these SNCK paths will not be intentionally removed.\\n\\n'
 
-  # Avoid duplicating large Minecraft worlds on a full disk. A same-filesystem
-  # rename preserves all data without requiring additional space.
-  if [[ -d "$APP_DIR/.data" ]]; then
-    app_dev="$(stat -c '%d' "$APP_DIR")"
-    backup_dev="$(stat -c '%d' "$BACKUP_DIR")"
-    if [[ "$app_dev" == "$backup_dev" ]]; then
-      if [[ -f "$APP_DIR/.env" ]] && ! cp -a "$APP_DIR/.env" "$dest/.env"; then
-        printf 'ERROR: Could not save .env; aborting without removing the panel.\n' >&2
-        rm -rf -- "$dest"
-        return 1
-      fi
-      if ! mv -- "$APP_DIR/.data" "$dest/.data"; then
-        printf 'ERROR: Could not preserve .data; aborting without removing the panel.\n' >&2
-        return 1
-      fi
-    else
-      data_size_kb="$(du -sk "$APP_DIR/.data" | awk '{print $1}')"
-      free_kb="$(df -Pk "$BACKUP_DIR" | awk 'END {print $4}')"
-      if (( free_kb < data_size_kb + 10240 )); then
-        printf 'ERROR: Not enough free space to safely back up panel data.\n' >&2
-        printf 'Data needs approximately %s MiB; destination has %s MiB free.\n' "$((data_size_kb / 1024))" "$((free_kb / 1024))" >&2
-        printf 'Nothing was uninstalled. Free space or move the backup destination, then retry.\n' >&2
-        rm -rf -- "$dest"
-        return 1
-      fi
-      if ! cp -a "$APP_DIR/.data" "$dest/.data"; then
-        printf 'ERROR: Backup failed; original data was kept and the panel was not removed.\n' >&2
-        return 1
-      fi
-      if [[ -f "$APP_DIR/.env" ]] && ! cp -a "$APP_DIR/.env" "$dest/.env"; then
-        printf 'ERROR: Could not back up .env; original files were kept and the panel was not removed.\n' >&2
-        return 1
-      fi
-    fi
-  elif [[ -f "$APP_DIR/.env" ]]; then
-    if ! cp -a "$APP_DIR/.env" "$dest/.env"; then
-      printf 'ERROR: Could not back up .env; aborting without removing the panel.\n' >&2
-      rm -rf -- "$dest"
-      return 1
-    fi
-  fi
+  local confirm
+  read -r -p 'Type DELETE-SNCK to permanently remove SNCK Panel and all its backups: ' confirm </dev/tty
+  [[ "$confirm" == "DELETE-SNCK" ]] || { printf 'Cancelled; nothing was removed.\\n'; return 0; }
 
-  chmod 700 "$dest"
+  printf '\\nStopping SNCK Panel service...\\n'
   if command -v systemctl >/dev/null 2>&1; then
     systemctl disable --now "$SERVICE" 2>/dev/null || true
     rm -f "/etc/systemd/system/$SERVICE"
     systemctl daemon-reload
     systemctl reset-failed "$SERVICE" 2>/dev/null || true
   fi
-  rm -rf -- "$APP_DIR"
-  rm -f /usr/local/bin/snck-panel
-  printf '\033[1;32mSNCK PANEL application and service removed.\033[0m\n'
-  printf 'Backup saved at: %s\n' "$dest"
-  printf 'Docker and Node.js are intentionally left installed because other apps may use them.\n'
+
+  printf 'Removing SNCK Panel application, settings, logs, and backups...\\n'
+  rm -rf -- \
+    "$APP_DIR" \
+    "$BACKUP_DIR" \
+    /etc/snck-panel \
+    /var/lib/snck-panel \
+    /var/log/snck-panel
+  rm -f -- /usr/local/bin/snck-panel "$LOG_FILE"
+
+  printf '\\n\\033[1;32mSNCK PANEL and its backups have been removed.\\033[0m\\n'
+  printf 'Docker and Node.js are intentionally left installed because other apps may use them.\\n'
+  printf 'Minecraft containers, images, and volumes were not targeted.\\n'
 }
 
 # Direct command mode: install.sh uninstall or snck-menu.sh uninstall.
