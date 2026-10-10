@@ -86,7 +86,25 @@ const STYLES = `
 .qx-console-floating { left: 50%; top: 50%; max-width: calc(100vw - 24px); max-height: calc(100vh - 24px); border-radius: 10px !important; }
 .qx-console-minimized { height: auto !important; min-height: 0 !important; }
 .qx-console-minimized .qx-console-body, .qx-console-minimized .qx-console-command { display: none !important; }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+/* Classic Minecraft system terminal: restrained CRT glow and compact mobile controls. */
+.qx-panel { background:#050807; border:1px solid #26352e; border-radius:8px; box-shadow:inset 0 0 0 1px rgba(55,255,150,.025),0 10px 32px rgba(0,0,0,.28); }
+.qx-console-window-bar { background:linear-gradient(180deg,#101714,#090d0b); border-bottom:1px solid #26352e; min-height:48px; }
+.qx-console-window-bar h1 { color:#cce8d5 !important; letter-spacing:.16em !important; }
+.qx-console-toolbar { background:#090e0c; border-color:#1e2b24; }
+.qx-console-body { background:#050907; background-image:linear-gradient(rgba(90,180,120,.018) 1px,transparent 1px); background-size:100% 4px; }
+.qx-input-shell { background:#070c09; border:1px solid #293a30; border-radius:6px; }
+.qx-input-shell:focus-within { border-color:rgba(68,220,125,.72); box-shadow:0 0 0 1px rgba(68,220,125,.12),0 0 16px rgba(35,170,85,.08); }
+.qx-run { background:#12351f; color:#8df4ad; border:1px solid #276b3d; border-radius:6px; }
+.qx-run:hover:not(:disabled) { background:#174629; border-color:#48b96d; }
+.qx-window-control { display:grid; place-items:center; width:30px; height:30px; border:1px solid #26352e; background:#0a100c; color:#9bb9a4; border-radius:4px; }
+.qx-window-control:hover { color:#a7ffbd; border-color:#3a754d; background:#102016; }
+.qx-log-line:hover { background:rgba(70,180,100,.045) !important; }
+.qx-console-floating { border:1px solid #3b6849 !important; box-shadow:0 0 0 1px rgba(58,160,85,.12),0 20px 70px #000 !important; }
+.snx-connection-badge { border-radius:4px; border-color:rgba(68,220,125,.22); background:rgba(35,130,65,.08); }
+.qx-scroll::-webkit-scrollbar-thumb { background:#263b2d; border-radius:3px; }
+@media (min-width:1280px) { .snx-console-window { min-height:min(680px,calc(100vh - 250px)); } }
+@media (max-width:767px) { .snx-console-window { height:min(64dvh,620px) !important; min-height:390px; border-radius:7px !important; } .snx-console-window-bar { padding:9px 10px !important; gap:6px; } .snx-console-title { flex:1; } .snx-console-toolbar { padding:7px 8px !important; gap:7px; } .snx-console-toolbar input { flex-basis:100%; min-width:0 !important; margin-left:0 !important; } .qx-console-body { padding:10px 8px !important; font-size:12px !important; line-height:1.55 !important; } .snx-command-bar { padding:8px !important; gap:7px; background:#080c09; border-top:1px solid #1d2a21; } .snx-command-input { padding:0 9px !important; border-radius:6px !important; } .snx-command-input input { padding-top:12px !important; padding-bottom:12px !important; font-size:12px !important; } .snx-execute-button { padding:0 12px !important; font-size:10px !important; letter-spacing:.08em !important; border-radius:6px !important; } .snx-server-workspace-card { border-radius:6px !important; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
 `
 
 /* ═══════════════════════════════════════════════════════
@@ -560,7 +578,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
               </span>
             </header>
             <section
-              className={`snx-console-window flex flex-col h-[460px] xs:h-[500px] md:h-[58vh] xl:h-[calc(100vh-390px)] qx-panel rounded-xl overflow-hidden relative ${
+              className={`snx-console-window flex flex-col h-[min(64vh,680px)] min-h-[390px] md:h-[58vh] xl:h-[calc(100vh-250px)] qx-panel rounded-xl overflow-hidden relative ${
                 ready ? "qx-enter-right" : "opacity-0"
               } ${isFloating ? "qx-console-floating fixed z-[60] w-[min(92vw,980px)]" : ""} ${isMinimized ? "qx-console-minimized" : ""}`}
               style={{
