@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { initializeApp, deleteApp } from "firebase/app";
 import { useSettings } from "../context/SettingsContext";
-import { CheckCircle2, AlertCircle, KeyRound, SlidersHorizontal } from "lucide-react";
+import { CheckCircle2, AlertCircle, KeyRound, SlidersHorizontal, Gift } from "lucide-react";
 
 export default function AdminPlatformControls() {
   const settings = useSettings();
@@ -19,6 +19,12 @@ export default function AdminPlatformControls() {
   const [storageBucket, setStorageBucket] = useState(settings.firebaseStorageBucket || "");
   const [senderId, setSenderId] = useState(settings.firebaseMessagingSenderId || "");
   const [appId, setAppId] = useState(settings.firebaseAppId || "");
+  const [freeEnabled, setFreeEnabled] = useState(false);
+  const [freeRam, setFreeRam] = useState("2");
+  const [freeCpu, setFreeCpu] = useState("100");
+  const [freeDisk, setFreeDisk] = useState("5");
+  const [freeMaxServers, setFreeMaxServers] = useState("1");
+  const [freeDurationHours, setFreeDurationHours] = useState("168");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{text:string; ok:boolean} | null>(null);
 
@@ -72,6 +78,20 @@ export default function AdminPlatformControls() {
         {switchRow("User Registration","Allow new users to register.",registration,v=>void toggle("enableRegistration",v,setRegistration,"Registration"))}
       </div>
       <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-3"><label className="text-sm text-muted-foreground" htmlFor="snck-admin-theme">Theme preset</label><select id="snck-admin-theme" value={theme} onChange={e=>setTheme(e.target.value)} className="bg-muted border border-border rounded-xl px-3 py-2.5 text-foreground">{["aurora","midnight","nebula","cyber","royal-purple","ocean","emerald","crimson"].map(t=><option key={t} value={t}>{t}</option>)}</select><button disabled={busy} onClick={()=>void save({theme},"Theme saved.")} className="rounded-xl px-4 py-2.5 bg-indigo-600 text-white disabled:opacity-50">Save theme</button></div>
+    </section>
+    <section className="bg-card border border-emerald-500/20 rounded-2xl p-5 md:p-7 shadow-xl">
+      <h2 className="text-xl font-bold mb-1 flex items-center gap-3 text-foreground"><Gift className="text-emerald-400" size={20}/> Free Minecraft Service</h2>
+      <p className="text-sm text-muted-foreground mb-5">Owner-configured limits for regular users creating free servers.</p>
+      <label className="flex items-center justify-between gap-4 rounded-xl border border-border bg-muted/40 p-4 mb-5"><span><strong className="block text-sm text-foreground">Enable free server creation</strong><span className="block text-xs text-muted-foreground mt-1">Allow normal users to create servers within these limits.</span></span><input type="checkbox" className="h-4 w-4 accent-emerald-500" checked={freeEnabled} disabled={busy || settings.role !== "owner"} onChange={e=>setFreeEnabled(e.target.checked)} /></label>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {field("RAM per server (GB)",freeRam,setFreeRam,"2","number")}
+        {field("CPU limit (%)",freeCpu,setFreeCpu,"100","number")}
+        {field("Disk per server (GB)",freeDisk,setFreeDisk,"5","number")}
+        {field("Servers per user",freeMaxServers,setFreeMaxServers,"1","number")}
+        {field("Default lifetime (hours)",freeDurationHours,setFreeDurationHours,"168 (7 days)","number")}
+      </div>
+      <p className="mt-3 text-xs text-muted-foreground">Lifetime 0 means permanent by default. No selected lifetime means permanent.</p>
+      <button type="button" disabled={busy || settings.role !== "owner"} onClick={()=>void save({freeService:{enabled:freeEnabled,ram:Number(freeRam),cpu:Number(freeCpu),disk:Number(freeDisk),maxServers:Number(freeMaxServers),durationHours:Number(freeDurationHours)}}, "Free service limits saved.")} className="mt-5 rounded-xl px-5 py-2.5 bg-emerald-600 text-white disabled:opacity-50">{busy?"Saving…":"Save free service limits"}</button>
     </section>
     <section className="bg-card border border-border-subtle rounded-2xl p-5 md:p-7 shadow-xl">
       <h2 className="text-xl font-bold mb-1 flex items-center gap-3 text-foreground"><KeyRound className="text-amber-400" size={20}/> Google & Firebase Authentication</h2>
