@@ -9,7 +9,22 @@ import {audit,encryptSecret,hashSecret,randomSecret,rateLimit,decryptSecret} fro
 import {createDns} from "../services/cloudflare.js";
 import {nodeControl} from "../services/nodeClient.js";
 import {nodeConnection, nodeUrlParts} from "../services/nodeEndpoint.js";
-const router=express.Router();router.use(requireAdmin,rateLimit());
+const router=express.Router();
+// Safe, read-only node inventory for regular users. Never expose credentials,
+// private nodes, daemon connection secrets, or mutation endpoints here.
+router.get("/public", async (_req, res) => {
+ try {
+  const nodes = await readJSON("nodes.json") || [];
+  const now = Date.now();
+  res.json(nodes.filter((n:any) => n.visibility !== "private").map((n:any) => ({
+   id: String(n.id), name: String(n.name || "Node"), description: String(n.description || ""),
+   location: String(n.location || ""), status: nodeStatus(n, now),
+   memory: Number(n.memory || 0), disk: Number(n.disk || 0), cpu: Number(n.cpu || 0),
+   lastHeartbeat: n.lastHeartbeat || null
+  })));
+ } catch { res.status(500).json({error:"Could not load public node inventory"}); }
+});
+router.use(requireAdmin,rateLimit());
 const file="nodes.json", setupFile="node_setup_tokens.json";
 // Nodes are created explicitly by an administrator. Panel-only installs must not
 // manufacture a misleading local node before a daemon has been installed and registered.
