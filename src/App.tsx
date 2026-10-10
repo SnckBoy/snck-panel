@@ -116,6 +116,12 @@ const TutorialManager = () => {
       : localStorage.getItem(tutorialKey);
 
     if (!tutorialShown) {
+      // Persist the first-login guide as shown immediately, so a refresh during
+      // the overlay cannot restart the guide on every page reload.
+      try {
+        if (isDev) sessionStorage.setItem(tutorialKey, "true");
+        else localStorage.setItem(tutorialKey, "true");
+      } catch { /* storage can be unavailable in private browsing */ }
       setShowTutorial(true);
     }
   }, [user, loading, location.pathname, enableTutorial]);
