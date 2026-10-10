@@ -12,11 +12,14 @@ import PulseRing from '../components/PulseRing';
 import InfrastructureCore from '../components/InfrastructureCore';
 
 const SparklineChart = ({ data, color }: { data: number[]; color: string }) => {
-  const max = Math.max(...data);
-  const min = Math.min(...data);
+  // Guard empty/single-point histories so SVG coordinates stay finite before telemetry arrives.
+  const safeData = data.filter((value) => Number.isFinite(value));
+  const samples = safeData.length === 0 ? [0, 0] : safeData.length === 1 ? [safeData[0], safeData[0]] : safeData;
+  const max = Math.max(...samples);
+  const min = Math.min(...samples);
   const range = max - min || 1;
-  const points = data.map((value, index) => {
-    const x = (index / (data.length - 1)) * 100;
+  const points = samples.map((value, index) => {
+    const x = (index / (samples.length - 1)) * 100;
     const y = 100 - (((value - min) / range) * 80 + 10);
     return `${x},${y}`;
   }).join(' ');
@@ -254,7 +257,7 @@ export default function Dashboard() {
 const ServerCard = ({ server, view, isBusy, onAction, onOpenTerminal }: any) => {
   if (view === 'list') {
     return (
-      <motion.article layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.97 }} className="dashboard-server-card snx-server-row">
+      <motion.article initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="dashboard-server-card snx-server-row">
         <div className="snx-server-identity">
           <StatusPill status={server.status} />
           <div className="min-w-0"><h3>{server.name}</h3><p>{server.id}</p></div>
@@ -273,7 +276,7 @@ const ServerCard = ({ server, view, isBusy, onAction, onOpenTerminal }: any) => 
   }
 
   return (
-    <motion.article layout initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.97 }} className="dashboard-server-card snx-server-card">
+    <motion.article initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="dashboard-server-card snx-server-card">
       <div className="snx-server-card-topline" aria-hidden="true" />
       <div className="snx-server-card-heading">
         <div className="min-w-0"><h3>{server.name}</h3><p className="snx-server-id">{server.id}</p></div>
