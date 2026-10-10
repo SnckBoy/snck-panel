@@ -1,6 +1,5 @@
 // @ts-nocheck
 // @ts-nocheck
-import AdminControls from '../components/AdminControls';
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
@@ -99,20 +98,9 @@ export default function SettingsPage(): React.ReactElement {
   const [isUpdatingLogo, setIsUpdatingLogo] = useState(false);
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isUpdatingSystem, setIsUpdatingSystem] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleSystemUpdate = async () => {
-    try {
-      setIsUpdatingSystem(true);
-      await axios.post("/api/system/update");
-      setIsUpdatingSystem(false);
-    } catch (e) {
-      alert("Failed to update system. Please check logs.");
-      setIsUpdatingSystem(false);
-    }
-  };
 
   useEffect(() => {
     setNewPanelName(panelName);
@@ -691,111 +679,9 @@ export default function SettingsPage(): React.ReactElement {
             </div>
           </div>
 
-          {/* Platform Features */}
-          <div className="bg-card border border-border-subtle rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden">
-            <h2 className="text-xl font-bold mb-6 flex items-center text-foreground">
-              <RefreshCw className="mr-3 text-emerald-400 w-5 h-5" /> Platform Features
-            </h2>
-            <div className="flex flex-col gap-6">
-              
-              <div className="flex items-start justify-between gap-4 p-4 rounded-2xl bg-muted/50 border border-border-subtle">
-                <div>
-                  <h3 className="font-semibold text-foreground text-sm">Playit Tunnel Integration</h3>
-                  <p className="text-xs text-muted-foreground mt-1">Allow users to expose their local servers to the internet using playit.gg tunnels.</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-1">
-                  <input 
-                    type="checkbox" 
-                    checked={newEnablePlayit} 
-                    onChange={async (e: any) => {
-                      const val = e.target.checked;
-                      setNewEnablePlayit(val);
-                      try {
-                        await axios.put("/api/system/settings", { enablePlayit: val });
-                        fetchSettings();
-                      } catch (err) { console.error(err); }
-                    }}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                </label>
-              </div>
-
-              <div className="flex items-start justify-between gap-4 p-4 rounded-2xl bg-muted/50 border border-border-subtle">
-                <div>
-                  <h3 className="font-semibold text-foreground text-sm">Onboarding Tutorial</h3>
-                  <p className="text-xs text-muted-foreground mt-1">Show a guided tour to new users when they log in for the first time.</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-1">
-                  <input 
-                    type="checkbox" 
-                    checked={newEnableTutorial} 
-                    onChange={async (e: any) => {
-                      const val = e.target.checked;
-                      setNewEnableTutorial(val);
-                      try {
-                        await axios.put("/api/system/settings", { enableTutorial: val });
-                        fetchSettings();
-                      } catch (err) { console.error(err); }
-                    }}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                </label>
-              </div>
-
-              <div className="flex items-start justify-between gap-4 p-4 rounded-2xl bg-muted/50 border border-border-subtle">
-                <div>
-                  <h3 className="font-semibold text-foreground text-sm">Cinematic Login Intro</h3>
-                  <p className="text-xs text-muted-foreground mt-1">Enable the animated sequence on the login screen.</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-1">
-                  <input 
-                    type="checkbox" 
-                    checked={newEnableLoginAnimation} 
-                    onChange={async (e: any) => {
-                      const val = e.target.checked;
-                      setNewEnableLoginAnimation(val);
-                      try {
-                        await axios.put("/api/system/settings", { enableLoginAnimation: val });
-                        fetchSettings();
-                      } catch (err) { console.error(err); }
-                    }}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                </label>
-              </div>
-
-              <div className="flex items-start justify-between gap-4 p-4 rounded-2xl bg-muted/50 border border-border-subtle">
-                <div>
-                  <h3 className="font-semibold text-foreground text-sm">User Registration</h3>
-                  <p className="text-xs text-muted-foreground mt-1">Allow new users to register an account on the panel.</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-1">
-                  <input 
-                    type="checkbox" 
-                    checked={newEnableRegistration} 
-                    onChange={async (e: any) => {
-                      const val = e.target.checked;
-                      setNewEnableRegistration(val);
-                      try {
-                        await axios.put("/api/system/settings", { enableRegistration: val });
-                        fetchSettings();
-                      } catch (err) { console.error(err); }
-                    }}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                </label>
-              </div>
-
-            </div>
-          </div>
         </div>
       )}
 
-      {renderGoogleFirebase()}
       {isAdmin && (
         <div className="bg-card/80 backdrop-blur-xl border border-border-subtle rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden mt-8">
           <h2 className="text-xl font-bold mb-6 flex items-center text-foreground relative z-10"><Sparkles className="mr-3 text-purple-400 w-5 h-5" /> Appearance</h2>
@@ -993,30 +879,7 @@ export default function SettingsPage(): React.ReactElement {
         />
       )}
 
-      {isAdmin && (
-        <AdminControls user={user} users={users} username={username} setUsername={setUsername} password={password} setPassword={setPassword} role={role} setRole={setRole} isCreatingUser={isCreatingUser} createUser={createUser} editingUserId={editingUserId} setEditingUserId={setEditingUserId} adminUserNewPassword={adminUserNewPassword} setAdminUserNewPassword={setAdminUserNewPassword} changeUserPassword={changeUserPassword} changeUserRole={changeUserRole} deleteUser={deleteUser} />
-      )}
-
-      {isAdmin && (
-        <div className="bg-card border border-border-subtle rounded-2xl p-6 md:p-8 shadow-xl mt-8">
-          <h2 className="text-xl font-bold mb-4 flex items-center text-foreground">
-            <RefreshCw className="mr-3 text-emerald-400 w-5 h-5" /> System Update
-          </h2>
-          <p className="text-muted-foreground text-sm mb-6 max-w-2xl">
-            Trigger an automatic update of Snck. This will run git pull and rebuild the system. The panel will be unavailable for a few seconds during this process.
-          </p>
-          <button 
-            onClick={handleSystemUpdate}
-            disabled={isUpdatingSystem}
-            className="px-6 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-medium rounded-xl border border-emerald-500/20 transition-all shadow-sm flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <RefreshCw className={`w-4 h-4 mr-2 ${isUpdatingSystem ? "animate-spin" : ""}`} />
-            {isUpdatingSystem ? "Updating System..." : "Update Panel"}
-          </button>
-        </div>
-      )}
-
-      {(isProcessing || isUpdatingLogo || isSavingSettings || isChangingPassword || isCreatingUser || isUpdatingSystem) && <LoadingOverlay />}
+      {(isProcessing || isUpdatingLogo || isSavingSettings || isChangingPassword || isCreatingUser) && <LoadingOverlay />}
     </motion.div>
   );
 }
