@@ -263,6 +263,7 @@ export const createServer = async (req: Request, res: Response) => {
   const nodes = await readJSON("nodes.json") || [];
   const selectedNode = nodes.find((node: any) => node.id === requestedNodeId);
   if (!selectedNode) return res.status(400).json({ error: "Node not found" });
+  if (!isStaff && selectedNode.freeServiceLocked) return res.status(403).json({ error: "This node is locked for Free Minecraft Service. Choose another available node." });
   if (selectedNode.disabled) return res.status(409).json({ error: "Selected node is disabled" });
   if (selectedNode.maintenance) return res.status(409).json({ error: "Selected node is in maintenance mode; new server creation is blocked" });
   if (selectedNode.isLocal) {
