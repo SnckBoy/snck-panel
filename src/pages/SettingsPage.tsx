@@ -796,17 +796,20 @@ export default function SettingsPage(): React.ReactElement {
       )}
 
       {renderGoogleFirebase()}
-      <div className="bg-card/80 backdrop-blur-xl border border-border-subtle rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden mt-8">
-        <h2 className="text-xl font-bold mb-6 flex items-center text-foreground relative z-10"><Sparkles className="mr-3 text-purple-400 w-5 h-5" /> Appearance</h2>
-        {appearanceStatusMsg && <div role="status" className={`mb-4 rounded-xl border px-4 py-3 text-sm ${appearanceStatusMsg.type === "success" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" : "border-red-500/30 bg-red-500/10 text-red-400"}`}>{appearanceStatusMsg.text}</div>}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
-          <label className="text-sm text-muted-foreground">Theme preset<select value={theme} onChange={(e) => void saveAppearanceSetting("theme", e.target.value, setTheme)} className="mt-2"><option value="aurora">Snck Aurora</option><option value="midnight">Midnight</option><option value="nebula">Nebula</option><option value="cyber">Cyber</option><option value="royal-purple">Royal Purple</option><option value="ocean">Ocean</option><option value="emerald">Emerald</option><option value="crimson">Crimson</option></select></label>
-          <label className="text-sm text-muted-foreground">Appearance<select value={appearance} onChange={(e) => void saveAppearanceSetting("appearance", e.target.value, setAppearance)} className="mt-2"><option value="dark">Dark</option><option value="light">Light</option><option value="system">System</option></select></label>
-          <label className="text-sm text-muted-foreground">Accent<select value={accent} onChange={(e) => void saveAppearanceSetting("accent", e.target.value, setAccent)} className="mt-2"><option value="purple">Purple</option><option value="indigo">Indigo</option><option value="blue">Blue</option><option value="cyan">Cyan</option><option value="emerald">Emerald</option><option value="pink">Pink</option><option value="red">Red</option></select></label>
-          <label className="text-sm text-muted-foreground">Background effect<select value={backgroundEffect} onChange={(e) => void saveAppearanceSetting("backgroundEffect", e.target.value, setBackgroundEffect)} className="mt-2"><option value="none">None</option><option value="aurora">Aurora</option><option value="animated-gradient">Animated gradient</option><option value="grid">3D grid</option><option value="nebula">Nebula</option><option value="starfield">Starfield</option></select></label>
+      {isAdmin && (
+        <div className="bg-card/80 backdrop-blur-xl border border-border-subtle rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden mt-8">
+          <h2 className="text-xl font-bold mb-6 flex items-center text-foreground relative z-10"><Sparkles className="mr-3 text-purple-400 w-5 h-5" /> Appearance</h2>
+          {appearanceStatusMsg && <div role="status" className={`mb-4 rounded-xl border px-4 py-3 text-sm ${appearanceStatusMsg.type === "success" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" : "border-red-500/30 bg-red-500/10 text-red-400"}`}>{appearanceStatusMsg.text}</div>}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
+            <label className="text-sm text-muted-foreground">Theme preset<select value={theme} onChange={(e) => void saveAppearanceSetting("theme", e.target.value, setTheme)} className="mt-2"><option value="aurora">Snck Aurora</option><option value="midnight">Midnight</option><option value="nebula">Nebula</option><option value="cyber">Cyber</option><option value="royal-purple">Royal Purple</option><option value="ocean">Ocean</option><option value="emerald">Emerald</option><option value="crimson">Crimson</option></select></label>
+            <label className="text-sm text-muted-foreground">Appearance<select value={appearance} onChange={(e) => void saveAppearanceSetting("appearance", e.target.value, setAppearance)} className="mt-2"><option value="dark">Dark</option><option value="light">Light</option><option value="system">System</option></select></label>
+            <label className="text-sm text-muted-foreground">Accent<select value={accent} onChange={(e) => void saveAppearanceSetting("accent", e.target.value, setAccent)} className="mt-2"><option value="purple">Purple</option><option value="indigo">Indigo</option><option value="blue">Blue</option><option value="cyan">Cyan</option><option value="emerald">Emerald</option><option value="pink">Pink</option><option value="red">Red</option></select></label>
+            <label className="text-sm text-muted-foreground">Background effect<select value={backgroundEffect} onChange={(e) => void saveAppearanceSetting("backgroundEffect", e.target.value, setBackgroundEffect)} className="mt-2"><option value="none">None</option><option value="aurora">Aurora</option><option value="animated-gradient">Animated gradient</option><option value="grid">3D grid</option><option value="nebula">Nebula</option><option value="starfield">Starfield</option></select></label>
+          </div>
+          <label className="mt-5 flex items-center gap-3 text-sm text-muted-foreground relative z-10"><input type="checkbox" checked={reducedMotion} onChange={(e) => void saveAppearanceSetting("reducedMotion", e.target.checked, setReducedMotion)} /> Reduce motion for accessibility and low-power devices</label>
         </div>
-        <label className="mt-5 flex items-center gap-3 text-sm text-muted-foreground relative z-10"><input type="checkbox" checked={reducedMotion} onChange={(e) => void saveAppearanceSetting("reducedMotion", e.target.checked, setReducedMotion)} /> Reduce motion for accessibility and low-power devices</label>
-      </div>
+      )}
+
 
       {isAdmin && (
         <div className="bg-card/80 backdrop-blur-xl border border-border-subtle rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden mt-8">
