@@ -172,7 +172,7 @@ export default function ServerView() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="snx-server-view flex h-full bg-transparent overflow-hidden"
+      className="snx-server-view flex h-full min-h-0 min-w-0 bg-transparent overflow-hidden"
     >
             
       
@@ -271,9 +271,9 @@ export default function ServerView() {
         </div>
       </div>
 
-      <div className="snx-server-main flex-1 flex flex-col h-full bg-transparent overflow-hidden relative isolate">
+      <div className="snx-server-main flex-1 min-w-0 min-h-0 flex flex-col h-full bg-transparent overflow-hidden relative isolate">
         {/* Top Header with Hamburger */}
-        <div className="snx-server-topbar p-3 md:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 shrink-0 relative z-20">
+        <div className="snx-server-topbar p-3 md:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 min-w-0 shrink-0 relative z-20">
           <div className="flex items-center justify-between w-full md:w-auto">
             <div className="flex items-center gap-3">
               <button 
@@ -298,7 +298,7 @@ export default function ServerView() {
             </div>
           </div>
           
-          <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 sm:pb-0 justify-between w-full md:w-auto">
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 min-w-0 max-w-full overflow-x-auto custom-scrollbar pb-1 sm:pb-0 justify-between w-full md:w-auto">
              <button type="button" onClick={handleCopyIp} aria-label="Copy server connection address" className="snx-connection-chip flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg cursor-pointer shrink-0" title="Copy Connection Info">
                 <span className="text-xs font-mono text-muted-foreground group-hover:text-foreground-muted transition-colors truncate max-w-[150px] lg:max-w-[200px]">
                   {server.ipAlias ? `${server.ipAlias}:${server.port}` : server.port}
@@ -334,8 +334,8 @@ export default function ServerView() {
           </div>
         </div>
 
-<div className="snx-server-content flex-1 relative flex flex-col min-h-0 bg-transparent">
-        <div className="flex-1 flex flex-col relative overflow-hidden bg-transparent min-h-0 snx-server-route-surface">
+<div className="snx-server-content flex-1 relative flex flex-col min-h-0 min-w-0 max-w-full bg-transparent">
+        <div className="flex-1 flex flex-col relative overflow-x-hidden overflow-y-auto bg-transparent min-h-0 min-w-0 snx-server-route-surface">
            {actionNotice && <div role="status" aria-live="polite" className={`mx-3 mt-3 rounded-xl border px-4 py-3 text-xs ${actionNotice.tone === "error" ? "border-rose-400/25 bg-rose-400/10 text-rose-200" : actionNotice.tone === "success" ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-200" : "border-cyan-400/25 bg-cyan-400/10 text-cyan-100"}`}>
              {actionNotice.dockerUnavailable ? (
                <div className="flex items-start gap-3">
