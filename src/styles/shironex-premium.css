@@ -509,3 +509,54 @@ body { overflow-x: clip; }
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* SNCK stability patch: avoid first-load blank states and mobile scroll jank. */
+html, body, #root { min-height: 100%; }
+html { height: auto; overflow-y: auto; }
+body {
+  min-height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#root { min-height: 100dvh; }
+.global-live-wallpaper {
+  pointer-events: none !important;
+  contain: strict;
+}
+.global-live-wallpaper .wallpaper-orb,
+.global-live-wallpaper .wallpaper-grid,
+.global-live-wallpaper .wallpaper-stars,
+.global-live-wallpaper .wallpaper-noise,
+.global-live-wallpaper .core-space__particles,
+.global-live-wallpaper .core-space__echo {
+  will-change: auto !important;
+}
+@media (max-width: 767px) {
+  .global-live-wallpaper {
+    position: fixed;
+    inset: 0;
+    transform: translateZ(0);
+  }
+  .global-live-wallpaper .wallpaper-orb,
+  .global-live-wallpaper .wallpaper-grid,
+  .global-live-wallpaper .wallpaper-stars,
+  .global-live-wallpaper .wallpaper-noise,
+  .global-live-wallpaper .core-space__particles,
+  .global-live-wallpaper .core-space__echo {
+    animation: none !important;
+  }
+  .snx-dashboard-page,
+  .snx-dashboard-inner,
+  .snx-app-content,
+  .snx-server-content {
+    transform: none;
+    contain: layout style;
+  }
+  .snx-dashboard-token-card,
+  .snx-dashboard-token-card-inner {
+    transform: none !important;
+    animation: none !important;
+  }
+}
