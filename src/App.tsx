@@ -75,7 +75,7 @@ const AnimatedRoutes = () => {
           <Route path="/login" element={<PublicAuthRoute><Login /></PublicAuthRoute>} />
           <Route path="/register" element={<PublicAuthRoute><Register /></PublicAuthRoute>} />
           <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/nodes" element={<ProtectedRoute><AdminOnlyRoute><Nodes /></AdminOnlyRoute></ProtectedRoute>} />
+          <Route path="/nodes" element={<ProtectedRoute><Nodes /></ProtectedRoute>} />
           <Route path="/allocations" element={<ProtectedRoute><AdminOnlyRoute><Allocations /></AdminOnlyRoute></ProtectedRoute>} />
           <Route path="/cloudflare" element={<ProtectedRoute><AdminOnlyRoute><Cloudflare /></AdminOnlyRoute></ProtectedRoute>} />
           <Route path="/servers" element={<ProtectedRoute><ServerList /></ProtectedRoute>} />
