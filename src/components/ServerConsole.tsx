@@ -123,7 +123,6 @@ const levelOf = (raw: string): LogLevel => {
 const isImportantLog = (raw: string) => {
   const l = stripAnsi(raw).trim();
   // Default view is intentionally quiet: actionable events only.
-  if (/^>/.test(l)) return true;
   if (/\b(ERROR|FATAL|SEVERE|EXCEPTION|WARN|WARNING)\b|Can't keep up|crash|failed|failure|timed out|timeout|out of memory/i.test(l)) return true;
   if (/joined the game|left the game|lost connection|logged in|logged out|server started|server stopped|saving worlds|saving players|stopping server|ready for connections/i.test(l)) return true;
   if (/^\[System Error\]/i.test(l)) return true;
@@ -270,7 +269,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
   useEffect(() => {
     if (!actionNotice?.text || actionNotice.text === lastActionNotice.current) return;
     lastActionNotice.current = actionNotice.text;
-    setLogs((previous) => [...previous, `[System] ${actionNotice.text}`].slice(-MAX_LOG_LINES));
+    // Action feedback belongs in the server controls, not in Minecraft stdout/stderr.
   }, [actionNotice]);
 
   useEffect(() => {
@@ -333,7 +332,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
       const message = payload?.error || "You are not authorized to view this server console.";
       setConnected(false);
       setAccessDenied(message);
-      setLogs((p) => [...p, `[System Error] ${message}`].slice(-MAX_LOG_LINES));
+      // Keep transport/auth diagnostics out of the Minecraft log stream.
     });
 
     socket.on("log", (data: string) => {
@@ -344,7 +343,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
 
     socket.on("disconnect", (r: string) => {
       setConnected(false);
-      setLogs((p) => [...p, `[System] Disconnected. (${r})`].slice(-MAX_LOG_LINES));
+      // Connection state is shown by the live indicator; do not pollute Minecraft logs.
     });
 
     socket.on("clear_logs", () => {
@@ -448,10 +447,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
       setCmdHistory((h) => [cmd, ...h].slice(0, 50));
       setHistIdx(-1);
       // Echo locally for immediate feedback
-      setLogs((p) => {
-        const next = [...p, `> ${cmd}`];
-        return next.length > MAX_LOG_LINES ? next.slice(-MAX_LOG_LINES) : next;
-      });
+      // Commands are sent to Minecraft, while the log pane displays server output only.
       try {
         await axios.post(`/api/servers/${serverId}/command`, { command: cmd }, { timeout: 20000 });
       } catch (err: any) {
