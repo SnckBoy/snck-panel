@@ -21,7 +21,8 @@ import {
   Network,
   Wrench,
   Feather,
-  CheckCircle2
+  CheckCircle2,
+  Clock3
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import SearchableDropdown from "../components/SearchableDropdown";
@@ -41,6 +42,8 @@ export default function CreateServer() {
   const [ram, setRam] = useState<string>("4");
   const [cpu, setCpu] = useState<string>("150");
   const [disk, setDisk] = useState<string>("10");
+  const [lifetimeHours, setLifetimeHours] = useState<string>("");
+  const [freeService, setFreeService] = useState<any>(null);
   const [port, setPort] = useState<string>("25565");
   const [ipAlias, setIpAlias] = useState<string>("");
   const [type, setType] = useState<string>("PAPER");
@@ -79,6 +82,16 @@ export default function CreateServer() {
     else if (val <= 64) autoCpu = 800;
     setCpu(autoCpu.toString());
   };
+
+  useEffect(() => {
+    axios.get("/api/system/settings").then(({data}) => {
+      const service = data?.freeService || null;
+      setFreeService(service);
+      if (user?.role !== "admin" && user?.role !== "owner" && service?.enabled) {
+        setRam(String(service.ram ?? 2)); setCpu(String(service.cpu ?? 100)); setDisk(String(service.disk ?? 5));
+      }
+    }).catch(()=>{});
+  }, [user?.role]);
 
   useEffect(() => {
     axios.get(`/api/system/versions?type=${type}`).then((res) => {
@@ -161,6 +174,7 @@ export default function CreateServer() {
         type,
         version,
         ...(javaVersion ? { javaVersion } : {}),
+        lifetimeHours,
       };
       if (owner) payload.owner = owner;
       if (nodeId) payload.nodeId = nodeId;
@@ -420,6 +434,16 @@ export default function CreateServer() {
               searchPlaceholder="Search versions..."
               className="font-mono"
             />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-foreground-muted mb-2 flex items-center"><Clock3 className="w-4 h-4 mr-2 text-emerald-400" /> Server lifetime</label>
+            <select value={lifetimeHours} onChange={e=>setLifetimeHours(e.target.value)} className="w-full bg-card border border-border rounded-xl px-4 py-3 text-foreground font-mono">
+              <option value="">Permanent (no expiry)</option>
+              {user?.role !== "admin" && user?.role !== "owner" && freeService?.durationHours > 0 && <option value="default">Free service default ({freeService.durationHours} hours)</option>}
+              <option value="1">1 hour</option><option value="24">24 hours</option><option value="168">7 days</option><option value="720">30 days</option><option value="2160">90 days</option>
+            </select>
+            <p className="mt-2 text-xs text-muted-foreground">Leave Permanent selected if you do not want an expiry time.</p>
           </div>
 
           <div className="md:col-span-2 relative z-10">
