@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const refreshSetupStatus = useCallback(async () => {
     try {
-      const response = await axios.get("/api/auth/setup-status");
+      const response = await axios.get("/api/auth/setup-status", { timeout: 8000 });
       setSetupRequired(response.data.setupRequired === true);
       return response.data.setupRequired === true;
     } catch {
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    axios.get("/api/auth/me").then((response) => {
+    axios.get("/api/auth/me", { timeout: 10000 }).then((response) => {
       setUser(response.data.user);
       setLoading(false);
     }).catch(() => {
