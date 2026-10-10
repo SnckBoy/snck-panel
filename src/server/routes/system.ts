@@ -13,6 +13,15 @@ const router = express.Router();
 
 router.use(requireAuth);
 
+router.get("/settings", async (_req, res) => {
+  const settings = await readJSON("settings.json") || {};
+  // Only expose non-secret presentation/service settings here.
+  res.json({ panelName: settings.panelName, panelLogo: settings.panelLogo, theme: settings.theme,
+    enablePlayit: settings.enablePlayit, enableTutorial: settings.enableTutorial,
+    enableLoginAnimation: settings.enableLoginAnimation, enableRegistration: settings.enableRegistration,
+    enableGoogleLogin: settings.enableGoogleLogin, freeService: settings.freeService || { enabled:false, ram:2, cpu:100, disk:5, maxServers:1, durationHours:168 } });
+});
+
 router.get("/versions", async (req, res) => {
   const type = (req.query.type as string) || "PAPER";
   const versions = await getVersions(type);
