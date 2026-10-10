@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { initializeApp, deleteApp } from "firebase/app";
 import { useSettings } from "../context/SettingsContext";
+import { useAuth } from "../context/AuthContext";
 import { CheckCircle2, AlertCircle, KeyRound, SlidersHorizontal, Gift } from "lucide-react";
 
 export default function AdminPlatformControls() {
   const settings = useSettings();
+  const { user } = useAuth();
   const [panelName, setPanelName] = useState(settings.panelName || "SNCK PANEL");
   const [playit, setPlayit] = useState(Boolean(settings.enablePlayit));
   const [tutorial, setTutorial] = useState(Boolean(settings.enableTutorial));
@@ -82,7 +84,7 @@ export default function AdminPlatformControls() {
     <section className="bg-card border border-emerald-500/20 rounded-2xl p-5 md:p-7 shadow-xl">
       <h2 className="text-xl font-bold mb-1 flex items-center gap-3 text-foreground"><Gift className="text-emerald-400" size={20}/> Free Minecraft Service</h2>
       <p className="text-sm text-muted-foreground mb-5">Owner-configured limits for regular users creating free servers.</p>
-      <label className="flex items-center justify-between gap-4 rounded-xl border border-border bg-muted/40 p-4 mb-5"><span><strong className="block text-sm text-foreground">Enable free server creation</strong><span className="block text-xs text-muted-foreground mt-1">Allow normal users to create servers within these limits.</span></span><input type="checkbox" className="h-4 w-4 accent-emerald-500" checked={freeEnabled} disabled={busy || settings.role !== "owner"} onChange={e=>setFreeEnabled(e.target.checked)} /></label>
+      <label className="flex items-center justify-between gap-4 rounded-xl border border-border bg-muted/40 p-4 mb-5"><span><strong className="block text-sm text-foreground">Enable free server creation</strong><span className="block text-xs text-muted-foreground mt-1">Allow normal users to create servers within these limits.</span></span><input type="checkbox" className="h-4 w-4 accent-emerald-500" checked={freeEnabled} disabled={busy || user?.role !== "owner"} onChange={e=>setFreeEnabled(e.target.checked)} /></label>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {field("RAM per server (GB)",freeRam,setFreeRam,"2","number")}
         {field("CPU limit (%)",freeCpu,setFreeCpu,"100","number")}
