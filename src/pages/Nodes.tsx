@@ -64,7 +64,8 @@ export default function Nodes() {
     loadController.current = controller;
     setLoading(true);
     try {
-      const response = await axios.get("/api/nodes", { signal: controller.signal, timeout: 20000 });
+      const endpoint = staffRoles.includes(user?.role || "") ? "/api/nodes" : "/api/nodes/public";
+      const response = await axios.get(endpoint, { signal: controller.signal, timeout: 20000 });
       if (controller.signal.aborted) return;
       if (!Array.isArray(response.data)) throw new Error("Invalid node inventory response");
       setNodes(response.data);
@@ -78,7 +79,6 @@ export default function Nodes() {
   }, []);
 
   useEffect(() => {
-    if (!staffRoles.includes(user?.role || "")) return;
     void load();
     const refresh = () => { if (!document.hidden) void load(); };
     const timer = window.setInterval(refresh, 10000);
@@ -95,7 +95,23 @@ export default function Nodes() {
     `${node.name} ${node.hostname} ${node.fqdn} ${node.publicIp} ${node.location}`.toLowerCase().includes(query.toLowerCase())
   ), [nodes, query, statusFilter]);
 
-  if (!staffRoles.includes(user?.role || "")) return <div className="p-10 text-center">You do not have permission to manage nodes.</div>;
+  if (!staffRoles.includes(user?.role || "")) {
+    return <div className="space-y-5 p-1 sm:p-2">
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div><p className="text-xs font-semibold uppercase tracking-[.22em] text-emerald-300">Infrastructure / read only</p><h1 className="mt-2 text-2xl font-bold text-foreground">Available Nodes</h1><p className="mt-1 text-sm text-muted-foreground">View public node status and capacity. Node configuration and controls are reserved for staff.</p></div>
+        <button type="button" onClick={() => void load()} disabled={loading} className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-foreground disabled:opacity-50"><RefreshCw size={15} className={loading ? "animate-spin" : ""}/> Refresh</button>
+      </header>
+      {loadError && <div role="alert" className="rounded-xl border border-rose-400/20 bg-rose-400/5 p-3 text-sm text-rose-200">{loadError}</div>}
+      {loading && nodes.length === 0 ? <p className="text-sm text-muted-foreground">Loading node inventory…</p> : filteredNodes.length === 0 ? <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">No public nodes are currently available.</div> :
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">{filteredNodes.map((node:any) => <article key={node.id} className="rounded-xl border border-border bg-card p-4">
+          <div className="flex items-start justify-between gap-3"><div className="flex items-center gap-2"><Server size={18} className="text-emerald-300"/><h2 className="font-semibold text-foreground">{node.name}</h2></div><span className={`rounded-md border px-2 py-1 text-[10px] font-semibold tracking-wide ${statusClass(node.status)}`}>{node.status || "UNKNOWN"}</span></div>
+          {node.description && <p className="mt-2 text-sm text-muted-foreground">{node.description}</p>}
+          <p className="mt-2 text-xs text-muted-foreground">{node.location || "Location not specified"}</p>
+          <div className="mt-4 grid grid-cols-3 gap-2">{[["CPU",node.cpu ? `${node.cpu}%` : "—"],["RAM",node.memory ? `${node.memory} MB` : "—"],["Disk",node.disk ? `${node.disk} GB` : "—"]].map(([label,value])=><div key={label} className="rounded-lg border border-border/70 bg-background/50 p-2"><p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p><p className="mt-1 text-sm font-medium text-foreground">{value}</p></div>)}</div>
+          <p className="mt-3 text-[11px] text-muted-foreground">Last heartbeat: {node.lastHeartbeat ? new Date(node.lastHeartbeat).toLocaleString() : "Not reported"}</p>
+        </article>)}</div>}
+    </div>;
+  }
 
   const createLocalNode = async () => {
     if (!window.confirm("Create or refresh the local node using this panel host's Docker runtime?")) return;
