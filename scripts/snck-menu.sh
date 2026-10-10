@@ -129,8 +129,8 @@ uninstall_panel(){
     return 2
   fi
   printf '\n\033[1;31mWARNING: This removes SNCK PANEL application files and its systemd service.\033[0m\n'
-  printf 'The app data and .env will be backed up first. Existing backups in %s are preserved.\n\n' "$BACKUP_DIR"
-  local confirm stamp dest
+  printf 'App data and .env will be preserved in %s before removal. Existing backups are preserved.\n\n' "$BACKUP_DIR"
+  local confirm stamp dest data_size_kb free_kb app_dev backup_dev
   read -r -p 'Type UNINSTALL to continue: ' confirm </dev/tty
   [[ "$confirm" == "UNINSTALL" ]] || { printf 'Cancelled; nothing was removed.\n'; return 0; }
 
@@ -138,11 +138,51 @@ uninstall_panel(){
   chmod 700 "$BACKUP_DIR"
   stamp="$(date +%Y%m%d-%H%M%S)"
   dest="$BACKUP_DIR/pre-uninstall-$stamp"
-  mkdir -p "$dest"
-  [[ ! -d "$APP_DIR/.data" ]] || cp -a "$APP_DIR/.data" "$dest/.data"
-  [[ ! -f "$APP_DIR/.env" ]] || cp -a "$APP_DIR/.env" "$dest/.env"
-  chmod 700 "$dest"
+  mkdir -m 700 "$dest"
 
+  # Avoid duplicating large Minecraft worlds on a full disk. A same-filesystem
+  # rename preserves all data without requiring additional space.
+  if [[ -d "$APP_DIR/.data" ]]; then
+    app_dev="$(stat -c '%d' "$APP_DIR")"
+    backup_dev="$(stat -c '%d' "$BACKUP_DIR")"
+    if [[ "$app_dev" == "$backup_dev" ]]; then
+      if [[ -f "$APP_DIR/.env" ]] && ! cp -a "$APP_DIR/.env" "$dest/.env"; then
+        printf 'ERROR: Could not save .env; aborting without removing the panel.\n' >&2
+        rm -rf -- "$dest"
+        return 1
+      fi
+      if ! mv -- "$APP_DIR/.data" "$dest/.data"; then
+        printf 'ERROR: Could not preserve .data; aborting without removing the panel.\n' >&2
+        return 1
+      fi
+    else
+      data_size_kb="$(du -sk "$APP_DIR/.data" | awk '{print $1}')"
+      free_kb="$(df -Pk "$BACKUP_DIR" | awk 'END {print $4}')"
+      if (( free_kb < data_size_kb + 10240 )); then
+        printf 'ERROR: Not enough free space to safely back up panel data.\n' >&2
+        printf 'Data needs approximately %s MiB; destination has %s MiB free.\n' "$((data_size_kb / 1024))" "$((free_kb / 1024))" >&2
+        printf 'Nothing was uninstalled. Free space or move the backup destination, then retry.\n' >&2
+        rm -rf -- "$dest"
+        return 1
+      fi
+      if ! cp -a "$APP_DIR/.data" "$dest/.data"; then
+        printf 'ERROR: Backup failed; original data was kept and the panel was not removed.\n' >&2
+        return 1
+      fi
+      if [[ -f "$APP_DIR/.env" ]] && ! cp -a "$APP_DIR/.env" "$dest/.env"; then
+        printf 'ERROR: Could not back up .env; original files were kept and the panel was not removed.\n' >&2
+        return 1
+      fi
+    fi
+  elif [[ -f "$APP_DIR/.env" ]]; then
+    if ! cp -a "$APP_DIR/.env" "$dest/.env"; then
+      printf 'ERROR: Could not back up .env; aborting without removing the panel.\n' >&2
+      rm -rf -- "$dest"
+      return 1
+    fi
+  fi
+
+  chmod 700 "$dest"
   if command -v systemctl >/dev/null 2>&1; then
     systemctl disable --now "$SERVICE" 2>/dev/null || true
     rm -f "/etc/systemd/system/$SERVICE"
