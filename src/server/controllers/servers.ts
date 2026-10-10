@@ -226,10 +226,25 @@ export const getServerStats = async (req: Request, res: Response) => {
 
 export const createServer = async (req: Request, res: Response) => {
   const user = (req as any).user;
-  if (user.role !== "admin" && user.role !== "owner") {
-    return res.status(403).json({ error: "Only admins can create servers" });
+  const isStaff = user.role === "admin" || user.role === "owner";
+  const { name, ram, port, version, theme, cpu, disk, owner, ipAlias, type, nodeId, allocationId, javaVersion, lifetimeHours } = req.body;
+  const settings = await readJSON("settings.json") || {};
+  const free = settings.freeService || { enabled: false, ram: 2, cpu: 100, disk: 5, maxServers: 1, durationHours: 168 };
+  if (!isStaff && !free.enabled) return res.status(403).json({ error: "Free server creation is currently disabled by the Owner." });
+  const existingServers = await readJSON("servers.json") || [];
+  let expiresAt: string | null = null;
+  if (!isStaff) {
+    const owned = existingServers.filter((s:any) => s.owner === user.id);
+    if (owned.length >= Number(free.maxServers || 1)) return res.status(403).json({ error: `Free plan allows at most ${Number(free.maxServers || 1)} server(s) per user.` });
+    if (Number(ram) > Number(free.ram) || Number(cpu || 100) > Number(free.cpu) || Number(disk || 10) > Number(free.disk)) {
+      return res.status(403).json({ error: `Free plan limits: ${free.ram} GB RAM, ${free.cpu}% CPU, ${free.disk} GB disk.` });
+    }
   }
-  const { name, ram, port, version, theme, cpu, disk, owner, ipAlias, type, nodeId, allocationId, javaVersion } = req.body;
+  const requestedLifetime = lifetimeHours === "" || lifetimeHours === undefined || lifetimeHours === null ? null : Number(lifetimeHours);
+  if (requestedLifetime !== null && (!Number.isFinite(requestedLifetime) || requestedLifetime < 1 || requestedLifetime > 87600)) return res.status(400).json({ error: "Lifetime must be blank for permanent or between 1 and 87600 hours." });
+  const allowedLifetime = !isStaff ? Number(free.durationHours || 0) : requestedLifetime;
+  if (requestedLifetime !== null && isStaff) expiresAt = new Date(Date.now() + requestedLifetime * 3600000).toISOString();
+  else if (!isStaff && allowedLifetime > 0) expiresAt = new Date(Date.now() + allowedLifetime * 3600000).toISOString();
   const normalizedJavaVersion = javaVersion ? String(javaVersion) : "";
   if (normalizedJavaVersion && !SUPPORTED_JAVA_VERSIONS.includes(normalizedJavaVersion as typeof SUPPORTED_JAVA_VERSIONS[number])) {
     return res.status(400).json({ error: `Unsupported Java version. Choose one of: ${SUPPORTED_JAVA_VERSIONS.join(", ")}` });
