@@ -114,13 +114,14 @@ export default function CreateServer() {
       })
       .catch(() => {});
 
-    if (user?.role === "admin" || user?.role === "owner") {
-      axios.get("/api/nodes").then((res) => {
-        const availableNodes = Array.isArray(res.data) ? res.data : [];
+    const isStaff = user?.role === "admin" || user?.role === "owner";
+    if (isStaff || freeService?.enabled) {
+      axios.get(isStaff ? "/api/nodes" : "/api/nodes/public").then((res) => {
+        const availableNodes = (Array.isArray(res.data) ? res.data : []).filter((node:any) => node.status === "ONLINE" && (isStaff || !node.freeServiceLocked));
         setNodes(availableNodes);
-        if (!nodeId) setNodeId(availableNodes.find((node: any) => node.status === "ONLINE")?.id || "");
+        if (!nodeId || !availableNodes.some((node:any)=>node.id===nodeId)) setNodeId(availableNodes[0]?.id || "");
       }).catch(() => {});
-      axios.get("/api/allocations").then((res) => setAllocations(res.data.filter((a:any)=>!a.assignedServerId))).catch(() => {});
+      axios.get(isStaff ? "/api/allocations" : "/api/allocations/available").then((res) => setAllocations((Array.isArray(res.data) ? res.data : []).filter((a:any)=>!a.assignedServerId))).catch(() => {});
     }
 
     axios
@@ -135,7 +136,7 @@ export default function CreateServer() {
       })
       .catch(() => {});
 
-  }, [user]);
+  }, [user, freeService?.enabled]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -242,7 +243,7 @@ export default function CreateServer() {
             />
           </div>
           
-          {(user?.role === "admin" || user?.role === "owner") && (
+          {((user?.role === "admin" || user?.role === "owner") || (user?.role !== "admin" && user?.role !== "owner" && freeService?.enabled)) && (
             <div className="relative z-20">
               <label className="block text-sm font-medium text-foreground-muted mb-2 flex items-center">
                 <Globe className="w-4 h-4 mr-2 text-indigo-400" /> Deployment Node
@@ -250,7 +251,7 @@ export default function CreateServer() {
               <SearchableDropdown
                 value={nodeId}
                 onChange={(value) => { setNodeId(value); setAllocationId(""); }}
-                options={nodes.filter((n: any) => n.status === "ONLINE").map((n: any) => ({ value: n.id, label: `${n.name} · ${n.fqdn || n.hostname || n.publicIp || "address pending"} · ONLINE` }))}
+                options={nodes.filter((n: any) => n.status === "ONLINE" && ((user?.role === "admin" || user?.role === "owner") || !n.freeServiceLocked)).map((n: any) => ({ value: n.id, label: `${n.name} · ${n.fqdn || n.hostname || n.publicIp || "address pending"} · ONLINE` }))}
                 placeholder="Select an online node..."
                 searchPlaceholder="Search online nodes..."
               />
