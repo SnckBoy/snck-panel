@@ -44,8 +44,8 @@ const SPARK_CAP = 40;
 const ANSI_RE = /\x1B(?:\[[0-?]*[ -/]*[@-~]|\][^\x07]*(?:\x07|\x1B\\\\)|[@-_])/g;
 
 const FILTERS: { key: LogFilter; label: string }[] = [
-  { key: "important", label: "Minecraft Logs" },
-  { key: "all", label: "All Output" },
+  { key: "important", label: "Important Only" },
+  { key: "all", label: "Minecraft Logs" },
 ];
 
 /* ═══════════════════════════════════════════════════════
@@ -369,7 +369,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
 
     socket.on("log", (data: string) => {
       if (typeof data !== "string") return;
-      const lines = data.split(/\r?\n/).filter(line => line.trim()).slice(-MAX_LOG_LINES).map(line => line.slice(0, 10000));
+      const lines = data.split(/\n/).map(normalizeMinecraftLogLine).filter(isMinecraftLogLine).slice(-MAX_LOG_LINES).map(line => line.slice(0, 10000));
       pendingLogs.current = [...pendingLogs.current, ...lines].slice(-MAX_LOG_LINES);
     });
 
