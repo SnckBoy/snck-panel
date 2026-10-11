@@ -28,6 +28,9 @@ jobs:
       - name: Install panel dependencies
         run: npm ci
 
+      - name: Report all panel dependency vulnerabilities
+        run: npm audit --audit-level=high || true
+
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high
 
@@ -40,6 +43,10 @@ jobs:
       - name: Install node daemon dependencies
         working-directory: node-daemon
         run: npm ci
+
+      - name: Report all node daemon dependency vulnerabilities
+        working-directory: node-daemon
+        run: npm audit --audit-level=high || true
 
       - name: Audit node daemon production dependencies
         working-directory: node-daemon
