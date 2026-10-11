@@ -716,19 +716,20 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
                     </span>
                   </div>
                 )}
-              </div>
 
-              {/* ── Jump-to-tail ── */}
-              {!atBottom && logs.length > 0 && (
-                <button
-                  type="button"
-                  onClick={jumpToBottom}
-                  className="qx-tail-in absolute bottom-28 sm:bottom-32 right-4 sm:right-5 z-20 flex items-center gap-1.5 qx-display text-[9px] font-bold uppercase tracking-[0.14em] px-2.5 py-1.5 bg-zinc-950 text-zinc-200 border border-white/15 rounded-md hover:bg-white/[0.06] transition-colors"
-                >
-                  <ChevronDown size={11} />
-                  Tail
-                </button>
-              )}
+                {!atBottom && logs.length > 0 && (
+                  <div className="sticky bottom-2 z-20 flex justify-end pointer-events-none">
+                    <button
+                      type="button"
+                      onClick={jumpToBottom}
+                      className="qx-display text-[9px] font-bold uppercase tracking-[0.14em] px-2.5 py-1.5 bg-zinc-950/95 text-zinc-200 border border-white/15 rounded-md hover:bg-white/[0.06] transition-colors pointer-events-auto shadow-lg"
+                    >
+                      <ChevronDown size={11} className="inline mr-1" />
+                      Tail
+                    </button>
+                  </div>
+                )}
+              </div>
 
               {/* ── Command bar ── */}
               <form
