@@ -130,34 +130,76 @@ uninstall_panel(){
   fi
 
   printf '\n\033[1;31mDANGER: COMPLETE SNCK PANEL REMOVAL\033[0m\n'
-  printf 'This permanently deletes SNCK Panel application data, configuration, logs, and ALL backups.\n'
+  printf 'This permanently deletes the SNCK Panel, its local node daemon, Minecraft server files, configuration, logs, and ALL backups on this VPS.\n'
+  printf 'It also stops and removes Docker containers, images, and volumes managed by SNCK.\n'
   printf 'No final backup will be kept.\n'
-  printf 'Docker containers, images, volumes, and Minecraft server files outside these SNCK paths will not be intentionally removed.\n\n'
+  printf 'Unrelated Docker containers, images, volumes, and applications will not be intentionally removed.\n'
+  printf 'A node installed on a DIFFERENT VPS must be uninstalled separately on that VPS.\n\n'
 
   local confirm
-  read -r -p 'Type DELETE-SNCK to permanently remove SNCK Panel and all its backups: ' confirm </dev/tty
-  [[ "$confirm" == "DELETE-SNCK" ]] || { printf 'Cancelled; nothing was removed.\n'; return 0; }
+  read -r -p 'Type DELETE-SNCK-ALL to permanently remove Panel + Node + Minecraft data + backups: ' confirm </dev/tty
+  # Keep the exact confirmation token check separate from the prompt text so a
+  # pasted or truncated answer can never trigger a destructive uninstall.
+  if [[ "$confirm" != "DELETE-SNCK-ALL" ]]; then
+    printf 'Cancelled; the exact DELETE-SNCK-ALL confirmation was not entered.\n'
+    return 0
+  fi
 
-  printf '\nStopping SNCK Panel service...\n'
+  printf '\nStopping SNCK Panel and local node services...\n'
   if command -v systemctl >/dev/null 2>&1; then
     systemctl disable --now "$SERVICE" 2>/dev/null || true
     rm -f "/etc/systemd/system/$SERVICE"
+    systemctl disable --now shironex-node.service 2>/dev/null || true
+    rm -f /etc/systemd/system/shironex-node.service
     systemctl daemon-reload
     systemctl reset-failed "$SERVICE" 2>/dev/null || true
   fi
 
-  printf 'Removing SNCK Panel application, settings, logs, and backups...\n'
+  printf 'Removing SNCK-managed Minecraft Docker resources...\n'
+  if command -v docker >/dev/null 2>&1; then
+    # The current daemon labels managed containers; the name filter also
+    # catches containers created by older Snck/ShiroNex releases.
+    managed_ids="$(docker ps -aq --filter 'label=com.shironex.managed=true' 2>/dev/null || true)"
+    legacy_ids="$(docker ps -aq --filter 'name=shironex-' 2>/dev/null || true)"
+    for container_id in $managed_ids $legacy_ids; do
+      [[ -n "$container_id" ]] && docker rm -f "$container_id" >/dev/null 2>&1 || true
+    done
+
+    # Remove only the Minecraft images used by Snck, never every Docker image.
+    image_ids="$( {
+      docker image ls -q 'itzg/minecraft-server' 2>/dev/null || true
+      docker image ls -q 'itzg/bungeecord' 2>/dev/null || true
+    } | sort -u )"
+    for image_id in $image_ids; do
+      [[ -n "$image_id" ]] && docker rmi -f "$image_id" >/dev/null 2>&1 || true
+    done
+
+    volume_ids="$(docker volume ls -q 2>/dev/null | grep -E '^(shironex|snck)-' || true)"
+    for volume_id in $volume_ids; do
+      [[ -n "$volume_id" ]] && docker volume rm "$volume_id" >/dev/null 2>&1 || true
+    done
+  else
+    printf 'Docker is not installed; skipping Docker resource cleanup.\n'
+  fi
+
+  printf 'Removing SNCK Panel, local node, Minecraft files, settings, logs, and backups...\n'
   rm -rf -- \
     "$APP_DIR" \
     "$BACKUP_DIR" \
     /etc/snck-panel \
     /var/lib/snck-panel \
-    /var/log/snck-panel
-  rm -f -- /usr/local/bin/snck-panel "$LOG_FILE"
+    /var/log/snck-panel \
+    /opt/shironex-node \
+    /etc/shironex-node \
+    /var/lib/shironex/servers \
+    /var/lib/shironex/.backups \
+    /var/lib/snck
+  rm -f -- /usr/local/bin/snck-panel "$LOG_FILE" /etc/systemd/system/shironex-node.service
+  if id -u snck >/dev/null 2>&1; then userdel snck >/dev/null 2>&1 || true; fi
+  command -v systemctl >/dev/null 2>&1 && systemctl daemon-reload || true
 
-  printf '\n\033[1;32mSNCK PANEL and its backups have been removed.\033[0m\n'
-  printf 'Docker and Node.js are intentionally left installed because other apps may use them.\n'
-  printf 'Minecraft containers, images, and volumes were not targeted.\n'
+  printf '\n\033[1;32mSNCK Panel, local node, managed Minecraft data, and backups have been removed.\033[0m\n'
+  printf 'Docker and Node.js packages were left installed because other applications may use them.\n'
 }
 
 # Direct command mode: install.sh uninstall or snck-menu.sh uninstall.
