@@ -44,8 +44,8 @@ const SPARK_CAP = 40;
 const ANSI_RE = /\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])/g;
 
 const FILTERS: { key: LogFilter; label: string }[] = [
-  { key: "important", label: "Important Logs" },
-  { key: "all", label: "All Logs" },
+  { key: "important", label: "Minecraft Logs" },
+  { key: "all", label: "All Output" },
 ];
 
 /* ═══════════════════════════════════════════════════════
@@ -120,12 +120,18 @@ const levelOf = (raw: string): LogLevel => {
   return "info";
 };
 
+const isRoutineJvmWarning = (raw: string) => {
+  const l = stripAnsi(raw);
+  return /sun\.misc\.Unsafe|MemUtil\$MemUtilUnsafe|objectFieldOffset|WARNING:\s*(please consider reporting|a restricted method|illegal reflective access)/i.test(l);
+};
+
 const isImportantLog = (raw: string) => {
   const l = stripAnsi(raw).trim();
-  // Default view is intentionally quiet: actionable events only.
-  if (/\b(ERROR|FATAL|SEVERE|EXCEPTION|WARN|WARNING)\b|Can't keep up|crash|failed|failure|timed out|timeout|out of memory/i.test(l)) return true;
-  if (/joined the game|left the game|lost connection|logged in|logged out|server started|server stopped|saving worlds|saving players|stopping server|ready for connections/i.test(l)) return true;
-  if (/^\[System Error\]/i.test(l)) return true;
+  if (isRoutineJvmWarning(raw) || /^\[System/i.test(l)) return false;
+  // Default view is intentionally quiet: actionable Minecraft events only.
+  if (/\b(ERROR|FATAL|SEVERE|EXCEPTION)\b|Can't keep up|crash|failed|failure|timed out|timeout|out of memory/i.test(l)) return true;
+  if (/\btps\b|players online|There are \d+ of a max|joined the game|left the game|lost connection|logged in|logged out|server started|server stopped|saving worlds|saving players|stopping server|ready for connections/i.test(l)) return true;
+  if (/\bWARN(?:ING)?\b/i.test(l) && !isRoutineJvmWarning(raw)) return true;
   return false;
 };
 
@@ -149,13 +155,17 @@ function Corners({ tone = "border-emerald-400/25" }: { tone?: string }) {
    CONNECTION PILL + CLOCK
 ═══════════════════════════════════════════════════════ */
 
-function ConnPill({ live }: { live: boolean }) {
+function ConnPill({ state }: { state: "connecting" | "live" | "reconnecting" | "offline" }) {
+  const live = state === "live";
+  const connecting = state === "connecting" || state === "reconnecting";
+  const label = live ? "Live" : connecting ? (state === "connecting" ? "Connecting" : "Reconnecting") : "Offline";
+  const tone = live ? "text-emerald-400" : connecting ? "text-amber-300" : "text-red-400";
   return (
     <span className="snx-connection-badge flex items-center gap-2 px-3 py-1 rounded-sm">
       <span className="relative flex h-2 w-2">
-        {live && (
+        {(live || connecting) && (
           <span
-            className="absolute inset-0 rounded-full bg-emerald-400"
+            className={`absolute inset-0 rounded-full ${live ? "bg-emerald-400" : "bg-amber-300"}`}
             style={{ animation: "qx-ping 1.6s cubic-bezier(0,0,0.2,1) infinite" }}
           />
         )}
@@ -163,16 +173,14 @@ function ConnPill({ live }: { live: boolean }) {
           className={`relative rounded-full h-2 w-2 transition-colors duration-500 ${
             live
               ? "bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.9)]"
-              : "bg-red-400 shadow-[0_0_6px_rgba(248,113,113,0.9)]"
+              : connecting ? "bg-amber-300 shadow-[0_0_6px_rgba(252,211,77,0.8)]" : "bg-red-400 shadow-[0_0_6px_rgba(248,113,113,0.9)]"
           }`}
         />
       </span>
       <span
-        className={`qx-display text-[9px] font-bold uppercase tracking-[0.18em] transition-colors duration-500 ${
-          live ? "text-emerald-400" : "text-red-400"
-        }`}
+        className={`qx-display text-[9px] font-bold uppercase tracking-[0.18em] transition-colors duration-500 ${tone}`}
       >
-        {live ? "Live" : "Offline"}
+        {label}
       </span>
     </span>
   );
@@ -221,7 +229,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
   const [command, setCommand] = useState("");
   const [cmdHistory, setCmdHistory] = useState<string[]>([]);
   const [histIdx, setHistIdx] = useState(-1);
-  const [connected, setConnected] = useState(false);
+  const [connectionState, setConnectionState] = useState<"connecting" | "live" | "reconnecting" | "offline">("connecting");
   const [accessDenied, setAccessDenied] = useState("");
   const [ready, setReady] = useState(false);
   const [filter, setFilter] = useState<LogFilter>("important");
@@ -301,7 +309,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
     setCmdHistory([]);
     setHistIdx(-1);
     setAccessDenied("");
-    setConnected(false);
+    setConnectionState("connecting");
     setAtBottom(true);
     if (!token || !serverId) return;
     // Batch bursts instead of rerendering on every socket packet.
@@ -315,23 +323,26 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
       auth: { token },
       transports: ["polling", "websocket"],
       upgrade: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 2000,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 10000,
     });
     sockRef.current = socket;
 
     socket.on("connect", () => {
       setAccessDenied("");
+      setConnectionState("connecting");
       socket.emit("joinServer", serverId);
     });
 
     socket.on("server_joined", () => {
-      setConnected(true);
+      setConnectionState("live");
     });
 
     socket.on("server_access_denied", (payload: { error?: string }) => {
       const message = payload?.error || "You are not authorized to view this server console.";
-      setConnected(false);
+      setConnectionState("offline");
       setAccessDenied(message);
       // Keep transport/auth diagnostics out of the Minecraft log stream.
     });
@@ -343,7 +354,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
     });
 
     socket.on("disconnect", () => {
-      setConnected(false);
+      setConnectionState("reconnecting");
       // Connection state is shown by the live indicator; do not pollute Minecraft logs.
     });
 
@@ -353,7 +364,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
     });
 
     socket.on("connect_error", (e: Error & { description?: unknown; context?: unknown; data?: { message?: string } }) => {
-      setConnected(false);
+      setConnectionState("reconnecting");
       const detail = [
         e.message,
         e.data?.message,
@@ -363,10 +374,17 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
       setAccessDenied(`Console connection failed: ${detail || "unknown connection error"}`);
     });
 
+    const onReconnectFailed = () => {
+      setConnectionState("offline");
+      setAccessDenied("Console unavailable; retrying when the panel connection returns.");
+    };
+    socket.io.on("reconnect_failed", onReconnectFailed);
+
     return () => {
       window.clearInterval(flush);
       pendingLogs.current = [];
       socket.emit("leaveServer", serverId);
+      socket.io.off("reconnect_failed", onReconnectFailed);
       socket.removeAllListeners();
       socket.disconnect();
       sockRef.current = null;
@@ -606,8 +624,8 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
 
                 <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                   <span className="hidden lg:block"><Clock /></span>
-                  <ConnPill live={connected} />
-                  {accessDenied && <span role="alert" className="max-w-[180px] truncate text-[9px] font-medium text-rose-300" title={accessDenied}>Access denied</span>}
+                  <ConnPill state={connectionState} />
+                  {accessDenied && <span role="status" className="max-w-[220px] truncate text-[9px] font-medium text-amber-200" title={accessDenied}>{accessDenied}</span>}
                   <div className="flex items-center gap-1 ml-1 pl-1 border-l border-white/10">
                     <button type="button" className="qx-window-control" onClick={clearLogs} title="Clear console" aria-label="Clear console"><Trash2 size={12} /></button>
                     <button type="button" className="qx-window-control" onClick={() => void copyLogs()} title={copied ? "Copied" : "Copy logs"} aria-label={copied ? "Logs copied" : "Copy logs"}>{copied ? <Check size={12} /> : <Copy size={12} />}</button>
