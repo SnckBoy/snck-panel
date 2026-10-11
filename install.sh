@@ -3,7 +3,7 @@ set -Eeuo pipefail
 
 # One-command SNCK PANEL bootstrapper.
 # It always opens the interactive control center instead of installing immediately.
-MENU_URL="${SNCK_MENU_URL:-https://raw.githubusercontent.com/SnckBoy/ShiroNex-panel/main/scripts/snck-menu.sh}"
+MENU_URL="${SNCK_MENU_URL:-https://raw.githubusercontent.com/SnckBoy/snck-panel/main/scripts/snck-menu.sh}"
 
 if [[ "$EUID" -ne 0 ]]; then
   if [[ -r /dev/tty ]]; then
