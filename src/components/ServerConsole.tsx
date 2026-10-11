@@ -124,7 +124,9 @@ const normalizeMinecraftLogLine = (raw: string): string => {
 
   // Keep the actual Minecraft payload when a transport prepends "LOG =>",
   // stdout/stderr, or other wrapper text before the native log prefix.
-  const minecraftPrefix = /(?:\[\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?\]\s*(?:\[[^\]]+\/)?(?:INFO|WARN|WARNING|ERROR|DEBUG|TRACE|FATAL)\]?:?|\[\d{2}:\d{2}:\d{2}\s+(?:INFO|WARN|WARNING|ERROR|DEBUG|TRACE|FATAL)\]:?)/i;
+  // Locate the timestamp itself rather than assuming a particular loader format:
+  // Vanilla, Paper, and Fabric use slightly different level/thread prefixes.
+  const minecraftPrefix = /\[\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?\]/;
   const prefixMatch = line.match(minecraftPrefix);
   if (prefixMatch && prefixMatch.index !== undefined && prefixMatch.index > 0) {
     line = line.slice(prefixMatch.index);
