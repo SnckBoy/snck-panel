@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "security/**"
+      - main
 
 permissions:
   contents: write
