@@ -86,7 +86,7 @@ if (( node_major < 20 )); then
   (( downloaded == 1 )) || die "Could not download a valid Node.js ${NODE_VERSION} archive from any configured mirror. Check DNS/firewall access and /var/log/snck-panel-installer.log."
 
   rm -rf "/opt/node-v${NODE_VERSION}"
-  tar -xJf "${node_tmp}" -C /opt >>"${LOG_FILE}" 2>&1 || die "Downloaded Node.js archive could not be extracted."
+  tar -xJf "${node_tmp}" --strip-components=1 -C "/opt/node-v${NODE_VERSION}" >>"${LOG_FILE}" 2>&1 || die "Downloaded Node.js archive could not be extracted."
   rm -f "${node_tmp}"
   ln -sfn "/opt/node-v${NODE_VERSION}" /opt/node
   ln -sfn /opt/node/bin/node /usr/local/bin/node
