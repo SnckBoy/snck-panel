@@ -8,8 +8,7 @@ import { Server as SocketIOServer } from "socket.io";
 import { createServer as createViteServer } from "vite";
 import fs from "fs-extra";
 import jwt from "jsonwebtoken";
-import * as archiverModule from "archiver";
-const archiver: any = (archiverModule as any).default || archiverModule;
+import { TarArchive } from "archiver";
 
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 16) {
   console.error(
@@ -104,6 +103,10 @@ const corsOptions = {
 
 const httpServer = process.env.PANEL_TLS_KEY && process.env.PANEL_TLS_CERT ? createHttpsServer({key:fs.readFileSync(process.env.PANEL_TLS_KEY),cert:fs.readFileSync(process.env.PANEL_TLS_CERT)},app) : createHttpServer(app);
 export const io = new SocketIOServer(httpServer, {
+  transports: ["polling", "websocket"],
+  allowUpgrades: true,
+  pingInterval: 25000,
+  pingTimeout: 20000,
   // The request-aware gate enables same-origin IP:port deployments while keeping
   // unrelated browser origins blocked.
   allowRequest(req, callback) {
@@ -246,7 +249,7 @@ app.get("/shironex-node.tar.gz", (_req, res) => {
   const daemonDir = path.join(process.cwd(), "node-daemon");
   if (!fs.existsSync(path.join(daemonDir, "package.json"))) return res.status(404).send("Node daemon unavailable");
   res.type("application/gzip");
-  const archive = archiver("tar", { gzip: true });
+  const archive = new TarArchive({ gzip: true });
   archive.on("error", (err: Error) => {
     console.error("Node bundle archive error:", err);
     if (!res.headersSent) res.status(500);

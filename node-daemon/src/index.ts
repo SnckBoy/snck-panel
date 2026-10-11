@@ -167,7 +167,7 @@ app.post("/v1/servers/:id/files/delete",auth,async(req,res)=>{try{for(const p of
 app.post("/v1/servers/:id/files/zip",auth,async(req,res)=>{
  try {
   const id=safeId(req.params.id); const dir=safePath(id,req.body?.dirPath||"."); const names=Array.isArray(req.body?.fileNames)?req.body.fileNames:[]; const outputName=String(req.body?.outputName||"archive.zip");
-  if(!names.length||names.length>1000||!/^[a-zA-Z0-9._-]+\\.zip$/i.test(outputName)) throw new Error("Invalid archive request");
+  if(!names.length||names.length>1000||!/^[a-zA-Z0-9._-]+\.zip$/i.test(outputName)) throw new Error("Invalid archive request");
   if(!fs.statSync(dir).isDirectory()) throw new Error("Archive directory not found");
   const output=safePath(id,path.join(path.relative(path.resolve(serversDir,id),dir),outputName));
   const archive=archiver("zip",{zlib:{level:6}}); const stream=fs.createWriteStream(output,{mode:0o640});

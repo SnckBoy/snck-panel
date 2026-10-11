@@ -313,7 +313,8 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
     }, 100);
     const socket: Socket = io({
       auth: { token },
-      transports: ["websocket", "polling"],
+      transports: ["polling", "websocket"],
+      upgrade: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 2000,
     });
@@ -451,10 +452,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
       try {
         await axios.post(`/api/servers/${serverId}/command`, { command: cmd }, { timeout: 20000 });
       } catch (err: any) {
-        setLogs((p) => {
-          const next = [...p, `[System Error] Failed to send command: ${err.response?.data?.error || err.message}`];
-          return next.length > MAX_LOG_LINES ? next.slice(-MAX_LOG_LINES) : next;
-        });
+        console.warn("Failed to send Minecraft command", err.response?.data?.error || err.message);
         setCommand(current => current || cmd);
       } finally {
         sendingRef.current = false;
@@ -598,7 +596,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
                   <XTerm size={13} className="text-zinc-400 shrink-0" />
                   <div className="min-w-0 text-center">
                     <h1 className="qx-display text-[10px] sm:text-[11px] font-bold tracking-[0.2em] sm:tracking-[0.3em] text-slate-200 uppercase truncate">
-                      System Console
+                      Minecraft Console
                     </h1>
                     <p className="qx-mono text-[8px] sm:text-[9px] text-slate-500 truncate">
                       stream :: {serverId}

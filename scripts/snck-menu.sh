@@ -3,11 +3,11 @@ set -Eeuo pipefail
 
 APP_NAME="SNCK PANEL"
 APP_DIR="${SNCK_PANEL_DIR:-/opt/snck-panel}"
-REPO_URL="${SNCK_REPO_URL:-https://github.com/SnckBoy/snck-panel.git}"
+REPO_URL="${SNCK_REPO_URL:-https://github.com/SnckBoy/ShiroNex-panel.git}"
 BRANCH="${SNCK_BRANCH:-main}"
 SERVICE="snck-panel.service"
 PORT="${SNCK_PORT:-6767}"
-INSTALLER_URL="${SNCK_INSTALLER_URL:-https://raw.githubusercontent.com/SnckBoy/snck-panel/main/scripts/install-panel.sh}"
+INSTALLER_URL="${SNCK_INSTALLER_URL:-https://raw.githubusercontent.com/SnckBoy/ShiroNex-panel/main/scripts/install-panel.sh}"
 LOG_FILE="/var/log/snck-panel-installer.log"
 BACKUP_DIR="${SNCK_BACKUP_DIR:-/var/backups/snck-panel}"
 
