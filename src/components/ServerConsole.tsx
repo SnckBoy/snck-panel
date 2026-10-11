@@ -41,7 +41,7 @@ type LogFilter = "important" | "all";
 const MAX_LOG_LINES = 200;
 const STATS_POLL_MS = 5000;
 const SPARK_CAP = 40;
-const ANSI_RE = /\x1B(?:\[[0-?]*[ -/]*[@-~]|\][^\x07]*(?:\x07|\x1B\\\\)|[@-_])/g;
+const ANSI_RE = /\x1B(?:\[[0-?]*[ -/]*[@-~]|\][^\x07]*(?:\x07|\x1B\\)|[@-_])/g;
 
 const FILTERS: { key: LogFilter; label: string }[] = [
   { key: "important", label: "Important Only" },
@@ -111,55 +111,54 @@ const STYLES = `
    HELPERS
 ═══════════════════════════════════════════════════════ */
 
-const stripAnsi = (s: string) => s.replace(ANSI_RE, "").replace(/[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F]/g, "");
+const stripAnsi = (s: string) =>
+  s.replace(ANSI_RE, "").replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
 
 const normalizeMinecraftLogLine = (raw: string): string => {
-  // Preserve Minecraft's native timestamp and level, like the classic Pterodactyl console.
-  // Remove ANSI/terminal control codes first, then handle carriage-return progress updates.
-  let line = stripAnsi(raw).replace(/\\uFEFF/g, "");
-  const segments = line.split(/\\r/).map(part => part.trim()).filter(Boolean);
+  // Keep the familiar Minecraft timestamp/level format, while removing terminal
+  // escape codes and wrappers added by Docker or the panel transport.
+  let line = stripAnsi(raw).replace(/\uFEFF/g, "").trim();
+  const segments = line.split(/\r/).map(part => part.trim()).filter(Boolean);
   line = segments.length ? segments[segments.length - 1] : "";
+  if (!line) return "";
 
-  // Some runtimes wrap output with transport labels (for example LOG=>). If a
-  // native Minecraft timestamp exists, discard only the wrapper before it.
-  const timestamp = line.match(/\\[\\d{2}:\\d{2}:\\d{2}\\s+(?:INFO|WARN|WARNING|ERROR|DEBUG|TRACE|FATAL)\\]:?/i);
-  if (timestamp && timestamp.index !== undefined && timestamp.index > 0) {
-    line = line.slice(timestamp.index);
+  // Keep the actual Minecraft payload when a transport prepends "LOG =>",
+  // stdout/stderr, or other wrapper text before the native log prefix.
+  const minecraftPrefix = /(?:\[\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?\]\s*(?:\[[^\]]+\/)?(?:INFO|WARN|WARNING|ERROR|DEBUG|TRACE|FATAL)\]?:?|\[\d{2}:\d{2}:\d{2}\s+(?:INFO|WARN|WARNING|ERROR|DEBUG|TRACE|FATAL)\]:?)/i;
+  const prefixMatch = line.match(minecraftPrefix);
+  if (prefixMatch && prefixMatch.index !== undefined && prefixMatch.index > 0) {
+    line = line.slice(prefixMatch.index);
   } else {
-    line = line.replace(/^\\s*(?:LOG\\s*(?:=>|→)\\s*|(?:stdout|stderr)\\s*:\\s*)/i, "");
+    line = line.replace(/^\s*(?:LOG\s*(?:=>|→)\s*|(?:stdout|stderr)\s*:\s*)/i, "");
   }
-
-  // Drop invisible control characters and redundant whitespace without changing
-  // the actual message, timestamp, or level.
-  return line.replace(/[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F]/g, "").trim();
+  return line.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "").trim();
 };
 
 const isMinecraftLogLine = (raw: string): boolean => {
   const line = normalizeMinecraftLogLine(raw);
   if (!line) return false;
-  // The console should contain server output only, not panel/daemon diagnostics.
-  if (/^(?:LOG\\s*(?:=>|→)|\\[System\\]|\\[CMD\\]|SNCK PANEL running|Attach error|Socket server join failed|UNCAUGHT EXCEPTION|UNHANDLED REJECTION|Docker (?:is unavailable|is installed)|Console connection failed|Console unavailable;|You are not authorized)/i.test(line)) return false;
+  // Exclude only known panel/runtime diagnostics; preserve server, loader and JVM output.
+  if (/^(?:LOG\s*(?:=>|→)|\[System\]|\[CMD\]|SNCK PANEL running|Attach error|Socket server join failed|UNCAUGHT EXCEPTION|UNHANDLED REJECTION|Docker (?:is unavailable|is installed)|Console connection failed|Console unavailable;|You are not authorized)/i.test(line)) return false;
   return true;
 };
 
 const levelOf = (raw: string): LogLevel => {
-  const l = stripAnsi(raw);
-  if (/ERROR|Exception|FATAL/i.test(l)) return "error";
-  if (/WARN|Can't keep up|behind/i.test(l)) return "warn";
+  const l = stripAnsi(normalizeMinecraftLogLine(raw));
+  if (/\b(ERROR|Exception|FATAL|SEVERE)\b/i.test(l)) return "error";
+  if (/\bWARN(?:ING)?\b|Can't keep up|behind/i.test(l)) return "warn";
   return "info";
 };
 
 const isRoutineJvmWarning = (raw: string) => {
-  const l = stripAnsi(raw);
+  const l = stripAnsi(normalizeMinecraftLogLine(raw));
   return /sun\.misc\.Unsafe|MemUtil\$MemUtilUnsafe|objectFieldOffset|WARNING:\s*(please consider reporting|a restricted method|illegal reflective access)/i.test(l);
 };
 
 const isImportantLog = (raw: string) => {
-  const l = stripAnsi(raw).trim();
+  const l = stripAnsi(normalizeMinecraftLogLine(raw)).trim();
   if (isRoutineJvmWarning(raw) || /^\[System/i.test(l)) return false;
-  // Default view is intentionally quiet: actionable Minecraft events only.
   if (/\b(ERROR|FATAL|SEVERE|EXCEPTION)\b|Can't keep up|crash|failed|failure|timed out|timeout|out of memory/i.test(l)) return true;
-  if (/\btps\b|players online|There are \d+ of a max|joined the game|left the game|lost connection|logged in|logged out|server started|server stopped|saving worlds|saving players|stopping server|ready for connections/i.test(l)) return true;
+  if (/\btps\b|players online|There are \d+ of a max|joined the game|left the game|lost connection|logged in|logged out|server started|server stopped|saving worlds|saving players|stopping server|ready for connections|Done! For help/i.test(l)) return true;
   if (/\bWARN(?:ING)?\b/i.test(l) && !isRoutineJvmWarning(raw)) return true;
   return false;
 };
