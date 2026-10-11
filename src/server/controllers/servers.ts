@@ -7,7 +7,6 @@ import crypto from "crypto";
 import fs from "fs-extra";
 import path from "path";
 import { ZipArchive } from "archiver";
-import extract from "extract-zip";
 import {nodeControl} from "../services/nodeClient.js";
 import {nodeConnection} from "../services/nodeEndpoint.js";
 import {audit} from "../services/security.js";
@@ -954,7 +953,7 @@ export const unzipFile = async (req: Request, res: Response) => {
 
   try {
     const destDir = path.dirname(targetPath);
-    await extract(targetPath, { dir: destDir });
+    await extractZipSafely(targetPath, destDir);
     res.json({ success: true });
   } catch (e: any) {
     res.status(500).json({ error: e.message });
