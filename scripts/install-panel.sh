@@ -102,7 +102,14 @@ fi
 # The current application uses its JSON file store (.data); do not provision an
 # unused PostgreSQL database or run a one-way migration during installation.
 
+# Keep one current rollback backup instead of accumulating stale copies on
+# every update. Never allow a malformed or root backup path to be deleted.
+if [[ "$BACKUP_DIR" == "/" || -z "$BACKUP_DIR" || "$BACKUP_DIR" != /* ]]; then
+  die "Refusing to use an unsafe backup directory: $BACKUP_DIR"
+fi
 mkdir -p "$BACKUP_DIR"
+find "$BACKUP_DIR" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +
+log "Removed the previous panel backup; creating a fresh backup..."
 timestamp="$(date +%Y%m%d-%H%M%S)"
 backup="$BACKUP_DIR/$timestamp"
 mkdir -p "$backup"
