@@ -41,7 +41,7 @@ type LogFilter = "important" | "all";
 const MAX_LOG_LINES = 200;
 const STATS_POLL_MS = 5000;
 const SPARK_CAP = 40;
-const ANSI_RE = /\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])/g;
+const ANSI_RE = /\x1B(?:\[[0-?]*[ -/]*[@-~]|\][^\x07]*(?:\x07|\x1B\\\\)|[@-_])/g;
 
 const FILTERS: { key: LogFilter; label: string }[] = [
   { key: "important", label: "Minecraft Logs" },
@@ -111,7 +111,27 @@ const STYLES = `
    HELPERS
 ═══════════════════════════════════════════════════════ */
 
-const stripAnsi = (s: string) => s.replace(ANSI_RE, "");
+const stripAnsi = (s: string) => s.replace(ANSI_RE, "").replace(/[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F]/g, "");
+
+const normalizeMinecraftLogLine = (raw: string): string => {
+  let line = stripAnsi(raw);
+  // Carriage returns are used by terminals to overwrite progress lines. Keep only
+  // the final visible segment, not the stale progress text before it.
+  const segments = line.split(/\\r/).map(part => part.trim()).filter(Boolean);
+  line = segments.length ? segments[segments.length - 1] : "";
+  // Some Docker/terminal wrappers prepend junk before the actual timestamp.
+  const timestamp = line.match(/\\[\\d{2}:\\d{2}:\\d{2}\\s+(?:INFO|WARN|WARNING|ERROR|DEBUG|TRACE|FATAL)\\]:?/i);
+  if (timestamp && timestamp.index !== undefined && timestamp.index > 0) line = line.slice(timestamp.index);
+  line = line.replace(/^\\[\\d{2}:\\d{2}:\\d{2}\\s+(?:INFO|WARN|WARNING|ERROR|DEBUG|TRACE|FATAL)\\]:?\\s*/i, "");
+  return line.trim();
+};
+
+const isMinecraftLogLine = (raw: string): boolean => {
+  const line = normalizeMinecraftLogLine(raw);
+  if (!line) return false;
+  if (/^(?:LOG\\s*(?:=>|→)|\\[System\\]|\\[CMD\\]|SNCK PANEL running|Attach error|Socket server join failed|UNCAUGHT EXCEPTION|UNHANDLED REJECTION|Docker (?:is unavailable|is installed)|Console connection failed)/i.test(line)) return false;
+  return true;
+};
 
 const levelOf = (raw: string): LogLevel => {
   const l = stripAnsi(raw);
@@ -232,7 +252,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
   const [connectionState, setConnectionState] = useState<"connecting" | "live" | "reconnecting" | "offline">("connecting");
   const [accessDenied, setAccessDenied] = useState("");
   const [ready, setReady] = useState(false);
-  const [filter, setFilter] = useState<LogFilter>("important");
+  const [filter, setFilter] = useState<LogFilter>("all");
   const [search, setSearch] = useState("");
   const [atBottom, setAtBottom] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -524,32 +544,15 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
     } catch { /* clipboard unavailable */ }
   }, [logs]);
 
-  /* ── Log line renderer ── */
+  /* ── Plain Minecraft log renderer: no synthetic LOG/INFO badges or wrappers ── */
   const renderLine = useCallback((raw: string): React.ReactNode => {
-    const log = stripAnsi(raw);
-    const ts = log.match(/^(\[\d{2}:\d{2}:\d{2}\s[^\]]+\]|\d{2}:\d{2}:\d{2})/);
-    const level = levelOf(raw);
-
-    let text = "text-zinc-300";
-    let rail = "bg-zinc-600/50";
-    let badge = "LOG";
-    let badgeClass = "text-zinc-400 bg-white/[0.03] border-white/[0.08]";
-
-    if (level === "error") { text = "text-red-300"; rail = "bg-red-400/70"; badge = "ERROR"; badgeClass = "text-red-300 bg-red-400/[0.06] border-red-400/15"; }
-    else if (level === "warn") { text = "text-zinc-200"; rail = "bg-zinc-400/70"; badge = "WARN"; badgeClass = "text-zinc-300 bg-white/[0.04] border-white/[0.1]"; }
-    else if (log.startsWith(">")) { text = "text-zinc-100 font-medium"; rail = "bg-zinc-300/70"; badge = "CMD"; badgeClass = "text-zinc-200 bg-white/[0.06] border-white/[0.12]"; }
-    else if (log.startsWith("[System")) { text = "text-zinc-400"; rail = "bg-zinc-500/60"; badge = "SYSTEM"; badgeClass = "text-zinc-400 bg-white/[0.03] border-white/[0.08]"; }
-    else if (log.includes("INFO")) { text = "text-zinc-300"; rail = "bg-zinc-500/50"; }
-
+    const log = normalizeMinecraftLogLine(raw);
+    const level = levelOf(log);
+    const color = level === "error" ? "text-red-300" : level === "warn" ? "text-amber-200" : "text-zinc-300";
     const lineSize = terminalFontSize === "small" ? "text-[10px]" : terminalFontSize === "large" ? "text-sm" : "text-[11px] sm:text-xs";
     return (
-      <span className={`flex-1 flex items-stretch min-w-0`}>
-        <span className={`w-[2px] sm:w-[3px] shrink-0 rounded-full mr-2 sm:mr-3 self-stretch ${rail}`} />
-          <span className={`${wrapLines ? "break-words whitespace-pre-wrap" : "whitespace-pre"} min-w-0 ${lineSize} leading-[1.6] ${text}`}>
-          {ts && <span className="text-foreground/35 mr-1.5 sm:mr-2 select-none font-mono text-[10px]">{ts[0]}</span>}
-          <span className={`mr-2 inline-flex rounded border px-1.5 py-0.5 align-middle text-[9px] font-bold leading-none tracking-[0.12em] ${badgeClass}`}>{badge}</span>
-          {ts ? log.substring(ts[0].length).replace(/^\s*[:\-]\s*/, "") : log}
-        </span>
+      <span className={`flex-1 min-w-0 ${wrapLines ? "break-words whitespace-pre-wrap" : "whitespace-pre"} ${lineSize} leading-[1.6] ${color}`}>
+        {log}
       </span>
     );
   }, [wrapLines, terminalFontSize]);
