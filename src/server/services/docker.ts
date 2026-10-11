@@ -395,6 +395,24 @@ export const getContainerStatus = async (containerId: string, nodeId?: string) =
   }
 };
 
+const directoryBytes = async (root: string): Promise<number> => {
+  let total = 0;
+  const walk = async (dir: string): Promise<void> => {
+    let entries: any[] = [];
+    try { entries = await fs.readdir(dir, { withFileTypes: true }) as any[]; } catch { return; }
+    for (const entry of entries) {
+      const full = path.join(dir, entry.name);
+      try {
+        if (entry.isSymbolicLink()) continue;
+        if (entry.isDirectory()) await walk(full);
+        else if (entry.isFile()) total += (await fs.stat(full)).size;
+      } catch {}
+    }
+  };
+  await walk(root);
+  return total;
+};
+
 export const getContainerStats = async (containerId: string, nodeId?: string) => {
   const remote = await remoteNode(nodeId);
   if (remote) {
@@ -426,6 +444,11 @@ export const getContainerStats = async (containerId: string, nodeId?: string) =>
       return { available: true, timestamp: Date.now(), cpu: 0, ram: 0, disk: null, networkRxBytes: 0, networkTxBytes: 0 };
     }
     const statsResult: any = await container.stats({ stream: false });
+    let diskUsedBytes: number | null = null;
+    try {
+      const mount = (info.Mounts || []).find((item: any) => item.Destination === "/data" || item.Destination === "/server");
+      if (mount?.Source) diskUsedBytes = await directoryBytes(mount.Source);
+    } catch {}
 
     let cpuPercent: number | null = null;
     try {
@@ -461,7 +484,7 @@ export const getContainerStats = async (containerId: string, nodeId?: string) =>
       timestamp: Date.now(),
       cpu: cpuPercent,
       ram: ramMB,
-      disk: null,
+      disk: diskUsedBytes === null ? null : { used: diskUsedBytes, total: null },
       networkRxBytes: networkAvailable ? networkRxBytes : null,
       networkTxBytes: networkAvailable ? networkTxBytes : null,
     };
