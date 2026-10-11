@@ -556,13 +556,16 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
 
   /* ── Plain Minecraft log renderer: no synthetic LOG/INFO badges or wrappers ── */
   const renderLine = useCallback((raw: string): React.ReactNode => {
+    // Keep the original prefix for severity detection, but hide Minecraft's
+    // timestamp/level prefix in the visual console for a cleaner Pterodactyl-style view.
     const log = normalizeMinecraftLogLine(raw);
     const level = levelOf(log);
+    const displayLog = log.replace(/^\\[\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:\\s+(?:TRACE|DEBUG|INFO|WARN(?:ING)?|ERROR|FATAL|SEVERE))?\\]\\s*:?\\s*/i, "").trimStart();
     const color = level === "error" ? "text-red-300" : level === "warn" ? "text-amber-200" : "text-zinc-300";
     const lineSize = terminalFontSize === "small" ? "text-[10px]" : terminalFontSize === "large" ? "text-sm" : "text-[11px] sm:text-xs";
     return (
       <span className={`flex-1 min-w-0 ${wrapLines ? "break-words whitespace-pre-wrap" : "whitespace-pre"} ${lineSize} leading-[1.6] ${color}`}>
-        {log}
+        {displayLog || log}
       </span>
     );
   }, [wrapLines, terminalFontSize]);
