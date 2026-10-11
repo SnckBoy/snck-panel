@@ -62,24 +62,37 @@ if (( node_major < 20 )); then
 
   node_file="node-v${NODE_VERSION}-linux-${node_arch}.tar.xz"
   node_tmp="/tmp/${node_file}"
-  node_url_primary="https://nodejs.org/dist/v${NODE_VERSION}/${node_file}"
-  node_url_fallback="https://github.com/nodejs/node/releases/download/v${NODE_VERSION}/${node_file}"
+  # Try multiple independent mirrors. Some cloud networks block nodejs.org and
+  # GitHub release assets even when general HTTPS access works.
+  node_urls=(
+    "https://nodejs.org/dist/v${NODE_VERSION}/${node_file}"
+    "https://npmmirror.com/mirrors/node/v${NODE_VERSION}/${node_file}"
+    "https://mirrors.nju.edu.cn/nodejs-release/v${NODE_VERSION}/${node_file}"
+    "https://mirrors.tuna.tsinghua.edu.cn/nodejs-release/v${NODE_VERSION}/${node_file}"
+    "https://github.com/nodejs/node/releases/download/v${NODE_VERSION}/${node_file}"
+  )
+  downloaded=0
+  for node_url in "${node_urls[@]}"; do
+    log "Trying Node.js download mirror: ${node_url}"
+    rm -f "${node_tmp}"
+    if curl -fL --retry 1 --connect-timeout 10 --max-time 120 "${node_url}" -o "${node_tmp}" >>"${LOG_FILE}" 2>&1 &&
+       [[ -s "${node_tmp}" ]] &&
+       xz -t "${node_tmp}" >>"${LOG_FILE}" 2>&1; then
+      downloaded=1
+      break
+    fi
+    log "This Node.js mirror failed; trying the next one..."
+  done
+  (( downloaded == 1 )) || die "Could not download a valid Node.js ${NODE_VERSION} archive from any configured mirror. Check DNS/firewall access and /var/log/snck-panel-installer.log."
 
-  if ! curl -fL --retry 2 --connect-timeout 8 --max-time 60 "$node_url_primary" -o "$node_tmp" >>"$LOG_FILE" 2>&1; then
-    log "nodejs.org is unreachable; trying GitHub release mirror..."
-    curl -fL --retry 3 --connect-timeout 8 --max-time 120 "$node_url_fallback" -o "$node_tmp" >>"$LOG_FILE" 2>&1 || die "Could not download Node.js ${NODE_VERSION}. Your VPS network is blocking both Node.js download endpoints."
-  fi
-
-  rm -rf /opt/node-v${NODE_VERSION}
-  mkdir -p /opt/node-v${NODE_VERSION}
-  tar -xJf "$node_tmp" -C /opt
-  rm -f "$node_tmp"
+  rm -rf "/opt/node-v${NODE_VERSION}"
+  tar -xJf "${node_tmp}" -C /opt >>"${LOG_FILE}" 2>&1 || die "Downloaded Node.js archive could not be extracted."
+  rm -f "${node_tmp}"
   ln -sfn "/opt/node-v${NODE_VERSION}" /opt/node
   ln -sfn /opt/node/bin/node /usr/local/bin/node
   ln -sfn /opt/node/bin/npm /usr/local/bin/npm
   ln -sfn /opt/node/bin/npx /usr/local/bin/npx
   hash -r 2>/dev/null || true
-fi
 
 command -v node >/dev/null 2>&1 || die "Node.js installation failed."
 command -v npm >/dev/null 2>&1 || die "npm installation failed."
