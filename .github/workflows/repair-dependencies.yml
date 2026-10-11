@@ -1,0 +1,81 @@
+name: Repair dependency security
+
+on:
+  push:
+    branches:
+      - "security/**"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dependency-repair-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  repair-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repair branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Regenerate and repair panel lockfile
+        run: |
+          npm install --package-lock-only --ignore-scripts
+          npm audit fix --package-lock-only || true
+
+      - name: Regenerate and repair node daemon lockfile
+        working-directory: node-daemon
+        run: |
+          npm install --package-lock-only --ignore-scripts
+          npm audit fix --package-lock-only || true
+
+      - name: Commit refreshed lockfiles
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json node-daemon/package-lock.json
+          if ! git diff --cached --quiet; then
+            git commit -m "fix(security): refresh npm lockfiles"
+            git push origin HEAD
+          fi
+
+      - name: Install exact panel dependencies
+        run: npm ci
+
+      - name: Audit panel production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Typecheck panel
+        run: npm run lint
+
+      - name: Build panel
+        run: npm run build
+
+      - name: Install exact node daemon dependencies
+        working-directory: node-daemon
+        run: npm ci
+
+      - name: Audit node daemon production dependencies
+        working-directory: node-daemon
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Build node daemon
+        working-directory: node-daemon
+        run: npm run build
+
+      - name: Check installer shell syntax
+        run: |
+          bash -n install.sh
+          bash -n scripts/snck-menu.sh
+          bash -n scripts/install-panel.sh
+          bash -n node-install.sh
+          bash -n shironex
