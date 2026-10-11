@@ -91,7 +91,7 @@ const STYLES = `
 .qx-console-window-bar { background:linear-gradient(180deg,#101714,#090d0b); border-bottom:1px solid #26352e; min-height:48px; }
 .qx-console-window-bar h1 { color:#cce8d5 !important; letter-spacing:.16em !important; }
 .qx-console-toolbar { background:#090e0c; border-color:#1e2b24; }
-.qx-console-body { background:#050907; background-image:linear-gradient(rgba(90,180,120,.018) 1px,transparent 1px); background-size:100% 4px; }
+.qx-console-body { background-color:#050907; background-image:linear-gradient(rgba(3,8,4,.76),rgba(3,8,4,.82)),url("https://d2ol7oe51mr4n9.cloudfront.net/user_3KAQ4RgFOhcvBXL70JU7hK1JU98/172c3ad1-e18a-4d47-822f-233c799db9dc.jpg"); background-size:cover,cover; background-position:center,center; background-repeat:no-repeat; background-attachment:local; }
 .qx-input-shell { background:#070c09; border:1px solid #293a30; border-radius:6px; }
 .qx-input-shell:focus-within { border-color:rgba(68,220,125,.72); box-shadow:0 0 0 1px rgba(68,220,125,.12),0 0 16px rgba(35,170,85,.08); }
 .qx-run { background:#12351f; color:#8df4ad; border:1px solid #276b3d; border-radius:6px; }
