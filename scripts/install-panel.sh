@@ -93,6 +93,7 @@ if (( node_major < 20 )); then
   ln -sfn /opt/node/bin/npm /usr/local/bin/npm
   ln -sfn /opt/node/bin/npx /usr/local/bin/npx
   hash -r 2>/dev/null || true
+fi
 
 command -v node >/dev/null 2>&1 || die "Node.js installation failed."
 command -v npm >/dev/null 2>&1 || die "npm installation failed."
