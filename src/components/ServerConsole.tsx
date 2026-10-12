@@ -495,12 +495,15 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
       setCommand("");
       setCmdHistory((h) => [cmd, ...h].slice(0, 50));
       setHistIdx(-1);
-      // Echo locally for immediate feedback
-      // Commands are sent to Minecraft, while the log pane displays server output only.
+      // Show the command and its RCON response in the console, like a classic server terminal.
+      setLogs(previous => [...previous, `> ${cmd}`].slice(-MAX_LOG_LINES));
       try {
-        await axios.post(`/api/servers/${serverId}/command`, { command: cmd }, { timeout: 20000 });
+        const response = await axios.post(`/api/servers/${serverId}/command`, { command: cmd }, { timeout: 30000 });
+        const output = String(response.data?.output || "").trim();
+        setLogs(previous => [...previous, ...(output ? output.split(/\\r?\\n/) : ["Command sent; no response text returned."])].slice(-MAX_LOG_LINES));
       } catch (err: any) {
-        console.warn("Failed to send Minecraft command", err.response?.data?.error || err.message);
+        const message = String(err.response?.data?.error || err.message || "Command failed");
+        setLogs(previous => [...previous, `[ERROR] ${message}`].slice(-MAX_LOG_LINES));
         setCommand(current => current || cmd);
       } finally {
         sendingRef.current = false;
