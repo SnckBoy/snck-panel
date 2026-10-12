@@ -32,7 +32,7 @@ interface ServerConsoleProps {
 }
 
 type LogLevel = "info" | "warn" | "error";
-type LogFilter = "important" | "all";
+type LogFilter = "important";
 
 /* ═══════════════════════════════════════════════════════
    CONSTANTS
@@ -45,7 +45,6 @@ const ANSI_RE = /\x1B(?:\[[0-?]*[ -/]*[@-~]|\][^\x07]*(?:\x07|\x1B\\)|[@-_])/g;
 
 const FILTERS: { key: LogFilter; label: string }[] = [
   { key: "important", label: "Important Only" },
-  { key: "all", label: "Minecraft Logs" },
 ];
 
 /* ═══════════════════════════════════════════════════════
@@ -158,6 +157,8 @@ const isRoutineJvmWarning = (raw: string) => {
 
 const isImportantLog = (raw: string) => {
   const l = stripAnsi(normalizeMinecraftLogLine(raw)).trim();
+  // Keep typed commands and direct RCON replies visible in Important Only mode.
+  if (/^(?:> |↳ |\[COMMAND ERROR\] )/.test(l)) return true;
   if (isRoutineJvmWarning(raw) || /^\[System/i.test(l)) return false;
   if (/\b(ERROR|FATAL|SEVERE|EXCEPTION)\b|Can't keep up|crash|failed|failure|timed out|timeout|out of memory/i.test(l)) return true;
   if (/\btps\b|players online|There are \d+ of a max|joined the game|left the game|lost connection|logged in|logged out|server started|server stopped|saving worlds|saving players|stopping server|ready for connections|Done(?:\s*\([^)]*\))?!?\s*For help|Starting minecraft server version|Preparing level|Preparing spawn area|Loading properties|Default game type|Starting GS4 status listener|Starting remote control listener/i.test(l)) return true;
@@ -262,7 +263,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
   const [connectionState, setConnectionState] = useState<"connecting" | "live" | "reconnecting" | "offline">("connecting");
   const [accessDenied, setAccessDenied] = useState("");
   const [ready, setReady] = useState(false);
-  const [filter, setFilter] = useState<LogFilter>("all");
+  const [filter, setFilter] = useState<LogFilter>("important");
   const [search, setSearch] = useState("");
   const [atBottom, setAtBottom] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -500,10 +501,10 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
       try {
         const response = await axios.post(`/api/servers/${serverId}/command`, { command: cmd }, { timeout: 30000 });
         const output = String(response.data?.output || "").trim();
-        setLogs(previous => [...previous, ...(output ? output.split(/\r?\n/) : ["Command sent; no response text returned."])].slice(-MAX_LOG_LINES));
+        setLogs(previous => [...previous, ...(output ? output.split(/\r?\n/).map((line: string) => `↳ ${line}`) : ["↳ Command sent; no response text returned."])].slice(-MAX_LOG_LINES));
       } catch (err: any) {
         const message = String(err.response?.data?.error || err.message || "Command failed");
-        setLogs(previous => [...previous, `[ERROR] ${message}`].slice(-MAX_LOG_LINES));
+        setLogs(previous => [...previous, `[COMMAND ERROR] ${message}`].slice(-MAX_LOG_LINES));
         setCommand(current => current || cmd);
       } finally {
         sendingRef.current = false;
@@ -584,7 +585,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
     () =>
       logs
         .map((l, i) => ({ l, i }))
-        .filter(({ l }) => (filter === "all" || isImportantLog(l)) && (!search.trim() || stripAnsi(l).toLowerCase().includes(search.trim().toLowerCase()))),
+.filter(({ l }) => isImportantLog(l)
     [logs, filter, search]
   );
 
