@@ -538,7 +538,7 @@ export const attachContainerSocket = async (containerId: string, serverId: strin
 
 export const sendContainerCommand = async (containerId: string, command: string, nodeId?: string) => {
   const remote = await remoteNode(nodeId);
-  if (remote) { await nodeControl.command(remote, containerId, command); return; }
+  if (remote) return await nodeControl.command(remote, containerId, command);
   const docker = await getDocker(nodeId);
 
   if (isSandbox) {
