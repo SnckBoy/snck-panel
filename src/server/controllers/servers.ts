@@ -577,8 +577,8 @@ export const sendCommand = async (req: Request, res: Response) => {
     }
     if (!canManageServer(req, server)) return res.status(403).json({ error: "Forbidden" });
     if (typeof command !== "string" || command.length === 0 || command.length > 4096) return res.status(400).json({ error: "Invalid command" });
-    await sendContainerCommand(server.containerId, command, server.nodeId);
-    res.json({ success: true });
+    const result = await sendContainerCommand(server.containerId, command, server.nodeId);
+    res.json({ success: true, ...(result && typeof result === "object" ? result : {}) });
   } catch (err: any) {
     console.error("Command error:", err);
     res.status(500).json({ error: err.message || "Failed to send command" });
