@@ -123,8 +123,7 @@ if [[ "$BACKUP_DIR" == "/" || -z "$BACKUP_DIR" || "$BACKUP_DIR" != /* ]]; then
   die "Refusing to use an unsafe backup directory: $BACKUP_DIR"
 fi
 mkdir -p "$BACKUP_DIR"
-find "$BACKUP_DIR" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +
-log "Removed the previous panel backup; creating a fresh backup..."
+log "Keeping existing backups; creating a fresh rollback backup..."
 timestamp="$(date +%Y%m%d-%H%M%S)"
 backup="$BACKUP_DIR/$timestamp"
 mkdir -p "$backup"
@@ -169,9 +168,17 @@ install -d -o root -g root -m 750 "$APP_DIR/.data"
 [[ -f .data/settings.json ]] || printf '{}\n' > .data/settings.json
 
 log "Running TypeScript validation..."
-npm run lint >>"$LOG_FILE" 2>&1 || die "TypeScript validation failed."
+if ! npm run lint >>"$LOG_FILE" 2>&1; then
+  log "TypeScript validation failed. Showing the compiler diagnostics:"
+  tail -n 120 "$LOG_FILE" >&2 || true
+  die "TypeScript validation failed. The compiler output is shown above and saved in $LOG_FILE."
+fi
 log "Building frontend and backend..."
-npm run build >>"$LOG_FILE" 2>&1 || die "Application build failed."
+if ! npm run build >>"$LOG_FILE" 2>&1; then
+  log "Application build failed. Showing the build diagnostics:"
+  tail -n 120 "$LOG_FILE" >&2 || true
+  die "Application build failed. The build output is shown above and saved in $LOG_FILE."
+fi
 [[ -f dist/server.cjs ]] || die "Backend build did not produce dist/server.cjs."
 
 id -u snck >/dev/null 2>&1 || useradd --system --home-dir "$APP_DIR" --shell /usr/sbin/nologin snck
