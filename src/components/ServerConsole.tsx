@@ -500,7 +500,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
       try {
         const response = await axios.post(`/api/servers/${serverId}/command`, { command: cmd }, { timeout: 30000 });
         const output = String(response.data?.output || "").trim();
-        setLogs(previous => [...previous, ...(output ? output.split(/\\r?\\n/) : ["Command sent; no response text returned."])].slice(-MAX_LOG_LINES));
+        setLogs(previous => [...previous, ...(output ? output.split(/\r?\n/) : ["Command sent; no response text returned."])].slice(-MAX_LOG_LINES));
       } catch (err: any) {
         const message = String(err.response?.data?.error || err.message || "Command failed");
         setLogs(previous => [...previous, `[ERROR] ${message}`].slice(-MAX_LOG_LINES));
