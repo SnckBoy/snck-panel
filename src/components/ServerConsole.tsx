@@ -585,8 +585,12 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
     () =>
       logs
         .map((l, i) => ({ l, i }))
-.filter(({ l }) => isImportantLog(l)
-    [logs, filter, search]
+        .filter(({ l }) => {
+          if (!isImportantLog(l)) return false;
+          const query = search.trim().toLowerCase();
+          return !query || l.toLowerCase().includes(query);
+        }),
+    [logs, search]
   );
 
   /* ═══════════════════════ RENDER ═══════════════════════ */
