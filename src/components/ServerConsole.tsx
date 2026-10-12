@@ -160,7 +160,7 @@ const isImportantLog = (raw: string) => {
   const l = stripAnsi(normalizeMinecraftLogLine(raw)).trim();
   if (isRoutineJvmWarning(raw) || /^\[System/i.test(l)) return false;
   if (/\b(ERROR|FATAL|SEVERE|EXCEPTION)\b|Can't keep up|crash|failed|failure|timed out|timeout|out of memory/i.test(l)) return true;
-  if (/\btps\b|players online|There are \d+ of a max|joined the game|left the game|lost connection|logged in|logged out|server started|server stopped|saving worlds|saving players|stopping server|ready for connections|Done! For help/i.test(l)) return true;
+  if (/\btps\b|players online|There are \d+ of a max|joined the game|left the game|lost connection|logged in|logged out|server started|server stopped|saving worlds|saving players|stopping server|ready for connections|Done(?:\s*\([^)]*\))?!?\s*For help|Starting minecraft server version|Preparing level|Preparing spawn area|Loading properties|Default game type|Starting GS4 status listener|Starting remote control listener/i.test(l)) return true;
   if (/\bWARN(?:ING)?\b/i.test(l) && !isRoutineJvmWarning(raw)) return true;
   return false;
 };
