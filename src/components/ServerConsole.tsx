@@ -564,7 +564,7 @@ export default function ServerConsole({ serverId, server, actionNotice }: Server
     // timestamp/level prefix in the visual console for a cleaner Pterodactyl-style view.
     const log = normalizeMinecraftLogLine(raw);
     const level = levelOf(log);
-    const displayLog = log.replace(/^\\[\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:\\s+(?:TRACE|DEBUG|INFO|WARN(?:ING)?|ERROR|FATAL|SEVERE))?\\]\\s*:?\\s*/i, "").trimStart();
+    const displayLog = log.replace(/^\[\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:\s+(?:TRACE|DEBUG|INFO|WARN(?:ING)?|ERROR|FATAL|SEVERE))?\]\s*:?\s*/i, "").trimStart();
     const color = level === "error" ? "text-red-300" : level === "warn" ? "text-amber-200" : "text-zinc-300";
     const lineSize = terminalFontSize === "small" ? "text-[10px]" : terminalFontSize === "large" ? "text-sm" : "text-[11px] sm:text-xs";
     return (
