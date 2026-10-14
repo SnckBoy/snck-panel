@@ -109,5 +109,9 @@ export const nodeControl = {
       ? `path=${encodeURIComponent(normalizeRelativePath(paths[0]))}`
       : paths.map((value) => `paths=${encodeURIComponent(normalizeRelativePath(value))}`).join("&");
     return nodeRequest(n, "GET", `/v1/servers/${id}/files/download?${query}`, undefined, 120000, true, "stream");
-  }
+  },
+  backups: (n:NodeRecord,id:string) => nodeRequest(n, "POST", `/v1/servers/${id}/backups`, undefined, 300000),
+  backupList: (n:NodeRecord,id:string) => nodeRequest(n, "GET", `/v1/servers/${id}/backups`, undefined, 15000),
+  backupDownload: (n:NodeRecord,id:string,filename:string) => nodeRequest(n, "GET", `/v1/servers/${id}/backups/${encodeURIComponent(filename)}`, undefined, 120000, true, "stream"),
+  backupDelete: (n:NodeRecord,id:string,filename:string) => nodeRequest(n, "DELETE", `/v1/servers/${id}/backups/${encodeURIComponent(filename)}`, undefined, 15000),
 };

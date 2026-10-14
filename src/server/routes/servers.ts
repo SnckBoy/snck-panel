@@ -15,8 +15,26 @@ const requireServerAccess = async (req: any, res: any, next: any) => {
   const server = servers.find((candidate: any) => candidate.id === req.params.id);
   if (!server) return res.status(404).json({ error: "Server not found" });
   const user = req.user;
-  if (user?.role !== "admin" && user?.role !== "owner" && server.owner !== user?.id) {
+  const staff = user?.role === "admin" || user?.role === "owner";
+  const membership = server.subUsers?.find((entry: any) => entry?.userId === user?.id);
+  if (!staff && server.owner !== user?.id && !membership) {
     return res.status(403).json({ error: "Forbidden" });
+  }
+  if (!staff && server.owner !== user?.id) {
+    const propertyPath = String(req.query?.path || req.body?.filePath || "").replace(/\\/g, "/").split("/").pop() === "server.properties";
+    const required = req.path.endsWith("/start") ? "start"
+      : req.path.endsWith("/stop") ? "stop"
+      : req.path.endsWith("/restart") ? "restart"
+      : req.path.includes("/plugins") ? "plugins"
+      : req.path.includes("/modpacks") || req.path.includes("/mods") ? "mods"
+      : req.path.includes("/backups") ? "backup"
+      : req.path.includes("/files") ? (propertyPath ? "properties" : "files")
+      : req.path.endsWith("/resources") || req.path.endsWith("/suspend") || req.path.endsWith("/version") || req.path.endsWith("/java-version") ? "settings"
+      : req.path.endsWith("/command") || req.path.endsWith("/logs") || req.path.endsWith("/stats") ? "start"
+      : undefined;
+    if (required && !membership.permissions?.includes(required) && !membership.permissions?.includes("*")) {
+      return res.status(403).json({ error: `Sub-user permission required: ${required}` });
+    }
   }
   req.server = server;
   next();

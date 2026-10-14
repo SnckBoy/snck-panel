@@ -32,9 +32,18 @@ const nodeStatusForServer=(node:any)=>{
  return Number.isFinite(heartbeat) && Date.now()-heartbeat<=45_000 ? "ONLINE" : "OFFLINE";
 };
 
-const canManageServer = (req: Request, server: any) => {
+const hasServerMembership = (req: Request, server: any) => {
   const user = (req as any).user;
-  return user?.role === "admin" || user?.role === "owner" || server?.owner === user?.id;
+  if (!user || !server) return false;
+  if (user.role === "admin" || user.role === "owner" || server.owner === user.id) return true;
+  return Array.isArray(server.subUsers) && server.subUsers.some((entry: any) => entry?.userId === user.id);
+};
+const canManageServer = (req: Request, server: any, permission?: string) => {
+  const user = (req as any).user;
+  if (!hasServerMembership(req, server)) return false;
+  if (user?.role === "admin" || user?.role === "owner" || server?.owner === user?.id) return true;
+  const membership = server.subUsers?.find((entry: any) => entry?.userId === user?.id);
+  return !permission || membership?.permissions?.includes(permission) || membership?.permissions?.includes("*");
 };
 const serverBasePath = (serverId: string) => path.resolve(process.cwd(), ".data", "servers", serverId);
 const resolveServerPath = (serverId: string, requestedPath: unknown) => {
@@ -112,7 +121,7 @@ export const getServers = async (req: Request, res: Response) => {
   const servers = await readJSON("servers.json") || [];
   
   // Filter for normal users
-  const userServers = user.role === "admin" || user.role === "owner" ? servers : servers.filter((s: any) => s.owner === user.id);
+  const userServers = user.role === "admin" || user.role === "owner" ? servers : servers.filter((s: any) => s.owner === user.id || s.subUsers?.some((entry: any) => entry?.userId === user.id));
 
   // Update statuses
   const [usersData, nodesData] = await Promise.all([readJSON("users.json"), readJSON("nodes.json")]);
@@ -158,7 +167,7 @@ export const getServer = async (req: Request, res: Response) => {
     res.status(404).json({ error: "Server not found" });
     return;
   }
-  if (user.role !== "admin" && user.role !== "owner" && server.owner !== user.id) {
+  if (!hasServerMembership(req, server)) {
     return res.status(403).json({ error: "Forbidden" });
   }
 
@@ -183,7 +192,7 @@ export const getServerStats = async (req: Request, res: Response) => {
       res.status(404).json({ error: "Server not found" });
       return;
     }
-    if (user.role !== "admin" && user.role !== "owner" && server.owner !== user.id) {
+    if (!hasServerMembership(req, server)) {
       return res.status(403).json({ error: "Forbidden" });
     }
 
@@ -403,7 +412,7 @@ export const updateIpAlias = async (req: Request, res: Response) => {
 
   if (!server) return res.status(404).json({ error: "Server not found" });
 
-  if (user.role !== "admin" && user.role !== "owner" && server.owner !== user.id) {
+  if (!hasServerMembership(req, server)) {
     return res.status(403).json({ error: "Forbidden" });
   }
 
@@ -604,7 +613,7 @@ export const changeServerVersion = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Server not found" });
     }
 
-    if (user.role !== "admin" && user.role !== "owner" && server.owner !== user.id) {
+    if (!hasServerMembership(req, server)) {
       return res.status(403).json({ error: "Only admins or owners can change version" });
     }
 
@@ -1012,6 +1021,12 @@ export const saveFileContent = async (req: Request, res: Response) => {
 
 export const getBackups = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const server = (req as any).server;
+  const remote = await remoteForServer(server);
+  if (remote) {
+    try { return res.json(await nodeControl.backupList(remote, id)); }
+    catch (e: any) { return res.status(502).json({ error: e?.message || "Unable to list remote backups" }); }
+  }
   const backupsDir = backupBasePath(id);
   await fs.ensureDir(backupsDir);
 
@@ -1039,6 +1054,11 @@ export const getBackups = async (req: Request, res: Response) => {
 
 export const createBackup = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const remote = await remoteForServer((req as any).server);
+  if (remote) {
+    try { return res.json(await nodeControl.backups(remote, id)); }
+    catch (e: any) { return res.status(502).json({ error: e?.message || "Unable to create remote backup" }); }
+  }
   const serverDir = serverBasePath(id);
   const backupsDir = backupBasePath(id);
   await fs.ensureDir(backupsDir);
@@ -1075,6 +1095,16 @@ export const createBackup = async (req: Request, res: Response) => {
 
 export const downloadBackup = async (req: Request, res: Response) => {
   const { id, filename } = req.params;
+  const remote = await remoteForServer((req as any).server);
+  if (remote) {
+    try {
+      const response: any = await nodeControl.backupDownload(remote, id, filename);
+      if (response.headers?.["content-type"]) res.setHeader("Content-Type", response.headers["content-type"]);
+      if (response.headers?.["content-disposition"]) res.setHeader("Content-Disposition", response.headers["content-disposition"]);
+      response.data.pipe(res);
+      return;
+    } catch (e: any) { return res.status(502).json({ error: e?.message || "Unable to download remote backup" }); }
+  }
   const backupPath = resolveBackupPath(id, filename);
   if (!backupPath) return res.status(403).send("Invalid path");
 
@@ -1087,6 +1117,11 @@ export const downloadBackup = async (req: Request, res: Response) => {
 
 export const deleteBackup = async (req: Request, res: Response) => {
   const { id, filename } = req.params;
+  const remote = await remoteForServer((req as any).server);
+  if (remote) {
+    try { return res.json(await nodeControl.backupDelete(remote, id, filename)); }
+    catch (e: any) { return res.status(502).json({ error: e?.message || "Unable to delete remote backup" }); }
+  }
   const backupPath = resolveBackupPath(id, filename);
   if (!backupPath) return res.status(403).json({ error: "Invalid path" });
 
@@ -1209,15 +1244,24 @@ const buildMrpackInstallTree = async (archiveRoot: string, outputRoot: string) =
   const runtimeType = dependencies["fabric-loader"] ? "FABRIC" : dependencies.forge ? "FORGE" : dependencies.neoforge ? "NEOFORGE" : dependencies["quilt-loader"] ? "QUILT" : null;
   return { name: String(manifest.name || "Modrinth pack"), files: totalBytes, runtimeType, minecraftVersion: typeof dependencies.minecraft === "string" ? dependencies.minecraft : null };
 };
-const persistDetectedMrpackRuntime = async (serverId: string, detected: { runtimeType: string | null; minecraftVersion: string | null }) => {
+const applyDetectedMrpackRuntime = async (server: any, detected: { runtimeType: string | null; minecraftVersion: string | null }) => {
   if (!detected.runtimeType && !detected.minecraftVersion) return;
+  const nextType = detected.runtimeType || server.type;
+  const nextVersion = detected.minecraftVersion || server.version;
+  if (nextType === server.type && nextVersion === server.version) return;
+  if (server.containerId) {
+    await deleteContainer(server.containerId, server.nodeId);
+  }
+  server.type = nextType;
+  server.version = nextVersion;
+  server.containerId = await createServerContainer(server);
+  server.status = "offline";
   const servers = await readJSON("servers.json") || [];
-  const server = servers.find((candidate: any) => candidate.id === serverId);
-  if (!server) return;
-  if (detected.runtimeType) server.type = detected.runtimeType;
-  if (detected.minecraftVersion) server.version = detected.minecraftVersion;
-  server.runtimeDetectedAt = new Date().toISOString();
-  await writeJSON("servers.json", servers);
+  const index = servers.findIndex((candidate: any) => candidate.id === server.id);
+  if (index >= 0) {
+    servers[index] = { ...servers[index], type: server.type, version: server.version, containerId: server.containerId, status: server.status, runtimeDetectedAt: new Date().toISOString() };
+    await writeJSON("servers.json", servers);
+  }
 };
 const collectArchiveFiles = async (root: string, current = ""): Promise<Array<{ path: string; content: string }>> => {
   const directory = path.join(root, current);
@@ -1515,6 +1559,12 @@ export const importModpack = async (req: Request, res: Response) => {
 
   try {
     await fs.ensureDir(tempDir);
+    if (!remote) await fs.ensureDir(serverDir);
+    const currentServer = (req as any).server;
+    if (currentServer?.containerId) {
+      const status = await getContainerStatus(currentServer.containerId, currentServer.nodeId);
+      if (status?.State?.Running) return res.status(409).json({ error: "Stop the server before importing a modpack." });
+    }
     const existing = remote ? [] : await fs.readdir(serverDir);
     if (existing.length > 0 && !confirmReplace) {
       await fs.remove(uploaded.path).catch(() => undefined);
@@ -1558,14 +1608,14 @@ export const importModpack = async (req: Request, res: Response) => {
         }
         throw error;
       }
-      await persistDetectedMrpackRuntime(id, detectedRuntime);
+      await applyDetectedMrpackRuntime((req as any).server, detectedRuntime);
       await fs.remove(uploaded.path);
       await fs.remove(tempDir);
       return res.json({ success: true, entries: files.length, backupFilename: null, detectedRuntime, message: isMrpack ? "Modrinth pack dependencies were verified and imported on the remote node. Runtime settings were detected from the manifest." : "Archive validated and imported on the remote node. Review the files before starting." });
     }
     await copyDirectorySafely(sourcePath, serverDir);
     const installedEntries = isMrpack ? (await collectArchiveFiles(sourcePath)).length : entries.length;
-    await persistDetectedMrpackRuntime(id, detectedRuntime);
+    await applyDetectedMrpackRuntime((req as any).server, detectedRuntime);
     await fs.remove(uploaded.path);
     await fs.remove(tempDir);
     res.json({ success: true, entries: installedEntries, backupFilename, detectedRuntime, message: isMrpack ? "Modrinth pack dependencies were verified and imported. Runtime settings were detected from the manifest." : "Archive validated and imported. Review the files before starting." });
