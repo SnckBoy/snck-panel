@@ -10,7 +10,7 @@ type SidebarLink = { name: string; path: string; icon: ReactNode };
 export function Sidebar({ onClose, isCollapsed, toggleCollapse }: { onClose?: () => void; isCollapsed?: boolean; toggleCollapse?: () => void }) {
   const location = useLocation();
   const { user, logout } = useAuth();
-  const { panelName, panelLogo } = useSettings();
+  const { panelName } = useSettings();
 
   const canAdminister = user?.role === "admin" || user?.role === "owner";
   const primaryLinks: SidebarLink[] = [
@@ -40,13 +40,7 @@ export function Sidebar({ onClose, isCollapsed, toggleCollapse }: { onClose?: ()
           </button>
         )}
         <div className="flex items-center gap-3 min-w-0">
-          {panelLogo ? (
-            <img src={panelLogo} alt="Logo" className="w-8 h-8 rounded-xl object-cover flex-shrink-0" />
-          ) : (
-            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#24242d] flex-shrink-0 text-white">
-              <Server className="w-4 h-4" />
-            </div>
-          )}
+          <div className="w-9 h-9 flex-shrink-0 text-foreground" role="img" aria-label="SNCK logo"><svg viewBox="0 0 100 100" aria-hidden="true" className="h-full w-full" fill="currentColor"><path d="M49 94 37 68 9 48 Q3 43 8 38 Q11 35 17 38 L37 48 22 20 Q18 13 23 10 Q28 7 33 13 L49 36 61 20 67 37 82 10 Q87 4 92 9 Q96 13 91 20 L79 39 91 35 Q98 33 100 40 Q101 46 93 49 L72 54 51 94 Q50 97 49 94 Z M50 49 40 61 50 73 60 60 Z" fillRule="evenodd"/></svg></div>
           {!isCollapsed && (
             <motion.h1 initial={{ opacity: 0, width: 0 }} animate={{ opacity: 1, width: "auto" }} className="text-lg font-bold tracking-tight truncate whitespace-nowrap text-foreground">
               {panelName}
