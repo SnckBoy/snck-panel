@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import { requireAuth } from "../middleware/auth.js";
-import { getServers, createServer, getServer, deleteServer, startServer, stopServer, restartServer, changeServerVersion, changeJavaVersion, getFiles, uploadFile, uploadChunk, deleteFile, renameFile, saveFileContent, sendCommand, getServerStats, updateOwner, updateIpAlias, getBackups, createBackup, downloadBackup, deleteBackup, unzipFile, zipFiles, installPlugin, installMod, importModpack, updateResources, updateSuspend , createFile, createDirectory, downloadFile, installModpackFromMarketplace, listInstalledPlugins, removeInstalledPlugin } from "../controllers/servers.js";
+import { getServers, createServer, getServer, deleteServer, startServer, stopServer, killServer, restartServer, changeServerVersion, changeJavaVersion, getFiles, uploadFile, uploadChunk, deleteFile, renameFile, saveFileContent, sendCommand, getServerStats, updateOwner, updateIpAlias, getBackups, createBackup, downloadBackup, deleteBackup, unzipFile, zipFiles, installPlugin, installMod, importModpack, updateResources, updateSuspend , createFile, createDirectory, downloadFile, installModpackFromMarketplace, listInstalledPlugins, removeInstalledPlugin } from "../controllers/servers.js";
 import { getContainerLogs } from "../services/docker.js";
 import multer from "multer";
 
@@ -25,6 +25,7 @@ const requireServerAccess = async (req: any, res: any, next: any) => {
     const required = req.path.endsWith("/start") ? "start"
       : req.path.endsWith("/stop") ? "stop"
       : req.path.endsWith("/restart") ? "restart"
+      : req.path.endsWith("/kill") ? "kill"
       : req.path.includes("/plugins") ? "plugins"
       : req.path.includes("/modpacks") || req.path.includes("/mods") ? "mods"
       : req.path.includes("/backups") ? "backup"
@@ -68,6 +69,7 @@ router.put("/:id/suspend", updateSuspend);
 
 router.post("/:id/start", startServer);
 router.post("/:id/stop", stopServer);
+router.post("/:id/kill", killServer);
 router.post("/:id/restart", restartServer);
 router.post("/:id/command", sendCommand);
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import axios from "axios";
 import { readJSON, writeJSON } from "../services/db.js";
-import { createServerContainer, startContainer, stopContainer, restartContainer, deleteContainer, getContainerStatus, sendContainerCommand, attachContainerSocket, getContainerStats, SUPPORTED_JAVA_VERSIONS, defaultDocker } from "../services/docker.js";
+import { createServerContainer, startContainer, stopContainer, killContainer, restartContainer, deleteContainer, getContainerStatus, sendContainerCommand, attachContainerSocket, getContainerStats, SUPPORTED_JAVA_VERSIONS, defaultDocker } from "../services/docker.js";
 import { createSftpUser, deleteSftpUser } from "../services/sftp.js";
 import crypto from "crypto";
 import fs from "fs-extra";
@@ -261,6 +261,13 @@ export const createServer = async (req: Request, res: Response) => {
     res.status(400).json({ error: "Missing required fields (name, ram, port)" });
     return;
   }
+  const serverName = String(name).trim();
+  const ramGb = Number(ram);
+  const cpuPercent = Number(cpu ?? 100);
+  const diskGb = Number(disk ?? 10);
+  if (!serverName || serverName.length > 80 || !Number.isFinite(ramGb) || ramGb <= 0 || ramGb > 1024 || !Number.isFinite(cpuPercent) || cpuPercent <= 0 || cpuPercent > 10000 || !Number.isFinite(diskGb) || diskGb <= 0 || diskGb > 1048576) {
+    return res.status(400).json({ error: "Server name and resource limits are invalid. RAM, CPU, and disk must be positive finite values within supported limits." });
+  }
   const serverPort = Number(port);
   if (!Number.isInteger(serverPort) || serverPort < 1 || serverPort > 65535) {
     return res.status(400).json({ error: "Server port must be an integer from 1 to 65535." });
@@ -328,11 +335,11 @@ export const createServer = async (req: Request, res: Response) => {
   const id = crypto.randomUUID();
   const serverData = {
     id,
-    name,
+    name: serverName,
     owner: requestedOwner,
-    ram,
-    cpu: cpu || 100,
-    disk: disk || 10,
+    ram: ramGb,
+    cpu: cpuPercent,
+    disk: diskGb,
     port: serverPort,
     ipAlias: ipAlias || "",
     nodeId: requestedNodeId,
@@ -535,6 +542,23 @@ export const stopServer = async (req: Request, res: Response) => {
   } catch (err: any) {
     console.error("Stop server error:", err);
     const failure = nodeOperationError(err, "Failed to stop server");
+    res.status(failure.statusCode).json(failure.body);
+  }
+};
+
+export const killServer = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const servers = await readJSON("servers.json") || [];
+    const server = servers.find((s: any) => s.id === id);
+    if (!server || !server.containerId) return res.status(404).json({ error: "Not found" });
+    if (!canManageServer(req, server, "kill")) return res.status(403).json({ error: "Forbidden" });
+    await killContainer(server.containerId, server.nodeId);
+    await audit("server.killed", req, { serverId: id, nodeId: server.nodeId });
+    res.json({ success: true });
+  } catch (err: any) {
+    console.error("Kill server error:", err);
+    const failure = nodeOperationError(err, "Failed to kill server");
     res.status(failure.statusCode).json(failure.body);
   }
 };

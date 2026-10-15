@@ -333,6 +333,19 @@ export const stopContainer = async (containerId: string, nodeId?: string) => {
   await container.stop();
 };
 
+export const killContainer = async (containerId: string, nodeId?: string) => {
+  const remote = await remoteNode(nodeId);
+  if (remote) { await nodeControl.kill(remote, containerId); return; }
+  const docker = await getDocker(nodeId);
+  if (isSandbox) {
+    const id = containerId.replace("mock-container-id-", "");
+    mockState[id] = false;
+    emitServerLog(id, "[System] Server killed (Sandbox Mode).\\r\\n");
+    return;
+  }
+  await docker.getContainer(containerId).kill();
+};
+
 export const restartContainer = async (containerId: string, nodeId?: string) => {
   const remote = await remoteNode(nodeId);
   if (remote) { await nodeControl.restart(remote, containerId); return; }
