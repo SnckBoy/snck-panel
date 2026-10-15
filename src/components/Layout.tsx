@@ -30,10 +30,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   if (isServerView) {
     return (
-      <div className="snx-server-layout flex h-[100dvh] w-full bg-transparent text-foreground font-sans overflow-hidden selection:bg-indigo-500/30">
-        <main className="flex-1 w-full h-full relative z-10 overflow-hidden">
+      <div className="snx-server-layout flex flex-col h-[100dvh] w-full bg-transparent text-foreground font-sans overflow-hidden selection:bg-indigo-500/30">
+        <main className="flex-1 min-h-0 w-full relative z-10 overflow-hidden">
           {children}
         </main>
+        <footer className="snx-brand-footer flex flex-shrink-0 items-center justify-center gap-3 sm:gap-5 flex-wrap border-t border-border-subtle px-3 sm:px-6 py-3 text-xs text-muted-foreground">
+        <span className="flex items-center gap-2 font-semibold tracking-wide text-foreground"><span className="h-6 w-6 text-foreground"><svg viewBox="0 0 100 100" aria-hidden="true" className="h-full w-full" fill="currentColor"><path d="M49 94 37 68 9 48 Q3 43 8 38 Q11 35 17 38 L37 48 22 20 Q18 13 23 10 Q28 7 33 13 L49 36 61 20 67 37 82 10 Q87 4 92 9 Q96 13 91 20 L79 39 91 35 Q98 33 100 40 Q101 46 93 49 L72 54 51 94 Q50 97 49 94 Z M50 49 40 61 50 73 60 60 Z" fillRule="evenodd"/></svg></span><span>SNCK PANEL</span></span>
+        <span className="hidden sm:inline text-border">|</span>
+        <span><strong className="font-semibold text-foreground">Created by Clark</strong></span>
+        <span className="hidden sm:inline text-border">|</span>
+        <span>Discord: <strong className="font-medium text-foreground">root_dora</strong></span>
+      </footer>
       </div>
     );
   }
@@ -84,6 +91,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {children}
           </div>
         </main>
+        <footer className="snx-brand-footer flex flex-shrink-0 items-center justify-center gap-3 sm:gap-5 flex-wrap border-t border-border-subtle px-3 sm:px-6 py-3 text-xs text-muted-foreground">
+        <span className="flex items-center gap-2 font-semibold tracking-wide text-foreground"><span className="h-6 w-6 text-foreground"><svg viewBox="0 0 100 100" aria-hidden="true" className="h-full w-full" fill="currentColor"><path d="M49 94 37 68 9 48 Q3 43 8 38 Q11 35 17 38 L37 48 22 20 Q18 13 23 10 Q28 7 33 13 L49 36 61 20 67 37 82 10 Q87 4 92 9 Q96 13 91 20 L79 39 91 35 Q98 33 100 40 Q101 46 93 49 L72 54 51 94 Q50 97 49 94 Z M50 49 40 61 50 73 60 60 Z" fillRule="evenodd"/></svg></span><span>SNCK PANEL</span></span>
+        <span className="hidden sm:inline text-border">|</span>
+        <span><strong className="font-semibold text-foreground">Created by Clark</strong></span>
+        <span className="hidden sm:inline text-border">|</span>
+        <span>Discord: <strong className="font-medium text-foreground">root_dora</strong></span>
+      </footer>
       </div>
     </div>
   );
