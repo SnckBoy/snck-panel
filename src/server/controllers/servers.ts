@@ -812,7 +812,9 @@ export const uploadChunk = async (req: Request, res: Response) => {
 
 export const deleteFile = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const filePaths = req.body.paths || (req.body.path ? [req.body.path] : []);
+  const rawPaths = Array.isArray(req.body?.paths) ? req.body.paths : (req.body?.path ? [req.body.path] : []);
+  const filePaths = rawPaths.filter((value: unknown): value is string => typeof value === "string" && value.trim().length > 0);
+  if (filePaths.length === 0) return res.status(400).json({ error: "At least one file or directory path is required" });
   const server=(await readJSON("servers.json")||[]).find((x:any)=>x.id===id); const remote=await remoteForServer(server);
   if(remote){try{return res.json(await nodeControl.files(remote,id,"delete",{paths:filePaths}))}catch(e:any){return res.status(502).json({error:e.message})}}
   
@@ -820,6 +822,7 @@ export const deleteFile = async (req: Request, res: Response) => {
     for (const filePath of filePaths) {
       const targetPath = resolveServerPath(id, filePath);
       if (!targetPath) return res.status(403).json({ error: "Invalid path" });
+      if (targetPath === serverBasePath(id)) return res.status(400).json({ error: "The server root directory cannot be deleted" });
       
       await fs.remove(targetPath);
     }
@@ -886,6 +889,7 @@ export const renameFile = async (req: Request, res: Response) => {
   const targetOldPath = resolveServerPath(id, oldPath);
   const targetNewPath = resolveServerPath(id, newPath);
   if (!targetOldPath || !targetNewPath) return res.status(403).json({ error: "Invalid path" });
+  if (targetOldPath === serverBasePath(id)) return res.status(400).json({ error: "The server root directory cannot be renamed" });
 
   try {
     await fs.rename(targetOldPath, targetNewPath);
