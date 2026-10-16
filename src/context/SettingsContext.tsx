@@ -81,6 +81,15 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
       root.style.setProperty("--snx-density", density[themeConfig.density] || density.comfortable);
       root.style.fontSize = `${16 * Math.max(0.85, Math.min(1.25, Number(themeConfig.fontScale) || 1))}px`;
       root.dataset.snckThemeId = String(themeConfig.id || "snck-default");
+      const structure = themeConfig.layout?.structure || {};
+      root.dataset.snckShell = structure.shell === "pterodactyl" ? "pterodactyl" : "snck";
+      root.dataset.snckNavigationMode = structure.navigationMode === "topbar" ? "topbar" : "sidebar";
+      root.dataset.snckSidebarMode = structure.sidebarMode === "compact" ? "compact" : "expanded";
+      root.dataset.snckContentWidth = ["wide", "full"].includes(structure.contentWidth) ? structure.contentWidth : "standard";
+      root.dataset.snckDashboardMode = structure.dashboardMode === "server-first" ? "server-first" : "overview";
+      root.dataset.snckServerNavigationMode = structure.serverNavigationMode === "tabs" ? "tabs" : "sidebar";
+      const widthByMode: Record<string, string> = { standard: "80rem", wide: "100rem", full: "100%" };
+      root.style.setProperty("--snx-content-max-width", widthByMode[structure.contentWidth] || widthByMode.standard);
     }
     root.style.colorScheme = "dark";
   };
