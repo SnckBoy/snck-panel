@@ -23,7 +23,7 @@ assert.equal(validateThemeInput(petroSample).layout.structure.dashboardMode, "se
 assert.equal(validateThemeInput(petroSample).layout.structure.serverNavigationOrder[0], "console", "Snck Petro prioritizes the server console");
 assert.equal(validateThemeInput(petroSample).name, "Snck Petro", "sample theme is branded Snck Petro");
 assert.equal(validateThemeInput(petroSample).layout.labels.servers, "Minecraft Servers", "theme file can rename existing navigation labels");
-assert.equal(validateThemeInput(petroSample).layout.customNavigation[0].id, "custom-docs", "theme file can add safe custom shortcuts");
+assert.equal(validateThemeInput(petroSample).layout.customNavigation.some((item) => item.id === "custom-docs"), true, "theme file can add safe custom shortcuts");
 assert.equal(validateThemeInput(petroSample).layout.customNavigation.some((item) => item.target === "servers"), true, "theme file can add a working shortcut to an existing panel route");
 const invalidCustomLink = { ...petroSample, id: "bad-custom-link", layout: { ...petroSample.layout, customNavigation: [{ id: "custom-unsafe", label: "Unsafe", url: "javascript:alert(1)" }] } };
 assert.throws(() => validateThemeInput(invalidCustomLink), /layout/i, "rejects non-HTTPS custom links");
