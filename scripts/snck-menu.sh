@@ -10,6 +10,7 @@ PORT="${SNCK_PORT:-6767}"
 INSTALLER_URL="${SNCK_INSTALLER_URL:-https://raw.githubusercontent.com/SnckBoy/snck-panel/main/scripts/install-panel.sh}"
 LOG_FILE="/var/log/snck-panel-installer.log"
 BACKUP_DIR="${SNCK_BACKUP_DIR:-/var/backups/snck-panel}"
+SERVICE_HELPER="/usr/local/bin/snck-panel-service"
 
 if [[ $EUID -ne 0 ]]; then
   exec sudo -E bash "$0" "$@"
@@ -26,7 +27,8 @@ header(){
 
 pause(){ printf '\nPress Enter to continue... '; read -r _ || true; }
 
-service_exists(){ systemctl list-unit-files "$SERVICE" --no-legend 2>/dev/null | grep -q "^${SERVICE}[[:space:]]"; }
+has_systemd(){ command -v systemctl >/dev/null 2>&1 && [[ -d /run/systemd/system ]] && systemctl show-environment >/dev/null 2>&1; }
+service_exists(){ if has_systemd; then systemctl list-unit-files "$SERVICE" --no-legend 2>/dev/null | grep -q "^${SERVICE}[[:space:]]"; else [[ -x "$SERVICE_HELPER" && -f "$APP_DIR/dist/server.cjs" ]]; fi; }
 installed(){ [[ -f "$APP_DIR/package.json" ]] && service_exists; }
 
 run_installer(){
@@ -63,8 +65,10 @@ repair_panel(){
 
 status_panel(){
   printf '\n\033[1;36mService status\033[0m\n'
-  if service_exists; then
+  if service_exists && has_systemd; then
     systemctl status "$SERVICE" --no-pager || true
+  elif service_exists; then
+    "$SERVICE_HELPER" status || true
   else
     printf 'Service: not installed\n'
   fi
@@ -78,9 +82,11 @@ status_panel(){
 }
 
 restart_panel(){
-  if service_exists; then
+  if service_exists && has_systemd; then
     systemctl restart "$SERVICE"
     systemctl is-active --quiet "$SERVICE" && printf '\033[1;32mSNCK PANEL restarted successfully.\033[0m\n' || printf '\033[1;31mSNCK PANEL failed to restart.\033[0m\n'
+  elif service_exists; then
+    "$SERVICE_HELPER" restart && printf '\033[1;32mSNCK PANEL restarted successfully.\033[0m\n' || printf '\033[1;31mSNCK PANEL failed to restart.\033[0m\n'
   else
     printf '\033[1;33mSNCK PANEL service is not installed.\033[0m\n'
   fi
@@ -89,7 +95,9 @@ restart_panel(){
 
 logs_panel(){
   printf '\n\033[1;36mRecent service logs\033[0m\n\n'
-  if service_exists; then journalctl -u "$SERVICE" -n 100 --no-pager || true; else printf 'Service is not installed.\n'; fi
+  if service_exists && has_systemd; then journalctl -u "$SERVICE" -n 100 --no-pager || true
+  elif service_exists; then "$SERVICE_HELPER" logs 100 || true
+  else printf 'Service is not installed.\n'; fi
   printf '\n\033[1;36mInstaller log\033[0m: %s\n' "$LOG_FILE"
   [[ -f "$LOG_FILE" ]] && tail -n 40 "$LOG_FILE" || printf 'No installer log yet.\n'
   pause
@@ -156,10 +164,11 @@ uninstall_panel(){
       printf 'The local node daemon, Minecraft server files, and Docker resources will be preserved.\n'
       read -r -p 'Type REMOVE-PANEL to continue: ' confirm </dev/tty
       [[ "$confirm" == "REMOVE-PANEL" ]] || { printf 'Cancelled.\n'; return 0; }
+      if [[ -x "$SERVICE_HELPER" ]]; then "$SERVICE_HELPER" stop >/dev/null 2>&1 || true; "$SERVICE_HELPER" boot-remove >/dev/null 2>&1 || true; fi
       systemctl disable --now "$SERVICE" 2>/dev/null || true
       rm -f "/etc/systemd/system/$SERVICE"
       rm -rf -- "$APP_DIR" "$BACKUP_DIR" /etc/snck-panel /var/lib/snck-panel /var/log/snck-panel /var/lib/snck
-      rm -f -- /usr/local/bin/snck-panel "$LOG_FILE"
+      rm -f -- /usr/local/bin/snck-panel "$SERVICE_HELPER" "$LOG_FILE" /etc/cron.d/snck-panel
       if id -u snck >/dev/null 2>&1; then userdel snck >/dev/null 2>&1 || true; fi
       systemctl daemon-reload 2>/dev/null || true
       systemctl reset-failed "$SERVICE" 2>/dev/null || true
@@ -172,6 +181,7 @@ uninstall_panel(){
       read -r -p 'Type DELETE-SNCK-ALL to permanently continue: ' confirm </dev/tty
       [[ "$confirm" == "DELETE-SNCK-ALL" ]] || { printf 'Cancelled.\n'; return 0; }
 
+      if [[ -x "$SERVICE_HELPER" ]]; then "$SERVICE_HELPER" stop >/dev/null 2>&1 || true; "$SERVICE_HELPER" boot-remove >/dev/null 2>&1 || true; fi
       systemctl disable --now "$SERVICE" 2>/dev/null || true
       systemctl disable --now shironex-node.service 2>/dev/null || true
       rm -f "/etc/systemd/system/$SERVICE" /etc/systemd/system/shironex-node.service
@@ -191,7 +201,7 @@ uninstall_panel(){
         done
       fi
       rm -rf -- "$APP_DIR" "$BACKUP_DIR" /etc/snck-panel /var/lib/snck-panel /var/log/snck-panel /opt/shironex-node /etc/shironex-node /var/lib/shironex/servers /var/lib/shironex/.backups /var/lib/snck
-      rm -f -- /usr/local/bin/snck-panel /usr/local/bin/shironex-node /usr/local/bin/shironex-node-daemon "$LOG_FILE"
+      rm -f -- /usr/local/bin/snck-panel /usr/local/bin/shironex-node /usr/local/bin/shironex-node-daemon "$SERVICE_HELPER" /etc/cron.d/snck-panel "$LOG_FILE"
       if id -u snck >/dev/null 2>&1; then userdel snck >/dev/null 2>&1 || true; fi
       systemctl daemon-reload 2>/dev/null || true
       printf '\nAll SNCK components and matched SNCK-managed data have been removed.\n'
