@@ -45,7 +45,7 @@ export function validateConfig(value: any): value is ThemeConfig {
     Number.isFinite(value.fontScale) && value.fontScale >= 0.85 && value.fontScale <= 1.25 &&
     ["compact", "comfortable", "spacious"].includes(value.density) &&
     ["flat", "soft", "glow"].includes(value.elevation) &&
-    Number.isFinite(value.surfaceOpacity) && value.surfaceOpacity >= 55 && value.surfaceOpacity <= 100;
+    Number.isInteger(value.surfaceOpacity) && value.surfaceOpacity >= 55 && value.surfaceOpacity <= 100;
 }
 function normalizeConfig(value: any): ThemeConfig | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
