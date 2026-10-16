@@ -6,7 +6,7 @@ export type ThemeConfig = {
   surface: string; sidebar: string; navbar: string; text: string; muted: string;
   border: string; success: string; warning: string; error: string; radius: number;
   fontFamily: "system" | "inter" | "mono"; fontScale: number;
-  density: "compact" | "comfortable" | "spacious"; elevation: "flat" | "soft" | "glow";
+  density: "compact" | "comfortable" | "spacious"; elevation: "flat" | "soft" | "glow"; surfaceOpacity: number;
 };
 export type ThemeRecord = {
   id: string; name: string; version: string; author: string; description: string;
@@ -17,7 +17,7 @@ export const defaultConfig: ThemeConfig = {
   primary: "#9275ff", secondary: "#5943b8", accent: "#b29cff", background: "#0a0a0f",
   surface: "#14141d", sidebar: "#09090e", navbar: "#111119", text: "#f4f3fa", muted: "#aaa7b8",
   border: "#302d3b", success: "#39d98a", warning: "#f0b24a", error: "#f26b78", radius: 16,
-  fontFamily: "inter", fontScale: 1, density: "comfortable", elevation: "soft",
+  fontFamily: "inter", fontScale: 1, density: "comfortable", elevation: "soft", surfaceOpacity: 100,
 };
 const make = (id: string, name: string, primary: string, background: string, surface: string, author = "Snck"): ThemeRecord => ({
   id, name, version: "1.0.0", author, description: `${name} color theme for Snck Panel.`, enabled: true,
@@ -44,7 +44,8 @@ export function validateConfig(value: any): value is ThemeConfig {
     ["system", "inter", "mono"].includes(value.fontFamily) &&
     Number.isFinite(value.fontScale) && value.fontScale >= 0.85 && value.fontScale <= 1.25 &&
     ["compact", "comfortable", "spacious"].includes(value.density) &&
-    ["flat", "soft", "glow"].includes(value.elevation);
+    ["flat", "soft", "glow"].includes(value.elevation) &&
+    Number.isFinite(value.surfaceOpacity) && value.surfaceOpacity >= 55 && value.surfaceOpacity <= 100;
 }
 function normalizeConfig(value: any): ThemeConfig | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
