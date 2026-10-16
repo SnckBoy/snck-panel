@@ -49,7 +49,8 @@ ZIP uploads are limited to 2 MiB, 100 entries, and 32 KiB for the manifest. A pa
     "fontFamily": "inter",
     "fontScale": 1,
     "density": "comfortable",
-    "elevation": "soft"
+    "elevation": "soft",
+    "surfaceOpacity": 76
   },
   "layout": {
     "navigationOrder": ["overview", "nodes", "servers", "deploy", "admin-control", "fleet", "api-keys", "cloudflare", "snck-theme", "settings"],
@@ -62,13 +63,13 @@ ZIP uploads are limited to 2 MiB, 100 entries, and 32 KiB for the manifest. A pa
 }
 ```
 
-All color values must be six-digit hex values. `radius` is 0–32, `fontFamily` is `system`, `inter`, or `mono`, `fontScale` is 0.85–1.25, `density` is `compact`, `comfortable`, or `spacious`, and `elevation` is `flat`, `soft`, or `glow`. Layout order arrays must be complete permutations of known IDs; hidden arrays may contain only known IDs, without duplicates. At least one non-admin navigation item and one dashboard section must remain visible. Omitting the newer typography tokens or layout is supported: older color-only theme packages are filled with safe defaults.
+All color values must be six-digit hex values. `radius` is 0–32, `fontFamily` is `system`, `inter`, or `mono`, `fontScale` is 0.85–1.25, `density` is `compact`, `comfortable`, or `spacious`, and `elevation` is `flat`, `soft`, or `glow`, and `surfaceOpacity` is an integer from 55–100. Lower values make supported panel/card surfaces more translucent and enable a restrained backdrop blur; 100 keeps surfaces opaque. Older themes without this field default to 100. Layout order arrays must be complete permutations of known IDs; hidden arrays may contain only known IDs, without duplicates. At least one non-admin navigation item and one dashboard section must remain visible. Omitting the newer typography tokens or layout is supported: older color-only theme packages are filled with safe defaults.
 
 The navigation IDs are `overview`, `nodes`, `servers`, `deploy`, `admin-control`, `fleet`, `api-keys`, `cloudflare`, `snck-theme`, and `settings`. Dashboard sections are `welcome`, `quick-actions`, `metrics`, `system-health`, and `server-inventory`; metrics are `cpu`, `ram`, `net`, and `nodes`.
 
 CSS, JavaScript, PHP, shell scripts, images, custom component code, and remote imports are not supported. This deliberately avoids pretending arbitrary CSS or code can be made safe by filtering. ZIP files are never extracted or executed.
 
-A ready-to-import sample is included at [`examples/themes/ember-night.zip`](../examples/themes/ember-night.zip); its source manifest is [`examples/themes/ember-night/theme.json`](../examples/themes/ember-night/theme.json).
+Ready-to-import samples are included at [`examples/themes/ember-night.zip`](../examples/themes/ember-night.zip) and [`examples/themes/pterodactyl-glass.zip`](../examples/themes/pterodactyl-glass.zip). Their source manifests are in the corresponding theme folders. Pterodactyl Glass is an original Pterodactyl-inspired preset with translucent surfaces; it does not copy Pterodactyl assets or claim to add features that are not already implemented in Snck Panel.
 
 ## Persistence and updates
 

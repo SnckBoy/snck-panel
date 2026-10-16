@@ -738,3 +738,15 @@ html.reduce-motion .effect-animated-gradient { animation: none !important; }
     scroll-behavior: auto !important;
   }
 }
+
+
+/* Snck Theme: translucent surfaces are opt-in through the validated theme token. */
+.snx-app-sidebar,
+.snx-global-topbar,
+.snx-app-shell .bg-card,
+.snx-app-shell .snx-stat-card,
+.snx-app-shell .snx-server-card,
+.snx-app-shell .snx-glass-surface {
+  -webkit-backdrop-filter: blur(var(--snx-glass-blur, 0px)) saturate(1.12);
+  backdrop-filter: blur(var(--snx-glass-blur, 0px)) saturate(1.12);
+}
