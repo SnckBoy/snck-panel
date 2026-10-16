@@ -78,7 +78,7 @@ router.get("/:id/export", async (req, res) => {
   const archive = new ZipArchive({ zlib: { level: 9 } });
   archive.on("error", () => { if (!res.headersSent) res.status(500); res.end(); });
   archive.pipe(output);
-  archive.append(JSON.stringify({ id: theme.id, name: theme.name, version: theme.version, author: theme.author, description: theme.description, supportedPanelVersion: ">=0.2.0", config: theme.config }, null, 2), { name: `${theme.id}/theme.json` });
+  archive.append(JSON.stringify({ id: theme.id, name: theme.name, version: theme.version, author: theme.author, description: theme.description, supportedPanelVersion: ">=0.2.0", config: theme.config, layout: theme.layout }, null, 2), { name: `${theme.id}/theme.json` });
   await archive.finalize();
 });
 function readManifest(buffer: Buffer): Promise<any> {

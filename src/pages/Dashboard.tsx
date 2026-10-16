@@ -10,6 +10,7 @@ import { useDashboardData } from '../hooks/useDashboardData';
 import { useSettings } from '../context/SettingsContext';
 import PulseRing from '../components/PulseRing';
 import InfrastructureCore from '../components/InfrastructureCore';
+import { DEFAULT_THEME_LAYOUT } from '../shared/themeLayout';
 
 const SparklineChart = ({ data, color }: { data: number[]; color: string }) => {
   // Guard empty/single-point histories so SVG coordinates stay finite before telemetry arrives.
@@ -53,7 +54,7 @@ const StatusPill = ({ status }: { status: string }) => {
 };
 
 export default function Dashboard() {
-  const { panelName } = useSettings();
+  const { panelName, themeConfig } = useSettings();
   const { stats, statsHistory, servers: realServers, refetch, state, lastUpdated } = useDashboardData();
   const [search, setSearch] = useState('');
   const [view, setView] = useState(() => {
@@ -134,6 +135,42 @@ export default function Dashboard() {
     return servers.filter((server) => (statusFilter === 'all' || (statusFilter === 'online' ? server.status === 'online' : server.status !== 'online')) && `${server.name} ${server.id} ${server.ip} ${server.node}`.toLowerCase().includes(query));
   }, [search, servers, statusFilter]);
 
+  const layout = themeConfig?.layout || DEFAULT_THEME_LAYOUT;
+  const visibleStats = layout.metricsOrder.filter((id: string) => !layout.hiddenMetrics.includes(id)).map((id: string) => STATS.find((stat: any) => stat.id === id)).filter(Boolean);
+  const renderDashboardSection = (id: string, index: number): React.ReactNode => {
+    if (layout.hiddenDashboard.includes(id)) return null;
+    if (id === "welcome") return <section key={id} className="snx-fleet-hero" aria-label="Fleet overview">
+      <div className="snx-fleet-intro">
+        <span className="snx-eyebrow">YOUR OPERATIONS WORKSPACE</span><h2>Built to keep<br /><span>you in control.</span></h2>
+        <p>{state === "loading" ? "Connecting to your infrastructure…" : `${onlineCount} of ${servers.length} instances online. Your console, files, and resources are one click away.`}</p>
+        <div className="flex flex-wrap gap-3"><button className="snx-primary-button" onClick={() => navigate('/servers/create')}>Deploy server <ArrowUpRight size={16} /></button><button className="snx-secondary-button" onClick={() => void refetch()}><RefreshCw size={15} /> Refresh fleet</button></div>
+        <span className="snx-fleet-updated">{lastUpdated ? `Inventory received ${lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : "Waiting for first inventory response"}</span>
+      </div><InfrastructureCore servers={servers.map(server => ({ id: server.id, name: server.name, status: server.status }))} size="compact" label="Fleet topology" />
+    </section>;
+    if (id === "quick-actions") return <section key={id} className="snx-layout-widget snx-quick-actions" aria-label="Quick actions">
+      <div><span className="snx-eyebrow">SHORTCUTS</span><h2 className="snx-section-title">Quick actions</h2><p>Jump to common panel tasks.</p></div>
+      <div className="snx-layout-widget-actions"><button className="snx-primary-button" onClick={() => navigate('/servers/create')}>Deploy server <ArrowUpRight size={15} /></button><button className="snx-secondary-button" onClick={() => navigate('/servers')}>View all servers</button><button className="snx-secondary-button" onClick={() => navigate('/nodes')}>Manage nodes</button></div>
+    </section>;
+    if (id === "metrics") return visibleStats.length ? <section key={id} className="snx-metric-grid" aria-label="Cluster metrics">{visibleStats.map((stat: any, metricIndex: number) => {
+      const Icon = stat.icon;
+      return <motion.article key={stat.id} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: metricIndex * 0.07, duration: 0.45 }} className={`dashboard-stat-card qx-stat-card snx-metric-card snx-metric-card--${stat.id}`}>
+        <div className="snx-card-sheen" aria-hidden="true" /><div className="snx-metric-card-header"><div><p className="snx-card-label">{stat.label}</p><p className="snx-metric-value">{stat.value}</p><p className="snx-card-caption">{stat.caption}</p></div><div className="snx-metric-card-tools"><PulseRing value={stat.ringValue} size={50} label={stat.label} /><div className="snx-metric-icon" style={{ color: stat.color, ['--snx-icon-color' as string]: stat.color }}><Icon className="h-4 w-4" /></div></div></div>
+        <div className="snx-metric-chart"><SparklineChart data={stat.data} color={stat.color} /></div>
+      </motion.article>;
+    })}</section> : null;
+    if (id === "system-health") return <section key={id} className="snx-layout-widget snx-system-health" aria-label="System health">
+      <div><span className="snx-eyebrow">LIVE SYSTEM SNAPSHOT</span><h2 className="snx-section-title">System health</h2></div>
+      <div className="snx-health-values"><div><span>Panel CPU</span><strong>{stats ? `${(stats.cpuUsage || 0).toFixed(1)}%` : "—"}</strong></div><div><span>Host memory</span><strong>{stats ? `${(stats.ramUsage || 0).toFixed(1)}%` : "—"}</strong></div><div><span>Online servers</span><strong>{onlineCount} / {servers.length}</strong></div><div><span>Data status</span><strong>{state === "error" ? "Needs attention" : state === "loading" ? "Connecting" : "Connected"}</strong></div></div>
+    </section>;
+    if (id === "server-inventory") return <section key={id} className="snx-server-section">
+      <div className="snx-section-heading"><div><div className="snx-eyebrow">Runtime inventory</div><h2 className="snx-section-title"><Server className="h-5 w-5" /> Deployed instances <span>{filteredServers.length}</span></h2></div><div className="snx-filter-tabs" aria-label="Filter server status">{[['all', 'All instances'], ['online', 'Online'], ['attention', 'Not online']].map(([key, label]) => <button key={key} aria-pressed={statusFilter === key} onClick={() => setStatusFilter(key)}>{label}</button>)}</div></div>
+      <motion.div layout className={view === 'grid' ? 'snx-server-grid' : 'snx-server-list'}><AnimatePresence mode="popLayout">{filteredServers.map((server) => <ServerCard key={server.id} server={server} view={view} isBusy={server.suspended || actionInProgress[server.id] || ['starting', 'stopping', 'restarting'].includes(server.status)} onAction={(action: string) => handleAction(server.id, action)} onOpenTerminal={() => navigate(`/servers/${server.id}`)} />)}</AnimatePresence>
+        {filteredServers.length === 0 && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="snx-empty-state"><Search className="h-7 w-7" /><strong>{state === "loading" ? "Loading your instances…" : state === "error" && !lastUpdated ? "Inventory unavailable" : servers.length === 0 ? "Your next server starts here." : "No matching instances"}</strong><span>{servers.length === 0 ? "Deploy a server or refresh to check your infrastructure." : "Try a different name, node, address, or status filter."}</span></motion.div>}
+      </motion.div>
+    </section>;
+    return null;
+  };
+
   return (
     <div className="dashboard-shell snx-dashboard-page min-h-screen text-foreground font-sans selection:bg-cyan-400/20 overflow-x-hidden">
       <div className="dashboard-ambient snx-dashboard-ambient fixed inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
@@ -181,74 +218,7 @@ export default function Dashboard() {
         </div>}
 
         {(state === "error" || state === "partial") && <div role="alert" className="snx-data-notice"><AlertTriangle size={17} /><span>{state === "error" ? "Unable to refresh your workspace." : "Some telemetry is unavailable."} Last received data is retained.</span><button onClick={() => void refetch()}>Retry</button></div>}
-        <section className="snx-fleet-hero" aria-label="Fleet overview">
-          <div className="snx-fleet-intro">
-            <span className="snx-eyebrow">YOUR OPERATIONS WORKSPACE</span>
-            <h2>Built to keep<br /><span>you in control.</span></h2>
-            <p>{state === "loading" ? "Connecting to your infrastructure…" : `${onlineCount} of ${servers.length} instances online. Your console, files, and resources are one click away.`}</p>
-            <div className="flex flex-wrap gap-3"><button className="snx-primary-button" onClick={() => navigate('/servers/create')}>Deploy server <ArrowUpRight size={16} /></button><button className="snx-secondary-button" onClick={() => void refetch()}><RefreshCw size={15} /> Refresh fleet</button></div>
-            <span className="snx-fleet-updated">{lastUpdated ? `Inventory received ${lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : "Waiting for first inventory response"}</span>
-          </div>
-          <InfrastructureCore servers={servers.map(server => ({ id: server.id, name: server.name, status: server.status }))} size="compact" label="Fleet topology" />
-        </section>
-
-        <section className="snx-metric-grid" aria-label="Cluster metrics">
-          {STATS.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <motion.article
-                key={stat.id}
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.07, duration: 0.45 }}
-                className={`dashboard-stat-card qx-stat-card snx-metric-card snx-metric-card--${stat.id}`}
-              >
-                <div className="snx-card-sheen" aria-hidden="true" />
-                <div className="snx-metric-card-header">
-                  <div>
-                    <p className="snx-card-label">{stat.label}</p>
-                    <p className="snx-metric-value">{stat.value}</p>
-                    <p className="snx-card-caption">{stat.caption}</p>
-                  </div>
-                  <div className="snx-metric-card-tools"><PulseRing value={stat.ringValue} size={50} label={stat.label} /><div className="snx-metric-icon" style={{ color: stat.color, ['--snx-icon-color' as string]: stat.color }}><Icon className="h-4 w-4" /></div></div>
-                </div>
-                <div className="snx-metric-chart"><SparklineChart data={stat.data} color={stat.color} /></div>
-              </motion.article>
-            );
-          })}
-        </section>
-
-        <section className="snx-server-section">
-          <div className="snx-section-heading">
-            <div>
-              <div className="snx-eyebrow">Runtime inventory</div>
-              <h2 className="snx-section-title"><Server className="h-5 w-5" /> Deployed instances <span>{filteredServers.length}</span></h2>
-            </div>
-            <div className="snx-filter-tabs" aria-label="Filter server status">{[['all', 'All instances'], ['online', 'Online'], ['attention', 'Not online']].map(([key, label]) => <button key={key} aria-pressed={statusFilter === key} onClick={() => setStatusFilter(key)}>{label}</button>)}</div>
-          </div>
-
-          <motion.div layout className={view === 'grid' ? 'snx-server-grid' : 'snx-server-list'}>
-            <AnimatePresence mode="popLayout">
-              {filteredServers.map((server) => (
-                <ServerCard
-                  key={server.id}
-                  server={server}
-                  view={view}
-                  isBusy={server.suspended || actionInProgress[server.id] || ['starting', 'stopping', 'restarting'].includes(server.status)}
-                  onAction={(action: string) => handleAction(server.id, action)}
-                  onOpenTerminal={() => navigate(`/servers/${server.id}`)}
-                />
-              ))}
-            </AnimatePresence>
-            {filteredServers.length === 0 && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="snx-empty-state">
-                <Search className="h-7 w-7" />
-                <strong>{state === "loading" ? "Loading your instances…" : state === "error" && !lastUpdated ? "Inventory unavailable" : servers.length === 0 ? "Your next server starts here." : "No matching instances"}</strong>
-                <span>{servers.length === 0 ? "Deploy a server or refresh to check your infrastructure." : "Try a different name, node, address, or status filter."}</span>
-              </motion.div>
-            )}
-          </motion.div>
-        </section>
+        {layout.dashboardOrder.map((sectionId: string, index: number) => renderDashboardSection(sectionId, index))}
       </div>
     </div>
   );
