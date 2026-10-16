@@ -96,9 +96,9 @@ The navigation IDs are `overview`, `nodes`, `servers`, `deploy`, `admin-control`
 
 CSS, JavaScript, PHP, shell scripts, images, custom component code, and remote imports are not supported. This deliberately avoids pretending arbitrary CSS or code can be made safe by filtering. ZIP files are never extracted or executed.
 
-Pterodactyl Glass changes the layout of existing Snck Panel features; it does not create missing backend capabilities such as databases, schedules, network allocations, startup variables, or activity logs. Those features require separate product/API implementation before they can appear as functional pages.
+Snck Petro changes the layout of existing Snck Panel features; it does not create missing backend capabilities such as databases, schedules, network allocations, startup variables, or activity logs. Those features require separate product/API implementation before they can appear as functional pages.
 
-Ready-to-import samples are included at [`examples/themes/ember-night.zip`](../examples/themes/ember-night.zip) and [`examples/themes/pterodactyl-glass.zip`](../examples/themes/pterodactyl-glass.zip). Their source manifests are in the corresponding theme folders. Pterodactyl Glass is an original Pterodactyl-inspired preset with translucent surfaces; it does not copy Pterodactyl assets or claim to add features that are not already implemented in Snck Panel.
+Ready-to-import samples are included at [`examples/themes/ember-night.zip`](../examples/themes/ember-night.zip) and [`examples/themes/snck-petro.zip`](../examples/themes/snck-petro.zip). Their source manifests are in the corresponding theme folders. Snck Petro is an original Pterodactyl-inspired preset with translucent surfaces; it does not copy Pterodactyl assets or claim to add features that are not already implemented in Snck Panel.
 
 ## Persistence and updates
 
