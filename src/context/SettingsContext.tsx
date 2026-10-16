@@ -56,17 +56,18 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
     root.classList.toggle("reduce-motion", reducedMotion);
     root.style.setProperty("--accent-color", `var(--accent-${resolvedAccent})`);
     if (themeConfig && typeof themeConfig === "object") {
+      const surfaceOpacity = Math.max(55, Math.min(100, Number(themeConfig.surfaceOpacity) || 100));
       const variables: Record<string, string> = {
         "--snx-primary": themeConfig.primary, "--snx-secondary": themeConfig.secondary,
         "--snx-accent": themeConfig.accent, "--snx-primary-soft": `color-mix(in srgb, ${themeConfig.primary} 16%, transparent)`,
         "--snx-primary-line": `color-mix(in srgb, ${themeConfig.primary} 48%, transparent)`, "--snx-bg": themeConfig.background,
-        "--snx-bg-deep": themeConfig.sidebar, "--snx-surface": themeConfig.surface,
-        "--snx-surface-solid": themeConfig.surface, "--snx-surface-raised": themeConfig.navbar,
+        "--snx-bg-deep": `color-mix(in srgb, ${themeConfig.sidebar} ${surfaceOpacity}%, transparent)`, "--snx-surface": `color-mix(in srgb, ${themeConfig.surface} ${surfaceOpacity}%, transparent)`,
+        "--snx-surface-solid": themeConfig.surface, "--snx-surface-raised": `color-mix(in srgb, ${themeConfig.navbar} ${surfaceOpacity}%, transparent)`,
         "--snx-border": themeConfig.border, "--snx-text": themeConfig.text,
         "--snx-text-muted": themeConfig.muted, "--snx-text-dim": themeConfig.muted,
         "--snx-success": themeConfig.success, "--snx-warning": themeConfig.warning,
         "--snx-danger": themeConfig.error, "--snx-radius": `${themeConfig.radius}px`,
-        "--bg-background": themeConfig.background, "--bg-card": themeConfig.surface,
+        "--bg-background": themeConfig.background, "--bg-card": `color-mix(in srgb, ${themeConfig.surface} ${surfaceOpacity}%, transparent)`,
         "--text-foreground": themeConfig.text, "--text-muted-foreground": themeConfig.muted,
         "--border-border": themeConfig.border,
       };
@@ -74,6 +75,7 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
       const fonts: Record<string, string> = { system: "ui-sans-serif, system-ui, sans-serif", inter: "Inter, ui-sans-serif, system-ui, sans-serif", mono: "'JetBrains Mono', ui-monospace, monospace" };
       const shadows: Record<string, string> = { flat: "none", soft: "0 16px 38px rgba(0,0,0,.12), inset 0 1px rgba(255,255,255,.04)", glow: `0 12px 42px color-mix(in srgb, ${themeConfig.primary} 18%, transparent)` };
       const density: Record<string, string> = { compact: "0.86", comfortable: "1", spacious: "1.16" };
+      root.style.setProperty("--snx-glass-blur", surfaceOpacity < 100 ? "14px" : "0px");
       root.style.setProperty("--snx-font-family", fonts[themeConfig.fontFamily] || fonts.inter);
       root.style.setProperty("--snx-card-shadow", shadows[themeConfig.elevation] || shadows.soft);
       root.style.setProperty("--snx-density", density[themeConfig.density] || density.comfortable);
