@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
-import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Key, Activity, Box, Cloud, ShieldCheck, LifeBuoy } from "lucide-react";
+import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Key, Activity, Box, Cloud, ShieldCheck, LifeBuoy, Palette } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useSettings } from "../context/SettingsContext";
 import { motion } from "framer-motion";
@@ -24,6 +24,7 @@ export function Sidebar({ onClose, isCollapsed, toggleCollapse }: { onClose?: ()
     { name: "Fleet", path: "/admin/servers", icon: <Box size={19} /> },
     { name: "API Keys", path: "/api-keys", icon: <Key size={19} /> },
     { name: "Cloudflare", path: "/cloudflare", icon: <Cloud size={19} /> },
+    { name: "Snck Theme", path: "/snck-theme", icon: <Palette size={19} /> },
   ] : [];
   const sections: { title: string; links: SidebarLink[] }[] = [
     { title: "Your server", links: primaryLinks },

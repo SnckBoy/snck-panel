@@ -20,6 +20,7 @@ const PlayitTunnel = lazy(() => import("./pages/PlayitTunnel"));
 const Nodes = lazy(() => import("./pages/Nodes"));
 const Allocations = lazy(() => import("./pages/Allocations"));
 const Cloudflare = lazy(() => import("./pages/Cloudflare"));
+const SnckTheme = lazy(() => import("./pages/SnckTheme"));
 import Layout from "./components/Layout";
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { SettingsProvider, useSettings } from "./context/SettingsContext";
@@ -85,6 +86,7 @@ const AnimatedRoutes = () => {
           <Route path="/api-keys" element={<ProtectedRoute><AdminOnlyRoute><ApiKeysPage /></AdminOnlyRoute></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute><AdminOnlyRoute><AdminDashboard /></AdminOnlyRoute></ProtectedRoute>} />
           <Route path="/admin/servers" element={<ProtectedRoute><AdminOnlyRoute><AdminServers /></AdminOnlyRoute></ProtectedRoute>} />
+          <Route path="/snck-theme" element={<ProtectedRoute><AdminOnlyRoute><SnckTheme /></AdminOnlyRoute></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </Suspense>

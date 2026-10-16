@@ -54,6 +54,10 @@ Run the same one-command installer again to open the menu for updates, repair, d
 
 The current application reads and writes JSON files under `/opt/snck-panel/.data`. The installer therefore provisions this JSON store and does **not** claim to switch the application to PostgreSQL. The repository contains PostgreSQL schema/migration work, but that is not the active runtime storage path. Do not treat a PostgreSQL migration as complete until all application routes and services have been moved to and tested against the database.
 
+## Snck Theme
+
+Administrators can manage built-in and custom declarative themes from **Snck Theme** in the panel navigation. Create and edit color-token themes in the visual builder, apply them globally, import a validated ZIP manifest, export a theme, or restore the protected default. See [the Snck Theme guide](docs/SNCK_THEME.md) for permissions, package structure, storage, and recovery.
+
 ## Repository checks
 
 GitHub Actions runs dependency installation, TypeScript checking, the production build, node-daemon build, and shell syntax checks on the configured branches. A green CI run is required before treating a particular commit as verified. The installer itself also runs TypeScript validation and the production build before restarting the service.
