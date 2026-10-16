@@ -85,7 +85,7 @@ export function Sidebar({ onClose, isCollapsed, toggleCollapse }: { onClose?: ()
           <div className="mb-2">
             {!isCollapsed && <p className="snx-sidebar-section-label">Custom links</p>}
             <div className="space-y-1">
-              {layout.customNavigation.map((item) => {
+              {layout.customNavigation.map((item: { id: string; label: string; url?: string; target?: string }) => {
                 const className = `snx-app-nav-link relative flex items-center ${isCollapsed ? "justify-center" : "px-3"} py-3.5 rounded-[13px] transition-colors group overflow-hidden`;
                 const content = <><span className="relative z-10 text-muted-foreground"><ExternalLink size={19} /></span>{!isCollapsed && <span className="ml-3 relative z-10 font-medium text-sm text-muted-foreground group-hover:text-foreground">{item.label}</span>}</>;
                 return item.target && routeById[item.target] ? (
