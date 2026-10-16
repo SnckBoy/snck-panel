@@ -60,7 +60,7 @@ export type PanelStructure = {
   hiddenServerNavigation: string[];
 };
 
-export type CustomNavigationItem = { id: string; label: string; url: string };
+export type CustomNavigationItem = { id: string; label: string; url?: string; target?: string };
 
 export type ThemeLayout = {
   navigationOrder: string[];
@@ -178,14 +178,18 @@ export function isValidThemeLayout(value: unknown): value is ThemeLayout {
     for (const item of layout.customNavigation) {
       if (!item || typeof item !== "object" || Array.isArray(item)) return false;
       const entry = item as Record<string, unknown>;
-      if (Object.keys(entry).length !== 3 || !["id", "label", "url"].every((key) => key in entry)) return false;
+      if (Object.keys(entry).some((key) => !["id", "label", "url", "target"].includes(key))) return false;
+      if (!("id" in entry) || !("label" in entry) || (("url" in entry) === ("target" in entry))) return false;
       if (typeof entry.id !== "string" || !/^custom-[a-z0-9-]{1,32}$/.test(entry.id) || ids.has(entry.id)) return false;
       if (typeof entry.label !== "string" || !entry.label.trim() || entry.label.trim().length > 32) return false;
-      if (typeof entry.url !== "string" || entry.url.length > 2048) return false;
-      try {
-        const url = new URL(entry.url);
-        if (url.protocol !== "https:" || url.username || url.password) return false;
-      } catch { return false; }
+      if (entry.target !== undefined && (typeof entry.target !== "string" || !navIds.includes(entry.target))) return false;
+      if (entry.url !== undefined) {
+        if (typeof entry.url !== "string" || entry.url.length > 2048) return false;
+        try {
+          const url = new URL(entry.url);
+          if (url.protocol !== "https:" || url.username || url.password) return false;
+        } catch { return false; }
+      }
       ids.add(entry.id);
     }
   }
