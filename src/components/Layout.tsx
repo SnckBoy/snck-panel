@@ -4,11 +4,14 @@ import { Menu, ChevronRight, Command, ShieldCheck } from "lucide-react";
 import { useLocation, matchPath, Link } from "react-router-dom";
 import GlobalSearchModal from "./GlobalSearchModal";
 import NotificationsDropdown from "./NotificationsDropdown";
+import { useSettings } from "../context/SettingsContext";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
+  const { themeConfig } = useSettings();
+  const structure = themeConfig?.layout?.structure || {};
 
   const isServerView = matchPath("/servers/:id/*", location.pathname) && !matchPath("/servers/create", location.pathname);
 
@@ -46,7 +49,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className={`snx-app-shell flex h-[100dvh] w-full bg-transparent text-foreground font-sans overflow-hidden selection:bg-indigo-500/30`}>
+    <div className={`snx-app-shell flex h-[100dvh] w-full bg-transparent text-foreground font-sans overflow-hidden selection:bg-indigo-500/30 ${structure.shell === "pterodactyl" ? "snx-app-shell--pterodactyl" : ""} ${structure.navigationMode === "topbar" ? "snx-app-shell--topbar" : ""}`}>
       <a className="snx-skip-link" href="#main-content">Skip to main content</a>
       {/* Mobile Sidebar Overlay */}
       {mobileOpen && (
