@@ -120,7 +120,7 @@ const catalog = {
   metricsOrder: new Set(metricIds),
   serverNavigationOrder: new Set(serverNavIds),
 };
-const publicNavigation = new Set(NAVIGATION_GROUPS.flatMap((group) => group.items.filter((item) => !item.adminOnly).map((item) => item.id)));
+const publicNavigation: Set<string> = new Set(NAVIGATION_GROUPS.flatMap((group) => group.items.filter((item) => !item.adminOnly).map((item) => item.id)));
 
 const isPermutation = (value: unknown, expected: Set<string>) =>
   Array.isArray(value) && value.length === expected.size &&
