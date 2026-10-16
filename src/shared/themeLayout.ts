@@ -80,7 +80,8 @@ const navIds = NAVIGATION_GROUPS.flatMap((group) => group.items.map((item) => it
 const dashboardIds = DASHBOARD_SECTIONS.map((section) => section.id);
 const metricIds = DASHBOARD_METRICS.map((metric) => metric.id);
 const serverNavIds = SERVER_NAVIGATION.map((item) => item.id);
-const labelIds = new Set([...navIds, ...serverNavIds]);
+const labelIds: Set<string> = new Set([...navIds, ...serverNavIds]);
+const mainNavIdSet: Set<string> = new Set(navIds);
 
 export const DEFAULT_THEME_LAYOUT: ThemeLayout = {
   navigationOrder: navIds,
@@ -182,7 +183,7 @@ export function isValidThemeLayout(value: unknown): value is ThemeLayout {
       if (!("id" in entry) || !("label" in entry) || (("url" in entry) === ("target" in entry))) return false;
       if (typeof entry.id !== "string" || !/^custom-[a-z0-9-]{1,32}$/.test(entry.id) || ids.has(entry.id)) return false;
       if (typeof entry.label !== "string" || !entry.label.trim() || entry.label.trim().length > 32) return false;
-      if (entry.target !== undefined && (typeof entry.target !== "string" || !navIds.includes(entry.target))) return false;
+      if (entry.target !== undefined && (typeof entry.target !== "string" || !mainNavIdSet.has(entry.target))) return false;
       if (entry.url !== undefined) {
         if (typeof entry.url !== "string" || entry.url.length > 2048) return false;
         try {
