@@ -15,6 +15,32 @@ The editor has two tabs:
 
 Navigation changes only affect shortcuts displayed in the sidebar. Hiding a link does not grant or revoke access: route guards, roles, permissions, and server-action authorization remain unchanged. The builder does not create arbitrary pages, upload new components, or run user-provided code; customization is limited to the supported catalog.
 
+### Theme-file menu customization
+
+A theme manifest can rename built-in navigation labels, hide existing items, and add up to eight external HTTPS shortcuts without editing the panel source. Add these optional fields under `layout`:
+
+```json
+{
+  "labels": {
+    "overview": "Dashboard",
+    "servers": "Minecraft Servers",
+    "console": "Console",
+    "files": "Files"
+  },
+  "hiddenNavigation": ["nodes", "deploy", "fleet"],
+  "customNavigation": [
+    { "id": "custom-docs", "label": "Documentation", "url": "https://example.com/docs" }
+  ]
+}
+```
+
+- `labels` renames known main-navigation or server-navigation items by their stable IDs. Omit a key to keep its default label.
+- `hiddenNavigation` removes built-in main-menu shortcuts from view; `hiddenServerNavigation` does the same for server tabs.
+- `customNavigation` adds up to eight external HTTPS links to the sidebar. IDs must be unique and start with `custom-`; labels are limited to 32 characters. Only HTTPS URLs without embedded credentials are accepted.
+- Reordering remains controlled by `navigationOrder` and `structure.serverNavigationOrder`. Removing a custom shortcut means deleting its entry from `customNavigation`.
+
+These fields only change labels and visible links. A theme file cannot create a new functional backend page, database, server action, permission, or Minecraft-management feature; those require implementation in the panel itself. Hiding a link never disables its underlying route or changes authorization. Old theme files remain valid and receive empty `labels` and `customNavigation` defaults.
+
 **Save theme** persists a draft without changing the active panel. **Save & apply** persists and activates it globally. **Apply** switches all panel pages to a theme. **Enable / Disable** controls library availability; disabling the active theme returns to Snck Default. **Export** downloads a ZIP. Protected built-in themes cannot be removed. **Restore default** restores the protected, always-available Snck Default appearance and layout.
 
 Built-in themes currently include Snck Default, Midnight, Royal Purple, Nebula, Cyber Blue, Aurora, and Obsidian. Custom IDs are not limited to this list.
