@@ -25,7 +25,7 @@ Menu options:
 9. Complete uninstall (requires typing `DELETE-SNCK`; permanently removes panel data and all SNCK Panel backups)
 0. Exit
 
-Supported OS targets in the installer are Ubuntu 20.04+ and Debian 11/12/13 on `amd64` or `arm64`. A fresh install requires internet access to package repositories and GitHub. The installer installs Node.js when needed, Docker, builds the application, configures a systemd service, and checks `/health` before reporting success.
+Supported OS targets in the installer are Ubuntu 20.04+ and Debian 11/12/13 on `amd64` or `arm64`. A fresh install requires internet access to package repositories and GitHub. The installer installs Node.js when needed and Docker, builds the application, configures systemd when it is running, or uses PM2 with a cron `@reboot` hook on hosts without systemd. It checks that Docker is operational and that `/health` responds before reporting success. The non-systemd fallback requires working cron and a Docker daemon/init script; containers that cannot run Docker are not supported hosts for panel server management.
 
 ## Access and operations
 
@@ -47,6 +47,8 @@ sudo systemctl restart snck-panel
 sudo journalctl -u snck-panel -n 100 --no-pager
 curl -fsS http://127.0.0.1:6767/health
 ```
+
+On non-systemd hosts, use `sudo snck-panel-service status|restart|logs` instead of `systemctl`/`journalctl`. PM2 logs are under `/var/lib/snck/pm2/logs/`; `/etc/cron.d/snck-panel` restores the saved PM2 process list at reboot.
 
 Run the same one-command installer again to open the menu for updates, repair, diagnostics, backups, or removal. Backups are stored under `/var/backups/snck-panel`. Complete uninstall permanently removes the SNCK Panel application, panel data/configuration/logs, and all backups under `/var/backups/snck-panel` after you type `DELETE-SNCK`. It does not target Docker containers, images, volumes, or Minecraft server files. No final backup is retained, so export anything you need before uninstalling.
 
