@@ -1,0 +1,135 @@
+{
+  "id": "snck-petro",
+  "name": "Snck Petro",
+  "version": "1.0.0",
+  "author": "Snck",
+  "description": "Transparent Pterodactyl-inspired hosting layout with theme-controlled menu labels, visibility, ordering, and safe custom shortcuts.",
+  "supportedPanelVersion": ">=0.2.0",
+  "config": {
+    "primary": "#3b82f6",
+    "secondary": "#1d4ed8",
+    "accent": "#60a5fa",
+    "background": "#0b1118",
+    "surface": "#172330",
+    "sidebar": "#0b141e",
+    "navbar": "#14202b",
+    "text": "#edf4fb",
+    "muted": "#9aabba",
+    "border": "#344454",
+    "success": "#36c98f",
+    "warning": "#f0b64b",
+    "error": "#f16d78",
+    "radius": 8,
+    "fontFamily": "inter",
+    "fontScale": 1,
+    "density": "comfortable",
+    "elevation": "soft",
+    "surfaceOpacity": 76
+  },
+  "layout": {
+    "navigationOrder": [
+      "overview",
+      "servers",
+      "nodes",
+      "deploy",
+      "fleet",
+      "admin-control",
+      "api-keys",
+      "cloudflare",
+      "snck-theme",
+      "settings"
+    ],
+    "hiddenNavigation": [
+      "nodes",
+      "deploy",
+      "fleet",
+      "admin-control",
+      "api-keys",
+      "cloudflare",
+      "snck-theme"
+    ],
+    "dashboardOrder": [
+      "server-inventory",
+      "metrics",
+      "welcome",
+      "quick-actions",
+      "system-health"
+    ],
+    "hiddenDashboard": [
+      "welcome",
+      "quick-actions",
+      "system-health"
+    ],
+    "metricsOrder": [
+      "cpu",
+      "ram",
+      "net",
+      "nodes"
+    ],
+    "hiddenMetrics": [],
+    "structure": {
+      "shell": "pterodactyl",
+      "navigationMode": "sidebar",
+      "sidebarMode": "expanded",
+      "contentWidth": "wide",
+      "dashboardMode": "server-first",
+      "serverNavigationMode": "sidebar",
+      "serverNavigationOrder": [
+        "console",
+        "files",
+        "players",
+        "properties",
+        "plugins",
+        "mods",
+        "modpacks",
+        "backups",
+        "sftp",
+        "subusers",
+        "settings",
+        "overview",
+        "playit"
+      ],
+      "hiddenServerNavigation": []
+    },
+    "labels": {
+      "overview": "Dashboard",
+      "servers": "Minecraft Servers",
+      "nodes": "Nodes",
+      "deploy": "Create Server",
+      "admin-control": "Admin",
+      "fleet": "Server Fleet",
+      "api-keys": "API Tokens",
+      "cloudflare": "Tunnels",
+      "snck-theme": "Theme Studio",
+      "settings": "Preferences",
+      "console": "Console",
+      "files": "Files",
+      "players": "Players",
+      "properties": "Properties",
+      "plugins": "Plugins",
+      "mods": "Mods",
+      "modpacks": "Modpacks",
+      "backups": "Backups",
+      "sftp": "SFTP",
+      "subusers": "Users",
+      "playit": "Tunnel"
+    },
+    "customNavigation": [
+      {
+        "id": "custom-server-list",
+        "label": "Server List",
+        "target": "servers"
+      },
+      {
+        "id": "custom-docs",
+        "label": "Documentation",
+        "url": "https://pterodactyl.io/"
+      },
+      {
+        "id": "custom-community",
+        "label": "Community",
+        "url": "https://discord.com/"
+      }
+    ]
+  }
+}
