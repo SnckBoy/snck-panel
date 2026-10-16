@@ -14,6 +14,9 @@ assert.equal(validateConfig({ ...defaultConfig, customCss: "body { display:none 
 assert.deepEqual(validateThemeInput(valid), { ...valid, layout: DEFAULT_THEME_LAYOUT }, "normalizes a valid theme and supplies a safe default layout");
 const sample = JSON.parse(readFileSync(new URL("../examples/themes/ember-night/theme.json", import.meta.url), "utf8"));
 assert.equal(validateThemeInput(sample).layout.dashboardOrder[1], "quick-actions", "sample package demonstrates an enabled safe dashboard widget");
+const glassSample = JSON.parse(readFileSync(new URL("../examples/themes/pterodactyl-glass/theme.json", import.meta.url), "utf8"));
+assert.equal(validateThemeInput(glassSample).config.surfaceOpacity, 76, "Pterodactyl Glass sample uses supported translucent surface opacity");
+assert.equal(validateThemeInput(glassSample).layout.navigationOrder[1], "servers", "Pterodactyl Glass sample prioritizes the server list in navigation");
 const legacyConfig = { ...defaultConfig } as Record<string, unknown>;
 delete legacyConfig.fontFamily; delete legacyConfig.fontScale; delete legacyConfig.density; delete legacyConfig.elevation;
 assert.equal(validateThemeInput({ ...valid, config: legacyConfig }).config.fontFamily, "inter", "migrates older color-only theme packages");
