@@ -116,6 +116,11 @@
     },
     "customNavigation": [
       {
+        "id": "custom-server-list",
+        "label": "Server List",
+        "target": "servers"
+      },
+      {
         "id": "custom-docs",
         "label": "Documentation",
         "url": "https://pterodactyl.io/"
