@@ -3,7 +3,7 @@
   "name": "Pterodactyl Glass",
   "version": "1.0.0",
   "author": "Snck",
-  "description": "A Pterodactyl-inspired hosting panel theme with translucent navy surfaces, compact controls, and blue accents.",
+  "description": "A full Pterodactyl-inspired hosting-panel layout preset for Snck Panel, with a server-first dashboard, reordered server tools, compact hosting navigation, and translucent navy surfaces.",
   "supportedPanelVersion": ">=0.2.0",
   "config": {
     "primary": "#3b82f6",
@@ -41,19 +41,47 @@
     ],
     "hiddenNavigation": [],
     "dashboardOrder": [
-      "welcome",
-      "metrics",
       "server-inventory",
-      "system-health",
-      "quick-actions"
+      "metrics",
+      "welcome",
+      "quick-actions",
+      "system-health"
     ],
-    "hiddenDashboard": [],
+    "hiddenDashboard": [
+      "welcome",
+      "quick-actions",
+      "system-health"
+    ],
     "metricsOrder": [
       "cpu",
       "ram",
       "net",
       "nodes"
     ],
-    "hiddenMetrics": []
+    "hiddenMetrics": [],
+    "structure": {
+      "shell": "pterodactyl",
+      "navigationMode": "sidebar",
+      "sidebarMode": "expanded",
+      "contentWidth": "wide",
+      "dashboardMode": "server-first",
+      "serverNavigationMode": "sidebar",
+      "serverNavigationOrder": [
+        "console",
+        "files",
+        "players",
+        "properties",
+        "plugins",
+        "mods",
+        "modpacks",
+        "backups",
+        "sftp",
+        "subusers",
+        "settings",
+        "overview",
+        "playit"
+      ],
+      "hiddenServerNavigation": []
+    }
   }
 }
