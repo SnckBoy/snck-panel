@@ -27,7 +27,7 @@ import { useSettings } from "../context/SettingsContext";
 
 export default function ServerView() {
   const { id } = useParams();
-  const { enablePlayit } = useSettings();
+  const { enablePlayit, themeConfig } = useSettings();
   const [server, setServer] = useState<any>(null);
   const [totalSystemRam, setTotalSystemRam] = useState<number>(0);
   const [showRamWarning, setShowRamWarning] = useState(false);
@@ -121,50 +121,63 @@ export default function ServerView() {
   );
 
   const tabs: any[] = [
-    { name: "Overview", path: `/servers/${id}/overview`, exactPath: "overview", icon: <Activity size={18} /> },
-    { name: "Terminal", path: `/servers/${id}`, exactPath: "", icon: <Terminal size={18} /> },
-    { name: "Players", path: `/servers/${id}/players`, exactPath: "players", icon: <Users size={18} /> },
-    { name: "File Manager", path: `/servers/${id}/files`, exactPath: "files", icon: <Folder size={18} /> },
-    { name: "SFTP Details", path: `/servers/${id}/sftp`, exactPath: "sftp", icon: <Network size={18} /> },
-    { name: "Sub-Users", path: `/servers/${id}/subusers`, exactPath: "subusers", icon: <Users size={18} /> },
+    { id: "overview", name: "Overview", path: `/servers/${id}/overview`, exactPath: "overview", icon: <Activity size={18} /> },
+    { id: "console", name: "Console", path: `/servers/${id}`, exactPath: "", icon: <Terminal size={18} /> },
+    { id: "players", name: "Players", path: `/servers/${id}/players`, exactPath: "players", icon: <Users size={18} /> },
+    { id: "files", name: "File Manager", path: `/servers/${id}/files`, exactPath: "files", icon: <Folder size={18} /> },
+    { id: "sftp", name: "SFTP Details", path: `/servers/${id}/sftp`, exactPath: "sftp", icon: <Network size={18} /> },
+    { id: "subusers", name: "Sub-Users", path: `/servers/${id}/subusers`, exactPath: "subusers", icon: <Users size={18} /> },
   ];
 
   const isProxy = ["VELOCITY", "BUNGEECORD", "WATERFALL"].includes(server?.type?.toUpperCase() || "");
   
   if (!isProxy) {
-    tabs.splice(1, 0, { name: "Properties", path: `/servers/${id}/properties`, exactPath: "properties", icon: <Sliders size={18} /> });
+    tabs.splice(1, 0, { id: "properties", name: "Properties", path: `/servers/${id}/properties`, exactPath: "properties", icon: <Sliders size={18} /> });
   }
 
   if (server?.type === "PAPER") {
-    tabs.push({ name: "Plugins", path: `/servers/${id}/plugins`, exactPath: "plugins", icon: <Puzzle size={18} /> });
+    tabs.push({ id: "plugins", name: "Plugins", path: `/servers/${id}/plugins`, exactPath: "plugins", icon: <Puzzle size={18} /> });
   }
 
     if (server?.type === "FORGE" || server?.type === "FABRIC") {
-    tabs.push({ name: "Mods", path: `/servers/${id}/mods`, exactPath: "mods", icon: <Box size={18} /> });
+    tabs.push({ id: "mods", name: "Mods", path: `/servers/${id}/mods`, exactPath: "mods", icon: <Box size={18} /> });
   }
   if (!isProxy) {
-    tabs.push({ name: "Modpacks", path: `/servers/${id}/modpacks`, exactPath: "modpacks", icon: <PackageOpen size={18} /> });
+    tabs.push({ id: "modpacks", name: "Modpacks", path: `/servers/${id}/modpacks`, exactPath: "modpacks", icon: <PackageOpen size={18} /> });
   }
   tabs.push(
-    { name: "Settings", path: `/servers/${id}/settings`, exactPath: "settings", icon: <Settings size={18} /> },
-    { name: "Backup", path: `/servers/${id}/backup`, exactPath: "backup", icon: <Archive size={18} /> }
+    { id: "settings", name: "Settings", path: `/servers/${id}/settings`, exactPath: "settings", icon: <Settings size={18} /> },
+    { id: "backups", name: "Backup", path: `/servers/${id}/backup`, exactPath: "backup", icon: <Archive size={18} /> }
   );
 
   if (enablePlayit) {
     tabs.push(
-      { name: "Playit Tunnel", path: `/servers/${id}/playit`, exactPath: "playit", icon: <Globe size={18} /> }
+      { id: "playit", name: "Playit Tunnel", path: `/servers/${id}/playit`, exactPath: "playit", icon: <Globe size={18} /> }
     );
   }
 
   const navTabs: any[] = [
-    { name: "Back to Dashboard", path: `/servers`, exactPath: "back", icon: <LogOut size={18} /> }
-  ];  const primaryTabNames = ["Overview", "Terminal", "Players", "File Manager"];
+    { name: "Back to Servers", path: `/servers`, exactPath: "back", icon: <LogOut size={18} /> }
+  ];
+  const structure = themeConfig?.layout?.structure || {};
+  const serverOrder: string[] = structure.serverNavigationOrder || [];
+  const hiddenServerTabs: string[] = structure.hiddenServerNavigation || [];
+  const visibleTabs = tabs
+    .filter((tab) => !hiddenServerTabs.includes(tab.id))
+    .sort((a, b) => {
+      const ai = serverOrder.indexOf(a.id);
+      const bi = serverOrder.indexOf(b.id);
+      return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi);
+    });
+  const primaryTabNames = ["Overview", "Console", "Players", "File Manager"];
   const configTabNames = ["Properties", "Settings", "Backup"];
-  const tabGroups = [
-    { title: "YOUR SERVER", tabs: tabs.filter((tab) => primaryTabNames.includes(tab.name)) },
-    { title: "TOOLS", tabs: tabs.filter((tab) => !primaryTabNames.includes(tab.name) && !configTabNames.includes(tab.name)) },
-    { title: "CONFIG", tabs: tabs.filter((tab) => configTabNames.includes(tab.name)) },
-  ].filter((group) => group.tabs.length > 0);
+  const tabGroups = structure.shell === "pterodactyl"
+    ? [{ title: "SERVER MANAGEMENT", tabs: visibleTabs }]
+    : [
+        { title: "YOUR SERVER", tabs: visibleTabs.filter((tab) => primaryTabNames.includes(tab.name)) },
+        { title: "TOOLS", tabs: visibleTabs.filter((tab) => !primaryTabNames.includes(tab.name) && !configTabNames.includes(tab.name)) },
+        { title: "CONFIG", tabs: visibleTabs.filter((tab) => configTabNames.includes(tab.name)) },
+      ].filter((group) => group.tabs.length > 0);
 
   return (
     <motion.div 
@@ -172,7 +185,7 @@ export default function ServerView() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="snx-server-view flex h-full min-h-0 min-w-0 bg-transparent overflow-hidden"
+      className={`snx-server-view flex h-full min-h-0 min-w-0 bg-transparent overflow-hidden ${structure.shell === "pterodactyl" ? "snx-server-view--pterodactyl" : ""} ${structure.serverNavigationMode === "tabs" ? "snx-server-view--tabs" : ""}`}
     >
             
       
