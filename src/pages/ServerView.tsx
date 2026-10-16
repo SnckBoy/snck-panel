@@ -168,7 +168,8 @@ export default function ServerView() {
       const ai = serverOrder.indexOf(a.id);
       const bi = serverOrder.indexOf(b.id);
       return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi);
-    });
+    })
+    .map((tab) => ({ ...tab, name: themeConfig?.layout?.labels?.[tab.id] || tab.name }));
   const primaryTabNames = ["Overview", "Console", "Players", "File Manager"];
   const configTabNames = ["Properties", "Settings", "Backup"];
   const tabGroups = structure.shell === "pterodactyl"
