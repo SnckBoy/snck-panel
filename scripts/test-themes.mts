@@ -5,6 +5,9 @@ import { BUILT_INS, defaultConfig, validateConfig, validateThemeInput } from "..
 
 const valid = { id: "test-theme", name: "Test Theme", version: "1.0.0", author: "Test", description: "A safe sample theme", config: { ...defaultConfig } };
 assert.equal(validateConfig(valid.config), true, "accepts a complete supported token set");
+assert.equal(validateConfig({ ...defaultConfig, surfaceOpacity: 72 }), true, "accepts supported translucent glass surface opacity");
+assert.equal(validateConfig({ ...defaultConfig, surfaceOpacity: 101 }), false, "rejects opacity above 100 percent");
+assert.equal(validateConfig({ ...defaultConfig, surfaceOpacity: -1 }), false, "rejects negative opacity");
 assert.equal(validateConfig({ ...defaultConfig, primary: "url(javascript:alert(1))" }), false, "rejects CSS injection as a color");
 assert.equal(validateConfig({ ...defaultConfig, radius: 1000 }), false, "rejects out-of-range radius");
 assert.equal(validateConfig({ ...defaultConfig, customCss: "body { display:none }" }), false, "rejects unknown CSS/configuration fields");
