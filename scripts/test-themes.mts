@@ -21,6 +21,15 @@ assert.equal(validateThemeInput(glassSample).layout.navigationOrder[1], "servers
 assert.equal(validateThemeInput(glassSample).layout.structure.shell, "pterodactyl", "Pterodactyl Glass switches the actual panel shell preset");
 assert.equal(validateThemeInput(glassSample).layout.structure.dashboardMode, "server-first", "Pterodactyl Glass uses a server-first dashboard");
 assert.equal(validateThemeInput(glassSample).layout.structure.serverNavigationOrder[0], "console", "Pterodactyl Glass prioritizes the server console");
+assert.equal(validateThemeInput(glassSample).name, "Snck Petro", "sample theme is branded Snck Petro");
+assert.equal(validateThemeInput(glassSample).layout.labels.servers, "Minecraft Servers", "theme file can rename existing navigation labels");
+assert.equal(validateThemeInput(glassSample).layout.customNavigation[0].id, "custom-docs", "theme file can add safe custom shortcuts");
+const invalidCustomLink = { ...glassSample, id: "bad-custom-link", layout: { ...glassSample.layout, customNavigation: [{ id: "custom-unsafe", label: "Unsafe", url: "javascript:alert(1)" }] } };
+assert.throws(() => validateThemeInput(invalidCustomLink), /layout/i, "rejects non-HTTPS custom links");
+const invalidLabel = { ...glassSample, id: "bad-label", layout: { ...glassSample.layout, labels: { servers: "x".repeat(33) } } };
+assert.throws(() => validateThemeInput(invalidLabel), /layout/i, "rejects excessively long menu labels");
+const duplicateCustomLink = { ...glassSample, id: "duplicate-custom-link", layout: { ...glassSample.layout, customNavigation: [{ id: "custom-docs", label: "One", url: "https://example.com" }, { id: "custom-docs", label: "Two", url: "https://example.org" }] } };
+assert.throws(() => validateThemeInput(duplicateCustomLink), /layout/i, "rejects duplicate custom shortcut IDs");
 const unsafeStructure = { ...glassSample, id: "unsafe-layout", layout: { ...glassSample.layout, structure: { ...glassSample.layout.structure, serverNavigationOrder: ["console", "console"] } } };
 assert.throws(() => validateThemeInput(unsafeStructure), /layout/i, "rejects duplicate server navigation entries");
 const legacyConfig = { ...defaultConfig } as Record<string, unknown>;
