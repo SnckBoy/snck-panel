@@ -17,7 +17,7 @@ Navigation changes only affect shortcuts displayed in the sidebar. Hiding a link
 
 ### Theme-file menu customization
 
-A theme manifest can rename built-in navigation labels, hide existing items, and add up to eight external HTTPS shortcuts without editing the panel source. Add these optional fields under `layout`:
+A theme manifest can rename built-in navigation labels, hide existing items, and add up to eight shortcuts without editing the panel source. Add these optional fields under `layout`:
 
 ```json
 {
