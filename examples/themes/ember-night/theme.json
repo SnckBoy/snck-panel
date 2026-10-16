@@ -19,6 +19,18 @@
     "success": "#39d98a",
     "warning": "#f0b24a",
     "error": "#f26b78",
-    "radius": 16
+    "radius": 16,
+    "fontFamily": "inter",
+    "fontScale": 1,
+    "density": "comfortable",
+    "elevation": "soft"
+  },
+  "layout": {
+    "navigationOrder": ["overview", "nodes", "servers", "deploy", "admin-control", "fleet", "api-keys", "cloudflare", "snck-theme", "settings"],
+    "hiddenNavigation": [],
+    "dashboardOrder": ["welcome", "quick-actions", "metrics", "system-health", "server-inventory"],
+    "hiddenDashboard": ["quick-actions", "system-health"],
+    "metricsOrder": ["cpu", "ram", "net", "nodes"],
+    "hiddenMetrics": []
   }
 }

@@ -71,6 +71,13 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
         "--border-border": themeConfig.border,
       };
       for (const [name, value] of Object.entries(variables)) if (typeof value === "string" && value) root.style.setProperty(name, value);
+      const fonts: Record<string, string> = { system: "ui-sans-serif, system-ui, sans-serif", inter: "Inter, ui-sans-serif, system-ui, sans-serif", mono: "'JetBrains Mono', ui-monospace, monospace" };
+      const shadows: Record<string, string> = { flat: "none", soft: "0 16px 38px rgba(0,0,0,.12), inset 0 1px rgba(255,255,255,.04)", glow: `0 12px 42px color-mix(in srgb, ${themeConfig.primary} 18%, transparent)` };
+      const density: Record<string, string> = { compact: "0.86", comfortable: "1", spacious: "1.16" };
+      root.style.setProperty("--snx-font-family", fonts[themeConfig.fontFamily] || fonts.inter);
+      root.style.setProperty("--snx-card-shadow", shadows[themeConfig.elevation] || shadows.soft);
+      root.style.setProperty("--snx-density", density[themeConfig.density] || density.comfortable);
+      root.style.fontSize = `${16 * Math.max(0.85, Math.min(1.25, Number(themeConfig.fontScale) || 1))}px`;
       root.dataset.snckThemeId = String(themeConfig.id || "snck-default");
     }
     root.style.colorScheme = "dark";
@@ -80,7 +87,7 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
     try {
       const res = await axios.get("/api/settings");
       const settings = res.data || {};
-      if (settings.activeTheme?.config) setThemeConfig({ ...settings.activeTheme.config, id: settings.activeTheme.id });
+      if (settings.activeTheme?.config) setThemeConfig({ ...settings.activeTheme.config, id: settings.activeTheme.id, layout: settings.activeTheme.layout });
       if (settings.panelName) setPanelName(settings.panelName);
       if (settings.panelLogo !== undefined) setPanelLogo(settings.panelLogo);
       if (settings.panelBackgroundImage !== undefined) setPanelBackgroundImage(settings.panelBackgroundImage);

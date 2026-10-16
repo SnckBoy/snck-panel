@@ -4,33 +4,27 @@ import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Key, Activity, Box,
 import { useAuth } from "../context/AuthContext";
 import { useSettings } from "../context/SettingsContext";
 import { motion } from "framer-motion";
+import { DEFAULT_THEME_LAYOUT, NAVIGATION_GROUPS } from "../shared/themeLayout";
 
 type SidebarLink = { name: string; path: string; icon: ReactNode };
 
 export function Sidebar({ onClose, isCollapsed, toggleCollapse }: { onClose?: () => void; isCollapsed?: boolean; toggleCollapse?: () => void }) {
   const location = useLocation();
   const { user, logout } = useAuth();
-  const { panelName } = useSettings();
+  const { panelName, themeConfig } = useSettings();
 
   const canAdminister = user?.role === "admin" || user?.role === "owner";
-  const primaryLinks: SidebarLink[] = [
-    { name: "Overview", path: "/", icon: <LayoutDashboard size={19} /> },
-    { name: "Nodes", path: "/nodes", icon: <Activity size={19} /> },
-    { name: "Servers", path: "/servers", icon: <Server size={19} /> },
-  ];
-  const adminLinks: SidebarLink[] = canAdminister ? [
-    { name: "Deploy", path: "/servers/create", icon: <Plus size={19} /> },
-    { name: "Admin control", path: "/admin", icon: <ShieldCheck size={19} /> },
-    { name: "Fleet", path: "/admin/servers", icon: <Box size={19} /> },
-    { name: "API Keys", path: "/api-keys", icon: <Key size={19} /> },
-    { name: "Cloudflare", path: "/cloudflare", icon: <Cloud size={19} /> },
-    { name: "Snck Theme", path: "/snck-theme", icon: <Palette size={19} /> },
-  ] : [];
-  const sections: { title: string; links: SidebarLink[] }[] = [
-    { title: "Your server", links: primaryLinks },
-    ...(adminLinks.length ? [{ title: "Admin", links: adminLinks }] : []),
-    { title: "Config", links: [{ name: "Settings", path: "/settings", icon: <Settings size={19} /> }] },
-  ];
+  const routeById: Record<string, string> = { overview: "/", nodes: "/nodes", servers: "/servers", deploy: "/servers/create", "admin-control": "/admin", fleet: "/admin/servers", "api-keys": "/api-keys", cloudflare: "/cloudflare", "snck-theme": "/snck-theme", settings: "/settings" };
+  const iconById: Record<string, ReactNode> = { overview: <LayoutDashboard size={19} />, nodes: <Activity size={19} />, servers: <Server size={19} />, deploy: <Plus size={19} />, "admin-control": <ShieldCheck size={19} />, fleet: <Box size={19} />, "api-keys": <Key size={19} />, cloudflare: <Cloud size={19} />, "snck-theme": <Palette size={19} />, settings: <Settings size={19} /> };
+  const layout = themeConfig?.layout || DEFAULT_THEME_LAYOUT;
+  const sections = NAVIGATION_GROUPS.map((group) => ({
+    title: group.title,
+    links: group.items
+      .filter((item) => (canAdminister || !item.adminOnly) && !layout.hiddenNavigation.includes(item.id))
+      .slice()
+      .sort((a, b) => layout.navigationOrder.indexOf(a.id) - layout.navigationOrder.indexOf(b.id))
+      .map((item) => ({ name: item.label, path: routeById[item.id], icon: iconById[item.id] } as SidebarLink)),
+  })).filter((section) => section.links.length > 0);
 
   return (
     <div className={`snx-app-sidebar h-full flex flex-col transition-all duration-300 z-20 ${isCollapsed ? "w-20" : "w-64"}`}>
