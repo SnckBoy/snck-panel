@@ -1,0 +1,59 @@
+{
+  "id": "pterodactyl-glass",
+  "name": "Pterodactyl Glass",
+  "version": "1.0.0",
+  "author": "Snck",
+  "description": "A Pterodactyl-inspired hosting panel theme with translucent navy surfaces, compact controls, and blue accents.",
+  "supportedPanelVersion": ">=0.2.0",
+  "config": {
+    "primary": "#3b82f6",
+    "secondary": "#1d4ed8",
+    "accent": "#60a5fa",
+    "background": "#0b1118",
+    "surface": "#172330",
+    "sidebar": "#0b141e",
+    "navbar": "#14202b",
+    "text": "#edf4fb",
+    "muted": "#9aabba",
+    "border": "#344454",
+    "success": "#36c98f",
+    "warning": "#f0b64b",
+    "error": "#f16d78",
+    "radius": 8,
+    "fontFamily": "inter",
+    "fontScale": 1,
+    "density": "comfortable",
+    "elevation": "soft",
+    "surfaceOpacity": 76
+  },
+  "layout": {
+    "navigationOrder": [
+      "overview",
+      "servers",
+      "nodes",
+      "deploy",
+      "fleet",
+      "admin-control",
+      "api-keys",
+      "cloudflare",
+      "snck-theme",
+      "settings"
+    ],
+    "hiddenNavigation": [],
+    "dashboardOrder": [
+      "welcome",
+      "metrics",
+      "server-inventory",
+      "system-health",
+      "quick-actions"
+    ],
+    "hiddenDashboard": [],
+    "metricsOrder": [
+      "cpu",
+      "ram",
+      "net",
+      "nodes"
+    ],
+    "hiddenMetrics": []
+  }
+}
