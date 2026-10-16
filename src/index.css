@@ -750,3 +750,186 @@ html.reduce-motion .effect-animated-gradient { animation: none !important; }
   -webkit-backdrop-filter: blur(var(--snx-glass-blur, 0px)) saturate(1.12);
   backdrop-filter: blur(var(--snx-glass-blur, 0px)) saturate(1.12);
 }
+
+
+/* Theme-driven structure presets. These change the real shell/layout, not only colors. */
+.snx-app-shell--pterodactyl .snx-global-topbar {
+  border-bottom: 1px solid var(--snx-border, var(--border-border));
+  background: color-mix(in srgb, var(--snx-surface-solid, #172330) 82%, transparent);
+  backdrop-filter: blur(var(--snx-glass-blur, 0px));
+}
+.snx-app-shell--pterodactyl .snx-app-sidebar {
+  border-right: 1px solid var(--snx-border, var(--border-border));
+  background: color-mix(in srgb, var(--snx-bg-deep, #0b141e) 92%, transparent);
+}
+.snx-app-shell--pterodactyl .snx-app-nav-link {
+  border-radius: 0.45rem;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+}
+.snx-app-shell--pterodactyl .snx-app-nav-active {
+  border-left: 3px solid var(--snx-primary, #3b82f6);
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, var(--snx-primary, #3b82f6) 14%, transparent);
+}
+.snx-app-shell .snx-page-container {
+  max-width: var(--snx-content-max-width, 80rem);
+}
+html[data-snx-content-width="full"] .snx-app-shell .snx-page-container {
+  max-width: none;
+}
+html[data-snx-sidebar-mode="compact"] .snx-app-sidebar {
+  width: 5rem !important;
+}
+html[data-snx-sidebar-mode="compact"] .snx-app-sidebar h1,
+html[data-snx-sidebar-mode="compact"] .snx-app-sidebar .snx-sidebar-section-label,
+html[data-snx-sidebar-mode="compact"] .snx-app-sidebar .snx-sidebar-promo,
+html[data-snx-sidebar-mode="compact"] .snx-app-sidebar .snx-app-sidebar-footer > div > div,
+html[data-snx-sidebar-mode="compact"] .snx-app-sidebar .snx-app-nav-link span {
+  display: none !important;
+}
+html[data-snx-sidebar-mode="compact"] .snx-app-sidebar .snx-app-nav-link {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+html[data-snx-sidebar-mode="compact"] .snx-app-sidebar .snx-app-nav-link > div {
+  margin: 0;
+}
+html[data-snx-navigation-mode="topbar"] .snx-app-shell--topbar {
+  flex-direction: column;
+}
+html[data-snx-navigation-mode="topbar"] .snx-app-shell--topbar > div[class*="md:relative"] {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  transform: none !important;
+}
+html[data-snx-navigation-mode="topbar"] .snx-app-shell--topbar .snx-app-sidebar {
+  width: 100% !important;
+  height: auto;
+  border-right: 0;
+  border-bottom: 1px solid var(--snx-border, var(--border-border));
+}
+html[data-snx-navigation-mode="topbar"] .snx-app-shell--topbar .snx-app-sidebar-header {
+  height: 3.5rem;
+}
+html[data-snx-navigation-mode="topbar"] .snx-app-shell--topbar .snx-app-nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+  overflow-x: auto;
+  padding: 0.5rem 0.75rem;
+}
+html[data-snx-navigation-mode="topbar"] .snx-app-shell--topbar .snx-app-nav > div {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  flex-shrink: 0;
+}
+html[data-snx-navigation-mode="topbar"] .snx-app-shell--topbar .snx-app-nav > div > div {
+  display: flex;
+  gap: 0.25rem;
+}
+html[data-snx-navigation-mode="topbar"] .snx-app-shell--topbar .snx-sidebar-section-label,
+html[data-snx-navigation-mode="topbar"] .snx-app-shell--topbar .snx-sidebar-promo {
+  display: none;
+}
+html[data-snx-navigation-mode="topbar"] .snx-app-shell--topbar .snx-app-sidebar-footer {
+  display: none;
+}
+html[data-snx-navigation-mode="topbar"] .snx-app-shell--topbar .snx-app-nav-link {
+  white-space: nowrap;
+  padding: 0.55rem 0.75rem;
+}
+.snx-dashboard--server-first .snx-dashboard-header {
+  border-bottom: 1px solid var(--snx-border, var(--border-border));
+  padding-bottom: 1rem;
+}
+.snx-dashboard--server-first .snx-dashboard-header .snx-page-heading {
+  gap: 0.65rem;
+}
+.snx-dashboard--server-first .snx-server-section {
+  margin-top: 0;
+}
+.snx-dashboard--server-first .snx-server-section .snx-section-heading {
+  align-items: center;
+}
+.snx-server-view--pterodactyl .snx-server-sidebar {
+  border-right: 1px solid var(--snx-border, var(--border-border));
+  background: color-mix(in srgb, var(--snx-bg-deep, #0b141e) 94%, transparent);
+}
+.snx-server-view--pterodactyl .snx-server-nav-link {
+  border-radius: 0.4rem;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+}
+.snx-server-view--pterodactyl .snx-server-nav-link.is-active {
+  border-left: 3px solid var(--snx-primary, #3b82f6);
+  background: color-mix(in srgb, var(--snx-primary, #3b82f6) 14%, transparent);
+}
+.snx-server-view--tabs {
+  flex-direction: column;
+}
+.snx-server-view--tabs .snx-server-sidebar {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: auto;
+  max-height: 12rem;
+  transform: none;
+  border-right: 0;
+  border-bottom: 1px solid var(--snx-border, var(--border-border));
+}
+.snx-server-view--tabs .snx-server-sidebar-header {
+  display: none;
+}
+.snx-server-view--tabs .snx-server-sidebar-scroll {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.65rem;
+}
+.snx-server-view--tabs .snx-server-status-card {
+  min-width: 12rem;
+  max-width: 12rem;
+  margin: 0;
+}
+.snx-server-view--tabs .snx-server-nav-group {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  flex-shrink: 0;
+}
+.snx-server-view--tabs .snx-server-nav-group > .snx-sidebar-section-label {
+  display: none;
+}
+.snx-server-view--tabs .snx-server-nav-link {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 0.65rem 0.8rem;
+}
+.snx-server-view--tabs .snx-divider,
+.snx-server-view--tabs .snx-server-sidebar-scroll > .snx-sidebar-section-label,
+.snx-server-view--tabs .snx-server-sidebar-scroll > a {
+  display: none;
+}
+@media (max-width: 767px) {
+  html[data-snx-navigation-mode="topbar"] .snx-app-shell--topbar .snx-app-sidebar-header {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .snx-server-view--tabs .snx-server-sidebar {
+    max-height: 10rem;
+  }
+  .snx-server-view--tabs .snx-server-status-card {
+    min-width: 10rem;
+    max-width: 10rem;
+  }
+}
