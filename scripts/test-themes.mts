@@ -18,6 +18,11 @@ assert.equal(validateThemeInput(sample).layout.dashboardOrder[1], "quick-actions
 const glassSample = JSON.parse(readFileSync(new URL("../examples/themes/pterodactyl-glass/theme.json", import.meta.url), "utf8"));
 assert.equal(validateThemeInput(glassSample).config.surfaceOpacity, 76, "Pterodactyl Glass sample uses supported translucent surface opacity");
 assert.equal(validateThemeInput(glassSample).layout.navigationOrder[1], "servers", "Pterodactyl Glass sample prioritizes the server list in navigation");
+assert.equal(validateThemeInput(glassSample).layout.structure.shell, "pterodactyl", "Pterodactyl Glass switches the actual panel shell preset");
+assert.equal(validateThemeInput(glassSample).layout.structure.dashboardMode, "server-first", "Pterodactyl Glass uses a server-first dashboard");
+assert.equal(validateThemeInput(glassSample).layout.structure.serverNavigationOrder[0], "console", "Pterodactyl Glass prioritizes the server console");
+const unsafeStructure = { ...glassSample, id: "unsafe-layout", layout: { ...glassSample.layout, structure: { ...glassSample.layout.structure, serverNavigationOrder: ["console", "console"] } } };
+assert.throws(() => validateThemeInput(unsafeStructure), /layout/i, "rejects duplicate server navigation entries");
 const legacyConfig = { ...defaultConfig } as Record<string, unknown>;
 delete legacyConfig.fontFamily; delete legacyConfig.fontScale; delete legacyConfig.density; delete legacyConfig.elevation;
 assert.equal(validateThemeInput({ ...valid, config: legacyConfig }).config.fontFamily, "inter", "migrates older color-only theme packages");

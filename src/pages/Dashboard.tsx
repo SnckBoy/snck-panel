@@ -172,7 +172,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="dashboard-shell snx-dashboard-page min-h-screen text-foreground font-sans selection:bg-cyan-400/20 overflow-x-hidden">
+    <div className={`dashboard-shell snx-dashboard-page min-h-screen text-foreground font-sans selection:bg-cyan-400/20 overflow-x-hidden ${themeConfig?.layout?.structure?.dashboardMode === "server-first" ? "snx-dashboard--server-first" : ""}`}>
       <div className="dashboard-ambient snx-dashboard-ambient fixed inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
         <div className="snx-ambient-orb snx-ambient-orb--purple" />
         <div className="snx-ambient-orb snx-ambient-orb--cyan" />
