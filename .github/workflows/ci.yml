@@ -61,5 +61,8 @@ jobs:
           bash -n install.sh
           bash -n scripts/snck-menu.sh
           bash -n scripts/install-panel.sh
+          bash -n scripts/panel-service.sh
+          bash -n scripts/test-service-fallback.sh
+          bash scripts/test-service-fallback.sh
           bash -n node-install.sh
           bash -n shironex
