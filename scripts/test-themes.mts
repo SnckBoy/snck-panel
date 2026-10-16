@@ -24,6 +24,7 @@ assert.equal(validateThemeInput(glassSample).layout.structure.serverNavigationOr
 assert.equal(validateThemeInput(glassSample).name, "Snck Petro", "sample theme is branded Snck Petro");
 assert.equal(validateThemeInput(glassSample).layout.labels.servers, "Minecraft Servers", "theme file can rename existing navigation labels");
 assert.equal(validateThemeInput(glassSample).layout.customNavigation[0].id, "custom-docs", "theme file can add safe custom shortcuts");
+assert.equal(validateThemeInput(glassSample).layout.customNavigation.some((item) => item.target === "servers"), true, "theme file can add a working shortcut to an existing panel route");
 const invalidCustomLink = { ...glassSample, id: "bad-custom-link", layout: { ...glassSample.layout, customNavigation: [{ id: "custom-unsafe", label: "Unsafe", url: "javascript:alert(1)" }] } };
 assert.throws(() => validateThemeInput(invalidCustomLink), /layout/i, "rejects non-HTTPS custom links");
 const invalidLabel = { ...glassSample, id: "bad-label", layout: { ...glassSample.layout, labels: { servers: "x".repeat(33) } } };
