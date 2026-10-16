@@ -1,0 +1,79 @@
+# Snck Theme
+
+Snck Theme is the administrator-only theme manager for the React/Vite Snck Panel. Theme definitions are declarative design tokens persisted in the panel's existing JSON data store; a theme package is never treated as executable code or an arbitrary stylesheet.
+
+## Access and permissions
+
+Sign in as an `admin` or `owner` and choose **Snck Theme** in the administrator navigation. The frontend route is admin-gated and every management endpoint independently validates the current authenticated administrator on the server. Ordinary users cannot import or edit global themes.
+
+## Library and lifecycle
+
+- **Create theme** opens the visual builder. Enter an ID using lowercase letters, digits, and hyphens, and choose the supported colors and corner radius. The live preview updates as values change.
+- **Save theme** persists a draft without changing panel appearance. **Save & apply** persists and activates it globally.
+- **Apply** immediately switches the theme for all panel pages. The selected configuration is loaded by the shared Settings context and mapped to existing `--snx-*` and application CSS variables.
+- **Enable / Disable** controls availability without deleting the theme. Disabling the active theme automatically returns to Snck Default.
+- **Export** downloads a ZIP package. **Remove** asks for confirmation; protected built-in themes cannot be removed.
+- **Restore default** immediately restores the protected, always-available Snck Default theme.
+
+Built-in themes currently include Snck Default, Midnight, Royal Purple, Nebula, Cyber Blue, Aurora, and Obsidian. Custom IDs are not limited to this list.
+
+## Theme package format
+
+ZIP uploads are limited to 2 MiB, 100 entries, and 32 KiB for the manifest. A package contains exactly one supported `theme.json` manifest (for example `my-theme/theme.json`). Other file contents are rejected; directory entries are ignored. The ZIP may be wrapped in a containing folder. Path traversal, absolute paths, drive paths, oversized entries, malformed manifests, duplicate IDs, and incompatible panel versions are rejected. The package is parsed without extracting its contents.
+
+```json
+{
+  "id": "ember-night",
+  "name": "Ember Night",
+  "version": "1.0.0",
+  "author": "Example Studio",
+  "description": "Warm orange accents on a deep charcoal surface.",
+  "supportedPanelVersion": ">=0.2.0",
+  "config": {
+    "primary": "#ff8747",
+    "secondary": "#b8512d",
+    "accent": "#ffc08a",
+    "background": "#14100f",
+    "surface": "#211a18",
+    "sidebar": "#100d0c",
+    "navbar": "#1b1513",
+    "text": "#fff4ed",
+    "muted": "#b9a69d",
+    "border": "#46332c",
+    "success": "#39d98a",
+    "warning": "#f0b24a",
+    "error": "#f26b78",
+    "radius": 16
+  }
+}
+```
+
+The only package content currently supported is this structured configuration: color values must be six-digit hex values, and radius is limited to 0–32 px. CSS, JavaScript, PHP, shell scripts, images, and remote imports are not supported. This deliberately avoids pretending arbitrary CSS can be made safe by filtering. ZIP files are never extracted or executed.
+
+A ready-to-import sample is included at [`examples/themes/ember-night.zip`](../examples/themes/ember-night.zip); its source manifest is [`examples/themes/ember-night/theme.json`](../examples/themes/ember-night/theme.json).
+
+## Persistence and updates
+
+Installed theme metadata/configuration is stored in `.data/themes.json`; the globally active theme ID is stored in `.data/settings.json`. Both are within the runtime data directory that the installer preserves when replacing application source during updates. The installer creates `.data/themes/` for future safe theme-related files and assigns the runtime service account ownership of the data store. No database migration is needed: the active runtime uses JSON files, not the dormant PostgreSQL/Laravel foundation.
+
+Theme configuration is loaded from the server-backed settings endpoint, not browser local storage. If active theme state is missing, disabled, or invalid, the service resolves to Snck Default. Removing or disabling the active custom theme also switches to default. The default itself cannot be disabled or removed.
+
+## Troubleshooting
+
+- If a ZIP is rejected, make sure it contains one `theme.json`, uses a valid JSON manifest, includes `supportedPanelVersion`, and only contains that manifest plus optional directory entries.
+- If the panel appearance does not refresh in an already-open session, reload the page; settings are broadcast to authenticated sessions through the existing `settings_updated` event.
+- To repair an invalid active theme, sign in as an administrator and use **Restore default**. The backend also falls back to Snck Default when resolving an unavailable selection.
+- Back up `.data/themes.json` and `.data/settings.json` with the normal panel data backup before making manual changes.
+
+## Developer commands
+
+From the repository root:
+
+```bash
+npm ci
+npm test
+npm run lint
+npm run build
+```
+
+A local development instance can be started with `npm run dev`. For a fresh supported host, run `curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/install.sh | sudo bash` and choose **Install SNCK PANEL**. For an existing host, run the same command and choose **Update SNCK PANEL** (or run `sudo bash /opt/snck-panel/install.sh update` when the local installer is present). Custom themes persist in `.data/` across normal source updates; do not run a complete reinstall to deploy this feature.

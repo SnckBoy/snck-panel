@@ -10,6 +10,8 @@ import nodeRoutes from "./nodes.js";
 import nodeAgentRoutes from "./nodeAgent.js";
 import allocationRoutes from "./allocations.js";
 import cloudflareRoutes from "./cloudflare.js";
+import themeRoutes from "./themes.js";
+import { getActiveTheme } from "../services/themes.js";
 
 router.use("/auth", authRoutes);
 router.use("/servers", serverRoutes);
@@ -19,9 +21,11 @@ router.use("/nodes", nodeRoutes);
 router.use("/node-agent", nodeAgentRoutes);
 router.use("/allocations", allocationRoutes);
 router.use("/cloudflare", cloudflareRoutes);
+router.use("/themes", themeRoutes);
 
 router.get("/settings", async (req, res) => {
   const settings = await readJSON("settings.json") || {};
+  const activeTheme = await getActiveTheme();
   res.json({ 
     panelName: settings.panelName || "Snck",
     panelLogo: settings.panelLogo || "",
@@ -32,6 +36,7 @@ router.get("/settings", async (req, res) => {
     enableLoginAnimation: settings.enableLoginAnimation !== undefined ? settings.enableLoginAnimation : true,
     enableRegistration: settings.enableRegistration !== undefined ? settings.enableRegistration : true,
     theme: settings.theme || "aurora",
+    activeTheme,
     appearance: settings.appearance || "dark",
     accent: settings.accent || "purple",
     backgroundEffect: settings.backgroundEffect || "aurora",

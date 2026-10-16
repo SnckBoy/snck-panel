@@ -163,6 +163,7 @@ log "Installing Node dependencies..."
 npm ci --no-audit --no-fund >>"$LOG_FILE" 2>&1 || die "Locked dependency installation failed. Check package-lock.json and the installer log before retrying."
 log "Preparing the JSON data store..."
 install -d -o root -g root -m 750 "$APP_DIR/.data"
+install -d -o root -g root -m 750 "$APP_DIR/.data/themes"
 [[ -f .data/users.json ]] || printf '[]\n' > .data/users.json
 [[ -f .data/servers.json ]] || printf '[]\n' > .data/servers.json
 [[ -f .data/settings.json ]] || printf '{}\n' > .data/settings.json
@@ -184,6 +185,7 @@ fi
 id -u snck >/dev/null 2>&1 || useradd --system --home-dir "$APP_DIR" --shell /usr/sbin/nologin snck
 chown -R snck:snck "$APP_DIR"
 chmod 750 "$APP_DIR/.data"
+chmod 750 "$APP_DIR/.data/themes"
 find "$APP_DIR/.data" -maxdepth 1 -type f -name '*.json' -exec chmod 640 {} +
 if getent group docker >/dev/null 2>&1; then usermod -aG docker snck || die "Could not grant SNCK service user Docker access."; fi
 mkdir -p /var/lib/snck

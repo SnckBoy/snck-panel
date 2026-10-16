@@ -24,6 +24,7 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
   const [enableLoginAnimation, setEnableLoginAnimation] = useState<boolean>(true);
   const [enableRegistration, setEnableRegistration] = useState<boolean>(true);
   const [theme, setTheme] = useState<string>("aurora");
+  const [themeConfig, setThemeConfig] = useState<any>(null);
   const [appearance, setAppearance] = useState<string>("dark");
 
   const setDarkAppearance = () => setAppearance("dark");
@@ -54,6 +55,24 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
     root.dataset.backgroundEffect = resolvedBackground;
     root.classList.toggle("reduce-motion", reducedMotion);
     root.style.setProperty("--accent-color", `var(--accent-${resolvedAccent})`);
+    if (themeConfig && typeof themeConfig === "object") {
+      const variables: Record<string, string> = {
+        "--snx-primary": themeConfig.primary, "--snx-secondary": themeConfig.secondary,
+        "--snx-accent": themeConfig.accent, "--snx-primary-soft": `color-mix(in srgb, ${themeConfig.primary} 16%, transparent)`,
+        "--snx-primary-line": `color-mix(in srgb, ${themeConfig.primary} 48%, transparent)`, "--snx-bg": themeConfig.background,
+        "--snx-bg-deep": themeConfig.sidebar, "--snx-surface": themeConfig.surface,
+        "--snx-surface-solid": themeConfig.surface, "--snx-surface-raised": themeConfig.navbar,
+        "--snx-border": themeConfig.border, "--snx-text": themeConfig.text,
+        "--snx-text-muted": themeConfig.muted, "--snx-text-dim": themeConfig.muted,
+        "--snx-success": themeConfig.success, "--snx-warning": themeConfig.warning,
+        "--snx-danger": themeConfig.error, "--snx-radius": `${themeConfig.radius}px`,
+        "--bg-background": themeConfig.background, "--bg-card": themeConfig.surface,
+        "--text-foreground": themeConfig.text, "--text-muted-foreground": themeConfig.muted,
+        "--border-border": themeConfig.border,
+      };
+      for (const [name, value] of Object.entries(variables)) if (typeof value === "string" && value) root.style.setProperty(name, value);
+      root.dataset.snckThemeId = String(themeConfig.id || "snck-default");
+    }
     root.style.colorScheme = "dark";
   };
 
@@ -61,6 +80,7 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
     try {
       const res = await axios.get("/api/settings");
       const settings = res.data || {};
+      if (settings.activeTheme?.config) setThemeConfig({ ...settings.activeTheme.config, id: settings.activeTheme.id });
       if (settings.panelName) setPanelName(settings.panelName);
       if (settings.panelLogo !== undefined) setPanelLogo(settings.panelLogo);
       if (settings.panelBackgroundImage !== undefined) setPanelBackgroundImage(settings.panelBackgroundImage);
@@ -126,7 +146,7 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
 
   useEffect(() => {
     applyVisualSettings();
-  }, [theme, appearance, accent, backgroundEffect, reducedMotion]);
+  }, [theme, appearance, accent, backgroundEffect, reducedMotion, themeConfig]);
 
   useEffect(() => {
     if (panelName) document.title = panelName;
@@ -141,7 +161,7 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
     enableTutorial, setEnableTutorial,
     enableLoginAnimation, setEnableLoginAnimation,
     enableRegistration, setEnableRegistration,
-    theme, setTheme,
+    theme, setTheme, themeConfig,
     appearance, setAppearance: setDarkAppearance,
     accent, setAccent,
     backgroundEffect, setBackgroundEffect,
@@ -157,7 +177,7 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
   }), [
     panelName, panelLogo, panelBackgroundImage, panelBackgroundBlur,
     enablePlayit, enableTutorial, enableLoginAnimation, enableRegistration,
-    theme, appearance, accent, backgroundEffect, reducedMotion,
+    theme, themeConfig, appearance, accent, backgroundEffect, reducedMotion,
     enableGoogleLogin, firebaseApiKey, firebaseAuthDomain, firebaseProjectId,
     firebaseStorageBucket, firebaseMessagingSenderId, firebaseAppId,
   ]);

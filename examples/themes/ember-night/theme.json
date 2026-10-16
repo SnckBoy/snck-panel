@@ -1,0 +1,24 @@
+{
+  "id": "ember-night",
+  "name": "Ember Night",
+  "version": "1.0.0",
+  "author": "Example Studio",
+  "description": "Warm orange accents on a deep charcoal surface.",
+  "supportedPanelVersion": ">=0.2.0",
+  "config": {
+    "primary": "#ff8747",
+    "secondary": "#b8512d",
+    "accent": "#ffc08a",
+    "background": "#14100f",
+    "surface": "#211a18",
+    "sidebar": "#100d0c",
+    "navbar": "#1b1513",
+    "text": "#fff4ed",
+    "muted": "#b9a69d",
+    "border": "#46332c",
+    "success": "#39d98a",
+    "warning": "#f0b24a",
+    "error": "#f26b78",
+    "radius": 16
+  }
+}
