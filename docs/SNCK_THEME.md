@@ -29,6 +29,7 @@ A theme manifest can rename built-in navigation labels, hide existing items, and
   },
   "hiddenNavigation": ["nodes", "deploy", "fleet"],
   "customNavigation": [
+    { "id": "custom-servers", "label": "Server List", "target": "servers" },
     { "id": "custom-docs", "label": "Documentation", "url": "https://example.com/docs" }
   ]
 }
@@ -36,7 +37,7 @@ A theme manifest can rename built-in navigation labels, hide existing items, and
 
 - `labels` renames known main-navigation or server-navigation items by their stable IDs. Omit a key to keep its default label.
 - `hiddenNavigation` removes built-in main-menu shortcuts from view; `hiddenServerNavigation` does the same for server tabs.
-- `customNavigation` adds up to eight external HTTPS links to the sidebar. IDs must be unique and start with `custom-`; labels are limited to 32 characters. Only HTTPS URLs without embedded credentials are accepted.
+- `customNavigation` adds up to eight working shortcuts to the sidebar. Each entry must use exactly one of `target` or `url`: `target` must be an existing main-navigation ID (for example `servers`, `overview`, or `settings`), while `url` must be an external HTTPS URL without embedded credentials. IDs must be unique and start with `custom-`; labels are limited to 32 characters.
 - Reordering remains controlled by `navigationOrder` and `structure.serverNavigationOrder`. Removing a custom shortcut means deleting its entry from `customNavigation`.
 
 These fields only change labels and visible links. A theme file cannot create a new functional backend page, database, server action, permission, or Minecraft-management feature; those require implementation in the panel itself. Hiding a link never disables its underlying route or changes authorization. Old theme files remain valid and receive empty `labels` and `customNavigation` defaults.
