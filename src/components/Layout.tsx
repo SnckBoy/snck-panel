@@ -20,6 +20,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     if (path === '/') return 'Overview';
     if (path === '/servers') return 'Servers';
     if (path === '/servers/create') return 'Deploy Server';
+    if (path === '/vps') return 'Virtual servers';
+    if (path === '/admin/vps') return 'VPS resource policy';
     if (path.startsWith('/servers/')) return 'Server Management';
     if (path === '/admin') return 'Admin control center';
     if (path === '/admin/servers') return 'Fleet';

@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
-import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Key, Activity, Box, Cloud, ShieldCheck, LifeBuoy, Palette } from "lucide-react";
+import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Key, Activity, Box, Cloud, ShieldCheck, LifeBuoy, Palette, Cpu } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useSettings } from "../context/SettingsContext";
 import { motion } from "framer-motion";
@@ -14,6 +14,7 @@ export function Sidebar({ onClose, isCollapsed, toggleCollapse }: { onClose?: ()
   const { panelName, themeConfig } = useSettings();
 
   const canAdminister = user?.role === "admin" || user?.role === "owner";
+  const vpsLink: SidebarLink = { name: "Virtual servers", path: "/vps", icon: <Cpu size={19} /> };
   const routeById: Record<string, string> = { overview: "/", nodes: "/nodes", servers: "/servers", deploy: "/servers/create", "admin-control": "/admin", fleet: "/admin/servers", "api-keys": "/api-keys", cloudflare: "/cloudflare", "snck-theme": "/snck-theme", settings: "/settings" };
   const iconById: Record<string, ReactNode> = { overview: <LayoutDashboard size={19} />, nodes: <Activity size={19} />, servers: <Server size={19} />, deploy: <Plus size={19} />, "admin-control": <ShieldCheck size={19} />, fleet: <Box size={19} />, "api-keys": <Key size={19} />, cloudflare: <Cloud size={19} />, "snck-theme": <Palette size={19} />, settings: <Settings size={19} /> };
   const layout = themeConfig?.layout || DEFAULT_THEME_LAYOUT;
@@ -45,6 +46,10 @@ export function Sidebar({ onClose, isCollapsed, toggleCollapse }: { onClose?: ()
       </div>
 
       <nav className="snx-app-nav flex-1 w-full px-3 pt-2 pb-4 overflow-y-auto custom-scrollbar">
+        <div className="mb-2"><p className="snx-sidebar-section-label">COMPUTE</p><div className="space-y-1"><Link to={vpsLink.path} onClick={onClose} title={isCollapsed ? vpsLink.name : undefined} className={`snx-app-nav-link relative flex items-center ${isCollapsed ? "justify-center" : "px-3"} py-3.5 rounded-[13px] transition-colors group overflow-hidden ${location.pathname.startsWith("/vps") ? "is-active" : ""}`}>
+          {location.pathname.startsWith("/vps") && <motion.div layoutId="activeTabSidebar" className="snx-app-nav-active absolute inset-0 rounded-[13px]" initial={false} transition={{ type: "spring", stiffness: 300, damping: 30 }} />}
+          <span className={`relative z-10 ${location.pathname.startsWith("/vps") ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}><Cpu size={19}/></span>{!isCollapsed && <span className={`ml-3 relative z-10 font-medium text-sm ${location.pathname.startsWith("/vps") ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}>Virtual servers</span>}
+        </Link></div></div>
         {sections.map((section) => (
           <div key={section.title} className="mb-2">
             {!isCollapsed && <p className="snx-sidebar-section-label">{section.title}</p>}

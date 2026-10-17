@@ -29,6 +29,7 @@ import { SystemUpdateListener } from "./components/SystemUpdateListener";
 import { TutorialOverlay } from "./components/TutorialOverlay";
 const CoreCheckpoint = lazy(() => import("./pages/CoreCheckpoint"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const VpsPanel = lazy(() => import("./pages/VpsPanel"));
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading, setupRequired } = useAuth();
@@ -81,6 +82,8 @@ const AnimatedRoutes = () => {
           <Route path="/cloudflare" element={<ProtectedRoute><AdminOnlyRoute><Cloudflare /></AdminOnlyRoute></ProtectedRoute>} />
           <Route path="/servers" element={<ProtectedRoute><ServerList /></ProtectedRoute>} />
           <Route path="/servers/create" element={<ProtectedRoute><CreateServer /></ProtectedRoute>} />
+          <Route path="/vps" element={<ProtectedRoute><VpsPanel /></ProtectedRoute>} />
+          <Route path="/admin/vps" element={<ProtectedRoute><AdminOnlyRoute><VpsPanel adminOnly /></AdminOnlyRoute></ProtectedRoute>} />
           <Route path="/servers/:id/*" element={<ProtectedRoute><ServerView /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
           <Route path="/api-keys" element={<ProtectedRoute><AdminOnlyRoute><ApiKeysPage /></AdminOnlyRoute></ProtectedRoute>} />
