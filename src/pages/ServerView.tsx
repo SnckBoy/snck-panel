@@ -29,6 +29,8 @@ import { useAuth } from "../context/AuthContext";
 export default function ServerView() {
   const { id } = useParams();
   const { enablePlayit, themeConfig } = useSettings();
+  const { user } = useAuth();
+  const isStaff = user?.role === "admin" || user?.role === "owner";
   const [server, setServer] = useState<any>(null);
   const [totalSystemRam, setTotalSystemRam] = useState<number>(0);
   const [showRamWarning, setShowRamWarning] = useState(false);
@@ -41,6 +43,7 @@ export default function ServerView() {
 
   const handleCopyIp = () => {
     if (!server) return;
+    if (!isStaff) return;
     const textToCopy = server.ipAlias ? `${server.ipAlias}:${server.port}` : `${window.location.hostname}:${server.port}`;
     navigator.clipboard.writeText(textToCopy);
     setCopied(true);
@@ -227,12 +230,13 @@ export default function ServerView() {
                 </span>
                 <span className="text-xs font-medium text-foreground-muted capitalize">{server.status}</span>
                 <span className="text-xs text-muted-foreground">•</span>
-                  <button type="button" onClick={handleCopyIp} aria-label="Copy server connection address" className="flex items-center space-x-1.5 px-1.5 py-0.5 rounded-md hover:bg-muted-hover transition-colors group cursor-pointer truncate" title="Copy Connection Info">
+                  {isStaff && <button type="button" onClick={handleCopyIp} aria-label="Copy server connection address" className="flex items-center space-x-1.5 px-1.5 py-0.5 rounded-md hover:bg-muted-hover transition-colors group cursor-pointer truncate" title="Copy Connection Info">
                   <span className="snx-mono-label text-[11px] font-mono truncate">
                     {server.ipAlias ? `${server.ipAlias}:${server.port}` : server.port}
                   </span>
                   {copied ? <Check size={12} className="text-emerald-400 shrink-0" /> : <Copy size={12} className="text-muted-foreground group-hover:text-foreground-muted transition-colors shrink-0" />}
-                </button>
+                </button>}
+                {!isStaff && <span className="snx-mono-label text-[11px] font-mono text-muted-foreground">Connection details hidden</span>}
              </div>
              <div className="grid grid-cols-2 gap-2">
                 {server.status !== 'online' ? (
@@ -313,12 +317,13 @@ export default function ServerView() {
           </div>
           
           <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 min-w-0 max-w-full overflow-x-auto custom-scrollbar pb-1 sm:pb-0 justify-between w-full md:w-auto">
-             <button type="button" onClick={handleCopyIp} aria-label="Copy server connection address" className="snx-connection-chip flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg cursor-pointer shrink-0" title="Copy Connection Info">
+             {isStaff && <button type="button" onClick={handleCopyIp} aria-label="Copy server connection address" className="snx-connection-chip flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg cursor-pointer shrink-0" title="Copy Connection Info">
                 <span className="text-xs font-mono text-muted-foreground group-hover:text-foreground-muted transition-colors truncate max-w-[150px] lg:max-w-[200px]">
                   {server.ipAlias ? `${server.ipAlias}:${server.port}` : server.port}
                 </span>
                 {copied ? <Check size={14} className="text-emerald-400 shrink-0" /> : <Copy size={14} className="text-muted-foreground group-hover:text-foreground-muted transition-colors shrink-0" />}
-             </button>
+             </button>}
+             {!isStaff && <span className="snx-connection-chip px-2.5 py-1.5 rounded-lg text-xs text-muted-foreground shrink-0">Connection details hidden</span>}
              <div className="snx-topbar-divider hidden md:block w-px h-5" />
              <div className="hidden md:flex items-center space-x-2 shrink-0">
                 <span className="flex h-2 w-2 relative shrink-0">
