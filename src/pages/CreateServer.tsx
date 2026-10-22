@@ -357,7 +357,7 @@ export default function CreateServer() {
                 </p>
               )}
             </div>
-            <div>
+            {(user?.role === "admin" || user?.role === "owner") && <div>
               <label className="block text-sm font-medium text-foreground-muted mb-2 flex items-center">
                  <Globe className="w-4 h-4 mr-2 text-indigo-400" /> IP Alias
               </label>
@@ -368,7 +368,7 @@ export default function CreateServer() {
                 placeholder="e.g. play.example.com"
                 className="w-full bg-muted-subtle border border-border focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-3 text-foreground transition-all shadow-inner outline-none font-mono"
               />
-            </div>
+            </div>}
           </div>
 
           <div className="md:col-span-2 relative z-20">
