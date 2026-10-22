@@ -31,8 +31,8 @@ export default function ServerView() {
   const { enablePlayit, themeConfig } = useSettings();
   const { user } = useAuth();
   const isStaff = user?.role === "admin" || user?.role === "owner";
-  const isMaintenance = server?.status === "maintenance" || server?.nodeStatus === "MAINTENANCE";
   const [server, setServer] = useState<any>(null);
+  const isMaintenance = server?.status === "maintenance" || server?.nodeStatus === "MAINTENANCE";
   const [totalSystemRam, setTotalSystemRam] = useState<number>(0);
   const [showRamWarning, setShowRamWarning] = useState(false);
   const [copied, setCopied] = useState(false);
