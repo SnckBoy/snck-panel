@@ -31,6 +31,7 @@ export default function ServerView() {
   const { enablePlayit, themeConfig } = useSettings();
   const { user } = useAuth();
   const isStaff = user?.role === "admin" || user?.role === "owner";
+  const isMaintenance = server?.status === "maintenance" || server?.nodeStatus === "MAINTENANCE";
   const [server, setServer] = useState<any>(null);
   const [totalSystemRam, setTotalSystemRam] = useState<number>(0);
   const [showRamWarning, setShowRamWarning] = useState(false);
@@ -87,6 +88,7 @@ export default function ServerView() {
   };
 
   const handleAction = async (action: string) => {
+    if (isMaintenance && action !== "stop") { setActionNotice({ tone: "error", text: "This node is in maintenance mode. Start, restart, and kill actions are paused." }); return; }
     if (action === 'start' && totalSystemRam > 0 && server?.ram > totalSystemRam && !showRamWarning) {
       setShowRamWarning(true);
       return;
@@ -223,6 +225,7 @@ export default function ServerView() {
         <div className="snx-server-sidebar-scroll flex-1 overflow-y-auto p-3 flex flex-col gap-1 custom-scrollbar">
           {/* Status & Quick Actions */}
           <div className="snx-server-status-card mb-4 p-3 rounded-xl">
+            {isMaintenance && <div role="status" className="mb-3 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs font-medium text-amber-200">Node is in maintenance mode. Server start/restart is disabled; use Stop if a server is still running.</div>}
              <div className="snx-server-status-line flex items-center space-x-2 mb-3">
                 <span className="flex h-2 w-2 relative shrink-0">
                    {server.status === 'online' && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>}
@@ -239,8 +242,8 @@ export default function ServerView() {
                 {!isStaff && <span className="snx-mono-label text-[11px] font-mono text-muted-foreground">Connection details hidden</span>}
              </div>
              <div className="grid grid-cols-2 gap-2">
-                {server.status !== 'online' ? (
-                  <button disabled={isProcessing} onClick={() => { handleAction('start'); setSidebarOpen(false); }} className="snx-quick-action snx-quick-action--start col-span-2 py-1.5 font-semibold rounded-lg flex items-center justify-center text-xs disabled:opacity-50">
+                {server.status !== 'online' && !isMaintenance ? (
+                  <button disabled={isProcessing || isMaintenance} onClick={() => { handleAction('start'); setSidebarOpen(false); }} className="snx-quick-action snx-quick-action--start col-span-2 py-1.5 font-semibold rounded-lg flex items-center justify-center text-xs disabled:opacity-50">
                     {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-emerald-500/50 border-t-emerald-500 rounded-full animate-spin mr-1.5" /> : <Play className="w-3.5 h-3.5 mr-1.5" />} Start
                   </button>
                 ) : (
@@ -248,10 +251,10 @@ export default function ServerView() {
                     {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-red-500/50 border-t-red-500 rounded-full animate-spin mr-1.5" /> : <Square className="w-3.5 h-3.5 mr-1.5" />} Stop
                   </button>
                 )}
-                <button disabled={isProcessing} onClick={() => { handleAction('restart'); setSidebarOpen(false); }} className="snx-quick-action snx-quick-action--restart col-span-2 py-1.5 font-medium rounded-lg flex items-center justify-center text-xs disabled:opacity-50">
+                <button disabled={isProcessing || isMaintenance} onClick={() => { handleAction('restart'); setSidebarOpen(false); }} className="snx-quick-action snx-quick-action--restart col-span-2 py-1.5 font-medium rounded-lg flex items-center justify-center text-xs disabled:opacity-50">
                   {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-orange-500/50 border-t-orange-500 rounded-full animate-spin mr-1.5" /> : <RefreshCw className="w-3.5 h-3.5 mr-1.5" />} Restart
                 </button>
-                <button disabled={isProcessing} onClick={() => { handleAction('kill'); setSidebarOpen(false); }} className="snx-quick-action snx-quick-action--kill col-span-2 py-1.5 font-medium rounded-lg flex items-center justify-center text-xs disabled:opacity-50">
+                <button disabled={isProcessing || isMaintenance} onClick={() => { handleAction('kill'); setSidebarOpen(false); }} className="snx-quick-action snx-quick-action--kill col-span-2 py-1.5 font-medium rounded-lg flex items-center justify-center text-xs disabled:opacity-50">
                   <OctagonX className="w-3.5 h-3.5 mr-1.5" /> Kill
                 </button>
              </div>
@@ -334,8 +337,8 @@ export default function ServerView() {
              </div>
                 
              <div className="flex items-center space-x-1 sm:space-x-2 shrink-0 ml-auto md:ml-1">
-                {server.status !== 'online' ? (
-                  <button disabled={isProcessing} onClick={() => handleAction('start')} className="snx-quick-action snx-quick-action--start p-1.5 sm:px-3 sm:py-1.5 font-semibold rounded-lg flex items-center justify-center text-xs disabled:opacity-50">
+                {server.status !== 'online' && !isMaintenance ? (
+                  <button disabled={isProcessing || isMaintenance} onClick={() => handleAction('start')} className="snx-quick-action snx-quick-action--start p-1.5 sm:px-3 sm:py-1.5 font-semibold rounded-lg flex items-center justify-center text-xs disabled:opacity-50">
                     {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-emerald-500/50 border-t-emerald-500 rounded-full animate-spin sm:mr-1.5" /> : <Play className="w-3.5 h-3.5 sm:mr-1.5" />} <span className="hidden sm:block">Start</span>
                   </button>
                 ) : (
@@ -343,10 +346,10 @@ export default function ServerView() {
                     {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-red-500/50 border-t-red-500 rounded-full animate-spin sm:mr-1.5" /> : <Square className="w-3.5 h-3.5 sm:mr-1.5" />} <span className="hidden sm:block">Stop</span>
                   </button>
                 )}
-                <button disabled={isProcessing} onClick={() => handleAction('restart')} className="snx-quick-action snx-quick-action--restart p-1.5 sm:px-3 sm:py-1.5 font-medium rounded-lg flex items-center justify-center text-xs disabled:opacity-50">
+                <button disabled={isProcessing || isMaintenance} onClick={() => handleAction('restart')} className="snx-quick-action snx-quick-action--restart p-1.5 sm:px-3 sm:py-1.5 font-medium rounded-lg flex items-center justify-center text-xs disabled:opacity-50">
                   {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-orange-500/50 border-t-orange-500 rounded-full animate-spin sm:mr-1.5" /> : <RefreshCw className="w-3.5 h-3.5 sm:mr-1.5" />} <span className="hidden sm:block">Restart</span>
                 </button>
-                <button disabled={isProcessing} onClick={() => handleAction('kill')} className="snx-quick-action snx-quick-action--kill p-1.5 sm:px-3 sm:py-1.5 font-medium rounded-lg flex items-center justify-center text-xs disabled:opacity-50" title="Kill server">
+                <button disabled={isProcessing || isMaintenance} onClick={() => handleAction('kill')} className="snx-quick-action snx-quick-action--kill p-1.5 sm:px-3 sm:py-1.5 font-medium rounded-lg flex items-center justify-center text-xs disabled:opacity-50" title="Kill server">
                   <OctagonX className="w-3.5 h-3.5 sm:mr-1.5" /> <span className="hidden sm:block">Kill</span>
                 </button>
              </div>
