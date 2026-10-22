@@ -14,7 +14,7 @@ router.get("/available", requireAuth, async (req: Request, res: Response) => {
   const nodes = await readJSON("nodes.json") || [];
   const visibleIds = new Set(nodes.filter((n:any) => n.visibility !== "private" && !n.disabled && !n.maintenance && (user.role === "admin" || user.role === "owner" || !n.freeServiceLocked)).map((n:any) => String(n.id)));
   const allocations = await readJSON(file) || [];
-  res.json(allocations.filter((a:any) => visibleIds.has(String(a.nodeId)) && !a.assignedServerId));
+  res.json(allocations.filter((a:any) => visibleIds.has(String(a.nodeId)) && !a.assignedServerId).map((a:any) => { const { ip, ...safe } = a; return safe; }));
 });
 router.use(requireAdmin, rateLimit());
 const file = "allocations.json";
