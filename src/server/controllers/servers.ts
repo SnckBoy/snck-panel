@@ -149,6 +149,7 @@ export const getServers = async (req: Request, res: Response) => {
       nodeStatus: nodeStatusForServer(nodeRecord),
       ownerUsername: ownerRecord?.username || server.owner || "Unassigned",
       address: user.role === "admin" || user.role === "owner" ? `${server.ipAlias || nodeRecord?.publicIp || nodeRecord?.hostname || "127.0.0.1"}:${server.port || "—"}` : `Hidden · ${server.port || "—"}`,
+      ipAlias: user.role === "admin" || user.role === "owner" ? server.ipAlias : undefined,
       lastActivity: server.updatedAt || server.lastActivity || server.createdAt || null,
       playersOnline: server.playersOnline ?? null,
       playersMax: server.playersMax ?? null,
@@ -427,8 +428,8 @@ export const updateIpAlias = async (req: Request, res: Response) => {
 
   if (!server) return res.status(404).json({ error: "Server not found" });
 
-  if (!hasServerMembership(req, server)) {
-    return res.status(403).json({ error: "Forbidden" });
+  if (user.role !== "admin" && user.role !== "owner") {
+    return res.status(403).json({ error: "Only staff can manage server connection aliases." });
   }
 
   server.ipAlias = ipAlias;
