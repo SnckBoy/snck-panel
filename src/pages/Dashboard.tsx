@@ -80,7 +80,7 @@ export default function Dashboard() {
     id: server.id,
     name: server.name || "Unnamed server",
     type: (server.software || "Unknown") + (server.version ? ` ${server.version}` : ""),
-    ip: (server as any).address || server.ipAlias || `${window.location.hostname}:${server.port || 25565}`,
+    ip: (server as any).address || "Hidden",
     status: server.status === "running" ? "online" : server.status,
     // Inventory exposes configured limits, not live container utilization.
     cpu: Number(server.cpu) || 0,
