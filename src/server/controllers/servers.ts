@@ -13,6 +13,17 @@ import {audit} from "../services/security.js";
 import { copyDirectorySafely, extractZipSafely } from "../services/archiveSafety.js";
 
 
+const assertNodeAvailableForAction = async (server:any, action:string) => {
+  const nodeId=String(server?.nodeId||"local");
+  const nodes=await readJSON("nodes.json")||[];
+  const node=nodes.find((candidate:any)=>String(candidate.id)===nodeId);
+  if(node?.maintenance && ["start","restart","kill","command"].includes(action)) {
+    const error:any=new Error("This node is in maintenance mode. Server actions are temporarily blocked.");
+    error.statusCode=409;
+    throw error;
+  }
+};
+
 const remoteForServer=async(server:any)=>{
  if(!server?.nodeId||server.nodeId==="local") return null;
  const nodes=await readJSON("nodes.json")||[]; const n=nodes.find((x:any)=>x.id===server.nodeId);
@@ -502,6 +513,7 @@ export const startServer = async (req: Request, res: Response) => {
     if (server.suspended) {
       return res.status(403).json({ error: "Server is suspended" });
     }
+    await assertNodeAvailableForAction(server, "start");
 
     try {
       const io = req.app.get("io");
@@ -562,6 +574,7 @@ export const killServer = async (req: Request, res: Response) => {
     const server = servers.find((s: any) => s.id === id);
     if (!server || !server.containerId) return res.status(404).json({ error: "Not found" });
     if (!canManageServer(req, server, "kill")) return res.status(403).json({ error: "Forbidden" });
+    await assertNodeAvailableForAction(server, "kill");
     await killContainer(server.containerId, server.nodeId);
     await audit("server.killed", req, { serverId: id, nodeId: server.nodeId });
     res.json({ success: true });
@@ -582,6 +595,7 @@ export const restartServer = async (req: Request, res: Response) => {
     }
     if (!canManageServer(req, server)) return res.status(403).json({ error: "Forbidden" });
     if (server.suspended) return res.status(403).json({ error: "Server is suspended" });
+    await assertNodeAvailableForAction(server, "restart");
     try {
       const io = req.app.get("io");
       if (io) io.to(`server_${id}`).emit("clear_logs");
@@ -618,6 +632,7 @@ export const sendCommand = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Not found" });
     }
     if (!canManageServer(req, server)) return res.status(403).json({ error: "Forbidden" });
+    await assertNodeAvailableForAction(server, "command");
     if (typeof command !== "string" || command.length === 0 || command.length > 4096) return res.status(400).json({ error: "Invalid command" });
     const result = await sendContainerCommand(server.containerId, command, server.nodeId);
     res.json({ success: true, ...(result && typeof result === "object" ? result : {}) });
