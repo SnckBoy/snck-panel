@@ -148,7 +148,7 @@ export const getServers = async (req: Request, res: Response) => {
       nodeName: nodeRecord?.name || (server.nodeId === "local" ? "Local Node" : "Unknown node"),
       nodeStatus: nodeStatusForServer(nodeRecord),
       ownerUsername: ownerRecord?.username || server.owner || "Unassigned",
-      address: `${server.ipAlias || nodeRecord?.publicIp || nodeRecord?.hostname || "127.0.0.1"}:${server.port || "—"}`,
+      address: user.role === "admin" || user.role === "owner" ? `${server.ipAlias || nodeRecord?.publicIp || nodeRecord?.hostname || "127.0.0.1"}:${server.port || "—"}` : `Hidden · ${server.port || "—"}`,
       lastActivity: server.updatedAt || server.lastActivity || server.createdAt || null,
       playersOnline: server.playersOnline ?? null,
       playersMax: server.playersMax ?? null,
@@ -178,6 +178,10 @@ export const getServer = async (req: Request, res: Response) => {
     server.status = "offline";
     server.nodeUnavailable = error?.nodeUnavailable === true;
     server.nodeError = error?.message || "Node status is temporarily unavailable.";
+  }
+  if (user.role !== "admin" && user.role !== "owner") {
+    const { ipAlias: _hiddenIpAlias, ...safeServer } = server;
+    return res.json(safeServer);
   }
   res.json(server);
 };
