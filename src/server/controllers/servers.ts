@@ -153,6 +153,7 @@ export const getServers = async (req: Request, res: Response) => {
     }
     const ownerRecord = users.find((candidate: any) => candidate.id === server.owner);
     const nodeRecord = nodes.find((candidate: any) => candidate.id === (server.nodeId || "local"));
+    if (nodeRecord?.maintenance) next.status = "maintenance";
     return {
       ...next,
       nodeId: server.nodeId || "local",
@@ -183,13 +184,20 @@ export const getServer = async (req: Request, res: Response) => {
     return res.status(403).json({ error: "Forbidden" });
   }
 
-  try {
-    const status = await getContainerStatus(server.containerId, server.nodeId);
-    server.status = status?.State?.Running ? "online" : "offline";
-  } catch (error: any) {
-    server.status = "offline";
-    server.nodeUnavailable = error?.nodeUnavailable === true;
-    server.nodeError = error?.message || "Node status is temporarily unavailable.";
+  const nodes = await readJSON("nodes.json") || [];
+  const nodeRecord = nodes.find((candidate: any) => candidate.id === (server.nodeId || "local"));
+  server.nodeStatus = nodeStatusForServer(nodeRecord);
+  if (nodeRecord?.maintenance) {
+    server.status = "maintenance";
+  } else {
+    try {
+      const status = await getContainerStatus(server.containerId, server.nodeId);
+      server.status = status?.State?.Running ? "online" : "offline";
+    } catch (error: any) {
+      server.status = "offline";
+      server.nodeUnavailable = error?.nodeUnavailable === true;
+      server.nodeError = error?.message || "Node status is temporarily unavailable.";
+    }
   }
   if (user.role !== "admin" && user.role !== "owner") {
     const { ipAlias: _hiddenIpAlias, ...safeServer } = server;
