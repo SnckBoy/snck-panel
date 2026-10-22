@@ -23,6 +23,7 @@ import PlayitTunnel from "./PlayitTunnel";
 import { Puzzle, Box, Network, PackageOpen } from "lucide-react";
 import { Settings, Globe } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
+import { useAuth } from "../context/AuthContext";
 
 
 export default function ServerView() {
