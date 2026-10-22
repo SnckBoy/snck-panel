@@ -375,6 +375,10 @@ export const createServer = async (req: Request, res: Response) => {
     await writeJSON("servers.json", Object.assign(servers, servers.map((s:any)=>s.id===id?serverData:s)));
     await createSftpUser(id).catch(e => console.error("SFTP user creation failed:", e));
     await audit("server.created",req,{serverId:id,nodeId:serverData.nodeId});
+    if (!isStaff) {
+      const { ipAlias: _hiddenIpAlias, ...safeServerData } = serverData;
+      return res.json(safeServerData);
+    }
     res.json(serverData);
   } catch (err: any) {
     console.error(err);
