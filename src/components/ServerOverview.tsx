@@ -49,7 +49,7 @@ export default function ServerOverview({ serverId, server }: { serverId: string;
 
   const status = snapshot.timestamp && Date.now() - snapshot.timestamp > STALE_AFTER_MS ? "stale" : snapshot.status;
   const statusText = status === "live" ? "Live" : status === "stale" ? "Stale telemetry" : "Telemetry unavailable";
-  const serverAddress = server.ipAlias ? `${server.ipAlias}:${server.port}` : `${window.location.hostname}:${server.port}`;
+  const serverAddress = "Connection details hidden";
   const statusClass = status === "live" ? "text-emerald-300" : status === "stale" ? "text-amber-300" : "text-rose-300";
   const waitingLabel = status === "unavailable" ? "Waiting for node data" : "No data reported";
   const memoryValue = snapshot.memory.usedBytes === null ? waitingLabel : formatBytes(snapshot.memory.usedBytes);
