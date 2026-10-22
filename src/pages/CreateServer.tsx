@@ -251,7 +251,7 @@ export default function CreateServer() {
               <SearchableDropdown
                 value={nodeId}
                 onChange={(value) => { setNodeId(value); setAllocationId(""); }}
-                options={nodes.filter((n: any) => n.status === "ONLINE" && ((user?.role === "admin" || user?.role === "owner") || !n.freeServiceLocked)).map((n: any) => ({ value: n.id, label: `${n.name} · ${n.fqdn || n.hostname || n.publicIp || "address pending"} · ONLINE` }))}
+                options={nodes.filter((n: any) => n.status === "ONLINE" && ((user?.role === "admin" || user?.role === "owner") || !n.freeServiceLocked)).map((n: any) => ({ value: n.id, label: `${n.name} · ONLINE` }))}
                 placeholder="Select an online node..."
                 searchPlaceholder="Search online nodes..."
               />
@@ -266,7 +266,7 @@ export default function CreateServer() {
               </label>
               <select required disabled={!nodeId} value={allocationId} onChange={e=>{setAllocationId(e.target.value);const a=allocations.find((x:any)=>x.id===e.target.value);if(a)setPort(String(a.portStart));}} className="w-full bg-muted-subtle border border-border rounded-xl px-4 py-3 text-foreground disabled:cursor-not-allowed disabled:opacity-50">
                 <option value="">{nodeId ? "Select an available allocation" : "Select a node first"}</option>
-                {allocations.filter((a:any)=>a.nodeId===nodeId && !a.assignedServerId).map((a:any)=><option key={a.id} value={a.id}>{a.ip}:{a.portStart}{a.portEnd!==a.portStart?`-${a.portEnd}`:""}</option>)}
+                {allocations.filter((a:any)=>a.nodeId===nodeId && !a.assignedServerId).map((a:any)=><option key={a.id} value={a.id}>`Port ${a.portStart}${a.portEnd!==a.portStart?`-${a.portEnd}`:""}`</option>)}
               </select>
               <p className="mt-1.5 text-xs text-muted-foreground">The selected allocation reserves the server port on this node.</p>
             </div>
