@@ -289,7 +289,7 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
               )}
             </div>
 
-            <div className="bg-black/40 dark:bg-black/40 backdrop-blur-xl border border-border p-6 md:p-8 rounded-3xl shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] ring-1 ring-border-subtle relative z-20 group hover:bg-black/60 transition-colors mb-8">
+            {user?.role === "admin" || user?.role === "owner" ? <div className="bg-black/40 dark:bg-black/40 backdrop-blur-xl border border-border p-6 md:p-8 rounded-3xl shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] ring-1 ring-border-subtle relative z-20 group hover:bg-black/60 transition-colors mb-8">
               <h3 className="text-indigo-400 font-bold mb-2 flex items-center">
                 <Globe className="w-5 h-5 mr-2" /> Server IP Alias
               </h3>
@@ -314,7 +314,7 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
                   <Save className="w-4 h-4 mr-2" /> Save
                 </button>
               </div>
-            </div>
+            </div> : null}
 
             {user?.role === "admin" ? (
               <>
