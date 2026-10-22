@@ -12,7 +12,7 @@ const isValidEmail = (email: unknown): email is string =>
   typeof email === "string" && email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 const isValidUsername = (username: unknown): username is string =>
-  typeof username === "string" && /^[A-Za-z0-9_.-]{3,32}$/.test(username);
+  typeof username === "string" && /^[a-z0-9_.-]{3,32}$/.test(username);
 
 export const setupStatus = async (_req: Request, res: Response) => {
   const users = await readJSON("users.json") || [];
@@ -38,7 +38,7 @@ export const setupOwner = async (req: Request, res: Response) => {
     }
 
     const { username, email, password, confirmPassword } = req.body || {};
-    const cleanUsername = typeof username === "string" ? username.trim() : "";
+    const cleanUsername = typeof username === "string" ? username.trim().toLowerCase() : "";
     const cleanEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
 
     if (!isValidUsername(cleanUsername)) {
@@ -89,9 +89,9 @@ export const register = async (req: Request, res: Response) => {
     return;
   }
 
-  const cleanUsername = username.trim();
-  if (cleanUsername.length < 3) {
-    res.status(400).json({ error: "Username must be at least 3 characters" });
+  const cleanUsername = typeof username === "string" ? username.trim().toLowerCase() : "";
+  if (!isValidUsername(cleanUsername)) {
+    res.status(400).json({ error: "Username must be 3-32 characters and use lowercase letters, numbers, dots, underscores, or hyphens" });
     return;
   }
 
@@ -201,7 +201,8 @@ export const login = async (req: Request, res: Response) => {
     return;
   }
 
-  const user = users.find((u: any) => u.username === username);
+  const loginIdentifier = String(username).trim().toLowerCase();
+  const user = users.find((u: any) => (typeof u.username === "string" && u.username.toLowerCase() === loginIdentifier) || (typeof u.email === "string" && u.email.toLowerCase() === loginIdentifier));
 
   if (!user) {
     res.status(401).json({ error: "Invalid credentials" });
