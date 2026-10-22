@@ -646,7 +646,8 @@ export const sendCommand = async (req: Request, res: Response) => {
     res.json({ success: true, ...(result && typeof result === "object" ? result : {}) });
   } catch (err: any) {
     console.error("Command error:", err);
-    res.status(500).json({ error: err.message || "Failed to send command" });
+    const statusCode = Number(err?.statusCode);
+    res.status(statusCode >= 400 && statusCode < 600 ? statusCode : 500).json({ error: err.message || "Failed to send command" });
   }
 };
 
