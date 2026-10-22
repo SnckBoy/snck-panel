@@ -8,6 +8,7 @@ import {requireAdmin} from "../middleware/auth.js";
 import {audit,encryptSecret,hashSecret,randomSecret,rateLimit,decryptSecret} from "../services/security.js";
 import {createDns} from "../services/cloudflare.js";
 import {nodeControl} from "../services/nodeClient.js";
+import {stopContainer} from "../services/docker.js";
 import {nodeConnection, nodeUrlParts} from "../services/nodeEndpoint.js";
 const router=express.Router();
 // Safe, read-only node inventory for regular users. Never expose credentials,
@@ -121,7 +122,45 @@ router.post("/:id/rotate",async(req,res)=>{const nodes=await readJSON(file)||[];
 router.patch("/:id",async(req,res)=>{const nodes=await readJSON(file)||[];const n=nodes.find((x:any)=>x.id===req.params.id);if(!n)return res.status(404).json({error:"Node not found"});const candidate={...n,...req.body};const hostname=String(candidate.hostname||candidate.fqdn||candidate.publicIp||"").trim();const apiPort=Number(candidate.apiPort),sftpPort=Number(candidate.sftpPort||2022);const numberField=(value:any,fallback=0)=>{const number=Number(value??fallback);return Number.isFinite(number)?number:NaN};const memory=numberField(candidate.memory),disk=numberField(candidate.disk),cpu=numberField(candidate.cpu),memoryOverallocate=numberField(candidate.memoryOverallocate),diskOverallocate=numberField(candidate.diskOverallocate);if(!String(candidate.name||"").trim()||!hostname||!Number.isInteger(apiPort)||apiPort<1||apiPort>65535||!Number.isInteger(sftpPort)||sftpPort<1||sftpPort>65535)return res.status(400).json({error:"name, hostname, daemon port, and SFTP port are required and must be valid"});if([memory,disk,cpu,memoryOverallocate,diskOverallocate].some((value)=>!Number.isFinite(value))||memory<0||disk<0||cpu<0||memoryOverallocate<-1||diskOverallocate<-1)return res.status(400).json({error:"Resource limits and over-allocation values are invalid"});const editable=["name","description","hostname","fqdn","publicIp","internalIp","location","visibility","tls","behindProxy","serverDirectory","dockerHost","freeServiceLocked"];for(const key of editable)if(req.body[key]!==undefined)n[key]=key==="name"?String(req.body[key]).trim():req.body[key];n.hostname=hostname;n.apiPort=apiPort;n.sftpPort=sftpPort;n.memory=memory;n.disk=disk;n.cpu=cpu;n.memoryOverallocate=memoryOverallocate;n.diskOverallocate=diskOverallocate;if(req.body.cloudflareAccessClientId!==undefined)n.cloudflareAccessClientId=String(req.body.cloudflareAccessClientId||"").trim()||null;if(req.body.cloudflareAccessClientSecret!==undefined)n.cloudflareAccessClientSecret=req.body.cloudflareAccessClientSecret?encryptSecret(String(req.body.cloudflareAccessClientSecret)):null;await writeJSON(file,nodes);await audit("node.updated",req,{nodeId:n.id});res.json(sanitize(n))});
 router.post("/:id/enable",async(req,res)=>{const nodes=await readJSON(file)||[];const n=nodes.find((x:any)=>x.id===req.params.id);if(!n)return res.status(404).json({error:"Node not found"});n.disabled=false;await writeJSON(file,nodes);await audit("node.enabled",req,{nodeId:n.id});res.json({success:true,status:nodeStatus(n)})});
 router.post("/:id/disable",async(req,res)=>{const nodes=await readJSON(file)||[];const n=nodes.find((x:any)=>x.id===req.params.id);if(!n)return res.status(404).json({error:"Node not found"});n.disabled=true;await writeJSON(file,nodes);await audit("node.disabled",req,{nodeId:n.id});res.json({success:true,status:nodeStatus(n)})});
-router.post("/:id/maintenance",async(req,res)=>{const nodes=await readJSON(file)||[];const n=nodes.find((x:any)=>x.id===req.params.id);if(!n)return res.status(404).json({error:"Node not found"});n.maintenance=true;await writeJSON(file,nodes);await audit("node.maintenance.enabled",req,{nodeId:n.id});res.json({success:true,status:nodeStatus(n)})});
+router.post("/:id/maintenance",async(req,res)=>{
+ try {
+  const nodes=await readJSON(file)||[];
+  const n=nodes.find((x:any)=>x.id===req.params.id);
+  if(!n)return res.status(404).json({error:"Node not found"});
+  if(n.maintenance)return res.json({success:true,status:nodeStatus(n),alreadyInMaintenance:true,stopped:0,failures:[]});
+
+  // Set the maintenance gate first so new starts/deployments are rejected while
+  // existing servers are being stopped.
+  n.maintenance=true;
+  await writeJSON(file,nodes);
+
+  const servers=await readJSON("servers.json")||[];
+  const assigned=servers.filter((s:any)=>String(s.nodeId||"local")===String(n.id)&&s.containerId);
+  const results=await Promise.allSettled(assigned.map(async (server:any)=>{
+   await stopContainer(server.containerId,server.nodeId);
+   server.status="offline";
+   server.stoppedForMaintenanceAt=new Date().toISOString();
+   return server.id;
+  }));
+  await writeJSON("servers.json",servers);
+  const stopped=results.filter((r:any)=>r.status==="fulfilled").length;
+  const failures=results.flatMap((r:any,index:number)=>r.status==="rejected"?[{serverId:assigned[index]?.id||"unknown",serverName:assigned[index]?.name||"Server",error:String(r.reason?.message||r.reason||"Stop failed")}]:[]);
+  await audit("node.maintenance.enabled",req,{nodeId:n.id,stopped,failed:failures.length});
+  return res.status(failures.length?207:200).json({
+   success:failures.length===0,
+   status:nodeStatus(n),
+   maintenance:true,
+   stopped,
+   total:assigned.length,
+   failures,
+   message:failures.length
+    ? "Node is in maintenance mode, but one or more servers could not be stopped. Check the failed server list and node connectivity."
+    : "Node is in maintenance mode. All assigned servers have been stopped."
+  });
+ } catch(e:any) {
+  return res.status(500).json({error:"Could not put node into maintenance mode",details:String(e?.message||e)});
+ }
+});
 router.delete("/:id/maintenance",async(req,res)=>{const nodes=await readJSON(file)||[];const n=nodes.find((x:any)=>x.id===req.params.id);if(!n)return res.status(404).json({error:"Node not found"});n.maintenance=false;await writeJSON(file,nodes);await audit("node.maintenance.disabled",req,{nodeId:n.id});res.json({success:true,status:nodeStatus(n)})});
 router.delete("/:id",async(req,res)=>{const nodes=await readJSON(file)||[];const n=nodes.find((x:any)=>x.id===req.params.id);if(!n)return res.status(404).json({error:"Node not found"});const servers=await readJSON("servers.json")||[];if(servers.some((s:any)=>s.nodeId===n.id))return res.status(409).json({error:"Cannot delete a node with assigned servers"});await writeJSON(file,nodes.filter((x:any)=>x.id!==n.id));await audit("node.deleted",req,{nodeId:n.id});res.json({success:true})});
  router.post("/:id/test",async(req,res)=>{try{const nodes=await readJSON(file)||[];const n=nodes.find((x:any)=>x.id===req.params.id);if(!n)return res.status(404).json({error:"Node not found"});const connection=nodeConnection(n);const {url,hostname,port}=nodeUrlParts(connection.baseUrl);const result=await nodeControl.health(connection);res.json({success:true,health:result,endpoint:{protocol:url.protocol.replace(":",""),hostname,port}})}catch(e:any){res.status(Number(e?.statusCode||502)).json({success:false,error:e.message||"Node health check failed",nodeUnavailable:e?.nodeUnavailable===true,timeout:e?.timeout===true,hint:"Verify the node FQDN, Cloudflare Tunnel or Zero Trust ingress, TLS mode, daemon port, and firewall."})}});
