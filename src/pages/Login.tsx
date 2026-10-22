@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Eye, EyeOff, LockKeyhole, Mail, Server, UserRound } from "lucide-react";
+import { Eye, EyeOff, LockKeyhole, Mail, UserRound } from "lucide-react";
 import axios from "axios";
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
@@ -21,8 +21,8 @@ export default function Login() {
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
-    const cleanUsername = username.trim();
-    if (!cleanUsername || !password) { setError("Enter your username and password to continue."); return; }
+    const cleanUsername = username.trim().toLowerCase();
+    if (!cleanUsername || !password) { setError("Enter your username or email and password to continue."); return; }
     setIsLoading(true); setError("");
     try {
       const response = await axios.post("/api/auth/login", { username: cleanUsername, password }, { timeout: 15000 });
@@ -49,7 +49,7 @@ export default function Login() {
   return <AuthExperience panelName={panelName} panelLogo={panelLogo} eyebrow="Welcome back" title="Sign in to your panel" description={`Enter your credentials to continue to ${panelName}.`} footer={enableRegistration !== false ? <>New to {panelName}? <Link to="/register">Create an account</Link></> : undefined}>
     {error && <div className="auth-alert" role="alert">{error}</div>}
     <form onSubmit={handleLogin} className="auth-form" noValidate aria-busy={isLoading}>
-      <label className="auth-field"><span>Username</span><div className="auth-input"><UserRound size={17} aria-hidden="true" /><input type="text" name="username" required autoComplete="username" placeholder="operator" value={username} onChange={(event) => setUsername(event.target.value)} /></div></label>
+      <label className="auth-field"><span>Username or Gmail</span><div className="auth-input"><UserRound size={17} aria-hidden="true" /><input type="text" name="username" required autoComplete="username" placeholder="username or you@gmail.com" value={username} onChange={(event) => setUsername(event.target.value)} /></div></label>
       <label className="auth-field"><span>Password</span><div className="auth-input"><LockKeyhole size={17} aria-hidden="true" /><input type={showPassword ? "text" : "password"} name="password" required autoComplete="current-password" placeholder="Your secure password" value={password} onChange={(event) => setPassword(event.target.value)} /><button type="button" className="auth-password-toggle" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? <EyeOff size={16} /> : <Eye size={16} />}</button></div></label>
       <button type="submit" className="auth-submit" disabled={isLoading}><span>{isLoading ? "Signing in..." : "Sign in"}</span><span aria-hidden="true">→</span></button>
     </form>
