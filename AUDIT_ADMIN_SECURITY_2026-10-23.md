@@ -2,45 +2,57 @@
 
 ## Scope and confidence
 
-This is a source-level audit of the current GitHub default-branch files reachable through the connected GitHub integration. The working copy could not be cloned in the execution environment because DNS/network access to GitHub failed. No local build, runtime, browser, load profiler, shell syntax suite, or Discord test was run for this audit. Findings below are distinguished from behaviors that need runtime reproduction.
+This combines a source-level repository review with the GitHub Actions results available for PR #30. The working copy could not be cloned into the interactive execution environment because network/DNS access failed, so the CI runner's results are the build/test evidence. No local browser session, runtime deployment, performance profiler, fresh-VPS install, or Discord test was run.
 
-The active panel path is React/Vite + Express/TypeScript with JSON files under `/opt/snck-panel/.data`. The repository also contains a Laravel migration foundation; it is not the active store. Existing audit documents remain historical evidence, not proof that the current revision was retested.
+The active panel path is React/Vite + Express/TypeScript with JSON files under `/opt/snck-panel/.data`. The repository also contains a Laravel migration foundation; it is not the active store.
+
+## Verification observed
+
+GitHub Actions workflow `SNCK PANEL CI`, run 412, completed successfully for PR merge commit `8eebba9eb441283c9efe4d98867824967ced812e`:
+- `npm ci`: passed
+- `npm test`: passed (theme validation/layout tests)
+- `npm run lint` (`tsc --noEmit`): passed
+- `npm run build`: passed
+- Node daemon `npm ci`: passed
+- Node daemon `npm run build`: passed
+- Shell syntax checks and non-systemd PM2 fallback test: passed
+- GitHub combined status check: Vercel success
+
+Separate Cloudflare preview deployment for commit `aaf01ae` reported **Build: Failed**. The detailed log is behind the authenticated Cloudflare dashboard and was not accessible through the connected tools. Root cause is unknown; no Cloudflare fix is claimed. GitHub reports PR #30 as `mergeable: true`, so this is not a Git merge conflict. The PR is still a draft.
 
 ## Confirmed design/feature gaps
 
-| Area | Finding | Evidence / impact | Status |
-|---|---|---|---|
-| Admin navigation | `src/pages/AdminDashboard.tsx` renders Overview, Users, Fleet, Security, and Settings as local state tabs in one route. | Does not satisfy the requested independent page/route per admin section; refresh/deep-link cannot select a tab. | Open |
-| Admin sidebar | `src/components/Sidebar.tsx` maps Admin to `/admin`, and Fleet to `/admin/servers`; there is no dedicated admin-area shell/sidebar in `src/App.tsx`. | Admin navigation is mixed with the user panel shell. | Open |
-| Admin section coverage | Requested Settings, Users, Servers, Nodes, Free Service, Discord Bot, Themes, Logs, and Security pages are not all separate admin routes. | Existing API keys and theme screens exist elsewhere; they are not a complete routed admin information architecture. | Open |
-| Free service | `src/server/routes/allocations.ts` gates free creation on `settings.freeService?.enabled` and exposes available allocations. | The inspected code does not demonstrate full plan CRUD (RAM/CPU/disk/per-user caps), claim history, or resource grants. | Open |
-| Discord rewards bot | No validated implementation was established by the inspected routes and manifests. | Token validation, invite cache, member-stay tracking, tier awards, slash commands, token encryption lifecycle, and status monitoring remain unverified/open. Do not treat a settings form alone as a bot. | Open |
-| Account uniqueness | The inspected auth router exposes setup/register/login but does not apply rate-limit middleware at those route declarations. | The existing security helper is process-local and had unbounded bucket growth before this branch. One-account-per-person enforcement (hashed IP/device identity, trusted-proxy handling, exceptions) was not established. | Partially addressed: route rate limits added on branch; identity policy remains open |
-| CSRF/session model | `src/server/middleware/auth.ts` uses a Bearer JWT authorization header. | Cookie/session CSRF requirements are not directly met by this auth model; do not add cookie assumptions without auditing frontend token storage and origin checks. | Open for dedicated review |
-| Socket authorization | `server.ts` authenticates Socket.IO handshake JWTs and checks server ownership/sub-user access in `joinServer` in the current source excerpt. | Historical `AUDIT_FINDINGS_2026-09.md` flags this area; retest current code and confirm room/event emissions remain authorized. | Runtime regression test required |
-| Performance | App uses lazy-loaded routes and manual Vite chunks; server console polls remote logs every 3 seconds per subscribed remote server. | No profiler trace or before/after measurements are available. This polling may be intentional; actual scroll lag cause remains unproven. | Open |
-| JSON persistence | `src/server/services/db.ts` serializes writes per file within one process. | This is not a cross-process/distributed transaction system; JSON store remains active despite SQL schema/migration assets. | Open / architectural constraint |
-| Installer | README documents the existing GitHub raw one-command installer and installer menu. | No fresh Ubuntu/Debian installation was run for this branch. Keep it unchanged until tested from a fresh VPS. | Runtime verification required |
-| Quality checks | Existing audit documents record earlier successful checks. | They do not prove this branch passes. No tests were run in this environment. | Pending CI and local runtime |
+| Area | Finding | Status |
+|---|---|---|
+| Admin navigation | `src/pages/AdminDashboard.tsx` renders Overview, Users, Fleet, Security, and Settings as local state tabs rather than independent routes. | Open |
+| Admin sidebar | `src/components/Sidebar.tsx` maps Admin to `/admin`; there is no separate admin shell/sidebar in `src/App.tsx`. | Open |
+| Admin section coverage | Settings, Users, Servers, Nodes, Free Service, Discord Bot, Themes, Logs, and Security are not all separate admin routes. | Open |
+| Free service | Existing allocation route gates creation using `settings.freeService?.enabled`, but full plan CRUD, per-user caps, claims, and resource grants are not established. | Open |
+| Discord rewards bot | Token validation, invite/member tracking, tiers, slash commands, encrypted token lifecycle and status monitoring are not established as a tested feature. | Open |
+| Account uniqueness | Route-level rate limits were added, but one-account-per-IP/device enforcement, hashed identity lifecycle, trusted-proxy policy, and admin exceptions are not implemented. | Partially addressed |
+| CSRF/session model | Auth middleware uses Bearer JWTs; cookie/session CSRF requirements need a dedicated review of token storage and origin protections. | Open |
+| Socket authorization | Historical audit flags Socket.IO room authorization. Current code has ownership checks in `joinServer`, but runtime regression tests remain required. | Runtime test required |
+| Performance | Routes already use lazy loading and Vite chunks; no before/after profiler captures exist. Root cause of scroll lag remains unproven. | Open |
+| JSON persistence | JSON writes are serialized within one process but are not a distributed transaction system. SQL migration foundation is not the active store. | Architectural follow-up |
+| Installer | No fresh Ubuntu/Debian install was run. | Runtime verification required |
 
 ## Changes made on this branch
 
 1. `src/server/services/security.ts`
    - Added periodic expiry sweeping for process-local rate-limit buckets.
-   - Added a hard cap so requests from many unique IP/path pairs cannot grow the in-memory bucket map indefinitely.
-   - Added `Retry-After` on rejected requests.
-   - Added validation for malformed encrypted-secret payload shape before attempting decryption.
+   - Added a hard cap on bucket count.
+   - Added `Retry-After` on 429 responses.
+   - Added malformed encrypted-secret envelope checks.
 2. `src/server/routes/auth.ts`
-   - Applied conservative per-IP/path limits to login, Google login, password/username changes, registration, and initial owner setup.
-   - The implementation is process-local. Multi-instance deployments need a shared rate-limit store, and real-world shared IPs may need an explicit exception/override mechanism.
+   - Applied per-IP/path limits to login, Google login, password/username changes, registration, and initial owner setup.
+   - Limits are process-local; multi-instance deployments need a shared store. Shared-IP override/whitelist behavior is not implemented.
 
-## Required follow-up before declaring production-ready
+## Required follow-up
 
-- Run `npm ci`, `npm run lint`, `npm run build`, `npm test`, `npm --prefix node-daemon ci`, `npm --prefix node-daemon run build`, and `bash -n install.sh scripts/snck-menu.sh scripts/install-panel.sh node-daemon/install.sh`.
-- Start the built panel and exercise all registered frontend routes as owner, admin, and ordinary user; assert unauthorized API requests fail.
-- Add automated tests for login/register rate limiting, trusted proxy configuration, identity-hash lifecycle, account exception/whitelist behavior, and concurrency.
-- Implement and integration-test separate admin routes and a dedicated admin layout.
-- Implement Free Service plan CRUD and claims with server-side resource enforcement.
-- Implement Discord bot lifecycle and invite reward tracking only with a test guild, test users, and test bot token; test reconnects, rate limits, leavers, bots, self-invites, alt signals, tier idempotency, and encrypted-at-rest secret handling.
-- Record real browser performance profiles before/after changes (long tasks, render duration, memory, and polling/network volume). Do not claim performance improvement without comparable captures.
+- Open the Cloudflare build log and copy the first actual error plus surrounding lines before changing deployment configuration. Dashboard link: https://dash.cloudflare.com/?to=/08e9ddba0af62d9b632023d1a816b3ec/workers/services/view/snck-panel/production/builds/7fbb6040-987f-40ad-932f-63a4b08ca2b2
+- After fixing the Cloudflare-specific cause, rerun that deployment.
+- Exercise all routes as owner, admin, and regular user; verify unauthorized API requests fail.
+- Implement and test separate admin routes, Free Service plan CRUD/claims, and Discord bot lifecycle/rewards.
+- Add tests for trusted proxy configuration, identity hashes, account exception/whitelist behavior, and concurrency.
+- Capture comparable browser performance profiles before/after any performance fix.
 - Validate the one-command installer on fresh Ubuntu and Debian VPSs and confirm backups/rollback before rollout.
