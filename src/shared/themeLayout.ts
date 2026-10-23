@@ -60,6 +60,8 @@ export type PanelStructure = {
   hiddenServerNavigation: string[];
 };
 
+export type CustomNavigationItem = { id: string; label: string; url?: string; target?: string };
+
 export type ThemeLayout = {
   navigationOrder: string[];
   hiddenNavigation: string[];
@@ -68,12 +70,18 @@ export type ThemeLayout = {
   metricsOrder: string[];
   hiddenMetrics: string[];
   structure: PanelStructure;
+  /** Per-theme labels for known navigation items. Omitted keys keep their built-in labels. */
+  labels: Record<string, string>;
+  /** Optional external HTTPS shortcuts rendered from the theme manifest. */
+  customNavigation: CustomNavigationItem[];
 };
 
 const navIds = NAVIGATION_GROUPS.flatMap((group) => group.items.map((item) => item.id));
 const dashboardIds = DASHBOARD_SECTIONS.map((section) => section.id);
 const metricIds = DASHBOARD_METRICS.map((metric) => metric.id);
 const serverNavIds = SERVER_NAVIGATION.map((item) => item.id);
+const labelIds: Set<string> = new Set([...navIds, ...serverNavIds]);
+const mainNavIdSet: Set<string> = new Set(navIds);
 
 export const DEFAULT_THEME_LAYOUT: ThemeLayout = {
   navigationOrder: navIds,
@@ -82,6 +90,8 @@ export const DEFAULT_THEME_LAYOUT: ThemeLayout = {
   hiddenDashboard: ["quick-actions", "system-health"],
   metricsOrder: metricIds,
   hiddenMetrics: [],
+  labels: {},
+  customNavigation: [],
   structure: {
     shell: "snck",
     navigationMode: "sidebar",
@@ -149,15 +159,41 @@ const isStructure = (value: unknown): value is PanelStructure => {
 export function isValidThemeLayout(value: unknown): value is ThemeLayout {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   const layout = value as Record<string, unknown>;
-  const legacyKeys = ["navigationOrder", "hiddenNavigation", "dashboardOrder", "hiddenDashboard", "metricsOrder", "hiddenMetrics"];
-  const keys = [...legacyKeys, "structure"];
-  // Backward compatibility: old packages remain valid and are upgraded by normalizeThemeLayout.
-  if (Object.keys(layout).length !== legacyKeys.length && (Object.keys(layout).length !== keys.length || Object.keys(layout).some((key) => !keys.includes(key)))) return false;
-  if (Object.keys(layout).some((key) => !keys.includes(key))) return false;
+  const requiredKeys = ["navigationOrder", "hiddenNavigation", "dashboardOrder", "hiddenDashboard", "metricsOrder", "hiddenMetrics"];
+  const optionalKeys = ["structure", "labels", "customNavigation"];
+  const allowedKeys = [...requiredKeys, ...optionalKeys];
+  // Older packages omit structure, labels, and customNavigation; defaults are supplied below.
+  if (requiredKeys.some((key) => !(key in layout)) || Object.keys(layout).some((key) => !allowedKeys.includes(key))) return false;
   if (!isPermutation(layout.navigationOrder, catalog.navigationOrder) || !isSubset(layout.hiddenNavigation, catalog.navigationOrder) ||
       !isPermutation(layout.dashboardOrder, catalog.dashboardOrder) || !isSubset(layout.hiddenDashboard, catalog.dashboardOrder) ||
       !isPermutation(layout.metricsOrder, catalog.metricsOrder) || !isSubset(layout.hiddenMetrics, catalog.metricsOrder)) return false;
-  if (Object.keys(layout).length === keys.length && !isStructure(layout.structure)) return false;
+  if (layout.structure !== undefined && !isStructure(layout.structure)) return false;
+  if (layout.labels !== undefined) {
+    if (!layout.labels || typeof layout.labels !== "object" || Array.isArray(layout.labels)) return false;
+    const entries = Object.entries(layout.labels as Record<string, unknown>);
+    if (entries.length > labelIds.size || entries.some(([id, label]) => !labelIds.has(id) || typeof label !== "string" || !label.trim() || label.trim().length > 32)) return false;
+  }
+  if (layout.customNavigation !== undefined) {
+    if (!Array.isArray(layout.customNavigation) || layout.customNavigation.length > 8) return false;
+    const ids = new Set<string>();
+    for (const item of layout.customNavigation) {
+      if (!item || typeof item !== "object" || Array.isArray(item)) return false;
+      const entry = item as Record<string, unknown>;
+      if (Object.keys(entry).some((key) => !["id", "label", "url", "target"].includes(key))) return false;
+      if (!("id" in entry) || !("label" in entry) || (("url" in entry) === ("target" in entry))) return false;
+      if (typeof entry.id !== "string" || !/^custom-[a-z0-9-]{1,32}$/.test(entry.id) || ids.has(entry.id)) return false;
+      if (typeof entry.label !== "string" || !entry.label.trim() || entry.label.trim().length > 32) return false;
+      if (entry.target !== undefined && (typeof entry.target !== "string" || !mainNavIdSet.has(entry.target))) return false;
+      if (entry.url !== undefined) {
+        if (typeof entry.url !== "string" || entry.url.length > 2048) return false;
+        try {
+          const url = new URL(entry.url);
+          if (url.protocol !== "https:" || url.username || url.password) return false;
+        } catch { return false; }
+      }
+      ids.add(entry.id);
+    }
+  }
   return (layout.navigationOrder as string[]).some((id) => publicNavigation.has(id) && !(layout.hiddenNavigation as string[]).includes(id)) &&
     (layout.dashboardOrder as string[]).some((id) => !(layout.hiddenDashboard as string[]).includes(id));
 }
@@ -177,5 +213,7 @@ export function normalizeThemeLayout(value: unknown): ThemeLayout {
       serverNavigationOrder: [...legacy.structure.serverNavigationOrder],
       hiddenServerNavigation: [...legacy.structure.hiddenServerNavigation],
     } : structuredClone(DEFAULT_THEME_LAYOUT.structure),
+    labels: legacy.labels ? { ...legacy.labels } : {},
+    customNavigation: legacy.customNavigation ? legacy.customNavigation.map((item) => ({ ...item })) : [],
   };
 }

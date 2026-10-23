@@ -15,6 +15,33 @@ The editor has two tabs:
 
 Navigation changes only affect shortcuts displayed in the sidebar. Hiding a link does not grant or revoke access: route guards, roles, permissions, and server-action authorization remain unchanged. The builder does not create arbitrary pages, upload new components, or run user-provided code; customization is limited to the supported catalog.
 
+### Theme-file menu customization
+
+A theme manifest can rename built-in navigation labels, hide existing items, and add up to eight shortcuts without editing the panel source. Add these optional fields under `layout`:
+
+```json
+{
+  "labels": {
+    "overview": "Dashboard",
+    "servers": "Minecraft Servers",
+    "console": "Console",
+    "files": "Files"
+  },
+  "hiddenNavigation": ["nodes", "deploy", "fleet"],
+  "customNavigation": [
+    { "id": "custom-servers", "label": "Server List", "target": "servers" },
+    { "id": "custom-docs", "label": "Documentation", "url": "https://example.com/docs" }
+  ]
+}
+```
+
+- `labels` renames known main-navigation or server-navigation items by their stable IDs. Omit a key to keep its default label.
+- `hiddenNavigation` removes built-in main-menu shortcuts from view; `hiddenServerNavigation` does the same for server tabs.
+- `customNavigation` adds up to eight working shortcuts to the sidebar. Each entry must use exactly one of `target` or `url`: `target` must be an existing main-navigation ID (for example `servers`, `overview`, or `settings`), while `url` must be an external HTTPS URL without embedded credentials. IDs must be unique and start with `custom-`; labels are limited to 32 characters.
+- Reordering remains controlled by `navigationOrder` and `structure.serverNavigationOrder`. Removing a custom shortcut means deleting its entry from `customNavigation`.
+
+These fields only change labels and visible links. A theme file cannot create a new functional backend page, database, server action, permission, or Minecraft-management feature; those require implementation in the panel itself. Hiding a link never disables its underlying route or changes authorization. Old theme files remain valid and receive empty `labels` and `customNavigation` defaults.
+
 **Save theme** persists a draft without changing the active panel. **Save & apply** persists and activates it globally. **Apply** switches all panel pages to a theme. **Enable / Disable** controls library availability; disabling the active theme returns to Snck Default. **Export** downloads a ZIP. Protected built-in themes cannot be removed. **Restore default** restores the protected, always-available Snck Default appearance and layout.
 
 Built-in themes currently include Snck Default, Midnight, Royal Purple, Nebula, Cyber Blue, Aurora, and Obsidian. Custom IDs are not limited to this list.
@@ -69,9 +96,9 @@ The navigation IDs are `overview`, `nodes`, `servers`, `deploy`, `admin-control`
 
 CSS, JavaScript, PHP, shell scripts, images, custom component code, and remote imports are not supported. This deliberately avoids pretending arbitrary CSS or code can be made safe by filtering. ZIP files are never extracted or executed.
 
-Pterodactyl Glass changes the layout of existing Snck Panel features; it does not create missing backend capabilities such as databases, schedules, network allocations, startup variables, or activity logs. Those features require separate product/API implementation before they can appear as functional pages.
+Snck Petro changes the layout of existing Snck Panel features; it does not create missing backend capabilities such as databases, schedules, network allocations, startup variables, or activity logs. Those features require separate product/API implementation before they can appear as functional pages.
 
-Ready-to-import samples are included at [`examples/themes/ember-night.zip`](../examples/themes/ember-night.zip) and [`examples/themes/pterodactyl-glass.zip`](../examples/themes/pterodactyl-glass.zip). Their source manifests are in the corresponding theme folders. Pterodactyl Glass is an original Pterodactyl-inspired preset with translucent surfaces; it does not copy Pterodactyl assets or claim to add features that are not already implemented in Snck Panel.
+Ready-to-import samples are included at [`examples/themes/ember-night.zip`](../examples/themes/ember-night.zip) and [`examples/themes/snck-petro.zip`](../examples/themes/snck-petro.zip). Their source manifests are in the corresponding theme folders. Snck Petro is an original Pterodactyl-inspired preset with translucent surfaces; it does not copy Pterodactyl assets or claim to add features that are not already implemented in Snck Panel.
 
 ## Persistence and updates
 

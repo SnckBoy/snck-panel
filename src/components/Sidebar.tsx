@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
-import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Key, Activity, Box, Cloud, ShieldCheck, LifeBuoy, Palette } from "lucide-react";
+import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Key, Activity, Box, Cloud, ShieldCheck, LifeBuoy, Palette, ExternalLink } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useSettings } from "../context/SettingsContext";
 import { motion } from "framer-motion";
@@ -23,7 +23,7 @@ export function Sidebar({ onClose, isCollapsed, toggleCollapse }: { onClose?: ()
       .filter((item) => (canAdminister || !item.adminOnly) && !layout.hiddenNavigation.includes(item.id))
       .slice()
       .sort((a, b) => layout.navigationOrder.indexOf(a.id) - layout.navigationOrder.indexOf(b.id))
-      .map((item) => ({ name: item.label, path: routeById[item.id], icon: iconById[item.id] } as SidebarLink)),
+      .map((item) => ({ name: layout.labels?.[item.id] || item.label, path: routeById[item.id], icon: iconById[item.id] } as SidebarLink)),
   })).filter((section) => section.links.length > 0);
 
   return (
@@ -81,6 +81,22 @@ export function Sidebar({ onClose, isCollapsed, toggleCollapse }: { onClose?: ()
             </div>
           </div>
         ))}
+        {(layout.customNavigation || []).length > 0 && (
+          <div className="mb-2">
+            {!isCollapsed && <p className="snx-sidebar-section-label">Custom links</p>}
+            <div className="space-y-1">
+              {layout.customNavigation.map((item: { id: string; label: string; url?: string; target?: string }) => {
+                const className = `snx-app-nav-link relative flex items-center ${isCollapsed ? "justify-center" : "px-3"} py-3.5 rounded-[13px] transition-colors group overflow-hidden`;
+                const content = <><span className="relative z-10 text-muted-foreground"><ExternalLink size={19} /></span>{!isCollapsed && <span className="ml-3 relative z-10 font-medium text-sm text-muted-foreground group-hover:text-foreground">{item.label}</span>}</>;
+                return item.target && routeById[item.target] ? (
+                  <Link key={item.id} to={routeById[item.target]} title={isCollapsed ? item.label : undefined} className={className}>{content}</Link>
+                ) : (
+                  <a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer" title={isCollapsed ? item.label : undefined} className={className}>{content}</a>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </nav>
 
       <div className="snx-app-sidebar-footer w-full p-3 mt-auto bg-transparent">
