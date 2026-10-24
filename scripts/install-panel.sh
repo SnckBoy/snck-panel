@@ -11,6 +11,24 @@ BACKUP_DIR="${SNCK_BACKUP_DIR:-/var/backups/snck-panel}"
 LOG_FILE="/var/log/snck-panel-installer.log"
 NODE_VERSION="${SNCK_NODE_VERSION:-22.14.0}"
 SERVICE_HELPER="/usr/local/bin/snck-panel-service"
+
+# Pick a writable temporary directory without changing permissions on shared dirs.
+choose_tmp_dir() {
+  local dir probe
+  for dir in "${TMPDIR:-}" /root/.cache/snck-panel/tmp /var/tmp /tmp; do
+    [[ -n "$dir" ]] || continue
+    if [[ "$dir" == "/root/.cache/snck-panel/tmp" ]]; then
+      mkdir -p "$dir" 2>/dev/null || continue
+      chmod 700 "$dir" 2>/dev/null || continue
+    fi
+    [[ -d "$dir" && -w "$dir" ]] || continue
+    probe="$(mktemp "$dir/.snck-probe.XXXXXX" 2>/dev/null)" || continue
+    rm -f -- "$probe"
+    printf '%s' "$dir"
+    return 0
+  done
+  return 1
+}
 HAS_SYSTEMD=0
 if command -v systemctl >/dev/null 2>&1 && [[ -d /run/systemd/system ]] && systemctl show-environment >/dev/null 2>&1; then HAS_SYSTEMD=1; fi
 
@@ -19,11 +37,13 @@ if command -v systemctl >/dev/null 2>&1 && [[ -d /run/systemd/system ]] && syste
 log(){ printf '[SNCK] %s\n' "$*" | tee -a "$LOG_FILE"; }
 die(){ log "ERROR: $*"; exit 1; }
 
+TMP_BASE=""
 TMP=""
-cleanup(){ [[ -z "$TMP" ]] || rm -rf "$TMP"; }
+cleanup(){ [[ -z "$TMP" ]] || rm -rf -- "$TMP"; }
 trap 'rc=$?; cleanup; if [[ $rc -ne 0 ]]; then log "Installation failed with exit code $rc. See $LOG_FILE"; fi' EXIT
 
 [[ "$EUID" -eq 0 ]] || die "Run with sudo/root."
+TMP_BASE="$(choose_tmp_dir)" || die "No writable temporary directory found (checked TMPDIR, /var/tmp, /root/.cache/snck-panel/tmp, /tmp)."
 mkdir -p "$(dirname "$LOG_FILE")"
 touch "$LOG_FILE"
 chmod 600 "$LOG_FILE"
@@ -71,7 +91,7 @@ if (( node_major < 20 )); then
   esac
 
   node_file="node-v${NODE_VERSION}-linux-${node_arch}.tar.xz"
-  node_tmp="/tmp/${node_file}"
+  node_tmp="$(mktemp "$TMP_BASE/node-archive.XXXXXX")"
   # Try multiple independent mirrors. Some cloud networks block nodejs.org and
   # GitHub release assets even when general HTTPS access works.
   node_urls=(
@@ -84,7 +104,7 @@ if (( node_major < 20 )); then
   downloaded=0
   for node_url in "${node_urls[@]}"; do
     log "Trying Node.js download mirror: ${node_url}"
-    rm -f "${node_tmp}"
+    rm -f -- "${node_tmp}"
     if curl -fL --retry 1 --connect-timeout 10 --max-time 120 "${node_url}" -o "${node_tmp}" >>"${LOG_FILE}" 2>&1 &&
        [[ -s "${node_tmp}" ]] &&
        xz -t "${node_tmp}" >>"${LOG_FILE}" 2>&1; then
@@ -114,9 +134,10 @@ log "Using Node.js $(node --version) and npm $(npm --version)."
 
 if ! command -v docker >/dev/null 2>&1; then
   log "Installing Docker..."
-  curl -fsSL --retry 3 --connect-timeout 10 https://get.docker.com -o /tmp/get-docker.sh
-  sh /tmp/get-docker.sh >>"$LOG_FILE" 2>&1
-  rm -f /tmp/get-docker.sh
+  docker_tmp="$(mktemp "$TMP_BASE/get-docker.XXXXXX")"
+  curl -fsSL --retry 3 --connect-timeout 10 https://get.docker.com -o "$docker_tmp"
+  sh "$docker_tmp" >>"$LOG_FILE" 2>&1
+  rm -f -- "$docker_tmp"
 fi
 command -v docker >/dev/null 2>&1 || die "Docker installation failed."
 if ! docker info >/dev/null 2>&1; then
@@ -146,7 +167,7 @@ if [[ -d "$APP_DIR/.data" ]]; then cp -a "$APP_DIR/.data" "$backup/.data"; fi
 if [[ -f "$APP_DIR/.env" ]]; then cp -a "$APP_DIR/.env" "$backup/.env"; fi
 log "Backup created: $backup"
 
-TMP="$(mktemp -d /tmp/snck-panel-install.XXXXXX)"
+TMP="$(mktemp -d "$TMP_BASE/snck-panel-install.XXXXXX")"
 
 log "Fetching SNCK PANEL source..."
 git clone --depth 1 --branch "$BRANCH" "$REPO_URL" "$TMP/repo" >>"$LOG_FILE" 2>&1 || die "Could not download SNCK PANEL from $REPO_URL."
