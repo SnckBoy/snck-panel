@@ -3,6 +3,7 @@ import path from "path";
 
 const DATA_DIR = path.resolve(process.cwd(), ".data");
 const writeLocks = new Map<string, Promise<void>>();
+const updateLocks = new Map<string, Promise<unknown>>();
 const dataPath = (filename: string) => {
   const filePath = path.resolve(DATA_DIR, String(filename));
   if (filePath !== DATA_DIR && !filePath.startsWith(`${DATA_DIR}${path.sep}`)) throw new Error("Invalid data filename");
@@ -39,5 +40,31 @@ export const writeJSON = async (filename: string, data: any) => {
     await current;
   } finally {
     if (writeLocks.get(filePath) === current) writeLocks.delete(filePath);
+  }
+};
+
+
+/**
+ * Serialize read-modify-write updates within this Node.js process.
+ * Multi-process/multi-host deployments require a transactional shared database.
+ */
+export const updateJSON = async <T = any>(
+  filename: string,
+  updater: (current: T) => T | Promise<T>,
+  fallback: T,
+): Promise<T> => {
+  const filePath = dataPath(filename);
+  const previous = updateLocks.get(filePath) || Promise.resolve();
+  const current = previous.catch(() => undefined).then(async () => {
+    const stored = await readJSON(filename);
+    const next = await updater((stored === null ? fallback : stored) as T);
+    await writeJSON(filename, next);
+    return next;
+  });
+  updateLocks.set(filePath, current);
+  try {
+    return await current as T;
+  } finally {
+    if (updateLocks.get(filePath) === current) updateLocks.delete(filePath);
   }
 };
