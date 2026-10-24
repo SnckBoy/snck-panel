@@ -9,6 +9,21 @@ SERVICE="snck-panel.service"
 PORT="${SNCK_PORT:-6767}"
 INSTALLER_URL="${SNCK_INSTALLER_URL:-https://raw.githubusercontent.com/SnckBoy/snck-panel/main/scripts/install-panel.sh}"
 LOG_FILE="/var/log/snck-panel-installer.log"
+
+# Pick a writable temporary directory instead of assuming /tmp has quota.
+choose_tmp_dir() {
+  local dir probe
+  for dir in "${TMPDIR:-}" /var/tmp /root/.cache/snck-panel/tmp /tmp; do
+    [[ -n "$dir" ]] || continue
+    mkdir -p "$dir" 2>/dev/null || continue
+    chmod 700 "$dir" 2>/dev/null || true
+    probe="$(mktemp "$dir/.snck-probe.XXXXXX" 2>/dev/null)" || continue
+    rm -f -- "$probe"
+    printf '%s' "$dir"
+    return 0
+  done
+  return 1
+}
 BACKUP_DIR="${SNCK_BACKUP_DIR:-/var/backups/snck-panel}"
 SERVICE_HELPER="/usr/local/bin/snck-panel-service"
 
@@ -34,10 +49,22 @@ installed(){ [[ -f "$APP_DIR/package.json" ]] && service_exists; }
 run_installer(){
   local mode="$1"
   printf '\n\033[1;36m[%s]\033[0m Starting %s...\n' "$mode" "$APP_NAME"
-  curl -fsSL --retry 3 --connect-timeout 10 --max-time 120 "$INSTALLER_URL" -o /tmp/snck-panel-installer.sh
-  chmod 700 /tmp/snck-panel-installer.sh
-  SNCK_INSTALL_MODE="$mode" bash /tmp/snck-panel-installer.sh
-  rm -f /tmp/snck-panel-installer.sh
+  local tmp_base tmp_file rc
+  tmp_base="$(choose_tmp_dir)" || { printf 'ERROR: No writable temporary directory found.\\n' >&2; return 1; }
+  tmp_file="$(mktemp "$tmp_base/snck-panel-installer.XXXXXX")"
+  if ! curl -fsSL --retry 3 --connect-timeout 10 --max-time 120 "$INSTALLER_URL" -o "$tmp_file"; then
+    rm -f -- "$tmp_file"
+    printf 'ERROR: Could not download installer.\\n' >&2
+    return 1
+  fi
+  chmod 700 "$tmp_file"
+  if SNCK_INSTALL_MODE="$mode" bash "$tmp_file"; then
+    rc=0
+  else
+    rc=$?
+  fi
+  rm -f -- "$tmp_file"
+  return "$rc"
 }
 
 install_panel(){
