@@ -5,13 +5,16 @@ set -Eeuo pipefail
 # It always opens the interactive control center instead of installing immediately.
 MENU_URL="${SNCK_MENU_URL:-https://raw.githubusercontent.com/SnckBoy/snck-panel/main/scripts/snck-menu.sh}"
 
-# Pick a writable temporary directory instead of assuming /tmp has quota.
+# Pick a writable temporary directory without changing permissions on shared dirs.
 choose_tmp_dir() {
   local dir probe
-  for dir in "${TMPDIR:-}" /var/tmp /root/.cache/snck-panel/tmp /tmp; do
+  for dir in "${TMPDIR:-}" /root/.cache/snck-panel/tmp /var/tmp /tmp; do
     [[ -n "$dir" ]] || continue
-    mkdir -p "$dir" 2>/dev/null || continue
-    chmod 700 "$dir" 2>/dev/null || true
+    if [[ "$dir" == "/root/.cache/snck-panel/tmp" ]]; then
+      mkdir -p "$dir" 2>/dev/null || continue
+      chmod 700 "$dir" 2>/dev/null || continue
+    fi
+    [[ -d "$dir" && -w "$dir" ]] || continue
     probe="$(mktemp "$dir/.snck-probe.XXXXXX" 2>/dev/null)" || continue
     rm -f -- "$probe"
     printf '%s' "$dir"
@@ -25,9 +28,11 @@ if [[ "$EUID" -ne 0 ]]; then
     exec sudo -E bash -c '
       set -Eeuo pipefail
       url="$1"; shift
-      tmp_base="$(choose_tmp_dir)" || { echo "ERROR: No writable temporary directory found." >&2; exit 1; }
+      tmp_base="/root/.cache/snck-panel/tmp"
+      mkdir -p "$tmp_base"
+      chmod 700 "$tmp_base"
       tmp_file="$(mktemp "$tmp_base/snck-menu.XXXXXX")"
-      trap 'rm -f -- "$tmp_file"' EXIT
+      trap "rm -f -- \"$tmp_file\"" EXIT
       curl -fsSL --retry 3 --connect-timeout 10 --max-time 120 "$url" -o "$tmp_file"
       chmod 700 "$tmp_file"
       bash "$tmp_file" "$@" </dev/tty
