@@ -11,7 +11,8 @@
     "migrate:json": "tsx scripts/migrate-json-to-postgres.ts",
     "test": "tsx scripts/test-themes.mts",
     "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test:atomic-json": "tsx scripts/test-atomic-json.mts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
