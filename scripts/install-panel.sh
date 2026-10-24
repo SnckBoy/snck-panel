@@ -12,13 +12,16 @@ LOG_FILE="/var/log/snck-panel-installer.log"
 NODE_VERSION="${SNCK_NODE_VERSION:-22.14.0}"
 SERVICE_HELPER="/usr/local/bin/snck-panel-service"
 
-# Pick a writable temporary directory instead of assuming /tmp has quota.
+# Pick a writable temporary directory without changing permissions on shared dirs.
 choose_tmp_dir() {
   local dir probe
-  for dir in "${TMPDIR:-}" /var/tmp /root/.cache/snck-panel/tmp /tmp; do
+  for dir in "${TMPDIR:-}" /root/.cache/snck-panel/tmp /var/tmp /tmp; do
     [[ -n "$dir" ]] || continue
-    mkdir -p "$dir" 2>/dev/null || continue
-    chmod 700 "$dir" 2>/dev/null || true
+    if [[ "$dir" == "/root/.cache/snck-panel/tmp" ]]; then
+      mkdir -p "$dir" 2>/dev/null || continue
+      chmod 700 "$dir" 2>/dev/null || continue
+    fi
+    [[ -d "$dir" && -w "$dir" ]] || continue
     probe="$(mktemp "$dir/.snck-probe.XXXXXX" 2>/dev/null)" || continue
     rm -f -- "$probe"
     printf '%s' "$dir"
