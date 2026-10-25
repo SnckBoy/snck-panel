@@ -117,7 +117,16 @@ if (( node_major < 20 )); then
 
   rm -rf "/opt/node-v${NODE_VERSION}"
   mkdir -p "/opt/node-v${NODE_VERSION}"
-  tar -xJf "${node_tmp}" --strip-components=1 -C "/opt/node-v${NODE_VERSION}" >>"${LOG_FILE}" 2>&1 || die "Downloaded Node.js archive could not be extracted."
+  # Extract only the Node runtime and package managers. The full official archive
+  # contains many development headers for unrelated CPU architectures and can
+  # exceed per-container inode/disk quotas even when df reports free space.
+  node_root="node-v${NODE_VERSION}-linux-${node_arch}"
+  tar -xJf "${node_tmp}" --strip-components=1 -C "/opt/node-v${NODE_VERSION}" \
+    "${node_root}/bin" \
+    "${node_root}/lib/node_modules/npm" \
+    "${node_root}/lib/node_modules/corepack" >>"${LOG_FILE}" 2>&1 || die "Could not extract the Node.js runtime and npm. Check disk quota and ${LOG_FILE}."
+  [[ -x "/opt/node-v${NODE_VERSION}/bin/node" ]] || die "Node.js binary is missing after extraction."
+  [[ -f "/opt/node-v${NODE_VERSION}/lib/node_modules/npm/bin/npm-cli.js" ]] || die "npm is missing after extraction."
   rm -f "${node_tmp}"
   ln -sfn "/opt/node-v${NODE_VERSION}" /opt/node
   ln -sfn /opt/node/bin/node /usr/local/bin/node
