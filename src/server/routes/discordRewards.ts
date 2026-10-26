@@ -12,13 +12,14 @@ import { createServer, updateResources } from "../controllers/servers.js";
 import { checkFreeCapacity, isEligibleFreeNode, isSnowflake, rewardProgress, validateOwnedServerUpgrade, validateRewardPlan } from "../services/discordRewardsCore.js";
 import { nodeControl } from "../services/nodeClient.js";
 import { nodeConnection } from "../services/nodeEndpoint.js";
+import { parseWholeNumber } from "../../shared/discordRewardsConfig.js";
 import { appendDiscordDiagnostic, createOAuthState, getDiscordClient, getDiscordRuntime, hashDiscordId, oauthStateHash, protectInviteSnapshots, pruneDiscordRewardData, readRewardState, startDiscordRewards, updateRewardState, type RewardClaim, type RewardState } from "../services/discordRewards.js";
 
 const router = express.Router();
 const safePublicMessage = (error: unknown) => String((error as any)?.message || "Discord request failed").replace(/(?:Bot\s+)?[A-Za-z\d._-]{20,}\.[A-Za-z\d._-]{5,}\.[A-Za-z\d._-]{20,}/g, "[redacted]").replace(/\s+/g, " ").slice(0, 220);
 const requireSnowflake = (value: unknown, optional = false) => optional && value === "" ? true : isSnowflake(value);
 const panelCallback = (req: Request, redirectUri: string) => redirectUri || `${String(process.env.PANEL_PUBLIC_URL || process.env.PANEL_URL || `${req.protocol}://${req.get("host")}`).replace(/\/$/, "")}/api/discord-rewards/oauth/callback`;
-const configForClient = (state: RewardState) => ({ enabled: state.config.enabled, configured: Boolean(state.config.botTokenEncrypted && state.config.guildId), hasBotToken: Boolean(state.config.botTokenEncrypted), guildId: state.config.guildId, announcementChannelId: state.config.announcementChannelId, welcomeChannelId: state.config.welcomeChannelId, oauthClientId: state.config.oauthClientId, hasOAuthClientSecret: Boolean(state.config.oauthClientSecretEncrypted), oauthRedirectUri: state.config.oauthRedirectUri, minimumAccountAgeDays: state.config.minimumAccountAgeDays, retainCreditOnLeave: state.config.retainCreditOnLeave, dataRetentionDays: state.config.dataRetentionDays });
+const configForClient = (state: RewardState) => ({ enabled: state.config.enabled, configured: Boolean(state.config.botTokenEncrypted && state.config.guildId), hasBotToken: Boolean(state.config.botTokenEncrypted), guildId: state.config.guildId, announcementChannelId: state.config.announcementChannelId, oauthClientId: state.config.oauthClientId, hasOAuthClientSecret: Boolean(state.config.oauthClientSecretEncrypted), oauthRedirectUri: state.config.oauthRedirectUri, minimumAccountAgeDays: state.config.minimumAccountAgeDays, retainCreditOnLeave: state.config.retainCreditOnLeave, dataRetentionDays: state.config.dataRetentionDays });
 const rateSensitive = rateLimit(10, 60_000);
 const provisionLocks = new Map<string, Promise<void>>();
 
@@ -322,7 +323,7 @@ router.post("/admin/prune", async (req, res) => {
 router.put("/admin/config", async (req, res) => {
   const body = req.body || {};
   const previousConfig = (await readRewardState()).config;
-  if (typeof body.enabled !== "boolean" || !requireSnowflake(body.guildId) || !requireSnowflake(body.announcementChannelId || "", true) || !requireSnowflake(body.welcomeChannelId || "", true)) return res.status(400).json({ error: "Enabled must be boolean and Discord guild/channel IDs must be 17–20 digit snowflakes." });
+  if (typeof body.enabled !== "boolean" || !requireSnowflake(body.guildId) || !requireSnowflake(body.announcementChannelId || "", true)) return res.status(400).json({ error: "Enabled must be boolean and Discord guild and announcement channel IDs must be 17–20 digit snowflakes." });
   const oauthClientId = String(body.oauthClientId || "").trim();
   const oauthRedirectUri = String(body.oauthRedirectUri || previousConfig.oauthRedirectUri || "").trim();
   if (oauthClientId && !isSnowflake(oauthClientId)) return res.status(400).json({ error: "Discord OAuth Client ID must be a valid Discord application ID." });
@@ -330,9 +331,9 @@ router.put("/admin/config", async (req, res) => {
     try { const url = new URL(oauthRedirectUri); if (!(["https:"].includes(url.protocol) || url.protocol === "http:" && ["localhost", "127.0.0.1"].includes(url.hostname)) || url.username || url.password) throw new Error(); }
     catch { return res.status(400).json({ error: "OAuth redirect must be HTTPS, except localhost during development." }); }
   }
-  const minimumAccountAgeDays = Number(body.minimumAccountAgeDays ?? 0);
-  const dataRetentionDays = Number(body.dataRetentionDays ?? previousConfig.dataRetentionDays ?? 365);
-  if (!Number.isInteger(minimumAccountAgeDays) || minimumAccountAgeDays < 0 || minimumAccountAgeDays > 3650 || typeof body.retainCreditOnLeave !== "boolean" || !Number.isInteger(dataRetentionDays) || dataRetentionDays < 30 || dataRetentionDays > 3650) return res.status(400).json({ error: "Account age must be 0–3650 days, member-leave policy must be boolean, and event retention must be 30–3650 days." });
+  const minimumAccountAgeDays = parseWholeNumber(body.minimumAccountAgeDays ?? 0, 0, 3650);
+  const dataRetentionDays = parseWholeNumber(body.dataRetentionDays ?? previousConfig.dataRetentionDays ?? 365, 30, 3650);
+  if (minimumAccountAgeDays === null || typeof body.retainCreditOnLeave !== "boolean" || dataRetentionDays === null) return res.status(400).json({ error: "Account age must be a whole number from 0–3650 days, member-leave policy must be boolean, and event retention must be a whole number from 30–3650 days." });
   const botToken = typeof body.botToken === "string" ? body.botToken.trim() : "";
   const oauthSecret = typeof body.oauthClientSecret === "string" ? body.oauthClientSecret.trim() : "";
   if (botToken && (botToken.length < 40 || botToken.length > 200)) return res.status(400).json({ error: "Bot token has an invalid length." });
@@ -345,9 +346,9 @@ router.put("/admin/config", async (req, res) => {
   try { if (botToken) encryptedBot = encryptSecret(botToken); if (oauthSecret) encryptedOAuth = encryptSecret(oauthSecret); }
   catch { return res.status(500).json({ error: "Server encryption is unavailable. Check NODE_ENCRYPTION_KEY; no secret was saved." }); }
   await updateRewardState((state) => {
-    state.config = { ...state.config, enabled: body.enabled, guildId: String(body.guildId), announcementChannelId: String(body.announcementChannelId || ""), welcomeChannelId: String(body.welcomeChannelId || ""), oauthClientId: oauthClientId || state.config.oauthClientId, oauthRedirectUri, minimumAccountAgeDays, retainCreditOnLeave: body.retainCreditOnLeave, dataRetentionDays, botTokenEncrypted: encryptedBot || state.config.botTokenEncrypted, oauthClientSecretEncrypted: encryptedOAuth || state.config.oauthClientSecretEncrypted };
+    state.config = { ...state.config, enabled: body.enabled, guildId: String(body.guildId), announcementChannelId: String(body.announcementChannelId || ""), oauthClientId: oauthClientId || state.config.oauthClientId, oauthRedirectUri, minimumAccountAgeDays, retainCreditOnLeave: body.retainCreditOnLeave, dataRetentionDays, botTokenEncrypted: encryptedBot || state.config.botTokenEncrypted, oauthClientSecretEncrypted: encryptedOAuth || state.config.oauthClientSecretEncrypted };
   });
-  await audit("discord.config_updated", req, { enabled: body.enabled, guildId: body.guildId, announcementChannelConfigured: Boolean(body.announcementChannelId), welcomeChannelConfigured: Boolean(body.welcomeChannelId), oauthClientConfigured: Boolean(oauthClientId || (await readRewardState()).config.oauthClientId), tokenRotated: Boolean(botToken), oauthSecretRotated: Boolean(oauthSecret) });
+  await audit("discord.config_updated", req, { enabled: body.enabled, guildId: body.guildId, announcementChannelConfigured: Boolean(body.announcementChannelId), oauthClientConfigured: Boolean(oauthClientId || (await readRewardState()).config.oauthClientId), tokenRotated: Boolean(botToken), oauthSecretRotated: Boolean(oauthSecret) });
   const saved = await readRewardState();
   if (saved.config.enabled) { await (await import("../services/discordRewards.js")).stopDiscordRewards(); await startDiscordRewards(); }
   else await (await import("../services/discordRewards.js")).stopDiscordRewards();
@@ -360,7 +361,6 @@ router.post("/admin/test-connection", rateLimit(3, 60_000), async (req, res) => 
   const token = tokenInput || (state.config.botTokenEncrypted ? decryptSecret(state.config.botTokenEncrypted) : "");
   const guildId = String(req.body?.guildId || state.config.guildId);
   const announcementChannelId = String(req.body?.announcementChannelId ?? state.config.announcementChannelId);
-  const welcomeChannelId = String(req.body?.welcomeChannelId ?? state.config.welcomeChannelId);
   if (!token || !isSnowflake(guildId)) return res.status(400).json({ error: "A bot token and valid guild ID are required for testing." });
   const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildInvites] });
   try {
@@ -372,7 +372,7 @@ router.post("/admin/test-connection", rateLimit(3, 60_000), async (req, res) => 
     const required = [PermissionFlagsBits.ManageGuild];
     const missing: string[] = [];
     if (!me.permissions.has(required)) missing.push("Manage Server (read guild invites)");
-    for (const [channelId, label] of [[announcementChannelId, "announcement"], [welcomeChannelId, "welcome"]] as const) {
+    for (const [channelId, label] of [[announcementChannelId, "announcement"]] as const) {
       if (!channelId) continue;
       if (!isSnowflake(channelId)) return res.status(400).json({ error: `The ${label} channel ID must be a valid Discord snowflake.` });
       const channel = await guild.channels.fetch(channelId);

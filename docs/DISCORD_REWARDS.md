@@ -18,7 +18,7 @@ The configurable retention policy is 30–3650 days (default 365). Cleanup runs 
 
 1. Create an application and bot in the Discord Developer Portal.
 2. Enable the privileged **Server Members Intent** on the Bot page. The gateway requests Guilds, Guild Members, and Guild Invites.
-3. Invite the bot into the target server. Grant it **Manage Server** to read invite-use counts, and **View Channel**/**Send Messages** in any configured welcome or announcement channels. Avoid granting administrator permissions.
+3. Invite the bot into the target server. Grant it **Manage Server** to read invite-use counts, and **View Channel**/**Send Messages** in the optional announcement channel. Avoid granting administrator permissions.
 4. Under OAuth2, register the exact callback URI shown in the panel, normally `https://YOUR_PANEL_HOST/api/discord-rewards/oauth/callback`. Use HTTPS for public deployments.
 5. In **Bot setup**, enter the guild ID, optional channel IDs, bot token, OAuth application/client ID and client secret, and the exact redirect URI. Secrets are write-only: saving a blank secret retains the existing encrypted value; the API never returns either secret.
 6. Set the minimum Discord account age, whether inviter credit survives a member leaving, and the event retention interval. Test the connection, then save/enable the bot. A failed connection does not stop the panel server.

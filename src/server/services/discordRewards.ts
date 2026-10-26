@@ -6,7 +6,7 @@ import { attributeInvite, hasSuccessfulCreditForMember, type InviteSnapshot } fr
 
 export type DiscordRewardsConfig = {
   enabled: boolean; botTokenEncrypted: string | null; guildId: string; announcementChannelId: string;
-  welcomeChannelId: string; oauthClientId: string; oauthClientSecretEncrypted: string | null;
+  oauthClientId: string; oauthClientSecretEncrypted: string | null;
   oauthRedirectUri: string; minimumAccountAgeDays: number; retainCreditOnLeave: boolean; dataRetentionDays: number;
 };
 export type ReferralEvent = {
@@ -25,10 +25,15 @@ export type RewardState = {
 };
 
 export const defaultDiscordRewardsState = (): RewardState => ({
-  config: { enabled: false, botTokenEncrypted: null, guildId: "", announcementChannelId: "", welcomeChannelId: "", oauthClientId: "", oauthClientSecretEncrypted: null, oauthRedirectUri: "", minimumAccountAgeDays: 0, retainCreditOnLeave: true, dataRetentionDays: 365 },
+  config: { enabled: false, botTokenEncrypted: null, guildId: "", announcementChannelId: "", oauthClientId: "", oauthClientSecretEncrypted: null, oauthRedirectUri: "", minimumAccountAgeDays: 0, retainCreditOnLeave: true, dataRetentionDays: 365 },
   plans: [], inviteSnapshots: {}, events: [], claims: [], diagnostics: [], oauthStates: [], notifiedPlans: {}, linkedAccounts: {},
 });
 const file = "discord_rewards.json";
+function normalizeConfig(stored: any) {
+  const config = { ...(stored || {}) };
+  delete config.welcomeChannelId;
+  return { ...defaultDiscordRewardsState().config, ...config };
+}
 const runtime: { status: string; message: string; connectedAt: string | null; lastSyncAt: string | null; guildName: string | null; client: Client | null; starting: boolean; stopped: boolean } = { status: "not_configured", message: "Configure the bot and guild to start invite tracking.", connectedAt: null, lastSyncAt: null, guildName: null, client: null, starting: false, stopped: false };
 const guildLocks = new Map<string, Promise<void>>();
 let workerGeneration = 0;
@@ -68,10 +73,10 @@ export async function pruneDiscordRewardData() {
 
 export const readRewardState = async (): Promise<RewardState> => {
   const state = await readJSON(file);
-  return { ...defaultDiscordRewardsState(), ...(state || {}), config: { ...defaultDiscordRewardsState().config, ...(state?.config || {}) }, plans: state?.plans || [], events: state?.events || [], claims: state?.claims || [], diagnostics: state?.diagnostics || [], oauthStates: state?.oauthStates || [], inviteSnapshots: state?.inviteSnapshots || {}, notifiedPlans: state?.notifiedPlans || {}, linkedAccounts: state?.linkedAccounts || {} };
+  return { ...defaultDiscordRewardsState(), ...(state || {}), config: normalizeConfig(state?.config), plans: state?.plans || [], events: state?.events || [], claims: state?.claims || [], diagnostics: state?.diagnostics || [], oauthStates: state?.oauthStates || [], inviteSnapshots: state?.inviteSnapshots || {}, notifiedPlans: state?.notifiedPlans || {}, linkedAccounts: state?.linkedAccounts || {} };
 };
 export const updateRewardState = <T>(updater: (state: RewardState) => T | Promise<T>) => updateJSON<RewardState>(file, async (state) => {
-  const merged = { ...defaultDiscordRewardsState(), ...(state || {}), config: { ...defaultDiscordRewardsState().config, ...(state?.config || {}) }, linkedAccounts: state?.linkedAccounts || {} } as RewardState;
+  const merged = { ...defaultDiscordRewardsState(), ...(state || {}), config: normalizeConfig(state?.config), linkedAccounts: state?.linkedAccounts || {} } as RewardState;
   const next = await updater(merged);
   return (next && typeof next === "object" && "config" in (next as any) ? next : merged) as RewardState;
 }, defaultDiscordRewardsState());
@@ -129,11 +134,6 @@ async function trackJoin(member: GuildMember) {
     });
     if (status === "unverified") await appendDiscordDiagnostic("warning", "join_unverified", `Join …${member.id.slice(-4)} was not credited: ${reason}.`);
     else if (status === "verified" && inviter) await notifyEligible(inviter, member.guild);
-    const refreshed = await readRewardState();
-    if (refreshed.config.welcomeChannelId && !member.user.bot) {
-      const channel = await member.guild.channels.fetch(refreshed.config.welcomeChannelId).catch(() => null);
-      if (channel && channel.isTextBased() && "send" in channel) await channel.send({ content: `Welcome <@${member.id}> to ${member.guild.name}.`, allowedMentions: { users: [member.id] } }).catch(() => appendDiscordDiagnostic("warning", "welcome_send_failed", "Could not send the configured welcome message."));
-    }
   });
 }
 
