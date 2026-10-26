@@ -3,13 +3,14 @@ import crypto from "crypto";
 import dns from "dns/promises";
 import tls from "tls";
 import Docker from "dockerode";
-import {readJSON,writeJSON} from "../services/db.js";
+import {readJSON,writeJSON,updateJSON} from "../services/db.js";
 import {requireAdmin} from "../middleware/auth.js";
 import {audit,encryptSecret,hashSecret,randomSecret,rateLimit,decryptSecret} from "../services/security.js";
-import {createDns} from "../services/cloudflare.js";
+import {createDns,getZone} from "../services/cloudflare.js";
 import {nodeControl} from "../services/nodeClient.js";
 import {stopContainer} from "../services/docker.js";
 import {nodeConnection, nodeUrlParts} from "../services/nodeEndpoint.js";
+import {isIP} from "node:net";
 const router=express.Router();
 // Safe, read-only node inventory for regular users. Never expose credentials,
 // private nodes, daemon connection secrets, or mutation endpoints here.
@@ -105,16 +106,25 @@ router.post("/",async(req,res)=>{
  const memory=numberField(b.memory), disk=numberField(b.disk), cpu=numberField(b.cpu, 100), memoryOverallocate=numberField(b.memoryOverallocate), diskOverallocate=numberField(b.diskOverallocate);
  if(!String(b.name || "").trim() || !hostname || !Number.isInteger(apiPort) || apiPort < 1 || apiPort > 65535 || !Number.isInteger(sftpPort) || sftpPort < 1 || sftpPort > 65535) return res.status(400).json({error:"name, hostname, daemon port, and SFTP port are required and must be valid"});
  if([memory,disk,cpu,memoryOverallocate,diskOverallocate].some((n)=>!Number.isFinite(n)) || memory < 0 || disk < 0 || cpu < 0 || memoryOverallocate < -1 || diskOverallocate < -1) return res.status(400).json({error:"Resource limits and over-allocation values are invalid"});
- const nodes=await readJSON(file)||[];const id=crypto.randomUUID();const setupToken=randomSecret(32);
+ let dnsZone:any=null;
+ if(b.createCloudflareDns){
+  const zoneId=String(b.cloudflareZoneId||"").trim(),publicIp=String(b.publicIp||"").trim(),dnsName=String(b.fqdn||b.hostname||"").trim().replace(/\.$/,"").toLowerCase();
+  if(!zoneId)return res.status(400).json({error:"Select a Cloudflare zone before enabling automatic DNS."});
+  if(isIP(publicIp)!==4)return res.status(400).json({error:"A valid public IPv4 address is required to create an A record."});
+  try{dnsZone=await getZone(zoneId)}catch(e:any){return res.status(400).json({error:`Cloudflare zone could not be verified: ${String(e?.message||e)}`})}
+  const zoneName=String(dnsZone?.name||"").replace(/\.$/,"").toLowerCase();
+  if(!zoneName||!(dnsName===zoneName||dnsName.endsWith(`.${zoneName}`)))return res.status(400).json({error:"The node FQDN must match the selected Cloudflare zone."});
+ }
+ const id=crypto.randomUUID();const setupToken=randomSecret(32);
  const node={id,name:String(b.name).trim(),description:b.description||"",hostname,fqdn:b.fqdn||hostname,publicIp:b.publicIp||"",internalIp:b.internalIp||"",apiPort,sftpPort,location:b.location||"",visibility:b.visibility === "private" ? "private" : "public",tls:b.tls!==false,behindProxy:Boolean(b.behindProxy),memory,disk,cpu,memoryOverallocate,diskOverallocate,serverDirectory:b.serverDirectory||"/var/lib/shironex/servers",dockerHost:b.dockerHost||"/var/run/docker.sock",disabled:false,cloudflareZoneId:b.cloudflareZoneId||null,cloudflareRecordId:null,cloudflareAccessClientId:String(b.cloudflareAccessClientId||"").trim()||null,cloudflareAccessClientSecret:b.cloudflareAccessClientSecret?encryptSecret(String(b.cloudflareAccessClientSecret)):null,credential:encryptSecret(randomSecret(48)),credentialHash:"",createdAt:new Date().toISOString(),lastHeartbeat:null,daemonVersion:null};
  node.credentialHash=hashSecret(decryptSecret(node.credential));
- nodes.push(node);await writeJSON(file,nodes);
+ await updateJSON<any[]>(file,(nodes)=>{if(nodes.some((existing:any)=>existing.id===id))throw new Error("Generated node ID already exists; retry node creation.");return [...nodes,node]},[]);
  let dnsWarning:any=null;
- if(b.createCloudflareDns && b.cloudflareZoneId){
-   try{const rec=await createDns(String(b.cloudflareZoneId),{type:"A",name:b.fqdn||b.hostname,content:b.publicIp,ttl:300,proxied:false});node.cloudflareRecordId=rec.id;await writeJSON(file,nodes);}
+ if(b.createCloudflareDns){
+   try{const rec=await createDns(String(b.cloudflareZoneId),{type:"A",name:b.fqdn||b.hostname,content:b.publicIp,ttl:300,proxied:false});node.cloudflareRecordId=rec.id;await updateJSON<any[]>(file,(nodes)=>nodes.map((existing:any)=>existing.id===id?{...existing,cloudflareRecordId:rec.id}:existing),[]);}
    catch(e:any){dnsWarning=e.message}
  }
- const tokens=await readJSON(setupFile)||[];tokens.push({hash:hashSecret(setupToken),nodeId:id,expiresAt:Date.now()+15*60*1000,used:false});await writeJSON(setupFile,tokens);
+ await updateJSON<any[]>(setupFile,(tokens)=>[...tokens,{hash:hashSecret(setupToken),nodeId:id,expiresAt:Date.now()+15*60*1000,used:false}],[]);
  await audit("node.created",req,{nodeId:id,name:node.name});
  res.status(201).json({...sanitize(node),setupToken,dnsWarning});
 });
@@ -167,9 +177,9 @@ router.delete("/:id",async(req,res)=>{const nodes=await readJSON(file)||[];const
  router.post("/:id/reconnect",async(req,res)=>{try{const nodes=await readJSON(file)||[];const n=nodes.find((x:any)=>x.id===req.params.id);if(!n)return res.status(404).json({error:"Node not found"});if(n.disabled)return res.status(409).json({error:"Node is disabled"});const connection=nodeConnection(n);const health:any=await nodeControl.health(connection);n.lastHeartbeat=new Date().toISOString();n.lastStats=health;n.error=null;await writeJSON(file,nodes);await audit("node.reconnected",req,{nodeId:n.id});res.json({success:true,status:nodeStatus(n),health,endpoint:connection.baseUrl})}catch(e:any){res.status(Number(e?.statusCode||502)).json({success:false,error:e.message||"Node reconnect failed",nodeUnavailable:e?.nodeUnavailable===true,timeout:e?.timeout===true,hint:"Verify the node FQDN, Cloudflare Tunnel or Zero Trust ingress, TLS mode, daemon port, and firewall."})}});
  router.post("/:id/restart",async(req,res)=>{try{const nodes=await readJSON(file)||[];const n=nodes.find((x:any)=>x.id===req.params.id);if(!n)return res.status(404).json({error:"Node not found"});if(n.disabled)return res.status(409).json({error:"Node is disabled"});const connection=nodeConnection(n);const result:any=await nodeControl.restartDaemon(connection);n.lastHeartbeat=null;n.lastStats=null;n.error=null;n.restartingAt=new Date().toISOString();await writeJSON(file,nodes);await audit("node.restart_requested",req,{nodeId:n.id});res.status(202).json({success:true,restarting:true,message:result?.message||"Node daemon restart accepted",status:"RESTARTING"})}catch(e:any){res.status(Number(e?.statusCode||503)).json({success:false,error:e.message||"Node daemon restart failed",nodeUnavailable:e?.nodeUnavailable===true,timeout:e?.timeout===true,hint:"Verify the node FQDN, Cloudflare Tunnel or Zero Trust ingress, TLS mode, daemon port, and firewall."})}});
 router.get("/:id/stats",async(req,res)=>{const nodes=await readJSON(file)||[];const n=nodes.find((x:any)=>x.id===req.params.id);if(!n)return res.status(404).json({error:"Node not found"});if(n.disabled)return res.status(409).json({error:"Node disabled"});res.json({...n.lastStats,status:nodeStatus(n),lastHeartbeat:n.lastHeartbeat||null,heartbeatAgeMs:n.lastHeartbeat&&Number.isFinite(Date.parse(n.lastHeartbeat))?Math.max(0,Date.now()-Date.parse(n.lastHeartbeat)):null});});
-router.get("/:id/health",async(req,res)=>{const nodes=await readJSON(file)||[];const n=nodes.find((x:any)=>x.id===req.params.id);if(!n)return res.status(404).json({error:"Node not found"});const checks:any={cloudflare:{status:"not_checked"},dns:{status:"not_checked"},node:{status:"offline"},docker:{status:"unknown"},system:{status:"unknown"}};if(n.isLocal){try{const runtime=await localDockerCheck(n);n.localReady=true;n.lastHeartbeat=new Date().toISOString();n.lastStats=runtime;n.error=null;await writeJSON(file,nodes);return res.json({...checks,node:{status:"ok",endpoint:{protocol:"local",hostname:"127.0.0.1",port:n.apiPort}},docker:{status:"ok",ready:true},system:runtime.system});}catch(e:any){n.localReady=false;n.error=String(e?.message||e);await writeJSON(file,nodes);return res.json({...checks,node:{status:"error",error:n.error},docker:{status:"error",error:n.error},system:{status:"error"}})}}try{
+router.get("/:id/health",async(req,res)=>{const nodes=await readJSON(file)||[];const n=nodes.find((x:any)=>x.id===req.params.id);if(!n)return res.status(404).json({error:"Node not found"});const checks:any={cloudflare:{status:"not_checked"},dns:{status:"not_checked"},node:{status:"offline"},docker:{status:"unknown"},system:{status:"unknown"}};const saveHealth=async(result:any,localUpdate?:any)=>{const checkedAt=new Date().toISOString();const saved=await updateJSON<any[]>(file,(current)=>current.map((item:any)=>item.id===n.id?{...item,...localUpdate,lastHealthCheck:{...result,checkedAt}}:item),[]);const stored=saved.find((item:any)=>item.id===n.id);return stored?.lastHealthCheck||{...result,checkedAt}};if(n.isLocal){try{const runtime=await localDockerCheck(n);const result={...checks,node:{status:"ok",endpoint:{protocol:"local",hostname:"127.0.0.1",port:n.apiPort}},docker:{status:"ok",ready:true},system:runtime.system};const lastHealthCheck=await saveHealth(result,{localReady:true,lastHeartbeat:new Date().toISOString(),lastStats:runtime,error:null});return res.json(lastHealthCheck);}catch(e:any){const message=String(e?.message||e);const result={...checks,node:{status:"error",error:message},docker:{status:"error",error:message},system:{status:"error"}};const lastHealthCheck=await saveHealth(result,{localReady:false,error:message});return res.json(lastHealthCheck)}}try{
  const connection=nodeConnection(n); const {url,hostname,port}=nodeUrlParts(connection.baseUrl); const resolved=await dns.lookup(hostname); checks.dns={status:"ok",address:resolved.address};
  if(url.protocol === "https:"){await new Promise((resolve,reject)=>{const socket=tls.connect({host:hostname,port,servername:hostname,rejectUnauthorized:n.tlsVerify !== false},()=>{socket.end();resolve(true)});socket.on("error",reject);setTimeout(()=>{socket.destroy();reject(new Error("TLS timeout"))},5000)});checks.node.tls="valid"}
  const started=Date.now();const h=await nodeControl.health(connection);checks.node={status:"ok",latencyMs:Date.now()-started,tls:checks.node.tls,endpoint:{protocol:url.protocol.replace(":",""),hostname,port},...h};checks.docker=h.docker;checks.system=h.system;
- }catch(e:any){const message=String(e?.message||"Node health check failed");const code=String(e?.code||"");const timeout=e?.timeout===true||code==="ETIMEDOUT"||/timeout/i.test(message);const nodeUnavailable=e?.nodeUnavailable===true||/ECONNREFUSED|ENOTFOUND|EHOSTUNREACH|ENETUNREACH|ECONNRESET/i.test(`${code} ${message}`);checks.node={status:"error",error:message,nodeUnavailable,timeout,hint:"Verify the node FQDN, DNS, Cloudflare Tunnel or Zero Trust ingress, TLS mode, daemon port, and firewall."};checks.dns=checks.dns.status==="not_checked"?{status:"error",error:message}:checks.dns}res.json(checks)});
+ }catch(e:any){const message=String(e?.message||"Node health check failed");const code=String(e?.code||"");const timeout=e?.timeout===true||code==="ETIMEDOUT"||/timeout/i.test(message);const nodeUnavailable=e?.nodeUnavailable===true||/ECONNREFUSED|ENOTFOUND|EHOSTUNREACH|ENETUNREACH|ECONNRESET/i.test(`${code} ${message}`);checks.node={status:"error",error:message,nodeUnavailable,timeout,hint:"Verify the node FQDN, DNS, Cloudflare Tunnel or Zero Trust ingress, TLS mode, daemon port, and firewall."};checks.dns=checks.dns.status==="not_checked"?{status:"error",error:message}:checks.dns}return res.json(await saveHealth(checks))});
 export default router;
