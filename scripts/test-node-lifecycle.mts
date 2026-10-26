@@ -129,9 +129,24 @@ try {
   });
   assert.equal(missingPublicIp.status, 400, "automatic A record requires a real public IPv4 address");
 
+  const localNodeResponse = await fetch(`${base}/api/nodes/local`, {
+    method: "POST", headers: adminHeaders,
+    body: JSON.stringify({ port: 8080, dockerHost: path.join(tempDir, "missing-docker.sock") }),
+  });
+  assert.ok([200, 201].includes(localNodeResponse.status), `local node health fixture can be created (${localNodeResponse.status})`);
+  const localNode = await localNodeResponse.json() as any;
+  const persistedHealthResponse = await fetch(`${base}/api/nodes/${localNode.id}/health`, { headers: adminHeaders });
+  assert.equal(persistedHealthResponse.status, 200);
+  const persistedHealth = await persistedHealthResponse.json() as any;
+  assert.equal(persistedHealth.docker.status, "error", "unavailable Docker is reported as an actual failed check");
+  assert.ok(persistedHealth.checkedAt, "health result records when it was actually checked");
+  const reloadedInventoryResponse = await fetch(`${base}/api/nodes`, { headers: adminHeaders });
+  const reloadedInventory = await reloadedInventoryResponse.json() as any[];
+  assert.equal(reloadedInventory.find((node) => node.id === localNode.id)?.lastHealthCheck?.checkedAt, persistedHealth.checkedAt, "health result survives a fresh inventory load");
+
   const diskNodes = JSON.parse(await fs.readFile(path.join(tempDir, ".data", "nodes.json"), "utf8"));
-  assert.equal(diskNodes.length, 10, "atomic creation keeps all concurrent node records");
-  assert.equal(new Set(diskNodes.map((node: any) => node.id)).size, 10);
+  assert.equal(diskNodes.length, 11, "atomic creation keeps all concurrent node records plus the health-check fixture");
+  assert.equal(new Set(diskNodes.map((node: any) => node.id)).size, 11);
   const setupTokens = JSON.parse(await fs.readFile(path.join(tempDir, ".data", "node_setup_tokens.json"), "utf8"));
   assert.equal(setupTokens.length, 6, "concurrent token issuance preserves each one-time token");
   assert.equal(setupTokens.filter((token: any) => token.used).length, 6, "each registration consumes exactly its own setup token");

@@ -81,6 +81,7 @@ export default function Nodes() {
       if (controller.signal.aborted) return;
       if (!Array.isArray(response.data)) throw new Error("Invalid node inventory response");
       setNodes(response.data);
+      setHealth(Object.fromEntries(response.data.filter((node: any) => node.lastHealthCheck).map((node: any) => [node.id, node.lastHealthCheck])));
       setLoadError("");
     } catch (requestError: any) {
       if (!controller.signal.aborted) setLoadError(requestErrorMessage(requestError, "Unable to load nodes."));
@@ -88,7 +89,7 @@ export default function Nodes() {
       if (!controller.signal.aborted) setLoading(false);
       if (loadController.current === controller) loadController.current = null;
     }
-  }, []);
+  }, [user?.role]);
 
   useEffect(() => {
     void load();
@@ -270,7 +271,7 @@ export default function Nodes() {
               </div>
 
               <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground"><span>{node.isLocal ? "Runtime check" : "Last heartbeat"}: <b className={node.status === "ONLINE" ? "text-emerald-300" : "text-amber-200"}>{node.isLocal ? (node.status === "ONLINE" ? "Ready" : "Needs attention") : ageLabel(node)}</b></span><span>Servers: {stats.servers?.running ?? "—"}/{stats.servers?.total ?? "—"} running</span><span>Daemon: {node.daemonVersion || stats.daemonVersion || "pending"}</span></div>
-              {nodeHealth && <div className="mt-4 rounded-xl border border-white/10 bg-black/15 p-3 text-xs text-muted-foreground">Health: <b className={nodeHealth.node?.status === "ok" ? "text-emerald-300" : "text-rose-300"}>{nodeHealth.node?.status || "unknown"}</b>{nodeHealth.node?.latencyMs != null && ` · ${nodeHealth.node.latencyMs}ms`}{nodeHealth.docker != null && ` · Docker ${nodeHealth.docker ? "ready" : "unavailable"}`}</div>}
+              {nodeHealth && <div className="mt-4 rounded-xl border border-white/10 bg-black/15 p-3 text-xs text-muted-foreground">Health check: <b className={nodeHealth.node?.status === "ok" ? "text-emerald-300" : "text-rose-300"}>{nodeHealth.node?.status || "unknown"}</b>{nodeHealth.node?.latencyMs != null && ` · ${nodeHealth.node.latencyMs}ms`}{nodeHealth.docker != null && ` · Docker ${nodeHealth.docker === true || nodeHealth.docker?.ready === true || nodeHealth.docker?.status === "ok" ? "ready" : nodeHealth.docker === false || nodeHealth.docker?.status === "error" ? "unavailable" : "unknown"}`}{nodeHealth.checkedAt && ` · checked ${new Date(nodeHealth.checkedAt).toLocaleString()}`}{nodeHealth.docker?.error && ` · ${nodeHealth.docker.error}`}</div>}
 
               <div className="mt-5 flex flex-wrap gap-2">
                 <button type="button" disabled={busy !== null} onClick={() => openEdit(node)} className="snx-secondary-button"><Pencil className="h-3.5 w-3.5" /> Edit</button>

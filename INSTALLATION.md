@@ -391,3 +391,10 @@ npm run build
 ```
 
 The lifecycle integration test starts an isolated panel with its own temporary `.data` directory, preserves four pre-existing node records, creates six nodes concurrently, registers them with distinct one-time tokens, and sends authenticated heartbeats concurrently. It also checks full inventory responses, editing/disabling/re-enabling a sixth node, Docker telemetry reporting, Cloudflare zone validation, and rejection of invalid node credentials. The test does not create external Cloudflare records or claim that a real VPS/Docker installation has been tested. This release changes no SQL schema: this deployment's node inventory is JSON under `.data`, and existing JSON records are kept in place; no destructive data migration is required.
+
+
+### Docker test and allocation troubleshooting
+
+Cloudflare DNS only resolves the node hostname; it does not install/start Docker, open the node daemon port, or create a Minecraft IP/port allocation. **Nodes → Test health** checks the authenticated node endpoint and its Docker telemetry. The result (including its timestamp and actual Docker boolean/error) is saved with that node and restored from the inventory after a page reload; ONLINE remains based on a fresh authenticated heartbeat, not on a displayed test result.
+
+A managed-node deployment requires at least one free allocation belonging to the selected node. If there are none, the launch control now explains that it is blocked and staff can use **Create one for this node** to add an IP/port range under **Allocations**. The allocation picker displays real port labels (not template text). Users not deploying to a managed node are not forced through the node allocation field.

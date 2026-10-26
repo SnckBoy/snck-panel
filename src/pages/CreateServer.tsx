@@ -52,6 +52,7 @@ export default function CreateServer() {
   const [nodeId, setNodeId] = useState("");
   const [nodes, setNodes] = useState<any[]>([]);
   const [allocations, setAllocations] = useState<any[]>([]);
+  const [allocationLoading, setAllocationLoading] = useState(false);
   const [allocationId, setAllocationId] = useState("");
   const [versions, setVersions] = useState<string[]>([]);
   const [javaVersions, setJavaVersions] = useState<string[]>(["8", "11", "17", "21", "25"]);
@@ -66,6 +67,8 @@ export default function CreateServer() {
 
   const navigate = useNavigate();
   const { user } = useAuth();
+  const requiresNodeAllocation = user?.role === "admin" || user?.role === "owner" || Boolean(freeService?.enabled);
+  const availableAllocations = allocations.filter((allocation: any) => allocation.nodeId === nodeId && !allocation.assignedServerId);
 
   const ramPresets = [2, 4, 8, 16, 24, 32, 48, 64];
 
@@ -121,8 +124,9 @@ export default function CreateServer() {
         setNodes(availableNodes);
         if (!nodeId || !availableNodes.some((node:any)=>node.id===nodeId)) setNodeId(availableNodes[0]?.id || "");
       }).catch(() => {});
-      axios.get(isStaff ? "/api/allocations" : "/api/allocations/available").then((res) => setAllocations((Array.isArray(res.data) ? res.data : []).filter((a:any)=>!a.assignedServerId))).catch(() => {});
-    }
+      setAllocationLoading(true);
+      axios.get(isStaff ? "/api/allocations" : "/api/allocations/available").then((res) => setAllocations((Array.isArray(res.data) ? res.data : []).filter((a:any)=>!a.assignedServerId))).catch(() => setAllocations([])).finally(() => setAllocationLoading(false));
+    } else { setAllocations([]); setAllocationLoading(false); }
 
     axios
       .get("/api/auth/users")
@@ -259,18 +263,18 @@ export default function CreateServer() {
             </div>
           )}
 
-          <div className="grid md:grid-cols-2 gap-4">
+          {requiresNodeAllocation && <div className="grid md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-foreground-muted mb-2 flex items-center">
                 <Network className="w-4 h-4 mr-2 text-cyan-400" /> Allocation
               </label>
               <select required disabled={!nodeId} value={allocationId} onChange={e=>{setAllocationId(e.target.value);const a=allocations.find((x:any)=>x.id===e.target.value);if(a)setPort(String(a.portStart));}} className="w-full bg-muted-subtle border border-border rounded-xl px-4 py-3 text-foreground disabled:cursor-not-allowed disabled:opacity-50">
                 <option value="">{nodeId ? "Select an available allocation" : "Select a node first"}</option>
-                {allocations.filter((a:any)=>a.nodeId===nodeId && !a.assignedServerId).map((a:any)=><option key={a.id} value={a.id}>`Port ${a.portStart}${a.portEnd!==a.portStart?`-${a.portEnd}`:""}`</option>)}
+                {availableAllocations.map((a:any)=><option key={a.id} value={a.id}>Port {a.portStart}{a.portEnd!==a.portStart?`-${a.portEnd}`:""}</option>)}
               </select>
-              <p className="mt-1.5 text-xs text-muted-foreground">The selected allocation reserves the server port on this node.</p>
+              <p className="mt-1.5 text-xs text-muted-foreground">{allocationLoading ? "Loading available allocations…" : availableAllocations.length ? "The selected allocation reserves the server port on this node." : <>No available allocation exists for this node yet. {user?.role === "admin" || user?.role === "owner" ? <Link className="text-indigo-300 underline" to={`/allocations?nodeId=${encodeURIComponent(nodeId)}`}>Create one for this node</Link> : "Ask staff to add an IP/port range, then refresh this page."}</>}</p>
             </div>
-          </div>
+          </div>}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-muted-subtle p-5 rounded-2xl border border-border-subtle">
             <div className="md:col-span-2">
@@ -494,7 +498,7 @@ export default function CreateServer() {
              
              <button 
                 type="submit" 
-                disabled={loading}
+                disabled={loading || (requiresNodeAllocation && (allocationLoading || !nodeId || availableAllocations.length === 0))}
                 className="w-full px-4 py-3.5 bg-white text-zinc-900 hover:bg-zinc-200 font-bold rounded-xl transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 flex justify-center items-center gap-2"
               >
                 {loading ? (
@@ -505,7 +509,7 @@ export default function CreateServer() {
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    Launch Instance
+                    {requiresNodeAllocation && allocationLoading ? "Loading allocations…" : requiresNodeAllocation && !nodeId ? "Select a node first" : requiresNodeAllocation && availableAllocations.length === 0 ? "Add an allocation first" : "Launch Instance"}
                   </>
                 )}
              </button>
