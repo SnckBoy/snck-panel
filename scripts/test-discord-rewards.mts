@@ -11,6 +11,7 @@ process.chdir(tempDir);
 process.env.NODE_ENCRYPTION_KEY = "test-discord-rewards-encryption-key-only";
 try {
   const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../src/server/services");
+  const configParser = await import(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../src/shared/discordRewardsConfig.ts"));
   const core = await import(path.join(sourceRoot, "discordRewardsCore.ts"));
   const security = await import(path.join(sourceRoot, "security.ts"));
   const rewards = await import(path.join(sourceRoot, "discordRewards.ts"));
@@ -21,6 +22,13 @@ try {
   assert.equal(core.attributeInvite([{ code: "a", uses: 4, inviterId: null }], [{ code: "a", uses: 3, inviterId: null }]).verified, false);
   assert.equal(core.isSnowflake("10000000000000001"), true);
   assert.equal(core.isSnowflake("not-a-discord-id"), false);
+  assert.equal(configParser.parseWholeNumber("14", 0, 3650), 14);
+  assert.equal(configParser.parseWholeNumber("365", 30, 3650), 365);
+  assert.equal(configParser.parseWholeNumber("", 0, 3650), null);
+  assert.equal(configParser.parseWholeNumber("abc", 0, 3650), null);
+  assert.equal(configParser.parseWholeNumber("2.5", 0, 3650), null);
+  assert.equal(configParser.parseWholeNumber("0", 30, 3650), null);
+  assert.equal(configParser.parseWholeNumber("3651", 30, 3650), null);
 
   const validPlan = { id: "invite-reward-1", name: "Invite reward", description: "Milestone", requiredInvites: 4, allowCreate: true, allowUpgrade: true, ram: 2, cpu: 100, disk: 5, durationHours: 168, allowedNodeIds: ["node-a"], maxClaimsPerUser: 1, maxTotalClaims: 20, enabled: true, sortOrder: 0 };
   assert.deepEqual(core.validateRewardPlan(validPlan), validPlan);
@@ -70,10 +78,11 @@ try {
   const memberHash = rewards.hashDiscordId("10000000000000003");
   const event = { id: crypto.randomUUID(), guildId: "10000000000000000", memberIdHash: memberHash, memberIdEncrypted: security.encryptSecret("10000000000000003"), memberIdSuffix: "0003", inviterIdHash: hashed, inviterIdEncrypted: security.encryptSecret("10000000000000001"), inviterIdSuffix: "0001", inviterPanelUserId: "user-1", inviteCode: "invite-code", status: "verified", reason: "unique_member_join_attributed", joinedAt: new Date(Date.now() - 400 * 86_400_000).toISOString(), leftAt: null, accountCreatedAt: null, everCredited: true };
   const expired = { ...event, id: crypto.randomUUID(), memberIdHash: "pending-hash", status: "unverified", reason: "ambiguous", everCredited: false };
-  await rewards.updateRewardState((state: any) => { state.config.dataRetentionDays = 365; state.events.push(event, expired); state.oauthStates.push({ hash: "expired", userId: "user-1", expiresAt: Date.now() - 1 }); });
+  await rewards.updateRewardState((state: any) => { state.config.dataRetentionDays = 365; state.config.welcomeChannelId = "legacy-welcome-channel"; state.events.push(event, expired); state.oauthStates.push({ hash: "expired", userId: "user-1", expiresAt: Date.now() - 1 }); });
   assert.equal((await fs.stat(path.join(tempDir, ".data", "discord_rewards.json"))).mode & 0o777, 0o600);
   await rewards.pruneDiscordRewardData();
   const afterPrune = await rewards.readRewardState();
+  assert.equal("welcomeChannelId" in afterPrune.config, false);
   const oldCredit = afterPrune.events.find((row: any) => row.id === event.id)!;
   assert.equal(oldCredit.memberIdEncrypted, "");
   assert.equal(oldCredit.inviterIdEncrypted, null);
