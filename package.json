@@ -9,11 +9,12 @@
     "start": "node dist/server.cjs",
     "createuser": "tsx scripts/createuser.ts",
     "migrate:json": "tsx scripts/migrate-json-to-postgres.ts",
-    "test": "tsx scripts/test-themes.mts && tsx scripts/test-discord-rewards.mts",
+    "test": "tsx scripts/test-themes.mts && tsx scripts/test-discord-rewards.mts && tsx scripts/test-node-lifecycle.mts",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
     "test:atomic-json": "tsx scripts/test-atomic-json.mts",
-    "test:discord-rewards": "tsx scripts/test-discord-rewards.mts"
+    "test:discord-rewards": "tsx scripts/test-discord-rewards.mts",
+    "test:nodes": "tsx scripts/test-node-lifecycle.mts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

@@ -3,13 +3,14 @@ import crypto from "crypto";
 import dns from "dns/promises";
 import tls from "tls";
 import Docker from "dockerode";
-import {readJSON,writeJSON} from "../services/db.js";
+import {readJSON,writeJSON,updateJSON} from "../services/db.js";
 import {requireAdmin} from "../middleware/auth.js";
 import {audit,encryptSecret,hashSecret,randomSecret,rateLimit,decryptSecret} from "../services/security.js";
-import {createDns} from "../services/cloudflare.js";
+import {createDns,getZone} from "../services/cloudflare.js";
 import {nodeControl} from "../services/nodeClient.js";
 import {stopContainer} from "../services/docker.js";
 import {nodeConnection, nodeUrlParts} from "../services/nodeEndpoint.js";
+import {isIP} from "node:net";
 const router=express.Router();
 // Safe, read-only node inventory for regular users. Never expose credentials,
 // private nodes, daemon connection secrets, or mutation endpoints here.
@@ -105,16 +106,25 @@ router.post("/",async(req,res)=>{
  const memory=numberField(b.memory), disk=numberField(b.disk), cpu=numberField(b.cpu, 100), memoryOverallocate=numberField(b.memoryOverallocate), diskOverallocate=numberField(b.diskOverallocate);
  if(!String(b.name || "").trim() || !hostname || !Number.isInteger(apiPort) || apiPort < 1 || apiPort > 65535 || !Number.isInteger(sftpPort) || sftpPort < 1 || sftpPort > 65535) return res.status(400).json({error:"name, hostname, daemon port, and SFTP port are required and must be valid"});
  if([memory,disk,cpu,memoryOverallocate,diskOverallocate].some((n)=>!Number.isFinite(n)) || memory < 0 || disk < 0 || cpu < 0 || memoryOverallocate < -1 || diskOverallocate < -1) return res.status(400).json({error:"Resource limits and over-allocation values are invalid"});
- const nodes=await readJSON(file)||[];const id=crypto.randomUUID();const setupToken=randomSecret(32);
+ let dnsZone:any=null;
+ if(b.createCloudflareDns){
+  const zoneId=String(b.cloudflareZoneId||"").trim(),publicIp=String(b.publicIp||"").trim(),dnsName=String(b.fqdn||b.hostname||"").trim().replace(/\.$/,"").toLowerCase();
+  if(!zoneId)return res.status(400).json({error:"Select a Cloudflare zone before enabling automatic DNS."});
+  if(isIP(publicIp)!==4)return res.status(400).json({error:"A valid public IPv4 address is required to create an A record."});
+  try{dnsZone=await getZone(zoneId)}catch(e:any){return res.status(400).json({error:`Cloudflare zone could not be verified: ${String(e?.message||e)}`})}
+  const zoneName=String(dnsZone?.name||"").replace(/\.$/,"").toLowerCase();
+  if(!zoneName||!(dnsName===zoneName||dnsName.endsWith(`.${zoneName}`)))return res.status(400).json({error:"The node FQDN must match the selected Cloudflare zone."});
+ }
+ const id=crypto.randomUUID();const setupToken=randomSecret(32);
  const node={id,name:String(b.name).trim(),description:b.description||"",hostname,fqdn:b.fqdn||hostname,publicIp:b.publicIp||"",internalIp:b.internalIp||"",apiPort,sftpPort,location:b.location||"",visibility:b.visibility === "private" ? "private" : "public",tls:b.tls!==false,behindProxy:Boolean(b.behindProxy),memory,disk,cpu,memoryOverallocate,diskOverallocate,serverDirectory:b.serverDirectory||"/var/lib/shironex/servers",dockerHost:b.dockerHost||"/var/run/docker.sock",disabled:false,cloudflareZoneId:b.cloudflareZoneId||null,cloudflareRecordId:null,cloudflareAccessClientId:String(b.cloudflareAccessClientId||"").trim()||null,cloudflareAccessClientSecret:b.cloudflareAccessClientSecret?encryptSecret(String(b.cloudflareAccessClientSecret)):null,credential:encryptSecret(randomSecret(48)),credentialHash:"",createdAt:new Date().toISOString(),lastHeartbeat:null,daemonVersion:null};
  node.credentialHash=hashSecret(decryptSecret(node.credential));
- nodes.push(node);await writeJSON(file,nodes);
+ await updateJSON<any[]>(file,(nodes)=>{if(nodes.some((existing:any)=>existing.id===id))throw new Error("Generated node ID already exists; retry node creation.");return [...nodes,node]},[]);
  let dnsWarning:any=null;
- if(b.createCloudflareDns && b.cloudflareZoneId){
-   try{const rec=await createDns(String(b.cloudflareZoneId),{type:"A",name:b.fqdn||b.hostname,content:b.publicIp,ttl:300,proxied:false});node.cloudflareRecordId=rec.id;await writeJSON(file,nodes);}
+ if(b.createCloudflareDns){
+   try{const rec=await createDns(String(b.cloudflareZoneId),{type:"A",name:b.fqdn||b.hostname,content:b.publicIp,ttl:300,proxied:false});node.cloudflareRecordId=rec.id;await updateJSON<any[]>(file,(nodes)=>nodes.map((existing:any)=>existing.id===id?{...existing,cloudflareRecordId:rec.id}:existing),[]);}
    catch(e:any){dnsWarning=e.message}
  }
- const tokens=await readJSON(setupFile)||[];tokens.push({hash:hashSecret(setupToken),nodeId:id,expiresAt:Date.now()+15*60*1000,used:false});await writeJSON(setupFile,tokens);
+ await updateJSON<any[]>(setupFile,(tokens)=>[...tokens,{hash:hashSecret(setupToken),nodeId:id,expiresAt:Date.now()+15*60*1000,used:false}],[]);
  await audit("node.created",req,{nodeId:id,name:node.name});
  res.status(201).json({...sanitize(node),setupToken,dnsWarning});
 });

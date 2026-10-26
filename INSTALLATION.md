@@ -357,3 +357,37 @@ Use **Nodes → Allocations** to manage addresses for a selected node. Allocatio
 The **Panel + Node** installer path is now a real local-node setup: after the panel health check passes, it calls the loopback-only bootstrap endpoint using the generated `NODE_AUTH_SECRET`, receives a newly generated node credential, writes `/etc/shironex-node/config.json` with mode `600`, builds the daemon, enables `shironex-node.service`, and checks that the service is active. Remote nodes continue to use short-lived single-use setup tokens. The script served at `/node.sh` is kept identical to the repository `node-install.sh` implementation so the remote bootstrap does not regress to the legacy installer.
 
 If SFTP port `6868` is already occupied, the panel keeps running and logs a controlled warning. Set `SFTP_PORT` in the panel environment to another available port when SFTP is required. The SFTP service remains optional and should not be exposed publicly without firewall restrictions.
+
+
+## 19. Scaling beyond four nodes and Cloudflare DNS
+
+The panel does not impose a four-node ceiling. The observed failure pattern was caused by concurrent node creation and daemon heartbeat requests performing read-modify-write operations against the same JSON node inventory. One write could replace a newer inventory snapshot, making a newly created or recently updated node disappear. The node creation form also did not expose the Cloudflare zone selector, so DNS provisioning could not reliably target the intended zone. These fixes serialize JSON read-modify-write updates through the existing `updateJSON` helper, keep node identity and per-node credential checks intact, and let an administrator select a Cloudflare zone when creating a node.
+
+### Cloudflare setup
+
+1. In the panel, connect a Cloudflare account under the Cloudflare settings/integration page. The account must have access to the zone being used. Use a scoped Cloudflare API token with Zone:Read and DNS:Edit permissions for the relevant zone(s); do not paste a global API key into a node record.
+2. In **Nodes → Create Node**, choose the intended zone from the Cloudflare Zone selector when automatic DNS is desired. The node's FQDN must be a hostname inside that zone (for example, `node-6.example.com` in `example.com`). Enter the correct public IP. Review any DNS error shown by the panel rather than assuming a record was created. DNS remains optional; without a selected zone, node setup can still proceed without automatic DNS provisioning.
+3. Confirm the record at Cloudflare and resolve the FQDN from outside the VPS network before relying on it. A DNS record alone does not open the node API port; configure the panel/node firewall and TLS separately.
+
+### Upgrade and verification
+
+Back up the panel before upgrading. On an installed panel, run the current installer/control center and choose **2) Update SNCK PANEL**. From an SSH terminal, the repository's bootstrap command is:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/install.sh | sudo bash
+```
+
+The installer uses `/opt/snck-panel` by default, preserves the existing `.data` directory and `.env`, installs dependencies, rebuilds, and restarts the panel. Do not run a clean install or remove `.data` to apply this fix. If the repository has not yet merged the fix into `main`, wait for the pull request to be merged before using the command above; it fetches `main`, not the feature branch.
+
+After updating, use the control center's status/log actions, then verify in the panel that all existing nodes and newly created nodes appear. On a systemd host, check `sudo systemctl status snck-panel.service --no-pager` and `sudo journalctl -u snck-panel.service -n 100 --no-pager`; on a host using the installer's PM2/cron fallback, use the control center's status and logs actions instead. For each new node, use its own generated single-use setup command and credential—never duplicate another node's credential. A normal daemon heartbeat is authenticated and must arrive before its status becomes online.
+
+For maintainers working from a checkout, the automated verification is:
+
+```bash
+npm ci
+npm run lint
+npm test
+npm run build
+```
+
+The lifecycle integration test starts an isolated panel with its own temporary `.data` directory, preserves four pre-existing node records, creates six nodes concurrently, registers them with distinct one-time tokens, and sends authenticated heartbeats concurrently. It also checks full inventory responses, editing/disabling/re-enabling a sixth node, Docker telemetry reporting, Cloudflare zone validation, and rejection of invalid node credentials. The test does not create external Cloudflare records or claim that a real VPS/Docker installation has been tested. This release changes no SQL schema: this deployment's node inventory is JSON under `.data`, and existing JSON records are kept in place; no destructive data migration is required.
