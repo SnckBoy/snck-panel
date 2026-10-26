@@ -34,7 +34,7 @@ jobs:
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high
 
-      - name: Test theme validation and lifecycle rules
+      - name: Test theme and Discord rewards behavior
         run: npm test
 
       - name: Lint panel

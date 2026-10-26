@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
-import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Key, Activity, Box, Cloud, ShieldCheck, LifeBuoy, Palette, ExternalLink } from "lucide-react";
+import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Key, Activity, Box, Cloud, ShieldCheck, LifeBuoy, Palette, ExternalLink, Gift } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useSettings } from "../context/SettingsContext";
 import { motion } from "framer-motion";
@@ -81,6 +81,13 @@ export function Sidebar({ onClose, isCollapsed, toggleCollapse }: { onClose?: ()
             </div>
           </div>
         ))}
+        <div className="mb-2">
+          {!isCollapsed && <p className="snx-sidebar-section-label">Free Service</p>}
+          <Link to="/free-service/discord" onClick={onClose} title={isCollapsed ? "Discord Rewards" : undefined} className={`snx-app-nav-link relative flex items-center ${isCollapsed ? "justify-center" : "px-3"} py-3.5 rounded-[13px] transition-colors group overflow-hidden`}>
+            <span className="relative z-10 text-muted-foreground"><Gift size={19} /></span>
+            {!isCollapsed && <span className="ml-3 relative z-10 font-medium text-sm text-muted-foreground group-hover:text-foreground">Discord Rewards</span>}
+          </Link>
+        </div>
         {(layout.customNavigation || []).length > 0 && (
           <div className="mb-2">
             {!isCollapsed && <p className="snx-sidebar-section-label">Custom links</p>}

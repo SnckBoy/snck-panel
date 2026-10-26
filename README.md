@@ -60,6 +60,10 @@ The current application reads and writes JSON files under `/opt/snck-panel/.data
 
 Administrators can manage built-in and custom declarative themes from **Snck Theme** in the panel navigation. Create and edit color-token themes in the visual builder, apply them globally, import a validated ZIP manifest, export a theme, or restore the protected default. See [the Snck Theme guide](docs/SNCK_THEME.md) for permissions, package structure, storage, and recovery.
 
+## Discord Invite Rewards
+
+Administrators can configure a Discord bot and safe invite-based Free Service reward plans under **Free Service → Discord Rewards**. Users can link a Discord identity with OAuth, track verified invite progress, and claim a new server or resource upgrade subject to the panel's existing Free Service, node, allocation, and ownership checks. See [the Discord Invite Rewards guide](docs/DISCORD_REWARDS.md) for setup, attribution limitations, privacy/retention behavior, deployment constraints, and tests.
+
 ## Repository checks
 
 GitHub Actions runs dependency installation, TypeScript checking, the production build, node-daemon build, and shell syntax checks on the configured branches. A green CI run is required before treating a particular commit as verified. The installer itself also runs TypeScript validation and the production build before restarting the service.
