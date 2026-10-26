@@ -11,6 +11,7 @@ import nodeAgentRoutes from "./nodeAgent.js";
 import allocationRoutes from "./allocations.js";
 import cloudflareRoutes from "./cloudflare.js";
 import themeRoutes from "./themes.js";
+import discordRewardsRoutes from "./discordRewards.js";
 import { getActiveTheme } from "../services/themes.js";
 
 router.use("/auth", authRoutes);
@@ -22,6 +23,7 @@ router.use("/node-agent", nodeAgentRoutes);
 router.use("/allocations", allocationRoutes);
 router.use("/cloudflare", cloudflareRoutes);
 router.use("/themes", themeRoutes);
+router.use("/discord-rewards", discordRewardsRoutes);
 
 router.get("/settings", async (req, res) => {
   const settings = await readJSON("settings.json") || {};

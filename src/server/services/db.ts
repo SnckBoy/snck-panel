@@ -24,13 +24,15 @@ export const readJSON = async (filename: string) => {
 
 export const writeJSON = async (filename: string, data: any) => {
   const filePath = dataPath(filename);
+  const privateMode = filename === "discord_rewards.json";
   const previous = writeLocks.get(filePath) || Promise.resolve();
   const current = previous.catch(() => undefined).then(async () => {
     await fs.ensureDir(path.dirname(filePath));
     const tempPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
     try {
-      await fs.writeJson(tempPath, data, { spaces: 2 });
+      await fs.writeJson(tempPath, data, { spaces: 2, mode: privateMode ? 0o600 : 0o666 });
       await fs.rename(tempPath, filePath);
+      if (privateMode) await fs.chmod(filePath, 0o600);
     } finally {
       if (await fs.pathExists(tempPath)) await fs.remove(tempPath);
     }

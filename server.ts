@@ -265,6 +265,7 @@ app.get("/shironex-node.tar.gz", (_req, res) => {
 });
 
 import { initSFTPServer } from "./src/server/services/sftp.js";
+import { startDiscordRewards, shutdownDiscordRewards } from "./src/server/services/discordRewards.js";
 
 async function startServer() {
   await initSFTPServer();
@@ -285,10 +286,27 @@ async function startServer() {
 
   httpServer.listen(PORT, HOST, () => {
     console.log(`SNCK PANEL running on http://${HOST}:${PORT}`);
+    // Discord is optional and must never prevent panel startup when disabled,
+    // misconfigured, or temporarily unreachable.
+    void startDiscordRewards().catch(() => console.error("Discord rewards worker could not start; panel remains available."));
   });
 }
 
 startServer();
+
+let shuttingDown = false;
+const gracefulShutdown = (signal: string) => {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  console.log(`Received ${signal}; stopping Discord rewards and panel listeners.`);
+  void shutdownDiscordRewards().finally(() => {
+    io.close();
+    httpServer.close(() => process.exit(0));
+    setTimeout(() => process.exit(1), 15_000).unref();
+  });
+};
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 
 process.on('uncaughtException', (err) => {
   console.error('UNCAUGHT EXCEPTION:', err);
