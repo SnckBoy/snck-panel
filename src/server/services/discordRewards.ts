@@ -2,6 +2,7 @@ import { Client, Events, GatewayIntentBits, type Guild, type Invite, type GuildM
 import crypto from "node:crypto";
 import { readJSON, updateJSON } from "./db.js";
 import { decryptSecret, encryptSecret } from "./security.js";
+import { stopContainer } from "./docker.js";
 import { attributeInvite, hasSuccessfulCreditForMember, type InviteSnapshot } from "./discordRewardsCore.js";
 
 export type DiscordRewardsConfig = {
@@ -14,7 +15,7 @@ export type ReferralEvent = {
   inviteCode: string | null; status: "verified" | "pending" | "unverified" | "revoked";
   reason: string; joinedAt: string; leftAt: string | null; accountCreatedAt: string | null; everCredited: boolean;
 };
-export type RewardClaim = { id: string; idempotencyKey: string; panelUserId: string; planId: string; mode: "create" | "upgrade"; status: "processing" | "claimed" | "failed" | "needs_review"; targetId: string | null; createdAt: string; updatedAt: string; error: string | null; resources: { ram: number; cpu: number; disk: number } };
+export type RewardClaim = { id: string; idempotencyKey: string; panelUserId: string; planId: string; mode: "create" | "upgrade"; status: "processing" | "claimed" | "suspended" | "failed" | "needs_review"; targetId: string | null; createdAt: string; updatedAt: string; error: string | null; resources: { ram: number; cpu: number; disk: number } };
 export type StoredInviteSnapshot = { code: string; uses: number; inviterIdEncrypted: string | null };
 export type RewardState = {
   config: DiscordRewardsConfig; plans: any[]; inviteSnapshots: Record<string, StoredInviteSnapshot[]>;
@@ -32,13 +33,78 @@ const file = "discord_rewards.json";
 function normalizeConfig(stored: any) {
   const config = { ...(stored || {}) };
   delete config.welcomeChannelId;
-  return { ...defaultDiscordRewardsState().config, ...config };
+  return { ...defaultDiscordRewardsState().config, ...config, retainCreditOnLeave: false };
 }
 const runtime: { status: string; message: string; connectedAt: string | null; lastSyncAt: string | null; guildName: string | null; client: Client | null; starting: boolean; stopped: boolean } = { status: "not_configured", message: "Configure the bot and guild to start invite tracking.", connectedAt: null, lastSyncAt: null, guildName: null, client: null, starting: false, stopped: false };
 const guildLocks = new Map<string, Promise<void>>();
 let workerGeneration = 0;
 let verificationTimer: NodeJS.Timeout | null = null;
 let retentionTimer: NodeJS.Timeout | null = null;
+
+export async function reconcileReferralRewardServers(panelUserId: string, stop = stopContainer) {
+  const state = await readRewardState();
+  const actions: Array<{ claimId: string; targetId: string; suspend: boolean }> = [];
+  for (const plan of state.plans) {
+    const required = Math.max(1, Math.floor(Number(plan.requiredInvites) || 1));
+    const activeInvites = state.events.filter((event) => event.inviterPanelUserId === panelUserId && event.guildId === state.config.guildId && event.status === "verified").length;
+    const earned = Math.floor(activeInvites / required);
+    const claims = state.claims.filter((claim) => claim.panelUserId === panelUserId && claim.planId === plan.id && (claim.status === "claimed" || claim.status === "suspended")).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+    claims.forEach((claim, index) => {
+      const suspend = index >= earned;
+      if (claim.targetId && (suspend && claim.status === "claimed" || !suspend && claim.status === "suspended")) actions.push({ claimId: claim.id, targetId: claim.targetId, suspend });
+    });
+  }
+  const byTarget = new Map<string, typeof actions>();
+  for (const action of actions) byTarget.set(action.targetId, [...(byTarget.get(action.targetId) || []), action]);
+  const affected: Array<{ action: { claimId: string; targetId: string; suspend: boolean }; server: any }> = [];
+  await updateJSON<any[]>("servers.json", (current) => current.map((server: any) => {
+    const targetActions = byTarget.get(String(server.id));
+    if (!targetActions?.length) return server;
+    const marker = server.discordRewardSuspension;
+    const claimIds = new Set<string>(Array.isArray(marker?.claimIds) ? marker.claimIds : marker?.claimId ? [marker.claimId] : []);
+    for (const action of targetActions) action.suspend ? claimIds.add(action.claimId) : claimIds.delete(action.claimId);
+    if (claimIds.size) {
+      const changed = targetActions.some((action) => action.suspend && !(Array.isArray(marker?.claimIds) ? marker.claimIds : marker?.claimId ? [marker.claimId] : []).includes(action.claimId));
+      server.discordRewardSuspension = { claimId: [...claimIds].at(-1), claimIds: [...claimIds], suspendedAt: marker?.suspendedAt || new Date().toISOString(), priorSuspended: marker ? Boolean(marker.priorSuspended) : Boolean(server.suspended), stopPending: marker ? Boolean(marker.stopPending) : true, reason: "The inviter no longer has enough active Discord referrals for this reward." };
+      if (changed) server.discordRewardSuspension.stopPending = marker?.stopPending || !marker;
+      server.suspended = true;
+      if (changed) affected.push({ action: targetActions.find((action) => action.suspend)!, server: { ...server } });
+    } else if (marker) {
+      server.suspended = Boolean(marker.priorSuspended);
+      delete server.discordRewardSuspension;
+      affected.push({ action: targetActions.find((action) => !action.suspend)!, server: { ...server } });
+    }
+    return server;
+  }), []);
+  const pendingStops = (await readJSON("servers.json") || []).filter((server: any) => server.discordRewardSuspension?.stopPending && server.containerId);
+  for (const server of pendingStops) {
+    try {
+      await stop(server.containerId, server.nodeId);
+      await updateJSON<any[]>("servers.json", (current) => current.map((row: any) => row.id === server.id && row.discordRewardSuspension?.claimId === server.discordRewardSuspension.claimId ? { ...row, discordRewardSuspension: { ...row.discordRewardSuspension, stopPending: false } } : row), []);
+    } catch (error: any) {
+      if (/not running|already stopped|is stopped/i.test(String(error?.message || ""))) {
+        await updateJSON<any[]>("servers.json", (current) => current.map((row: any) => row.id === server.id && row.discordRewardSuspension?.claimId === server.discordRewardSuspension.claimId ? { ...row, discordRewardSuspension: { ...row.discordRewardSuspension, stopPending: false } } : row), []);
+      } else await appendDiscordDiagnostic("error", "reward_server_stop_failed", `Reward server …${String(server.id).slice(-8)} was suspended but could not be stopped: ${String(error?.message || error).slice(0, 180)}`);
+    }
+  }
+  await updateRewardState((current) => {
+    for (const action of actions) {
+      const claim = current.claims.find((candidate) => candidate.id === action.claimId);
+      if (!claim) continue;
+      if (action.suspend && claim.status === "claimed") { claim.status = "suspended"; claim.error = "Suspended because a credited Discord member left the rewards server. Invite a new eligible member to restore this reward."; claim.updatedAt = new Date().toISOString(); }
+      else if (!action.suspend && claim.status === "suspended") { claim.status = "claimed"; claim.error = null; claim.updatedAt = new Date().toISOString(); }
+    }
+  });
+  return { suspended: affected.filter((entry) => entry.action.suspend).length, restored: affected.filter((entry) => !entry.action.suspend).length };
+}
+
+export async function reconcileDepartedRewardMembers() {
+  await updateRewardState((state) => {
+    for (const event of state.events) if (event.leftAt && event.everCredited && event.status === "verified") { event.status = "revoked"; event.reason = "member_left_server_credit_revoked"; }
+  });
+  const state = await readRewardState();
+  for (const userId of new Set(state.claims.map((claim) => claim.panelUserId))) await reconcileReferralRewardServers(userId);
+}
 
 export function hashDiscordId(id: string) {
   const key = process.env.NODE_ENCRYPTION_KEY;
@@ -133,21 +199,26 @@ async function trackJoin(member: GuildMember) {
       if (!current.events.some((existing) => existing.id === id)) current.events.push(event);
     });
     if (status === "unverified") await appendDiscordDiagnostic("warning", "join_unverified", `Join …${member.id.slice(-4)} was not credited: ${reason}.`);
-    else if (status === "verified" && inviter) await notifyEligible(inviter, member.guild);
+    else if (status === "verified" && inviter) { await reconcileReferralRewardServers(inviter); await notifyEligible(inviter, member.guild); }
   });
 }
 
-async function trackLeave(member: Pick<GuildMember, "id" | "guild">) {
-  const state = await readRewardState();
-  if (member.guild.id !== state.config.guildId) return;
-  await updateRewardState((current) => {
-    const memberHash = hashDiscordId(member.id);
-    const matches = current.events.filter((event) => event.memberIdHash === memberHash && event.guildId === member.guild.id && !event.leftAt).sort((a, b) => b.joinedAt.localeCompare(a.joinedAt));
-    const event = matches[0];
-    if (!event) return;
-    event.leftAt = new Date().toISOString();
-    if (!current.config.retainCreditOnLeave && (event.status === "verified" || event.status === "pending")) { event.status = "revoked"; event.reason = "member_left_server_credit_revoked"; }
+export async function handleTrackedMemberLeave(member: Pick<GuildMember, "id" | "guild">, stop = stopContainer) {
+  let affectedInviter: string | null = null;
+  await byGuild(member.guild.id, async () => {
+    const state = await readRewardState();
+    if (member.guild.id !== state.config.guildId) return;
+    await updateRewardState((current) => {
+      const memberHash = hashDiscordId(member.id);
+      const matches = current.events.filter((event) => event.memberIdHash === memberHash && event.guildId === member.guild.id && !event.leftAt).sort((a, b) => b.joinedAt.localeCompare(a.joinedAt));
+      const event = matches[0];
+      if (!event) return;
+      event.leftAt = new Date().toISOString();
+      if (event.status === "verified" || event.status === "pending") { event.status = "revoked"; event.reason = "member_left_server_credit_revoked"; }
+      affectedInviter = event.inviterPanelUserId;
+    });
   });
+  if (affectedInviter) await reconcileReferralRewardServers(affectedInviter, stop);
 }
 
 async function notifyEligible(panelUserId: string, guild: Guild) {
@@ -155,7 +226,7 @@ async function notifyEligible(panelUserId: string, guild: Guild) {
   const discordIdEncrypted = state.linkedAccounts[panelUserId]?.discordIdEncrypted;
   if (!discordIdEncrypted) return;
   const discordId = decryptSecret(discordIdEncrypted);
-  const verified = state.events.filter((event) => event.inviterPanelUserId === panelUserId && event.status === "verified").length;
+  const verified = state.events.filter((event) => event.guildId === guild.id && event.inviterPanelUserId === panelUserId && event.status === "verified").length;
   for (const plan of state.plans.filter((candidate: any) => candidate.enabled && verified >= candidate.requiredInvites)) {
     const already = (state.notifiedPlans[panelUserId] || []).includes(plan.id);
     if (already) continue;
@@ -186,7 +257,7 @@ async function verifyPendingEvents() {
         const target = current.events.find((row) => row.id === event.id);
         if (target?.status === "pending" && !target.leftAt && !hasSuccessfulCreditForMember(current.events.filter((row) => row.id !== event.id), target.memberIdHash)) { target.status = "verified"; target.reason = "minimum_account_age_satisfied"; target.everCredited = true; }
       });
-      if (event.inviterPanelUserId) await notifyEligible(event.inviterPanelUserId, guild);
+      if (event.inviterPanelUserId) { await reconcileReferralRewardServers(event.inviterPanelUserId); await notifyEligible(event.inviterPanelUserId, guild); }
     } catch { /* member left or transient Discord failure; leave pending until next sync */ }
   }
 }
@@ -244,17 +315,17 @@ export async function startDiscordRewards() {
   client.once(Events.ClientReady, async (readyClient) => {
     if (generation !== workerGeneration || runtime.client !== client) return;
     runtime.status = "connected"; runtime.connectedAt = new Date().toISOString(); runtime.message = "Gateway connected; syncing target guild invites.";
-    try { await syncInvites(readyClient, state.config.guildId); runtime.message = `Connected to ${runtime.guildName}; invite tracking is operational.`; await appendDiscordDiagnostic("info", "bot_connected", "Discord gateway connected and invite snapshot refreshed."); }
+    try { await syncInvites(readyClient, state.config.guildId); await reconcileDepartedRewardMembers(); runtime.message = `Connected to ${runtime.guildName}; invite tracking is operational.`; await appendDiscordDiagnostic("info", "bot_connected", "Discord gateway connected, invite snapshot refreshed, and reward access reconciled."); }
     catch { runtime.status = "degraded"; runtime.message = "Bot connected, but guild/invite access failed. Check guild ID, Manage Server permission, and privileged intents."; await appendDiscordDiagnostic("error", "guild_sync_failed", runtime.message); }
     runtime.starting = false;
   });
   client.on(Events.GuildMemberAdd, (member) => { if (generation === workerGeneration) void trackJoin(member).catch(() => appendDiscordDiagnostic("error", "join_handler_failed", "Member join could not be safely processed; check bot permissions and diagnostics.")); });
-  client.on(Events.GuildMemberRemove, (member) => { if (generation === workerGeneration) void trackLeave(member).catch(() => appendDiscordDiagnostic("error", "leave_handler_failed", "Member departure could not be recorded.")); });
+  client.on(Events.GuildMemberRemove, (member) => { if (generation === workerGeneration) void handleTrackedMemberLeave(member).catch(() => appendDiscordDiagnostic("error", "leave_handler_failed", "Member departure could not be recorded.")); });
   client.on(Events.InviteCreate, (invite) => { if (generation === workerGeneration && invite.guild?.id === state.config.guildId) void syncInvites(client, state.config.guildId).catch(() => appendDiscordDiagnostic("warning", "invite_sync_failed", "Invite cache refresh failed after invite creation.")); });
   client.on(Events.InviteDelete, (invite) => { if (generation === workerGeneration && invite.guild?.id === state.config.guildId) void syncInvites(client, state.config.guildId).catch(() => appendDiscordDiagnostic("warning", "invite_sync_failed", "Invite cache refresh failed after invite deletion.")); });
   client.on(Events.Error, () => { if (generation === workerGeneration) { runtime.status = "degraded"; runtime.message = "Discord connection error; the library will attempt to reconnect."; void appendDiscordDiagnostic("warning", "gateway_error", runtime.message); } });
   if (verificationTimer) clearInterval(verificationTimer);
-  verificationTimer = setInterval(() => { if (generation === workerGeneration) void verifyPendingEvents(); }, 15 * 60 * 1000);
+  verificationTimer = setInterval(() => { if (generation === workerGeneration) { void verifyPendingEvents(); void reconcileDepartedRewardMembers().catch(() => appendDiscordDiagnostic("error", "reward_access_reconcile_failed", "Could not reconcile reward-server suspensions; the next scheduled reconciliation will retry.")); } }, 15 * 60 * 1000);
   verificationTimer.unref();
   try { await client.login(decryptSecret(state.config.botTokenEncrypted)); }
   catch {
