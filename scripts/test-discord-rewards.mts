@@ -59,6 +59,10 @@ try {
   assert.equal(core.claimIsAvailable({ userClaims: 0, totalClaims: 0, maxPerUser: 1, maxTotal: 20, verifiedInvites: 4, requiredInvites: 4 }), true);
   assert.equal(core.claimIsAvailable({ userClaims: 0, totalClaims: 0, maxPerUser: 1, maxTotal: 20, verifiedInvites: 3, requiredInvites: 4 }), false);
   assert.equal(core.claimIsAvailable({ userClaims: 1, totalClaims: 1, maxPerUser: 1, maxTotal: 20, verifiedInvites: 10, requiredInvites: 4 }), false);
+  assert.deepEqual(core.rewardCredits(4, 4), { earned: 1, spent: 0, reserved: 0, available: 1, progress: 0, required: 4 });
+  assert.deepEqual(core.rewardCredits(8, 4, 1), { earned: 2, spent: 1, reserved: 0, available: 1, progress: 0, required: 4 });
+  assert.deepEqual(core.rewardCredits(7, 4, 1), { earned: 1, spent: 1, reserved: 0, available: 0, progress: 3, required: 4 });
+  assert.deepEqual(core.rewardCredits(8, 4, 1, 1), { earned: 2, spent: 1, reserved: 1, available: 0, progress: 0, required: 4 });
   assert.equal(core.hasSuccessfulCreditForMember([{ memberIdHash: "member-hash", everCredited: true }], "member-hash"), true);
   assert.equal(core.hasSuccessfulCreditForMember([{ memberIdHash: "member-hash", everCredited: false }], "member-hash"), false);
   const ownedServer = { id: "server-a", owner: "user-1", ram: 2, cpu: 100, disk: 5 };

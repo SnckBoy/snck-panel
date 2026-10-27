@@ -9,7 +9,7 @@ import { requireAuth, requireAdmin } from "../middleware/auth.js";
 import { readJSON } from "../services/db.js";
 import { audit, encryptSecret, decryptSecret, rateLimit } from "../services/security.js";
 import { createServer, updateResources } from "../controllers/servers.js";
-import { checkFreeCapacity, isEligibleFreeNode, isSnowflake, rewardProgress, validateOwnedServerUpgrade, validateRewardPlan } from "../services/discordRewardsCore.js";
+import { checkFreeCapacity, isEligibleFreeNode, isSnowflake, rewardCredits, rewardProgress, validateOwnedServerUpgrade, validateRewardPlan } from "../services/discordRewardsCore.js";
 import { nodeControl } from "../services/nodeClient.js";
 import { nodeConnection } from "../services/nodeEndpoint.js";
 import { parseWholeNumber } from "../../shared/discordRewardsConfig.js";
@@ -105,13 +105,15 @@ router.get("/me", async (req, res) => {
   const plans = state.plans.filter((plan: any) => plan.enabled).sort((a: any, b: any) => a.sortOrder - b.sortOrder).map((plan: any) => {
     const claims = state.claims.filter((claim) => claim.panelUserId === user.id && claim.planId === plan.id);
     const success = claims.filter((claim) => claim.status === "claimed").length;
-    const progress = rewardProgress(verified, plan.requiredInvites);
+    const reserved = claims.filter((claim) => claim.status === "processing" || claim.status === "needs_review").length;
+    const credits = rewardCredits(verified, plan.requiredInvites, success, reserved);
+    const progress = rewardProgress(credits.progress, credits.required);
     let unavailableReason: string | null = null;
     if (!linked) unavailableReason = "Link your Discord account first.";
     else if (success >= plan.maxClaimsPerUser) unavailableReason = "You have reached the claim limit for this plan.";
     else if (plan.maxTotalClaims !== null && state.claims.filter((claim) => claim.planId === plan.id && claim.status === "claimed").length >= plan.maxTotalClaims) unavailableReason = "This plan has no claims remaining.";
-    else if (verified < plan.requiredInvites) unavailableReason = `Need ${progress.remaining} more verified invite(s).`;
-    return { ...plan, progress, available: !unavailableReason, unavailableReason, claims: claims.map((claim) => ({ id: claim.id, mode: claim.mode, status: claim.status, targetId: claim.targetId, createdAt: claim.createdAt, error: claim.error })) };
+    else if (credits.available < 1) unavailableReason = reserved ? "A server point is reserved by a claim that is still processing or needs review." : `No server points available. ${progress.remaining || plan.requiredInvites} more verified invite(s) are needed for the next point.`;
+    return { ...plan, progress, credits, available: !unavailableReason, unavailableReason, claims: claims.map((claim) => ({ id: claim.id, mode: claim.mode, status: claim.status, targetId: claim.targetId, createdAt: claim.createdAt, error: claim.error })) };
   });
   res.json({ linked, discordUsername: profile?.username || null, discordIdMasked: profile?.discordIdSuffix ? `…${profile.discordIdSuffix}` : null, verifiedInvites: verified, pendingInvites: pending, plans, claims: state.claims.filter((claim) => claim.panelUserId === user.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 50).map(({ id, planId, mode, status, targetId, createdAt, error }) => ({ id, planId, mode, status, targetId, createdAt, error })) });
 });
@@ -197,10 +199,11 @@ router.post("/claims", rateLimit(5, 60_000), async (req, res) => {
     const verified = state.events.filter((event) => event.inviterPanelUserId === userId && event.status === "verified").length;
     const priorClaims = state.claims.filter((row) => row.panelUserId === userId && row.planId === planId);
     const successful = priorClaims.filter((row) => row.status === "claimed").length;
+    const reserved = priorClaims.filter((row) => row.status === "processing" || row.status === "needs_review").length;
     const total = state.claims.filter((row) => row.planId === planId && ["claimed", "processing", "needs_review"].includes(row.status)).length;
     if (priorClaims.some((row) => row.status === "processing" || row.status === "needs_review")) { reservation.error = "A previous redemption is still being reconciled. Contact an administrator; do not submit another claim."; reservation.status = 409; return; }
     if (successful >= plan.maxClaimsPerUser || plan.maxTotalClaims !== null && total >= plan.maxTotalClaims) { reservation.error = "The claim limit for this reward has been reached."; reservation.status = 409; return; }
-    if (verified < plan.requiredInvites) { reservation.error = "Not enough verified invite credits for this reward."; reservation.status = 403; return; }
+    if (rewardCredits(verified, plan.requiredInvites, successful, reserved).available < 1) { reservation.error = "No unspent server point is available for this reward. Complete another invite milestone or wait for the existing claim to finish."; reservation.status = 403; return; }
     const id = crypto.randomUUID();
     reservation.claim = { id, idempotencyKey: idem, panelUserId: userId, planId, mode, status: "processing", targetId: null, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), error: null, resources: { ram: Number(plan.ram), cpu: Number(plan.cpu), disk: Number(plan.disk) } };
     state.claims.push(reservation.claim);

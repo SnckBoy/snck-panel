@@ -96,6 +96,15 @@ export function claimIsAvailable(args: { userClaims: number; totalClaims: number
   return args.userClaims < args.maxPerUser && (args.maxTotal === null || args.totalClaims < args.maxTotal) && args.verifiedInvites >= args.requiredInvites;
 }
 
+export function rewardCredits(verifiedInvites: number, requiredInvites: number, claimed = 0, reserved = 0) {
+  const threshold = Math.max(1, Math.floor(Number(requiredInvites) || 1));
+  const inviteCount = Math.max(0, Math.floor(Number(verifiedInvites) || 0));
+  const earned = Math.floor(inviteCount / threshold);
+  const spent = Math.min(earned, Math.max(0, Math.floor(Number(claimed) || 0)));
+  const held = Math.min(Math.max(0, earned - spent), Math.max(0, Math.floor(Number(reserved) || 0)));
+  return { earned, spent, reserved: held, available: Math.max(0, earned - spent - held), progress: inviteCount % threshold, required: threshold };
+}
+
 export function validateOwnedServerUpgrade(server: any, userId: string, requested: { ram: number; cpu: number; disk: number }): { eligible: boolean; reason: string } {
   if (!server || String(server.owner) !== userId) return { eligible: false, reason: "Only a server owned by your authenticated panel account can be upgraded." };
   const current = { ram: Number(server.ram), cpu: Number(server.cpu), disk: Number(server.disk) };
