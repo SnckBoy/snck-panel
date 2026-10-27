@@ -87,6 +87,7 @@ try {
   await rewards.pruneDiscordRewardData();
   const afterPrune = await rewards.readRewardState();
   assert.equal("welcomeChannelId" in afterPrune.config, false);
+  assert.equal(afterPrune.config.retainCreditOnLeave, false);
   const oldCredit = afterPrune.events.find((row: any) => row.id === event.id)!;
   assert.equal(oldCredit.memberIdEncrypted, "");
   assert.equal(oldCredit.inviterIdEncrypted, null);
@@ -106,7 +107,35 @@ try {
   const afterConcurrent = await rewards.readRewardState();
   assert.equal(accepted, 1);
   assert.equal(afterConcurrent.claims.filter((claim: any) => claim.idempotencyKey === "one-key-for-all-requests").length, 1);
-  console.log("Discord rewards behavioral tests passed (attribution, validation, node filtering, anti-abuse, encrypted identifiers, retention, and atomic claim idempotency).");
+
+  const revokeGuild = "10000000000000011";
+  const referralFor = (memberId: string) => ({ id: crypto.randomUUID(), guildId: revokeGuild, memberIdHash: rewards.hashDiscordId(memberId), memberIdEncrypted: security.encryptSecret(memberId), memberIdSuffix: memberId.slice(-4), inviterIdHash: hashed, inviterIdEncrypted: security.encryptSecret("10000000000000001"), inviterIdSuffix: "0001", inviterPanelUserId: "leave-user", inviteCode: "invite", status: "verified", reason: "unique_member_join_attributed", joinedAt: new Date().toISOString(), leftAt: null, accountCreatedAt: null, everCredited: true });
+  const rewardClaim = { id: "leave-claim", idempotencyKey: "leave-claim-key", panelUserId: "leave-user", planId: "leave-plan", mode: "create", status: "claimed", targetId: "leave-server", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), error: null, resources: { ram: 2, cpu: 100, disk: 5 } };
+  const leftMemberId = "10000000000000021";
+  const activeReferrals = [referralFor(leftMemberId), referralFor("10000000000000022")];
+  await rewards.updateRewardState((state: any) => { state.config.guildId = revokeGuild; state.plans.push({ ...validPlan, id: "leave-plan", requiredInvites: 2 }); state.events.push(...activeReferrals); state.claims.push(rewardClaim); });
+  await fs.writeFile(path.join(tempDir, ".data", "servers.json"), JSON.stringify([{ id: "leave-server", owner: "leave-user", containerId: "container-leave", nodeId: "local", suspended: false }]), "utf8");
+  let stopCalls = 0;
+  await rewards.reconcileReferralRewardServers("leave-user", async () => { stopCalls++; });
+  assert.equal(stopCalls, 0);
+  await rewards.handleTrackedMemberLeave({ id: leftMemberId, guild: { id: revokeGuild } } as any, async () => { stopCalls++; throw new Error("node temporarily unreachable"); });
+  assert.equal((await rewards.readRewardState()).events.find((row: any) => row.id === activeReferrals[0].id).status, "revoked");
+  let suspendedServer = JSON.parse(await fs.readFile(path.join(tempDir, ".data", "servers.json"), "utf8"))[0];
+  assert.equal(suspendedServer.suspended, true);
+  assert.equal(suspendedServer.discordRewardSuspension.stopPending, true);
+  assert.equal((await rewards.readRewardState()).claims.find((row: any) => row.id === rewardClaim.id).status, "suspended");
+  await rewards.reconcileReferralRewardServers("leave-user", async () => { stopCalls++; });
+  suspendedServer = JSON.parse(await fs.readFile(path.join(tempDir, ".data", "servers.json"), "utf8"))[0];
+  assert.equal(suspendedServer.discordRewardSuspension.stopPending, false);
+  assert.equal(stopCalls, 2);
+  await rewards.updateRewardState((state: any) => { state.events.push(referralFor("10000000000000023")); });
+  const restored = await rewards.reconcileReferralRewardServers("leave-user", async () => { stopCalls++; });
+  const restoredServer = JSON.parse(await fs.readFile(path.join(tempDir, ".data", "servers.json"), "utf8"))[0];
+  assert.equal(restored.restored, 1);
+  assert.equal(restoredServer.suspended, false);
+  assert.equal("discordRewardSuspension" in restoredServer, false);
+  assert.equal((await rewards.readRewardState()).claims.find((row: any) => row.id === rewardClaim.id).status, "claimed");
+  console.log("Discord rewards behavioral tests passed (attribution, validation, node filtering, anti-abuse, encrypted identifiers, retention, atomic claims, invite-leave server suspension, stop retry, and restoration).");
 } finally {
   process.chdir(originalCwd);
   await fs.rm(tempDir, { recursive: true, force: true });

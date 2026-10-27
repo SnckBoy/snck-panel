@@ -20,6 +20,11 @@ const requireServerAccess = async (req: any, res: any, next: any) => {
   if (!staff && server.owner !== user?.id && !membership) {
     return res.status(403).json({ error: "Forbidden" });
   }
+  const requestPath = String(req.originalUrl || req.url || "").split("?")[0].replace(/\/$/, "");
+  const suspensionNoticeRead = req.method === "GET" && requestPath.endsWith(`/servers/${String(server.id)}`);
+  if (!staff && server.discordRewardSuspension && !suspensionNoticeRead) {
+    return res.status(403).json({ error: "This reward server is suspended because an invited member left the Discord rewards server. Invite a new eligible member; access will return automatically when the reward's active invite milestone is restored.", referralRewardSuspended: true });
+  }
   if (!staff && server.owner !== user?.id) {
     const propertyPath = String(req.query?.path || req.body?.filePath || "").replace(/\\/g, "/").split("/").pop() === "server.properties";
     const required = req.path.endsWith("/start") ? "start"

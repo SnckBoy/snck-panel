@@ -13,7 +13,7 @@ import { checkFreeCapacity, isEligibleFreeNode, isSnowflake, rewardCredits, rewa
 import { nodeControl } from "../services/nodeClient.js";
 import { nodeConnection } from "../services/nodeEndpoint.js";
 import { parseWholeNumber } from "../../shared/discordRewardsConfig.js";
-import { appendDiscordDiagnostic, createOAuthState, getDiscordClient, getDiscordRuntime, hashDiscordId, oauthStateHash, protectInviteSnapshots, pruneDiscordRewardData, readRewardState, startDiscordRewards, updateRewardState, type RewardClaim, type RewardState } from "../services/discordRewards.js";
+import { appendDiscordDiagnostic, createOAuthState, getDiscordClient, getDiscordRuntime, hashDiscordId, oauthStateHash, protectInviteSnapshots, pruneDiscordRewardData, readRewardState, reconcileReferralRewardServers, startDiscordRewards, updateRewardState, type RewardClaim, type RewardState } from "../services/discordRewards.js";
 
 const router = express.Router();
 const safePublicMessage = (error: unknown) => String((error as any)?.message || "Discord request failed").replace(/(?:Bot\s+)?[A-Za-z\d._-]{20,}\.[A-Za-z\d._-]{5,}\.[A-Za-z\d._-]{20,}/g, "[redacted]").replace(/\s+/g, " ").slice(0, 220);
@@ -77,14 +77,15 @@ async function oauthCallback(req: Request, res: Response) {
       const username = String(identity.global_name || identity.username || "Discord member").slice(0, 80);
       current.linkedAccounts[matchedUserId!] = { discordIdHash: identityHash, discordIdEncrypted: encryptSecret(identity.id), discordIdSuffix: identity.id.slice(-4), username, linkedAt: new Date().toISOString() };
       for (const event of current.events.filter((row) => row.inviterIdHash === identityHash && !row.inviterPanelUserId && row.status === "unverified" && row.reason === "inviter_has_not_linked_panel_account")) {
-        if (event.leftAt && !current.config.retainCreditOnLeave) continue;
+        if (event.leftAt) continue;
         const ageDays = event.accountCreatedAt ? (Date.now() - Date.parse(event.accountCreatedAt)) / 86_400_000 : -1;
         event.inviterPanelUserId = matchedUserId!;
         if (ageDays >= Number(current.config.minimumAccountAgeDays || 0) && !current.events.some((other) => other.id !== event.id && other.memberIdHash === event.memberIdHash && other.everCredited)) { event.status = "verified"; event.reason = "inviter_linked_after_join"; event.everCredited = true; }
         else if (ageDays < Number(current.config.minimumAccountAgeDays || 0)) { event.status = "pending"; event.reason = "minimum_account_age_not_met"; }
       }
     });
-    if (linkConflict) throw new Error("This Discord account is already linked to another panel user");
+    if (linkConflict) throw new Error("This Discord account is already linked to another panel account");
+    await reconcileReferralRewardServers(matchedUserId);
     await audit("discord.account_linked", { user: { id: matchedUserId }, ip: req.ip }, { discordUserIdSuffix: identity.id.slice(-4) });
     return res.redirect("/free-service/discord?discordLink=success");
   } catch (error) {
@@ -100,11 +101,11 @@ router.get("/me", async (req, res) => {
   const state = await readRewardState();
   const profile = state.linkedAccounts[user.id];
   const linked = Boolean(profile?.discordIdEncrypted);
-  const verified = state.events.filter((event) => event.inviterPanelUserId === user.id && event.status === "verified").length;
+  const verified = state.events.filter((event) => event.guildId === state.config.guildId && event.inviterPanelUserId === user.id && event.status === "verified").length;
   const pending = state.events.filter((event) => event.inviterPanelUserId === user.id && event.status === "pending").length;
   const plans = state.plans.filter((plan: any) => plan.enabled).sort((a: any, b: any) => a.sortOrder - b.sortOrder).map((plan: any) => {
     const claims = state.claims.filter((claim) => claim.panelUserId === user.id && claim.planId === plan.id);
-    const success = claims.filter((claim) => claim.status === "claimed").length;
+    const success = claims.filter((claim) => claim.status === "claimed" || claim.status === "suspended").length;
     const reserved = claims.filter((claim) => claim.status === "processing" || claim.status === "needs_review").length;
     const credits = rewardCredits(verified, plan.requiredInvites, success, reserved);
     const progress = rewardProgress(credits.progress, credits.required);
@@ -196,11 +197,11 @@ router.post("/claims", rateLimit(5, 60_000), async (req, res) => {
     if (!plan) { reservation.error = "Reward plan is unavailable."; reservation.status = 404; return; }
     if (mode !== "create" && mode !== "upgrade") { reservation.error = "Select a supported claim option."; return; }
     if (mode === "create" && !plan.allowCreate || mode === "upgrade" && !plan.allowUpgrade) { reservation.error = "This reward plan does not allow that claim option."; reservation.status = 403; return; }
-    const verified = state.events.filter((event) => event.inviterPanelUserId === userId && event.status === "verified").length;
+    const verified = state.events.filter((event) => event.guildId === state.config.guildId && event.inviterPanelUserId === userId && event.status === "verified").length;
     const priorClaims = state.claims.filter((row) => row.panelUserId === userId && row.planId === planId);
-    const successful = priorClaims.filter((row) => row.status === "claimed").length;
+    const successful = priorClaims.filter((row) => row.status === "claimed" || row.status === "suspended").length;
     const reserved = priorClaims.filter((row) => row.status === "processing" || row.status === "needs_review").length;
-    const total = state.claims.filter((row) => row.planId === planId && ["claimed", "processing", "needs_review"].includes(row.status)).length;
+    const total = state.claims.filter((row) => row.planId === planId && ["claimed", "suspended", "processing", "needs_review"].includes(row.status)).length;
     if (priorClaims.some((row) => row.status === "processing" || row.status === "needs_review")) { reservation.error = "A previous redemption is still being reconciled. Contact an administrator; do not submit another claim."; reservation.status = 409; return; }
     if (successful >= plan.maxClaimsPerUser || plan.maxTotalClaims !== null && total >= plan.maxTotalClaims) { reservation.error = "The claim limit for this reward has been reached."; reservation.status = 409; return; }
     if (rewardCredits(verified, plan.requiredInvites, successful, reserved).available < 1) { reservation.error = "No unspent server point is available for this reward. Complete another invite milestone or wait for the existing claim to finish."; reservation.status = 403; return; }
@@ -286,6 +287,7 @@ router.post("/claims", rateLimit(5, 60_000), async (req, res) => {
       targetId = serverId;
     }
     await updateRewardState((current) => { const row = current.claims.find((candidate) => candidate.id === claim!.id); if (row?.status === "processing") { row.status = "claimed"; row.targetId = targetId; row.updatedAt = new Date().toISOString(); } });
+    await reconcileReferralRewardServers(userId);
     const complete = (await readRewardState()).claims.find((row) => row.id === claim!.id);
     try { await audit("discord.reward_claimed", req, { claimId: claim.id, planId: plan.id, mode, targetId, resources: claim.resources }); }
     catch (auditError) { console.error("Reward was fulfilled but its audit record could not be written.", safePublicMessage(auditError)); }
@@ -314,7 +316,7 @@ router.get("/admin", async (req, res) => {
   const claims = [...state.claims].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   const logs = [...state.diagnostics].sort((a, b) => b.at.localeCompare(a.at));
   const safeEvents = events.slice(offset, offset + limit).map((event) => ({ id: event.id, guildId: event.guildId, memberId: event.memberIdSuffix ? `…${event.memberIdSuffix}` : "anonymized", inviterId: event.inviterIdSuffix ? `…${event.inviterIdSuffix}` : null, inviterPanelUserId: event.inviterPanelUserId, inviteCode: event.inviteCode, status: event.status, reason: event.reason, joinedAt: event.joinedAt, leftAt: event.leftAt }));
-  return res.json({ config: configForClient(state), runtime: getDiscordRuntime(), plans: state.plans, stats: { verified: state.events.filter((row) => row.status === "verified").length, pending: state.events.filter((row) => row.status === "pending").length, unverified: state.events.filter((row) => row.status === "unverified").length, claims: state.claims.filter((row) => row.status === "claimed").length }, events: safeEvents, eventsTotal: events.length, claims: claims.slice(offset, offset + limit), claimsTotal: claims.length, diagnostics: logs.slice(0, 100) });
+  return res.json({ config: configForClient(state), runtime: getDiscordRuntime(), plans: state.plans, stats: { verified: state.events.filter((row) => row.status === "verified").length, pending: state.events.filter((row) => row.status === "pending").length, unverified: state.events.filter((row) => row.status === "unverified").length, claims: state.claims.filter((row) => row.status === "claimed" || row.status === "suspended").length, suspendedClaims: state.claims.filter((row) => row.status === "suspended").length }, events: safeEvents, eventsTotal: events.length, claims: claims.slice(offset, offset + limit), claimsTotal: claims.length, diagnostics: logs.slice(0, 100) });
 });
 
 router.post("/admin/prune", async (req, res) => {
@@ -336,7 +338,7 @@ router.put("/admin/config", async (req, res) => {
   }
   const minimumAccountAgeDays = parseWholeNumber(body.minimumAccountAgeDays ?? 0, 0, 3650);
   const dataRetentionDays = parseWholeNumber(body.dataRetentionDays ?? previousConfig.dataRetentionDays ?? 365, 30, 3650);
-  if (minimumAccountAgeDays === null || typeof body.retainCreditOnLeave !== "boolean" || dataRetentionDays === null) return res.status(400).json({ error: "Account age must be a whole number from 0–3650 days, member-leave policy must be boolean, and event retention must be a whole number from 30–3650 days." });
+  if (minimumAccountAgeDays === null || dataRetentionDays === null) return res.status(400).json({ error: "Account age must be a whole number from 0–3650 days and event retention must be a whole number from 30–3650 days." });
   const botToken = typeof body.botToken === "string" ? body.botToken.trim() : "";
   const oauthSecret = typeof body.oauthClientSecret === "string" ? body.oauthClientSecret.trim() : "";
   if (botToken && (botToken.length < 40 || botToken.length > 200)) return res.status(400).json({ error: "Bot token has an invalid length." });
@@ -349,7 +351,7 @@ router.put("/admin/config", async (req, res) => {
   try { if (botToken) encryptedBot = encryptSecret(botToken); if (oauthSecret) encryptedOAuth = encryptSecret(oauthSecret); }
   catch { return res.status(500).json({ error: "Server encryption is unavailable. Check NODE_ENCRYPTION_KEY; no secret was saved." }); }
   await updateRewardState((state) => {
-    state.config = { ...state.config, enabled: body.enabled, guildId: String(body.guildId), announcementChannelId: String(body.announcementChannelId || ""), oauthClientId: oauthClientId || state.config.oauthClientId, oauthRedirectUri, minimumAccountAgeDays, retainCreditOnLeave: body.retainCreditOnLeave, dataRetentionDays, botTokenEncrypted: encryptedBot || state.config.botTokenEncrypted, oauthClientSecretEncrypted: encryptedOAuth || state.config.oauthClientSecretEncrypted };
+    state.config = { ...state.config, enabled: body.enabled, guildId: String(body.guildId), announcementChannelId: String(body.announcementChannelId || ""), oauthClientId: oauthClientId || state.config.oauthClientId, oauthRedirectUri, minimumAccountAgeDays, retainCreditOnLeave: false, dataRetentionDays, botTokenEncrypted: encryptedBot || state.config.botTokenEncrypted, oauthClientSecretEncrypted: encryptedOAuth || state.config.oauthClientSecretEncrypted };
   });
   await audit("discord.config_updated", req, { enabled: body.enabled, guildId: body.guildId, announcementChannelConfigured: Boolean(body.announcementChannelId), oauthClientConfigured: Boolean(oauthClientId || (await readRewardState()).config.oauthClientId), tokenRotated: Boolean(botToken), oauthSecretRotated: Boolean(oauthSecret) });
   const saved = await readRewardState();
@@ -439,15 +441,20 @@ router.post("/admin/events/:id/review", async (req, res) => {
   if (status !== "verified" && status !== "unverified" && status !== "revoked") return res.status(400).json({ error: "Status must be verified, unverified, or revoked." });
   let found = false;
   let duplicateCredit = false;
+  let departedMember = false;
+  let referralOwner: string | null = null;
   await updateRewardState((state) => {
     const event = state.events.find((row) => row.id === req.params.id);
     if (!event) return;
+    if (status === "verified" && event.leftAt) { departedMember = true; return; }
     if (status === "verified" && state.events.some((row) => row.id !== event.id && row.memberIdHash === event.memberIdHash && row.everCredited)) { duplicateCredit = true; return; }
-    found = true; event.status = status; event.reason = `admin_review_${status}`;
+    found = true; referralOwner = event.inviterPanelUserId; event.status = status; event.reason = `admin_review_${status}`;
     if (status === "verified") event.everCredited = true;
   });
+  if (departedMember) return res.status(409).json({ error: "This referral cannot be verified because the invited member has left the Discord rewards server." });
   if (duplicateCredit) return res.status(409).json({ error: "This Discord member already has a verified referral credit; duplicate attribution is blocked." });
   if (!found) return res.status(404).json({ error: "Referral event not found." });
+  if (referralOwner) await reconcileReferralRewardServers(referralOwner);
   await audit("discord.referral_reviewed", req, { eventId: req.params.id, status });
   return res.json({ success: true });
 });
@@ -464,6 +471,7 @@ router.post("/admin/claims/:id/reconcile", async (req, res) => {
     claim.updatedAt = new Date().toISOString(); found = claim;
   });
   if (!found) return res.status(404).json({ error: "No claim requiring reconciliation was found." });
+  await reconcileReferralRewardServers(found.panelUserId);
   await audit("discord.reward_claim_reconciled", req, { claimId: found.id, action, targetId: found.targetId });
   return res.json({ success: true, claim: found });
 });
