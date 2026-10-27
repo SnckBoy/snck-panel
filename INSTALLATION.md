@@ -398,3 +398,9 @@ The lifecycle integration test starts an isolated panel with its own temporary `
 Cloudflare DNS only resolves the node hostname; it does not install/start Docker, open the node daemon port, or create a Minecraft IP/port allocation. **Nodes → Test health** checks the authenticated node endpoint and its Docker telemetry. The result (including its timestamp and actual Docker boolean/error) is saved with that node and restored from the inventory after a page reload; ONLINE remains based on a fresh authenticated heartbeat, not on a displayed test result.
 
 A managed-node deployment requires at least one free allocation belonging to the selected node. If there are none, the launch control now explains that it is blocked and staff can use **Create one for this node** to add an IP/port range under **Allocations**. The allocation picker displays real port labels (not template text). Users not deploying to a managed node are not forced through the node allocation field.
+
+### Discord reward server points and node selection
+
+For each Discord reward plan, every complete group of `requiredInvites` verified invite credits earns one redeemable server point. A successful create or upgrade claim spends one point; a processing or needs-review claim reserves one so the same invites cannot be redeemed twice. Failed claims do not consume a point. The reward card shows available, earned, and spent points, and new-server creation is the default option when the plan permits it.
+
+The create-server node picker lists public nodes even when they cannot currently accept the reward, marks blocked nodes as unavailable, and shows the reason. A node must still have a fresh authenticated heartbeat, be unlocked and out of maintenance, have enough configured and physical RAM/disk/CPU capacity, and have an unassigned allocation. This exposes missing setup without bypassing the server-side eligibility checks.
