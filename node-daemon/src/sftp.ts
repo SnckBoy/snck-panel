@@ -53,10 +53,10 @@ export const safeServerRoot = (serversDir: string, serverId: string): string => 
  * in every existing path component are rejected to prevent jail escapes.
  */
 export const jailedPath = (root: string, relative: string): string => {
-  const clean = String(relative || ".").replace(/\\\\/g, "/");
+  const clean = String(relative || ".").replace(/\\/g, "/");
   if (clean.includes("\\0")) throw new Error("Path escapes SFTP jail");
   const canonicalRoot = fs.realpathSync(root);
-  const virtualPath = clean.replace(/^\\/+/, "");
+  const virtualPath = clean.replace(/^\/+/, "");
   const target = path.resolve(canonicalRoot, virtualPath || ".");
   if (target !== canonicalRoot && !target.startsWith(`${canonicalRoot}${path.sep}`)) {
     throw new Error("Path escapes SFTP jail");
@@ -73,12 +73,12 @@ export const jailedPath = (root: string, relative: string): string => {
 };
 
 const safeRelative = (root: string, absolute: string): string => {
-  const relative = path.relative(root, absolute).replace(/\\\\/g, "/");
+  const relative = path.relative(root, absolute).replace(/\\/g, "/");
   return relative === "" ? "." : relative;
 };
 
 const authenticate = async (config: SftpConfig, username: string, password: string): Promise<AuthResult | null> => {
-  const response = await fetch(`${config.panelUrl.replace(/\\/$/, "")}/api/node-agent/sftp-auth`, {
+  const response = await fetch(`${config.panelUrl.replace(/\/$/, "")}/api/node-agent/sftp-auth`, {
     method: "POST",
     headers: { "content-type": "application/json", authorization: `Bearer ${config.credential}` },
     body: JSON.stringify({ nodeId: config.nodeId, username, password }),
