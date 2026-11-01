@@ -22,29 +22,33 @@ Non-staff server quotas now use safe defaults of 3 servers, 8,192 MB total RAM, 
 
 ## Ordered remaining work
 
-### B. Server properties, players, settings, and live console/logs
+### 1. Plugins, mods, and modpacks manager — completed first batch
 
-Add the missing browser pages and daemon/API contracts with explicit permissions, live console/log refresh behavior, and regression tests.
+The Laravel manager now lists/removes installed JARs, installs compatible Modrinth JARs through the daemon, validates archive paths and size limits, prevents imports while the server is running, and uses the daemon replacement contract with explicit confirmation. The focused suite passes 2 tests / 7 assertions. Modrinth dependency expansion and runtime auto-detection remain follow-up hardening within this item.
 
-### C. Production installer and migration rehearsal
+### 2. SFTP
 
-Build the Ubuntu/Debian installer for PHP-FPM, Nginx, Composer, queue worker, scheduler, systemd, database configuration, import rehearsal, rollback, and a documented runbook.
+Port the SFTP credential/connection contract with owner/staff authorization, safe host-key handling, and regression coverage.
 
-### D. API keys and administrator configuration
+### 3. Remaining administrator configuration pages
 
-Add scoped API keys, rotation/revocation, audit logging, and protected administrator configuration screens.
+Complete the remaining settings and administration surfaces with protected validation, audit logging, and browser coverage.
 
-### E. Discord, Cloudflare, and Playit
+### 4. Production installer
 
-Implement each integration behind explicit configuration, secrets handling, health checks, and disabled-by-default behavior.
+Build the Ubuntu/Debian CLI and web installer for PHP-FPM, Nginx, Composer, queue worker, scheduler, systemd, database configuration, import rehearsal, rollback, and the documented runbook.
 
-### F. Plugins, mods, modpacks, and SFTP contract proposal
+### 5. Legacy data import
 
-Add safe marketplace/import flows, runtime detection, archive validation, and document/version the SFTP contract before exposing it.
+Make the importer operational and run it against PostgreSQL when available; otherwise complete a careful static/schema review and document the limitation.
 
-### G. Real Docker-node test matrix
+### 6. Security hardening and release preparation
 
-On a real disposable Docker node, test create, start, stop, files, backup, and a real Minecraft server. Record the results separately from mocked or contract tests.
+Run security review, Pint, Larastan, README/MIGRATION_PLAN updates, final verification, `FINAL_REPORT.md`, and open the PR to `main`.
+
+### 7. Discord remainder, credits permitting
+
+Only after items 1–6: OAuth linking, invite attribution, reward claiming, gateway worker, and retention cleanup.
 
 ## Stage test commands
 
@@ -81,4 +85,4 @@ The Playit batch adds owner/staff-only status, start, stop, and reset endpoints,
 
 The first Discord rewards batch adds encrypted single-document state storage, redacted administrator configuration, strict Discord/OAuth validation, reward-plan CRUD, duplicate protection, audit events, and staff-only endpoints. Its focused suite passes 3 tests / 14 assertions. Live Discord gateway lifecycle, OAuth linking, invite attribution, retention cleanup, member reconciliation, and claim provisioning remain to be ported; this batch does not expose them as completed features.
 
-Remaining ordered work includes Playit, Discord rewards, plugins/mods/modpacks, SFTP contract work, remaining administration, the complete importer/installer rehearsal, security hardening, and final production-readiness testing.
+Remaining ordered work is now SFTP, remaining administration, the production installer, legacy PostgreSQL import verification, release hardening/PR preparation, and only then the remaining Discord worker features if credits remain.
