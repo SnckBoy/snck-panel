@@ -111,3 +111,12 @@ The final Laravel run passed **70 tests / 330 assertions**, with 2 PostgreSQL-on
 - Added /api/node-agent/sftp-auth, authenticated by the per-node bearer credential, for password validation by the node's SSH/SFTP listener.
 - Added an SSH2 SFTP server with per-server jailed paths, no-follow file opens, path traversal rejection, symlink rejection, and file/directory operations.
 - Added a real SSH client integration test that uploads and downloads a file through the SFTP protocol. The combined test suites and live-node SFTP validation remain required before production sign-off.
+
+
+## Node provisioning alignment
+
+- Replaced the node installer's stale setup-token/register API expectation with the existing panel-created per-node bearer credential contract.
+- InfrastructureManager generates a secure credential when blank and presents a one-time shell command with panel URL, node ID, FQDN and daemon port.
+- node-install.sh downloads the daemon archive from GitHub main, obtains a trusted certificate with Certbot, creates an SSH host key, configures HTTPS and SFTP, builds the daemon, and installs its systemd service.
+- Added a PostgreSQL-backed Livewire test for the one-time command and non-staff access, plus CI checks for installer syntax and help output.
+- Real VPS DNS/firewall/certificate renewal/heartbeat/file-transfer checks are still required before production sign-off.
