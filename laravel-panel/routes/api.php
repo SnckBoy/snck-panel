@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\AllocationController;
+use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\NodeAgentController;
 use App\Http\Controllers\NodeController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ServerFilesController;
 use App\Http\Controllers\ServerSubuserController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 // The node-agent callback authenticates exclusively with a per-node bearer
@@ -59,4 +61,10 @@ Route::middleware(['web', 'auth', 'account.enabled'])->group(function (): void {
     Route::post('/servers/{server}/backups', [BackupController::class, 'store']);
     Route::get('/servers/{server}/backups/{filename}', [BackupController::class, 'download'])->where('filename', 'backup-[a-zA-Z0-9_.-]{1,180}\.tar\.gz');
     Route::delete('/servers/{server}/backups/{filename}', [BackupController::class, 'destroy'])->where('filename', 'backup-[a-zA-Z0-9_.-]{1,180}\.tar\.gz');
+
+    Route::get('/api-keys', [ApiKeyController::class, 'index']);
+    Route::post('/api-keys', [ApiKeyController::class, 'store']);
+    Route::delete('/api-keys/{apiKey}', [ApiKeyController::class, 'destroy']);
+    Route::get('/admin/settings', [SettingsController::class, 'index']);
+    Route::put('/admin/settings', [SettingsController::class, 'update']);
 });
