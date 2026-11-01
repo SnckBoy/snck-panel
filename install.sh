@@ -46,5 +46,6 @@ chmod 700 "$TMP"
 if [[ "$EUID" -eq 0 ]]; then
   SNCK_REPO_URL="$REPO_URL" bash "$TMP" --branch="$BRANCH" "${FORWARD_ARGS[@]}"
 else
-  sudo env SNCK_REPO_URL="$REPO_URL" bash "$TMP" --branch="$BRANCH" "${FORWARD_ARGS[@]}"
+  PRESERVE_ENV="SNCK_DB_HOST,SNCK_DB_PORT,SNCK_DB_DATABASE,SNCK_DB_USERNAME,SNCK_DB_PASSWORD,SNCK_DB_SSLMODE,SNCK_APP_URL,SNCK_PANEL_DIR"
+  sudo --preserve-env="$PRESERVE_ENV" env SNCK_REPO_URL="$REPO_URL" bash "$TMP" --branch="$BRANCH" "${FORWARD_ARGS[@]}"
 fi
