@@ -62,7 +62,7 @@ command -v git >/dev/null || fail 'git is required.'
 command -v apt-get >/dev/null || fail 'apt-get is required.'
 command -v systemctl >/dev/null || fail 'systemd is required.'
 
-[[ "$APP_DIR" = /* && "$APP_DIR" != / ]] || fail 'APP_DIR must be an absolute, non-root path.'
+[[ "$APP_DIR" =~ ^/[A-Za-z0-9._/-]+$ && "$APP_DIR" != / ]] || fail 'APP_DIR must be an absolute path using only letters, numbers, dots, underscores, hyphens and slashes.'
 case "/$APP_DIR/" in */../*) fail 'APP_DIR must not contain parent-directory segments.' ;; esac
 [[ "$APP_DIR" != /opt && "$APP_DIR" != /var && "$APP_DIR" != /usr && "$APP_DIR" != /etc ]] || fail 'APP_DIR must be a dedicated application directory.'
 [[ "$REPO_URL" == https://* || "$REPO_URL" == ssh://* || "$REPO_URL" == git@* ]] || fail 'REPO_URL must use HTTPS or SSH.'
@@ -122,6 +122,16 @@ fi
 [[ -n "$DB_HOST" && -n "$DB_DATABASE" && -n "$DB_USERNAME" && -n "$DB_PASSWORD" ]] || fail 'Database settings cannot be empty.'
 
 APP_URL="$(prompt_value SNCK_APP_URL 'Public panel URL (set HTTPS after configuring TLS)' 'http://localhost')"
+php -r '
+  $url = parse_url($argv[1]);
+  $host = is_array($url) ? ($url["host"] ?? "") : "";
+  $validHost = filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)
+      || filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
+  $validScheme = is_array($url) && in_array($url["scheme"] ?? "", ["http", "https"], true);
+  $validPath = is_array($url) && in_array($url["path"] ?? "", ["", "/"], true);
+  $hasCredentialsOrSuffix = is_array($url) && (isset($url["user"]) || isset($url["pass"]) || isset($url["query"]) || isset($url["fragment"]));
+  exit($validHost && $validScheme && $validPath && ! $hasCredentialsOrSuffix ? 0 : 1);
+' "$APP_URL" || fail 'APP_URL must be a root HTTP/HTTPS URL with a valid IPv4 address or DNS hostname.'
 DB_SSLMODE="${SNCK_DB_SSLMODE:-prefer}"
 
 # Safely replace dotenv values without evaluating or sourcing .env.
