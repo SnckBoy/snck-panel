@@ -47,6 +47,33 @@ case "${ID:-}" in
   ubuntu|debian) ;;
   *) fail 'Supported operating systems are Ubuntu and Debian.' ;;
 esac
+
+# A dry-run must never install packages or change the host.
+(( DRY_RUN )) && { log 'Dry-run completed without changing the host.'; exit 0; }
+
+# Bootstrap all panel prerequisites so the one-command installer is self-contained.
+export DEBIAN_FRONTEND=noninteractive
+log 'Installing system prerequisites (PHP 8.3, Composer, Node.js 22, PostgreSQL, Git and Nginx)...'
+apt-get update
+apt-get install -y ca-certificates curl git gnupg unzip zip software-properties-common openssl postgresql postgresql-contrib
+if [[ "${ID:-}" == "ubuntu" && "${VERSION_ID:-}" == "22.04" ]]; then
+  add-apt-repository -y ppa:ondrej/php
+  apt-get update
+fi
+if ! command -v php >/dev/null 2>&1 || ! php -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);'; then
+  if [[ "${ID:-}" == "debian" ]]; then
+    fail 'PHP 8.3+ is required. Install PHP 8.3 from your Debian PHP repository before continuing.'
+  fi
+fi
+apt-get install -y php8.3-cli php8.3-common php8.3-mbstring php8.3-xml php8.3-curl php8.3-zip php8.3-bcmath php8.3-gd php8.3-intl php8.3-pgsql php8.3-fpm composer
+if ! command -v node >/dev/null 2>&1 || ! node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 20 ? 0 : 1)'; then
+  install -d -m 0755 /etc/apt/keyrings
+  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor --yes -o /etc/apt/keyrings/nodesource.gpg
+  echo 'deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main' >/etc/apt/sources.list.d/nodesource.list
+  apt-get update
+  apt-get install -y nodejs
+fi
+systemctl enable --now postgresql
 [[ -d /run/systemd/system ]] || fail 'A systemd-based Ubuntu/Debian host is required.'
 
 command -v php >/dev/null || fail 'PHP 8.3+ is required.'
@@ -121,20 +148,38 @@ DB_DATABASE="$(prompt_value SNCK_DB_DATABASE 'PostgreSQL database' 'snck_panel')
 DB_USERNAME="$(prompt_value SNCK_DB_USERNAME 'PostgreSQL username' 'snck_panel')"
 if [[ -n "${SNCK_DB_PASSWORD:-}" ]]; then
   DB_PASSWORD="$SNCK_DB_PASSWORD"
-elif [[ -r /dev/tty ]]; then
-  read -r -s -p 'PostgreSQL password: ' DB_PASSWORD </dev/tty || fail 'Could not read the PostgreSQL password.'
-  printf '\n'
+elif [[ "$DB_HOST" == "127.0.0.1" || "$DB_HOST" == "localhost" ]]; then
+  DB_PASSWORD="$(openssl rand -hex 32)"
+  log 'Generated a strong PostgreSQL password automatically.'
 else
-  fail 'Set SNCK_DB_PASSWORD for non-interactive installation.'
+  fail 'For a remote PostgreSQL server, set SNCK_DB_PASSWORD before running the installer.'
 fi
 [[ "$DB_PORT" =~ ^[0-9]+$ && "$DB_PORT" -ge 1 && "$DB_PORT" -le 65535 ]] || fail 'Invalid PostgreSQL port.'
 [[ -n "$DB_HOST" && -n "$DB_DATABASE" && -n "$DB_USERNAME" && -n "$DB_PASSWORD" ]] || fail 'Database settings cannot be empty.'
 
-if [[ -r /dev/tty ]]; then
-  APP_URL="$(prompt_value SNCK_APP_URL 'Public panel URL (set HTTPS after configuring TLS)' 'http://localhost')"
-else
-  [[ -n "${SNCK_APP_URL:-}" ]] || fail 'Set SNCK_APP_URL for non-interactive installation.'
+# Create a least-privilege local database role/database when using the local PostgreSQL server.
+if [[ "$DB_HOST" == "127.0.0.1" || "$DB_HOST" == "localhost" ]]; then
+  command -v openssl >/dev/null 2>&1 || fail 'openssl is required to generate a database password.'
+  runuser -u postgres -- psql -v ON_ERROR_STOP=1 -v dbname="$DB_DATABASE" -v dbuser="$DB_USERNAME" -v dbpass="$DB_PASSWORD" <<'SQL'
+SELECT format('CREATE ROLE %I LOGIN PASSWORD %L', :'dbuser', :'dbpass')
+WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = :'dbuser') \gexec
+SELECT format('ALTER ROLE %I WITH LOGIN PASSWORD %L', :'dbuser', :'dbpass') \gexec
+SELECT format('CREATE DATABASE %I OWNER %I', :'dbname', :'dbuser')
+WHERE NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = :'dbname') \gexec
+SELECT format('ALTER DATABASE %I OWNER TO %I', :'dbname', :'dbuser') \gexec
+SQL
+fi
+
+if [[ -n "${SNCK_APP_URL:-}" ]]; then
   APP_URL="$SNCK_APP_URL"
+else
+  PUBLIC_IP="$(curl -4 -fsS --max-time 8 https://api.ipify.org 2>/dev/null || true)"
+  DEFAULT_APP_URL="http://${PUBLIC_IP:-localhost}"
+  if [[ -r /dev/tty ]]; then
+    APP_URL="$(prompt_value SNCK_APP_URL 'Public panel URL (configure HTTPS before public use)' "$DEFAULT_APP_URL")"
+  else
+    APP_URL="$DEFAULT_APP_URL"
+  fi
 fi
 DB_SSLMODE="${SNCK_DB_SSLMODE:-prefer}"
 case "$DB_SSLMODE" in disable|allow|prefer|require|verify-ca|verify-full) ;; *) fail 'Invalid SNCK_DB_SSLMODE value.' ;; esac
@@ -292,170 +337,6 @@ Type=oneshot
 User=snck-panel
 Group=snck-panel
 WorkingDirectory=$APP_DIR
-ExecStart=$(command -v php) $APP_DIR/artisan schedule:run
-EOF
-
-cat >/etc/systemd/system/snck-panel-laravel-scheduler.timer <<EOF
-[Unit]
-Description=Run SNCK Laravel scheduler every minute
-
-[Timer]
-OnBootSec=1min
-OnUnitActiveSec=1min
-Unit=snck-panel-laravel-scheduler.service
-
-[Install]
-WantedBy=timers.target
-EOF
-
-cat >/etc/systemd/system/snck-panel-discord-worker.service <<EOF
-[Unit]
-Description=SNCK Discord member reconciliation and retention worker
-After=network-online.target
-Wants=network-online.target
-
-[Service]
-Type=oneshot
-User=snck-panel
-Group=snck-panel
-WorkingDirectory=$APP_DIR
-
-ExecStart=$(command -v php) $APP_DIR/artisan discord:maintenance --reconcile --cleanup
-EOF
-
-cat >/etc/systemd/system/snck-panel-discord-worker.timer <<EOF
-[Unit]
-Description=Run SNCK Discord maintenance every five minutes
-
-[Timer]
-OnBootSec=5min
-OnUnitActiveSec=5min
-Unit=snck-panel-discord-worker.service
-
-[Install]
-WantedBy=timers.target
-EOF
-
-systemctl daemon-reload
-systemctl enable --now snck-panel-laravel.service snck-panel-laravel-scheduler.timer snck-panel-discord-worker.timer
-
-log 'Laravel panel installation completed.'
-printf '\nPanel directory: %s\n' "$APP_DIR"
-printf 'First-owner setup: %s/setup\n' "$APP_URL"
-printf 'HTTP listener: port 80 (configure HTTPS before public use)\n'
-printf 'Status: systemctl status nginx php8.3-fpm snck-panel-laravel --no-pager\n'
-printf 'Logs: journalctl -u snck-panel-laravel -f\n'
-\n'* && "$value" != *
-set_env APP_ENV production
-set_env APP_DEBUG false
-set_env APP_URL "$APP_URL"
-set_env DB_CONNECTION pgsql
-set_env DB_HOST "$DB_HOST"
-set_env DB_PORT "$DB_PORT"
-set_env DB_DATABASE "$DB_DATABASE"
-set_env DB_USERNAME "$DB_USERNAME"
-set_env DB_PASSWORD "$DB_PASSWORD"
-set_env DB_SSLMODE "$DB_SSLMODE"
-set_env SESSION_SECURE_COOKIE false
-
-export DEBIAN_FRONTEND=noninteractive
-log 'Installing Nginx, PHP-FPM and PostgreSQL client...'
-apt-get update
-apt-get install -y nginx php8.3-fpm postgresql-client
-
-log 'Installing PHP dependencies...'
-export COMPOSER_ALLOW_SUPERUSER=1
-composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-log 'Building frontend assets...'
-npm ci --no-audit --no-fund
-npm run build
-
-log 'Generating application key and running database migrations...'
-php artisan key:generate --force
-php artisan migrate --force
-php artisan config:cache
-php artisan view:cache
-
-id -u snck-panel >/dev/null 2>&1 || useradd --system --home-dir "$APP_DIR" --shell /usr/sbin/nologin snck-panel
-chown -R snck-panel:snck-panel "$APP_DIR"
-install -d -o snck-panel -g snck-panel -m 775 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
-find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type d -exec chmod 775 {} +
-find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type f -exec chmod 664 {} +
-
-# Give PHP-FPM its own pool identity so it can write only to Laravel's writable
-# paths without making the application world-writable.
-cat >/etc/php/8.3/fpm/pool.d/snck-panel.conf <<EOF
-[snck-panel]
-user = snck-panel
-group = snck-panel
-listen = /run/php/snck-panel.sock
-listen.owner = www-data
-listen.group = www-data
-listen.mode = 0660
-pm = dynamic
-pm.max_children = 12
-pm.start_servers = 2
-pm.min_spare_servers = 1
-pm.max_spare_servers = 4
-clear_env = no
-chdir = /
-EOF
-
-cat >/etc/nginx/sites-available/snck-panel-laravel <<EOF
-server {
-    listen 80;
-    server_name _;
-    root $APP_DIR/public;
-    index index.php;
-    client_max_body_size 512m;
-    location / { try_files \$uri \$uri/ /index.php?\$query_string; }
-    location ~ \.php$ {
-        include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/run/php/snck-panel.sock;
-    }
-    location ~ /\. { deny all; }
-}
-EOF
-ln -sfn /etc/nginx/sites-available/snck-panel-laravel /etc/nginx/sites-enabled/snck-panel-laravel
-SERVER_NAME="$(php -r '$host = parse_url($argv[1], PHP_URL_HOST); echo $host ?: "_";' "$APP_URL")"
-sed -i "s/server_name _;/server_name $SERVER_NAME;/" /etc/nginx/sites-available/snck-panel-laravel
-nginx -t
-php-fpm8.3 -t
-systemctl restart php8.3-fpm
-systemctl enable --now nginx php8.3-fpm
-
-cat >/etc/systemd/system/snck-panel-laravel.service <<EOF
-[Unit]
-Description=SNCK Laravel Panel queue worker
-After=network-online.target
-Wants=network-online.target
-
-[Service]
-Type=simple
-User=snck-panel
-Group=snck-panel
-WorkingDirectory=$APP_DIR
-ExecStart=$(command -v php) $APP_DIR/artisan queue:work --sleep=3 --tries=3 --timeout=120
-Restart=always
-RestartSec=5
-PrivateTmp=true
-ProtectHome=true
-ReadWritePaths=$APP_DIR/storage $APP_DIR/bootstrap/cache
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-cat >/etc/systemd/system/snck-panel-laravel-scheduler.service <<EOF
-[Unit]
-Description=SNCK Laravel scheduled tasks
-
-[Service]
-Type=oneshot
-User=snck-panel
-Group=snck-panel
-WorkingDirectory=$APP_DIR
-
 ExecStart=$(command -v php) $APP_DIR/artisan schedule:run
 EOF
 

@@ -48,7 +48,7 @@ For the Laravel application:
 - Git and systemd for the CLI installer.
 - Nginx and PHP-FPM are installed by the CLI installer.
 
-The installer checks for PHP, Composer, Node.js and npm before it installs packages. Install those prerequisites first. It installs the PostgreSQL client, but **does not install or provision a PostgreSQL server/database**.
+The one-command installer bootstraps PHP 8.3 and its required extensions, Composer, Node.js 22, npm, PostgreSQL, Git, Nginx and PHP-FPM on supported Ubuntu releases. It creates a local `snck_panel` PostgreSQL role and database automatically when using the default local database host. For a remote PostgreSQL server, supply `SNCK_DB_HOST`, `SNCK_DB_DATABASE`, `SNCK_DB_USERNAME` and `SNCK_DB_PASSWORD` as environment variables.
 
 ## Database preparation
 
@@ -91,7 +91,7 @@ To test this PR branch before it is merged:
 curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/php-migration-final/install.sh | sudo env SNCK_BRANCH=php-migration-final bash
 ```
 
-The installer prompts for PostgreSQL connection details and the public panel URL. For unattended installs, set `SNCK_DB_HOST`, `SNCK_DB_PORT`, `SNCK_DB_DATABASE`, `SNCK_DB_USERNAME`, `SNCK_DB_PASSWORD`, and `SNCK_APP_URL` in the root environment. It preserves an existing `.env` and application key when updating an existing install.
+The installer shows an interactive menu for fresh install, update, repair, diagnostics and uninstall. It automatically installs system dependencies, provisions the local PostgreSQL database with a generated password, and detects the VPS public IPv4 address for the initial HTTP URL. For remote PostgreSQL or a custom domain, set `SNCK_DB_HOST`, `SNCK_DB_PORT`, `SNCK_DB_DATABASE`, `SNCK_DB_USERNAME`, `SNCK_DB_PASSWORD`, and/or `SNCK_APP_URL` before running. It preserves an existing `.env` and application key when updating an existing install. Uninstall intentionally keeps PostgreSQL data.
 
 Optional installer arguments:
 
