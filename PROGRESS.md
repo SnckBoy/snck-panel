@@ -103,3 +103,9 @@ Added real Discord guild-member reconciliation, retention cleanup, an Artisan ma
 ### 4. Finish — verified
 
 The final Laravel run passed **70 tests / 330 assertions**, with 2 PostgreSQL-only importer tests skipped under the default SQLite configuration. Pint passes 105 files, Larastan reports no errors, Composer audit is clean, Blade cache passes, and installer shell syntax passes. Remaining work is only the persistent Discord Gateway invite-attribution worker and automatic ServerProvisioner execution for approved claims.
+
+## Follow-up discord-final work
+
+### 1. Automatic reward provisioning — completed
+
+Approved claims now call the existing `ServerProvisioner`, enforce per-user and total plan limits, select eligible online nodes and unassigned allocations, persist successful server IDs or provisioning errors on the claim, and include the result in audit metadata. Focused coverage passes 3 tests / 14 assertions.

@@ -20,6 +20,12 @@ class DiscordClaimsAdmin extends Component
     public function setStatus(string $id, string $status, DiscordRewardsService $service): void
     {
         abort_unless(in_array($status, ['approved', 'rejected', 'reconciled'], true), 422);
+        if ($status === 'approved') {
+            $service->approveClaim($id, auth()->user());
+            $this->load($service);
+
+            return;
+        }
         $state = $service->state();
         foreach ($state['claims'] as &$claim) {
             if (($claim['id'] ?? null) === $id) {

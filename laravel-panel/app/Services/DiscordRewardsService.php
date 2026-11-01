@@ -2,12 +2,15 @@
 
 namespace App\Services;
 
+use App\Models\Allocation;
 use App\Models\DiscordRewardState;
+use App\Models\Node;
 use App\Models\User;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use RuntimeException;
+use Throwable;
 
 class DiscordRewardsService
 {
@@ -166,6 +169,13 @@ class DiscordRewardsService
         if ((int) ($account['inviteCount'] ?? 0) < (int) $plan['requiredInvites']) {
             throw new RuntimeException('Invite requirement has not been met.');
         }
+        $userClaims = collect($state['claims'])->filter(fn (array $row): bool => ($row['userId'] ?? null) === (string) $user->id && ($row['planId'] ?? null) === $planId && ! in_array($row['status'] ?? '', ['rejected', 'error'], true))->count();
+        if ($userClaims >= (int) ($plan['maxClaimsPerUser'] ?? 1)) {
+            throw new RuntimeException('This reward plan has reached its per-user claim limit.');
+        }
+        if (($plan['maxTotalClaims'] ?? null) !== null && collect($state['claims'])->filter(fn (array $row): bool => ($row['planId'] ?? null) === $planId && ! in_array($row['status'] ?? '', ['rejected', 'error'], true))->count() >= (int) $plan['maxTotalClaims']) {
+            throw new RuntimeException('This reward plan has reached its total claim limit.');
+        }
         $active = collect($state['claims'])->first(fn (array $claim): bool => ($claim['userId'] ?? null) === (string) $user->id && ($claim['planId'] ?? null) === $planId && in_array($claim['status'] ?? '', ['pending', 'processing', 'approved'], true));
         if ($active) {
             throw new RuntimeException('This reward has already been claimed.');
@@ -175,6 +185,45 @@ class DiscordRewardsService
         $this->save($state);
 
         return $claim;
+    }
+
+    public function approveClaim(string $claimId, User $actor): array
+    {
+        $state = $this->state();
+        foreach ($state['claims'] as $index => &$claim) {
+            if (($claim['id'] ?? null) !== $claimId) {
+                continue;
+            }
+            if (($claim['status'] ?? null) === 'approved' && ! empty($claim['serverId'])) {
+                return $claim;
+            }
+            $plan = collect($state['plans'])->firstWhere('id', $claim['planId'] ?? '');
+            try {
+                $owner = User::query()->findOrFail($claim['userId']);
+                if (! $plan || ! ($plan['allowCreate'] ?? false)) {
+                    throw new RuntimeException('This reward plan does not allow server creation.');
+                }
+                $nodes = Node::query()->where('disabled', false)->where('maintenance', false)->where('status', 'online')->when(! empty($plan['allowedNodeIds']), fn ($query) => $query->whereIn('id', $plan['allowedNodeIds']))->get();
+                $allocation = Allocation::query()->whereNull('assigned_server_id')->whereIn('node_id', $nodes->pluck('id'))->first();
+                if (! $allocation) {
+                    throw new RuntimeException('No eligible node allocation is available for this reward.');
+                }
+                $result = app(ServerProvisioner::class)->provision($owner, ['name' => $plan['name'].' reward', 'node_id' => $allocation->node_id, 'allocation_id' => $allocation->id, 'memory_limit_mb' => (int) round(((float) $plan['ram']) * 1024), 'cpu_limit_percent' => (int) $plan['cpu'], 'disk_limit_mb' => (int) $plan['disk'], 'type' => 'PAPER', 'version' => 'latest'], app(NodeClient::class));
+                $claim['status'] = 'approved';
+                $claim['serverId'] = (string) $result['server']->id;
+                $claim['provisioning'] = ['status' => 'success', 'serverId' => (string) $result['server']->id];
+            } catch (Throwable $exception) {
+                $claim['status'] = 'error';
+                $claim['provisioning'] = ['status' => 'error', 'message' => $exception->getMessage()];
+            }
+            $claim['approvedBy'] = (string) $actor->id;
+            $claim['updatedAt'] = now()->toISOString();
+            unset($claim);
+            $this->save($state);
+
+            return $state['claims'][$index];
+        }
+        throw new RuntimeException('Reward claim not found.');
     }
 
     public function reconcileMembers(): int

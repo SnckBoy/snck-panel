@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Models\Allocation;
 use App\Models\DiscordRewardState;
+use App\Models\Node;
 use App\Models\User;
 use App\Services\DiscordRewardsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -40,6 +43,27 @@ class DiscordCoreTest extends TestCase
         $this->actingAs($user)->postJson('/api/discord-rewards/claim/starter')->assertStatus(422);
         $id = app(DiscordRewardsService::class)->state()['claims'][0]['id'];
         $this->actingAs($staff)->patchJson('/api/discord-rewards/admin/claims/'.$id, ['status' => 'approved'])->assertOk();
+    }
+
+    public function test_approved_claim_provisions_a_server_and_records_result(): void
+    {
+        $user = $this->user('discord-provision-user');
+        $staff = $this->user('discord-provision-staff', 'admin');
+        $this->configureDiscord();
+        $node = Node::query()->create(['id' => 'discord-node', 'name' => 'Discord node', 'fqdn' => 'node.example.test', 'daemon_port' => 6768, 'credential_encrypted' => Crypt::encryptString('node-token'), 'credential_hash' => hash('sha256', 'node-token'), 'status' => 'online', 'docker_available' => true, 'last_heartbeat_at' => now(), 'memory_limit_mb' => 8192]);
+        $allocation = Allocation::query()->create(['id' => 'discord-allocation', 'node_id' => $node->id, 'ip' => '203.0.113.10', 'port' => 25565]);
+        $state = app(DiscordRewardsService::class)->state();
+        $state['linkedAccounts'][$user->id] = ['discordId' => '123456789012345679', 'username' => 'player', 'tokenEncrypted' => 'encrypted', 'inviteCount' => 10];
+        $state['plans'][] = ['id' => 'provision', 'name' => 'Provisioned', 'description' => 'Reward', 'requiredInvites' => 1, 'allowCreate' => true, 'ram' => 1, 'cpu' => 100, 'disk' => 10240, 'enabled' => true, 'maxClaimsPerUser' => 1];
+        DiscordRewardState::query()->updateOrCreate(['id' => 'default'], ['payload' => $state]);
+        Http::fake(function ($request) {
+            return str_ends_with($request->url(), '/v1/servers') ? Http::response(['containerId' => str_repeat('a', 64)], 201) : Http::response(['State' => ['Status' => 'running']]);
+        });
+        $this->actingAs($user)->postJson('/api/discord-rewards/claim/provision')->assertCreated();
+        $id = app(DiscordRewardsService::class)->state()['claims'][0]['id'];
+        $response = $this->actingAs($staff)->patchJson('/api/discord-rewards/admin/claims/'.$id, ['status' => 'approved'])->assertOk();
+        $response->assertJsonPath('claim.provisioning.status', 'success')->assertJsonPath('claim.status', 'approved');
+        $this->assertNotNull($allocation->refresh()->assigned_server_id);
     }
 
     private function configureDiscord(): void

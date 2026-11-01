@@ -153,6 +153,12 @@ class DiscordRewardsController extends Controller
     {
         $user = $this->staff($request);
         $status = $request->validate(['status' => ['required', 'in:approved,rejected,reconciled']])['status'];
+        if ($status === 'approved') {
+            $claim = $this->rewards->approveClaim($id, $user);
+            $this->audit($user->id, 'discord.claim_approved', ['claimId' => $id, 'provisioning' => $claim['provisioning'] ?? null]);
+
+            return response()->json(['claim' => $claim]);
+        }
         $state = $this->rewards->state();
         $found = false;
         foreach ($state['claims'] as &$claim) {
