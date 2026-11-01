@@ -6,6 +6,7 @@ use App\Models\Node;
 use App\Models\Server;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
@@ -36,6 +37,18 @@ class SftpIntegrationTest extends TestCase
         $server = $this->server($owner);
         $server->subusers()->attach($delegate->id, ['permissions' => json_encode(['files', 'plugins'])]);
         $this->actingAs($delegate)->postJson('/api/servers/'.$server->id.'/sftp/create')->assertForbidden();
+    }
+
+    public function test_node_can_authenticate_sftp_user_only_for_its_assigned_server(): void
+    {
+        $owner = $this->user('sftp-node-owner');
+        $node = Node::query()->create(['id' => 'node-auth', 'name' => 'Auth node', 'fqdn' => 'node.example.test', 'sftp_port' => 2022]);
+        $secret = 'node-secret-for-sftp';
+        $node->forceFill(['credential_encrypted' => Crypt::encryptString($secret), 'credential_hash' => hash('sha256', $secret)])->save();
+        $server = Server::query()->create(['id' => 'server-auth', 'identifier' => 'server-auth', 'owner_id' => $owner->id, 'node_id' => $node->id, 'name' => 'Auth server']);
+        $credentials = $this->actingAs($owner)->postJson('/api/servers/'.$server->id.'/sftp/create')->assertOk();
+        $this->withHeader('Authorization', 'Bearer '.$secret)->postJson('/api/node-agent/sftp-auth', ['nodeId' => $node->id, 'username' => $credentials->json('username'), 'password' => $credentials->json('password')])->assertOk()->assertJsonPath('serverId', $server->id);
+        $this->withHeader('Authorization', 'Bearer wrong')->postJson('/api/node-agent/sftp-auth', ['nodeId' => $node->id, 'username' => $credentials->json('username'), 'password' => $credentials->json('password')])->assertUnauthorized();
     }
 
     private function server(User $owner): Server

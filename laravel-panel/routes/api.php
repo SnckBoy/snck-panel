@@ -14,12 +14,14 @@ use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ServerFilesController;
 use App\Http\Controllers\ServerSubuserController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SftpAuthController;
 use App\Http\Controllers\SftpController;
 use Illuminate\Support\Facades\Route;
 
 // The node-agent callback authenticates exclusively with a per-node bearer
 // credential; it is intentionally not a browser-session or public endpoint.
 Route::post('/node-agent/heartbeat', [NodeAgentController::class, 'heartbeat'])->middleware('throttle:node-heartbeat');
+Route::post('/node-agent/sftp-auth', [SftpAuthController::class, 'authenticate'])->middleware('throttle:node-heartbeat');
 
 // Node and allocation administration remains staff-only inside those controllers.
 // Server routes use per-server policies in every action; global role middleware
