@@ -126,17 +126,359 @@ DB_SSLMODE="${SNCK_DB_SSLMODE:-prefer}"
 
 # Safely replace dotenv values without evaluating or sourcing .env.
 set_env() {
-  local key="$1" value="$2" escaped
-  [[ "$value" != *$'\n'* && "$value" != *$'\r'* ]] || fail "$key cannot contain a newline."
-  escaped="${value//\\/\\\\}"
-  escaped="${escaped//&/\\&}"
-  escaped="${escaped//|/\\|}"
-  escaped="${escaped//\"/\\\"}"
-  if grep -q "^$key=" .env; then
-    sed -i "s|^$key=.*|$key=\"$escaped\"|" .env
-  else
-    printf '%s="%s"\n' "$key" "$escaped" >> .env
-  fi
+  local key="$1" value="$2"
+  [[ "$value" != *
+set_env APP_ENV production
+set_env APP_DEBUG false
+set_env APP_URL "$APP_URL"
+set_env DB_CONNECTION pgsql
+set_env DB_HOST "$DB_HOST"
+set_env DB_PORT "$DB_PORT"
+set_env DB_DATABASE "$DB_DATABASE"
+set_env DB_USERNAME "$DB_USERNAME"
+set_env DB_PASSWORD "$DB_PASSWORD"
+set_env DB_SSLMODE "$DB_SSLMODE"
+set_env SESSION_SECURE_COOKIE false
+
+export DEBIAN_FRONTEND=noninteractive
+log 'Installing Nginx, PHP-FPM and PostgreSQL client...'
+apt-get update
+apt-get install -y nginx php8.3-fpm postgresql-client
+
+log 'Installing PHP dependencies...'
+export COMPOSER_ALLOW_SUPERUSER=1
+composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+log 'Building frontend assets...'
+npm ci --no-audit --no-fund
+npm run build
+
+log 'Generating application key and running database migrations...'
+php artisan key:generate --force
+php artisan migrate --force
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+id -u snck-panel >/dev/null 2>&1 || useradd --system --home-dir "$APP_DIR" --shell /usr/sbin/nologin snck-panel
+chown -R snck-panel:snck-panel "$APP_DIR"
+install -d -o snck-panel -g snck-panel -m 775 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
+find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type d -exec chmod 775 {} +
+find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type f -exec chmod 664 {} +
+
+# Give PHP-FPM its own pool identity so it can write only to Laravel's writable
+# paths without making the application world-writable.
+cat >/etc/php/8.3/fpm/pool.d/snck-panel.conf <<EOF
+[snck-panel]
+user = snck-panel
+group = snck-panel
+listen = /run/php/snck-panel.sock
+listen.owner = www-data
+listen.group = www-data
+listen.mode = 0660
+pm = dynamic
+pm.max_children = 12
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 4
+clear_env = no
+chdir = /
+EOF
+
+cat >/etc/nginx/sites-available/snck-panel-laravel <<EOF
+server {
+    listen 80;
+    server_name _;
+    root $APP_DIR/public;
+    index index.php;
+    client_max_body_size 512m;
+    location / { try_files \$uri \$uri/ /index.php?\$query_string; }
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/snck-panel.sock;
+    }
+    location ~ /\. { deny all; }
+}
+EOF
+ln -sfn /etc/nginx/sites-available/snck-panel-laravel /etc/nginx/sites-enabled/snck-panel-laravel
+SERVER_NAME="$(php -r '$host = parse_url($argv[1], PHP_URL_HOST); echo $host ?: "_";' "$APP_URL")"
+sed -i "s/server_name _;/server_name $SERVER_NAME;/" /etc/nginx/sites-available/snck-panel-laravel
+nginx -t
+php-fpm8.3 -t
+systemctl restart php8.3-fpm
+systemctl enable --now nginx php8.3-fpm
+
+cat >/etc/systemd/system/snck-panel-laravel.service <<EOF
+[Unit]
+Description=SNCK Laravel Panel queue worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=snck-panel
+Group=snck-panel
+WorkingDirectory=$APP_DIR
+ExecStart=$(command -v php) $APP_DIR/artisan queue:work --sleep=3 --tries=3 --timeout=120
+Restart=always
+RestartSec=5
+PrivateTmp=true
+ProtectHome=true
+ReadWritePaths=$APP_DIR/storage $APP_DIR/bootstrap/cache
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat >/etc/systemd/system/snck-panel-laravel-scheduler.service <<EOF
+[Unit]
+Description=SNCK Laravel scheduled tasks
+
+[Service]
+Type=oneshot
+User=snck-panel
+Group=snck-panel
+WorkingDirectory=$APP_DIR
+EnvironmentFile=$APP_DIR/.env
+ExecStart=$(command -v php) $APP_DIR/artisan schedule:run
+EOF
+
+cat >/etc/systemd/system/snck-panel-laravel-scheduler.timer <<EOF
+[Unit]
+Description=Run SNCK Laravel scheduler every minute
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=1min
+Unit=snck-panel-laravel-scheduler.service
+
+[Install]
+WantedBy=timers.target
+EOF
+
+cat >/etc/systemd/system/snck-panel-discord-worker.service <<EOF
+[Unit]
+Description=SNCK Discord member reconciliation and retention worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=snck-panel
+Group=snck-panel
+WorkingDirectory=$APP_DIR
+EnvironmentFile=$APP_DIR/.env
+ExecStart=$(command -v php) $APP_DIR/artisan discord:maintenance --reconcile --cleanup
+EOF
+
+cat >/etc/systemd/system/snck-panel-discord-worker.timer <<EOF
+[Unit]
+Description=Run SNCK Discord maintenance every five minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+Unit=snck-panel-discord-worker.service
+
+[Install]
+WantedBy=timers.target
+EOF
+
+systemctl daemon-reload
+systemctl enable --now snck-panel-laravel.service snck-panel-laravel-scheduler.timer snck-panel-discord-worker.timer
+
+log 'Laravel panel installation completed.'
+printf '\nPanel directory: %s\n' "$APP_DIR"
+printf 'First-owner setup: %s/setup\n' "$APP_URL"
+printf 'HTTP listener: port 80 (configure HTTPS before public use)\n'
+printf 'Status: systemctl status nginx php8.3-fpm snck-panel-laravel --no-pager\n'
+printf 'Logs: journalctl -u snck-panel-laravel -f\n'
+\n'* && "$value" != *
+set_env APP_ENV production
+set_env APP_DEBUG false
+set_env APP_URL "$APP_URL"
+set_env DB_CONNECTION pgsql
+set_env DB_HOST "$DB_HOST"
+set_env DB_PORT "$DB_PORT"
+set_env DB_DATABASE "$DB_DATABASE"
+set_env DB_USERNAME "$DB_USERNAME"
+set_env DB_PASSWORD "$DB_PASSWORD"
+set_env DB_SSLMODE "$DB_SSLMODE"
+set_env SESSION_SECURE_COOKIE false
+
+export DEBIAN_FRONTEND=noninteractive
+log 'Installing Nginx, PHP-FPM and PostgreSQL client...'
+apt-get update
+apt-get install -y nginx php8.3-fpm postgresql-client
+
+log 'Installing PHP dependencies...'
+export COMPOSER_ALLOW_SUPERUSER=1
+composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+log 'Building frontend assets...'
+npm ci --no-audit --no-fund
+npm run build
+
+log 'Generating application key and running database migrations...'
+php artisan key:generate --force
+php artisan migrate --force
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+id -u snck-panel >/dev/null 2>&1 || useradd --system --home-dir "$APP_DIR" --shell /usr/sbin/nologin snck-panel
+chown -R snck-panel:snck-panel "$APP_DIR"
+install -d -o snck-panel -g snck-panel -m 775 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
+find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type d -exec chmod 775 {} +
+find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type f -exec chmod 664 {} +
+
+# Give PHP-FPM its own pool identity so it can write only to Laravel's writable
+# paths without making the application world-writable.
+cat >/etc/php/8.3/fpm/pool.d/snck-panel.conf <<EOF
+[snck-panel]
+user = snck-panel
+group = snck-panel
+listen = /run/php/snck-panel.sock
+listen.owner = www-data
+listen.group = www-data
+listen.mode = 0660
+pm = dynamic
+pm.max_children = 12
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 4
+clear_env = no
+chdir = /
+EOF
+
+cat >/etc/nginx/sites-available/snck-panel-laravel <<EOF
+server {
+    listen 80;
+    server_name _;
+    root $APP_DIR/public;
+    index index.php;
+    client_max_body_size 512m;
+    location / { try_files \$uri \$uri/ /index.php?\$query_string; }
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/snck-panel.sock;
+    }
+    location ~ /\. { deny all; }
+}
+EOF
+ln -sfn /etc/nginx/sites-available/snck-panel-laravel /etc/nginx/sites-enabled/snck-panel-laravel
+SERVER_NAME="$(php -r '$host = parse_url($argv[1], PHP_URL_HOST); echo $host ?: "_";' "$APP_URL")"
+sed -i "s/server_name _;/server_name $SERVER_NAME;/" /etc/nginx/sites-available/snck-panel-laravel
+nginx -t
+php-fpm8.3 -t
+systemctl restart php8.3-fpm
+systemctl enable --now nginx php8.3-fpm
+
+cat >/etc/systemd/system/snck-panel-laravel.service <<EOF
+[Unit]
+Description=SNCK Laravel Panel queue worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=snck-panel
+Group=snck-panel
+WorkingDirectory=$APP_DIR
+ExecStart=$(command -v php) $APP_DIR/artisan queue:work --sleep=3 --tries=3 --timeout=120
+Restart=always
+RestartSec=5
+PrivateTmp=true
+ProtectHome=true
+ReadWritePaths=$APP_DIR/storage $APP_DIR/bootstrap/cache
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat >/etc/systemd/system/snck-panel-laravel-scheduler.service <<EOF
+[Unit]
+Description=SNCK Laravel scheduled tasks
+
+[Service]
+Type=oneshot
+User=snck-panel
+Group=snck-panel
+WorkingDirectory=$APP_DIR
+EnvironmentFile=$APP_DIR/.env
+ExecStart=$(command -v php) $APP_DIR/artisan schedule:run
+EOF
+
+cat >/etc/systemd/system/snck-panel-laravel-scheduler.timer <<EOF
+[Unit]
+Description=Run SNCK Laravel scheduler every minute
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=1min
+Unit=snck-panel-laravel-scheduler.service
+
+[Install]
+WantedBy=timers.target
+EOF
+
+cat >/etc/systemd/system/snck-panel-discord-worker.service <<EOF
+[Unit]
+Description=SNCK Discord member reconciliation and retention worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=snck-panel
+Group=snck-panel
+WorkingDirectory=$APP_DIR
+EnvironmentFile=$APP_DIR/.env
+ExecStart=$(command -v php) $APP_DIR/artisan discord:maintenance --reconcile --cleanup
+EOF
+
+cat >/etc/systemd/system/snck-panel-discord-worker.timer <<EOF
+[Unit]
+Description=Run SNCK Discord maintenance every five minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+Unit=snck-panel-discord-worker.service
+
+[Install]
+WantedBy=timers.target
+EOF
+
+systemctl daemon-reload
+systemctl enable --now snck-panel-laravel.service snck-panel-laravel-scheduler.timer snck-panel-discord-worker.timer
+
+log 'Laravel panel installation completed.'
+printf '\nPanel directory: %s\n' "$APP_DIR"
+printf 'First-owner setup: %s/setup\n' "$APP_URL"
+printf 'HTTP listener: port 80 (configure HTTPS before public use)\n'
+printf 'Status: systemctl status nginx php8.3-fpm snck-panel-laravel --no-pager\n'
+printf 'Logs: journalctl -u snck-panel-laravel -f\n'
+\r'* ]] || fail "$key cannot contain a newline."
+  SNCK_ENV_KEY="$key" SNCK_ENV_VALUE="$value" php -r '
+    $path = ".env";
+    $key = getenv("SNCK_ENV_KEY");
+    $value = getenv("SNCK_ENV_VALUE");
+    $quoted = "\"" . str_replace(["\\\\", "\""], ["\\\\\\\\", "\\\\\""], $value) . "\"";
+    $lines = file($path, FILE_IGNORE_NEW_LINES);
+    if ($lines === false) { fwrite(STDERR, "Cannot read .env\\n"); exit(1); }
+    $prefix = $key . "=";
+    $updated = false;
+    foreach ($lines as &$line) {
+      if (str_starts_with($line, $prefix)) {
+        $line = $prefix . $quoted;
+        $updated = true;
+      }
+    }
+    unset($line);
+    if (!$updated) { $lines[] = $prefix . $quoted; }
+    if (file_put_contents($path, implode(PHP_EOL, $lines) . PHP_EOL, LOCK_EX) === false) {
+      fwrite(STDERR, "Cannot write .env\\n"); exit(1);
+    }
+  ' || fail "Could not update $key in .env."
 }
 set_env APP_ENV production
 set_env APP_DEBUG false
