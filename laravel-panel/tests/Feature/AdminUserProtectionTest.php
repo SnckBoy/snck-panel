@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Livewire\AdminUsers;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -22,6 +22,28 @@ class AdminUserProtectionTest extends TestCase
             ->test(AdminUsers::class)
             ->call('edit', $owner->id)
             ->assertForbidden();
+    }
+
+    public function test_admin_cannot_bypass_owner_edit_guard_by_calling_save_directly(): void
+    {
+        $admin = $this->user('admin-1', 'admin');
+        $owner = $this->user('owner-1', 'owner');
+        $originalPassword = $owner->password;
+
+        Livewire::actingAs($admin)
+            ->test(AdminUsers::class)
+            ->set('editing', $owner->id)
+            ->set('role', 'admin')
+            ->set('disabled', true)
+            ->set('password', 'attacker-chosen-password-123')
+            ->call('save')
+            ->assertForbidden();
+
+        $owner->refresh();
+        $this->assertSame('owner', $owner->role);
+        $this->assertFalse($owner->disabled);
+        $this->assertSame($originalPassword, $owner->password);
+        $this->assertDatabaseCount('audit_events', 0);
     }
 
     public function test_last_owner_cannot_be_demoted_or_disabled(): void
@@ -84,6 +106,8 @@ class AdminUserProtectionTest extends TestCase
             'resource_id' => $member->id,
             'result' => 'success',
         ]);
+
+        $this->assertTrue(Hash::check('new-secure-password-123', $member->fresh()->password));
     }
 
     private function user(string $id, string $role): User
