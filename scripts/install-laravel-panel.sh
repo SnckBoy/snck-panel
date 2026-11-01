@@ -113,8 +113,8 @@ DB_USERNAME="$(prompt_value SNCK_DB_USERNAME 'PostgreSQL username' 'snck_panel')
 if [[ -n "${SNCK_DB_PASSWORD:-}" ]]; then
   DB_PASSWORD="$SNCK_DB_PASSWORD"
 elif [[ -r /dev/tty ]]; then
-  read -r -s -p 'PostgreSQL password: ' DB_PASSWORD </dev/tty
-  printf '\n'
+  read -r -s -p 'PostgreSQL password: ' DB_PASSWORD </dev/tty || fail 'Could not read the PostgreSQL password.'
+  printf '\\n'
 else
   fail 'Set SNCK_DB_PASSWORD for non-interactive installation.'
 fi
@@ -531,7 +531,6 @@ log 'Generating application key and running database migrations...'
 php artisan key:generate --force
 php artisan migrate --force
 php artisan config:cache
-php artisan route:cache
 php artisan view:cache
 
 id -u snck-panel >/dev/null 2>&1 || useradd --system --home-dir "$APP_DIR" --shell /usr/sbin/nologin snck-panel
