@@ -11,7 +11,7 @@ SNCK Panel is a self-hosted Minecraft server management panel. The **Laravel app
 | `laravel-panel/` | Laravel 12 application, Blade/Livewire UI, API routes, migrations and tests |
 | `scripts/install-laravel-panel.sh` | CLI installer for the Laravel application |
 | `scripts/` | Legacy/native panel scripts and utilities |
-| `node-install.sh` | Existing ShiroNex node installer; its compatibility with the Laravel node client must be verified before production use |
+| `node-install.sh` | Laravel-compatible node installer; downloads the daemon source, provisions trusted TLS and an SSH host key, and configures the node service |
 | `.github/workflows/` | Repository CI workflows |
 
 The older React/Vite + Express/TypeScript application remains in the repository for migration/compatibility work. It is not the PHP application's runtime.
@@ -26,7 +26,7 @@ The Laravel application currently contains routes and UI components for:
 - Server lifecycle actions, console commands, logs and resource statistics.
 - Server file browsing, editing, upload/download, archive operations and backups.
 - Plugin, mod and modpack management endpoints.
-- Per-server subuser management and SFTP credential management.
+- Per-server subuser management, SFTP credentials, and an SSH/SFTP transport jailed to each server's files.
 - API key management.
 - Discord reward configuration and claim administration.
 - Cloudflare connection and DNS management screens.
@@ -189,9 +189,10 @@ Important compatibility and deployment requirements:
 - Node credentials are per-node bearer credentials; they are not user login tokens.
 - Panel-to-node traffic must use HTTPS with normal certificate and hostname verification.
 - The PHP client must preserve the frozen v1 methods, paths and payload formats.
-- The existing root `node-install.sh` identifies itself as a ShiroNex installer. Do not assume it is a supported installer for every Laravel deployment without verifying the daemon version and API compatibility first.
+- The Infrastructure page creates a one-time install command using the node's bearer credential. The installer downloads the daemon from the repository's `main` branch; after merging this PR, the installer and panel API contract are aligned.
+- The node FQDN must resolve to the node VPS. The installer obtains a trusted certificate with Let's Encrypt HTTP-01 on TCP port 80, then starts the daemon over HTTPS. It also creates an SSH host key for SFTP.
 
-The daemon also includes an SSH/SFTP listener (default port 2022). Configure `sftpHostKey`, `sftpPort`, `panelUrl`, `nodeId`, `credential`, and `serverDirectory` in the node config. The panel validates each SFTP password through the node-authenticated `/api/node-agent/sftp-auth` endpoint; each login is jailed to that server's directory. Restrict the SFTP port to trusted networks and use a stable administrator-owned host key.
+The node installer configures the SSH/SFTP listener on TCP port 2022 and generates a stable host key. The panel validates each SFTP password through the node-authenticated `/api/node-agent/sftp-auth` endpoint; each login is jailed to that server's directory. Restrict SFTP to trusted networks. Open inbound TCP 80 for certificate issuance/renewal, 6768 for the HTTPS daemon, and 2022 for SFTP.
 
 Do not expose Docker's socket or unauthenticated daemon endpoints to the internet. Use a private network or secure tunnel and firewall rules.
 
@@ -217,7 +218,7 @@ php artisan test
 
 The checked-in PHPUnit configuration also defines an in-memory SQLite test environment for tests that support it. Database-specific behavior should additionally be verified against PostgreSQL.
 
-The repository's existing root CI workflow primarily tests the older Node/TypeScript code. Do not interpret a green root CI run as proof that the complete Laravel application, PostgreSQL deployment, installer, or node integration has passed end-to-end testing.
+The repository CI workflow now runs the Laravel test suite against PostgreSQL, PHP formatting and static analysis, the Laravel frontend build, the node-daemon build, and SSH/SFTP protocol integration tests. A green CI run still does not replace a live node provisioning, heartbeat, file-transfer, firewall, and certificate-renewal test.
 
 ## Current deployment limitations
 
@@ -227,7 +228,7 @@ This branch is still being consolidated. In particular:
 - The Laravel CLI installer requires PHP/Composer/Node/npm to be installed before it starts and requires a working PostgreSQL database.
 - The CLI installer currently assigns the application tree to the `snck-panel` user, while the default PHP-FPM pool may run as `www-data`. Verify and correct PHP-FPM write access for `storage/` and `bootstrap/cache/` before production use; do not solve this by making the whole application world-writable.
 - The installer does not configure HTTPS, DNS, Cloudflare Tunnel, PostgreSQL server provisioning, or node networking.
-- Node daemon compatibility and full production integration tests must be completed before treating remote-node deployment as production-ready.
+- Live node provisioning, heartbeat, Docker lifecycle, SFTP file transfer, firewall behavior, and certificate renewal must be verified in the target environment before treating remote-node deployment as production-ready.
 
 ## Security notes
 
