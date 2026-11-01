@@ -41,3 +41,12 @@ A persistent WebSocket Gateway worker for invite attribution and automatic rewar
 The php-migration-final PR adds the staff-only AdminWorkspace Livewire page for persisted settings, Cloudflare configuration, API-key management, and Discord administration configuration. It also adds the SFTP credential-authentication callback and a node-side SSH/SFTP listener using the ssh2 package. SFTP requests use the SSH2 server protocol, validate the node bearer credential against Laravel, and resolve each authenticated account to its own server directory. Absolute virtual paths are rooted inside the jail; traversal and symlink components are rejected.
 
 A real SSH/SFTP upload/download integration test has been added. The test and the complete combined Laravel/PostgreSQL and node-daemon suites must be run on the updated branch before this report can claim final verification. The main-branch Discord verification numbers above predate the PR #42 additions and are not a combined-suite result.
+
+
+## Node provisioning completion
+
+The Infrastructure page now creates the node record with an encrypted bearer credential and SHA-256 verification hash. If the administrator leaves the token field blank, the panel generates a 256-bit token. The page displays a one-time install command containing the matching node ID, FQDN, HTTPS panel URL, and credential; the command can be dismissed to clear it from the component state.
+
+The node installer now matches that credential-based flow instead of calling the missing setup-token registration endpoint. It downloads the daemon source from the repository's main-branch archive, validates the node FQDN, obtains a Let's Encrypt certificate through HTTP-01 on TCP 80, generates a stable SSH host key, writes HTTPS/SFTP settings into the private daemon config, builds the daemon, and registers a systemd service. Certificate renewal restarts the daemon through a Certbot deploy hook.
+
+CI run 41290717602 passed for the node provisioning changes, including Laravel/PHPUnit against PostgreSQL, Pint, PHPStan, frontend build, node-daemon TypeScript build, SSH/SFTP protocol tests, and shell syntax/help checks. Live DNS, firewall, certificate issuance/renewal, daemon heartbeat, Docker lifecycle, and SFTP behavior on a real VPS remain deployment-stage checks.
