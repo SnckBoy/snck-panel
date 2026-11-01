@@ -85,3 +85,9 @@ The Playit batch adds owner/staff-only status, start, stop, and reset endpoints,
 The first Discord rewards batch adds encrypted single-document state storage, redacted administrator configuration, strict Discord/OAuth validation, reward-plan CRUD, duplicate protection, audit events, and staff-only endpoints. Its focused suite passes 3 tests / 14 assertions. Live Discord gateway lifecycle, OAuth linking, invite attribution, retention cleanup, member reconciliation, and claim provisioning remain to be ported; this batch does not expose them as completed features.
 
 Remaining ordered work is now SFTP, remaining administration, the production installer, legacy PostgreSQL import verification, release hardening/PR preparation, and only then the remaining Discord worker features if credits remain.
+
+## discord-final
+
+### 1. Cloudflare UI — completed
+
+Added the staff-only `/cloudflare` Livewire page with zone selection, DNS record listing, create/edit/delete for A, AAAA, CNAME, TXT, MX, and SRV records, structured SRV fields, and a Minecraft SRV helper. The UI uses `CloudflareService`; focused coverage passes 2 tests / 5 assertions. Discord core remains next.
