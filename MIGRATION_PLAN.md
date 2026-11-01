@@ -25,7 +25,7 @@ Configure PostgreSQL credentials in `/opt/snck-panel/laravel-panel/.env`, then o
 
 ## Release verification
 
-The PostgreSQL suite passes **67 tests / 361 assertions**. SFTP-focused Laravel coverage passes **3 tests / 17 assertions**. Node-daemon SFTP jail tests pass **2 tests**. Pint passes 100 Laravel files, Larastan reports no errors with the checked-in pre-existing-debt baseline, Composer audit is clean, the Laravel production build passes, the node-daemon TypeScript build passes, and the smoke script passes shell syntax validation.
+The PostgreSQL suite passes **68 tests / 365 assertions**. SFTP-focused Laravel coverage passes **3 tests / 17 assertions**. Node-daemon SFTP jail tests pass **2 tests**. Pint passes 100 Laravel files, Larastan reports no errors with the checked-in pre-existing-debt baseline, Composer audit is clean, the Laravel production build passes, the node-daemon TypeScript build passes, and the smoke script passes shell syntax validation.
 
 ## Real-node staging gates
 

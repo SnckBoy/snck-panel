@@ -31,7 +31,7 @@ DB_DATABASE=snck_panel_test DB_USERNAME=snck_panel DB_PASSWORD='secret' \
 php artisan test
 ```
 
-Final PostgreSQL verification passed **67 tests / 361 assertions**; Pint passes all 98 formatted files; Larastan passes with a checked-in baseline for pre-existing migration type debt, so new findings fail analysis.
+Final PostgreSQL verification passed **68 tests / 365 assertions**; Pint passes all 98 formatted files; Larastan passes with a checked-in baseline for pre-existing migration type debt, so new findings fail analysis.
 
 After installation, run the endpoint smoke checks with `BASE_URL=https://panel.example.test bash scripts/smoke-test.sh`. The script reports PASS/FAIL for health, login, setup/install, dashboard redirect, and protected core APIs.
 

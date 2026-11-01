@@ -19,7 +19,7 @@ The production installer, `/install` web installer, `scripts/smoke-test.sh`, upd
 
 | Check | Result |
 |---|---:|
-| Complete Laravel PostgreSQL suite | **67 passed / 361 assertions** |
+| Complete Laravel PostgreSQL suite | **68 passed / 365 assertions** |
 | SFTP Laravel feature tests | **3 passed / 17 assertions** |
 | Node-daemon SFTP jail tests | **2 passed** |
 | Laravel Pint | **100 files pass** |

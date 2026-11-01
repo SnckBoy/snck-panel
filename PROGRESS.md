@@ -14,7 +14,7 @@ The installed-panel smoke script is [`scripts/smoke-test.sh`](scripts/smoke-test
 
 ## Verification
 
-- PostgreSQL Laravel suite: **67 passed / 361 assertions**.
+- PostgreSQL Laravel suite: **68 passed / 365 assertions**.
 - SFTP-focused Laravel suite: **3 passed / 17 assertions**.
 - Node-daemon SFTP tests: **2 passed**.
 - Pint: **100 Laravel files pass** after the new UI/auth additions.
