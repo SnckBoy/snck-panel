@@ -2,7 +2,7 @@
 
 SNCK Panel is a self-hosted Minecraft server management panel. The **Laravel application in `laravel-panel/` is the PHP implementation and the intended primary panel** on this branch.
 
-> **Branch status:** This documentation is for `repair/php-laravel-canonical`. The repository's root `install.sh` still belongs to the older React/Express installer path. It does **not** install the Laravel panel. Do not use the root one-command installer when you intend to deploy the PHP application.
+> **Branch status:** This documentation is for `repair/php-laravel-canonical`. The root `install.sh` now routes to the Laravel installer on the selected branch. The older React/Express application and its legacy scripts remain in the repository for migration/compatibility work.
 
 ## Project layout
 
@@ -47,7 +47,7 @@ For the Laravel application:
 - Git and systemd for the CLI installer.
 - Nginx and PHP-FPM are installed by the CLI installer.
 
-The installer checks for PHP, Composer, Node.js and npm before it installs packages. Install those prerequisites first. It installs the PostgreSQL client, but **does not install or provision a PostgreSQL server/database**.
+The installer checks for PHP, Composer, Node.js and npm before it installs packages. Install those prerequisites first. It installs Nginx, PHP 8.3-FPM and the PostgreSQL client, but **does not install or provision a PostgreSQL server/database**.
 
 ## Database preparation
 
@@ -76,14 +76,21 @@ node --version
 npm --version
 ```
 
-### 2. Download and run the Laravel installer from this branch
+### 2. Run the one-command installer
 
-The installer must be fetched from the same branch you intend to deploy. The following command installs this branch into the default directory, `/opt/snck-panel-laravel`:
+After this branch is merged into `main`, the standard command will install the Laravel application:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/repair/php-laravel-canonical/scripts/install-laravel-panel.sh -o /tmp/snck-panel-installer.sh
-sudo bash /tmp/snck-panel-installer.sh --branch=repair/php-laravel-canonical
+curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/install.sh | sudo bash
 ```
+
+To test this repair branch before it is merged:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/repair/php-laravel-canonical/install.sh | sudo env SNCK_BRANCH=repair/php-laravel-canonical bash
+```
+
+The root installer downloads `scripts/install-laravel-panel.sh` from the selected branch and forwards its options. The Laravel installer prompts for PostgreSQL connection details and the public panel URL before running migrations. For unattended installs, provide `SNCK_DB_HOST`, `SNCK_DB_PORT`, `SNCK_DB_DATABASE`, `SNCK_DB_USERNAME`, `SNCK_DB_PASSWORD`, and `SNCK_APP_URL` in the root environment.
 
 Optional installer arguments:
 
@@ -223,7 +230,7 @@ This branch is still being consolidated. In particular:
 
 - The root `install.sh` is still the legacy React/Express installer; it is not the Laravel installer.
 - The Laravel CLI installer requires PHP/Composer/Node/npm to be installed before it starts and requires a working PostgreSQL database.
-- The CLI installer currently assigns the application tree to the `snck-panel` user, while the default PHP-FPM pool may run as `www-data`. Verify and correct PHP-FPM write access for `storage/` and `bootstrap/cache/` before production use; do not solve this by making the whole application world-writable.
+- The CLI installer creates a dedicated PHP-FPM pool running as `snck-panel` and grants Nginx access to its socket. Only Laravel's `storage/` and `bootstrap/cache/` directories are writable by the application user; do not make the whole application world-writable.
 - The installer does not configure HTTPS, DNS, Cloudflare Tunnel, PostgreSQL server provisioning, or node networking.
 - Node daemon compatibility and full production integration tests must be completed before treating remote-node deployment as production-ready.
 
