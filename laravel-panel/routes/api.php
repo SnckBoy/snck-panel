@@ -3,6 +3,7 @@
 use App\Http\Controllers\AllocationController;
 use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\BackupController;
+use App\Http\Controllers\CloudflareController;
 use App\Http\Controllers\NodeAgentController;
 use App\Http\Controllers\NodeController;
 use App\Http\Controllers\ServerController;
@@ -67,4 +68,12 @@ Route::middleware(['web', 'auth', 'account.enabled'])->group(function (): void {
     Route::delete('/api-keys/{apiKey}', [ApiKeyController::class, 'destroy']);
     Route::get('/admin/settings', [SettingsController::class, 'index']);
     Route::put('/admin/settings', [SettingsController::class, 'update']);
+    Route::get('/cloudflare/connection', [CloudflareController::class, 'connection']);
+    Route::post('/cloudflare/connection', [CloudflareController::class, 'connect']);
+    Route::get('/cloudflare/zones', [CloudflareController::class, 'zones']);
+    Route::get('/cloudflare/zones/{zoneId}', [CloudflareController::class, 'zone']);
+    Route::get('/cloudflare/zones/{zoneId}/dns', [CloudflareController::class, 'dns']);
+    Route::post('/cloudflare/zones/{zoneId}/dns', [CloudflareController::class, 'createDns']);
+    Route::put('/cloudflare/zones/{zoneId}/dns/{recordId}', [CloudflareController::class, 'updateDns']);
+    Route::delete('/cloudflare/zones/{zoneId}/dns/{recordId}', [CloudflareController::class, 'deleteDns']);
 });
