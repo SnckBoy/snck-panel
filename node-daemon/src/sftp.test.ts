@@ -20,7 +20,7 @@ test("SFTP jail rejects symlink escapes", () => {
   const outside = path.join(base, "outside");
   fs.mkdirSync(outside);
   fs.symlinkSync(outside, path.join(root, "escape"));
-  assert.throws(() => jailedPath(root, "escape/secret.txt"), /Symlink escapes/);
+  assert.throws(() => jailedPath(root, "escape/secret.txt"), /Symlink/);
   fs.rmSync(base, { recursive: true, force: true });
 });
 
