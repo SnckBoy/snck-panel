@@ -121,7 +121,14 @@ fi
 [[ "$DB_PORT" =~ ^[0-9]+$ && "$DB_PORT" -ge 1 && "$DB_PORT" -le 65535 ]] || fail 'Invalid PostgreSQL port.'
 [[ -n "$DB_HOST" && -n "$DB_DATABASE" && -n "$DB_USERNAME" && -n "$DB_PASSWORD" ]] || fail 'Database settings cannot be empty.'
 
-APP_URL="$(prompt_value SNCK_APP_URL 'Public panel URL (set HTTPS after configuring TLS)' 'http://localhost')"
+if [[ -r /dev/tty ]]; then
+  APP_URL="$(prompt_value SNCK_APP_URL 'Public panel URL (set HTTPS after configuring TLS)' 'http://localhost')"
+else
+  [[ -n "${SNCK_APP_URL:-}" ]] || fail 'Set SNCK_APP_URL for non-interactive installation.'
+  APP_URL="$SNCK_APP_URL"
+fi
+DB_SSLMODE="${SNCK_DB_SSLMODE:-prefer}"
+case "$DB_SSLMODE" in disable|allow|prefer|require|verify-ca|verify-full) ;; *) fail 'Invalid SNCK_DB_SSLMODE value.' ;; esac
 php -r '
   $url = parse_url($argv[1]);
   $host = is_array($url) ? ($url["host"] ?? "") : "";
@@ -132,8 +139,6 @@ php -r '
   $hasCredentialsOrSuffix = is_array($url) && (isset($url["user"]) || isset($url["pass"]) || isset($url["query"]) || isset($url["fragment"]));
   exit($validHost && $validScheme && $validPath && ! $hasCredentialsOrSuffix ? 0 : 1);
 ' "$APP_URL" || fail 'APP_URL must be a root HTTP/HTTPS URL with a valid IPv4 address or DNS hostname.'
-DB_SSLMODE="${SNCK_DB_SSLMODE:-prefer}"
-
 # Safely replace dotenv values without evaluating or sourcing .env.
 set_env() {
   local key="$1" value="$2"
