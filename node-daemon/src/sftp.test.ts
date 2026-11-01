@@ -27,7 +27,7 @@ test("SFTP jail rejects symlink escapes", () => {
 
 test("SFTP open flags do not grant write access to read-only handles", () => {
   const flags = sftpOpenFlagsToNode(0x00000001);
-  assert.equal((flags & fs.constants.O_ACCMODE), fs.constants.O_RDONLY);
+  assert.equal((flags & (fs.constants.O_WRONLY | fs.constants.O_RDWR)), fs.constants.O_RDONLY);
 });
 
 test("SFTP open flags preserve create, truncate, append and exclusive semantics", () => {
