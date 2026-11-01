@@ -120,3 +120,11 @@ The final Laravel run passed **70 tests / 330 assertions**, with 2 PostgreSQL-on
 - node-install.sh downloads the daemon archive from GitHub main, obtains a trusted certificate with Certbot, creates an SSH host key, configures HTTPS and SFTP, builds the daemon, and installs its systemd service.
 - Added a PostgreSQL-backed Livewire test for the one-time command and non-staff access, plus CI checks for installer syntax and help output.
 - Real VPS DNS/firewall/certificate renewal/heartbeat/file-transfer checks are still required before production sign-off.
+
+## Canonical Laravel install entry point
+
+- Replaced the legacy root install entry point with a wrapper for the Laravel installer.
+- Installer preflight validates Ubuntu/Debian, PHP 8.3+, required extensions, Composer, Node 20+, npm, systemd, PostgreSQL settings, application path, and public URL.
+- Existing `.env` and application key are preserved on update; dotenv values are written safely; HTTPS URLs enable secure session cookies.
+- Nginx, a dedicated PHP-FPM pool, queue worker, scheduler and Discord maintenance timers are configured. Route caching remains disabled because a current route uses a closure.
+- PostgreSQL server provisioning, panel HTTPS/Cloudflare setup and live production deployment remain external tasks.
