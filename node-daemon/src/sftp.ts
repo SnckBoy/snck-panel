@@ -219,7 +219,8 @@ const handleSftp = (sftp: any, root: string): void => {
     try {
       const target = jailedPath(root, requestedPath);
       const relative = safeRelative(root, target);
-      sftp.name(requestId, [{ filename: relative, longname: relative }]);
+      const virtualAbsolute = relative === "." ? "/" : `/${relative}`;
+      sftp.name(requestId, [{ filename: virtualAbsolute, longname: virtualAbsolute }]);
     } catch (error) {
       fail(requestId, error);
     }
