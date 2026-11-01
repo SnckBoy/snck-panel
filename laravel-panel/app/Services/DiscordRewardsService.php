@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use App\Models\DiscordRewardState;
+use App\Models\User;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use RuntimeException;
 
 class DiscordRewardsService
@@ -102,5 +105,75 @@ class DiscordRewardsService
         }
 
         return $plan;
+    }
+
+    public function oauthUrl(string $state): string
+    {
+        $config = $this->state()['config'];
+        if (empty($config['oauthClientId']) || empty($config['oauthRedirectUri'])) {
+            throw new RuntimeException('Discord OAuth is not configured.');
+        }
+
+        return 'https://discord.com/oauth2/authorize?'.http_build_query(['client_id' => $config['oauthClientId'], 'redirect_uri' => $config['oauthRedirectUri'], 'response_type' => 'code', 'scope' => 'identify guilds', 'state' => $state]);
+    }
+
+    public function link(User $user, string $code): array
+    {
+        $config = $this->state()['config'];
+        $secret = Crypt::decryptString((string) ($config['oauthClientSecretEncrypted'] ?? ''));
+        $token = Http::asForm()->timeout(15)->post('https://discord.com/api/oauth2/token', ['client_id' => $config['oauthClientId'], 'client_secret' => $secret, 'grant_type' => 'authorization_code', 'code' => $code, 'redirect_uri' => $config['oauthRedirectUri']]);
+        if ($token->failed() || ! $token->json('access_token')) {
+            throw new RuntimeException('Discord OAuth token exchange failed.');
+        }
+        $access = (string) $token->json('access_token');
+        $profile = Http::withToken($access)->timeout(15)->get('https://discord.com/api/users/@me');
+        if ($profile->failed() || ! $profile->json('id')) {
+            throw new RuntimeException('Discord profile lookup failed.');
+        }
+        $state = $this->state();
+        $state['linkedAccounts'][(string) $user->id] = ['discordId' => (string) $profile->json('id'), 'username' => (string) ($profile->json('global_name') ?: $profile->json('username')), 'tokenEncrypted' => Crypt::encryptString($access), 'linkedAt' => now()->toISOString(), 'inviteCount' => (int) ($state['linkedAccounts'][(string) $user->id]['inviteCount'] ?? 0)];
+        $this->save($state);
+
+        return $state['linkedAccounts'][(string) $user->id];
+    }
+
+    public function unlink(User $user): void
+    {
+        $state = $this->state();
+        unset($state['linkedAccounts'][(string) $user->id]);
+        $this->save($state);
+    }
+
+    public function publicUserState(User $user): array
+    {
+        $state = $this->state();
+        $account = $state['linkedAccounts'][(string) $user->id] ?? null;
+        if ($account) {
+            unset($account['tokenEncrypted']);
+        }
+
+        return ['account' => $account, 'plans' => array_values(array_filter($state['plans'], fn (array $plan): bool => (bool) ($plan['enabled'] ?? false))), 'claims' => array_values(array_filter($state['claims'], fn (array $claim): bool => ($claim['userId'] ?? null) === (string) $user->id))];
+    }
+
+    public function claim(User $user, string $planId): array
+    {
+        $state = $this->state();
+        $account = $state['linkedAccounts'][(string) $user->id] ?? null;
+        $plan = collect($state['plans'])->firstWhere('id', $planId);
+        if (! $account || ! $plan || ! ($plan['enabled'] ?? false)) {
+            throw new RuntimeException('Discord account or reward plan is unavailable.');
+        }
+        if ((int) ($account['inviteCount'] ?? 0) < (int) $plan['requiredInvites']) {
+            throw new RuntimeException('Invite requirement has not been met.');
+        }
+        $active = collect($state['claims'])->first(fn (array $claim): bool => ($claim['userId'] ?? null) === (string) $user->id && ($claim['planId'] ?? null) === $planId && in_array($claim['status'] ?? '', ['pending', 'processing', 'approved'], true));
+        if ($active) {
+            throw new RuntimeException('This reward has already been claimed.');
+        }
+        $claim = ['id' => (string) Str::uuid(), 'userId' => (string) $user->id, 'planId' => $planId, 'status' => 'pending', 'createdAt' => now()->toISOString(), 'updatedAt' => now()->toISOString()];
+        $state['claims'][] = $claim;
+        $this->save($state);
+
+        return $claim;
     }
 }

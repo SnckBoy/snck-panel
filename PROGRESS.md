@@ -91,3 +91,7 @@ Remaining ordered work is now SFTP, remaining administration, the production ins
 ### 1. Cloudflare UI — completed
 
 Added the staff-only `/cloudflare` Livewire page with zone selection, DNS record listing, create/edit/delete for A, AAAA, CNAME, TXT, MX, and SRV records, structured SRV fields, and a Minecraft SRV helper. The UI uses `CloudflareService`; focused coverage passes 2 tests / 5 assertions. Discord core remains next.
+
+### 2. Discord core — completed
+
+Added real Discord OAuth authorization, callback state validation, token/profile HTTP calls, encrypted linked-account storage, unlinking, user rewards UI, duplicate-safe rate-limited claims, and staff approve/reject/reconcile claim actions with audit events. Focused coverage passes 2 tests / 9 assertions using HTTP fakes only in tests. Gateway attribution, provisioning execution, and retention worker remain item 3.
