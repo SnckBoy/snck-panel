@@ -298,6 +298,6 @@ export const startSftpServer = (config: SftpConfig): any => {
       });
     }));
   });
-  server.listen(config.port || 2022, config.host || "0.0.0.0");
+  server.listen(config.port ?? 2022, config.host || "0.0.0.0");
   return server;
 };
