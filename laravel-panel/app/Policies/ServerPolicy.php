@@ -42,6 +42,11 @@ class ServerPolicy
     public function properties(User $user, Server $server): bool { return $this->allows($user, $server, 'properties'); }
     public function settings(User $user, Server $server): bool { return $this->allows($user, $server, 'settings'); }
 
+    public function playit(User $user, Server $server): bool
+    {
+        return $this->isPrivilegedOrOwner($user, $server);
+    }
+
     // Console/RCON is intentionally not delegated: legacy grants have no
     // console scope and a console command may alter or destroy world state.
     public function command(User $user, Server $server): bool

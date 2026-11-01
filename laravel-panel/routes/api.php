@@ -6,6 +6,7 @@ use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CloudflareController;
 use App\Http\Controllers\NodeAgentController;
 use App\Http\Controllers\NodeController;
+use App\Http\Controllers\PlayitController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ServerFilesController;
 use App\Http\Controllers\ServerSubuserController;
@@ -34,6 +35,10 @@ Route::middleware(['web', 'auth', 'account.enabled'])->group(function (): void {
     Route::get('/servers', [ServerController::class, 'index']);
     Route::post('/servers', [ServerController::class, 'store']);
     Route::post('/servers/{server}/status', [ServerController::class, 'status']);
+    Route::get('/servers/{server}/playit', [PlayitController::class, 'status']);
+    Route::post('/servers/{server}/playit/start', [PlayitController::class, 'start']);
+    Route::post('/servers/{server}/playit/stop', [PlayitController::class, 'stop']);
+    Route::post('/servers/{server}/playit/reset', [PlayitController::class, 'reset']);
     Route::delete('/servers/{server}', [ServerController::class, 'destroy']);
     Route::post('/servers/{server}/{action}', [ServerController::class, 'action'])
         ->whereIn('action', ['start', 'stop', 'restart', 'kill']);
