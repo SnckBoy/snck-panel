@@ -126,6 +126,11 @@ jobs:
           cp .env.example .env
           php artisan key:generate --force
 
+      - name: Show InfrastructureManager formatting diff
+        run: |
+          ./vendor/bin/pint app/Livewire/InfrastructureManager.php
+          git diff -- app/Livewire/InfrastructureManager.php
+
       - name: Check PHP formatting
         run: ./vendor/bin/pint --test
 
