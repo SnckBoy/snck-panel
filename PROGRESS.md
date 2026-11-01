@@ -95,3 +95,7 @@ Added the staff-only `/cloudflare` Livewire page with zone selection, DNS record
 ### 2. Discord core — completed
 
 Added real Discord OAuth authorization, callback state validation, token/profile HTTP calls, encrypted linked-account storage, unlinking, user rewards UI, duplicate-safe rate-limited claims, and staff approve/reject/reconcile claim actions with audit events. Focused coverage passes 2 tests / 9 assertions using HTTP fakes only in tests. Gateway attribution, provisioning execution, and retention worker remain item 3.
+
+### 3. Discord worker — partial
+
+Added real Discord guild-member reconciliation, retention cleanup, an Artisan maintenance command, focused coverage (1 test / 3 assertions), and a five-minute systemd timer in the installer. A persistent WebSocket Gateway worker for invite attribution and automatic provisioning execution remains unfinished and is explicitly not marked DONE.

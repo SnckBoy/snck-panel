@@ -176,4 +176,46 @@ class DiscordRewardsService
 
         return $claim;
     }
+
+    public function reconcileMembers(): int
+    {
+        $state = $this->state();
+        $config = $state['config'];
+        $token = Crypt::decryptString((string) ($config['botTokenEncrypted'] ?? ''));
+        $guild = (string) ($config['guildId'] ?? '');
+        if ($token === '' || $guild === '') {
+            throw new RuntimeException('Discord bot and guild are not configured.');
+        }
+        $members = [];
+        $after = '0';
+        do {
+            $response = Http::withToken($token, 'Bot')->timeout(20)->get('https://discord.com/api/guilds/'.$guild.'/members', ['limit' => 1000, 'after' => $after]);
+            if ($response->failed()) {
+                throw new RuntimeException('Discord member reconciliation failed.');
+            }
+            $page = $response->json();
+            $members = array_merge($members, is_array($page) ? $page : []);
+            $last = end($page);
+            $after = count($page) === 1000 ? (string) ($last['user']['id'] ?? '') : '';
+        } while ($after !== '' && count($members) < 10000);
+        $memberIds = collect($members)->pluck('user.id')->map(fn ($id) => (string) $id)->all();
+        foreach ($state['linkedAccounts'] as &$account) {
+            $account['inGuild'] = in_array((string) ($account['discordId'] ?? ''), $memberIds, true);
+        }
+        unset($account);
+        $this->save($state);
+
+        return count($members);
+    }
+
+    public function cleanupRetention(): int
+    {
+        $state = $this->state();
+        $cutoff = now()->subDays((int) $state['config']['dataRetentionDays']);
+        $before = count($state['claims']);
+        $state['claims'] = array_values(array_filter($state['claims'], fn (array $claim): bool => ! isset($claim['createdAt']) || now()->parse($claim['createdAt'])->greaterThanOrEqualTo($cutoff) || in_array($claim['status'] ?? '', ['pending', 'processing'], true)));
+        $this->save($state);
+
+        return $before - count($state['claims']);
+    }
 }
