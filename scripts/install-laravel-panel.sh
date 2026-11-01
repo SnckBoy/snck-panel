@@ -48,6 +48,9 @@ case "${ID:-}" in
   *) fail 'Supported operating systems are Ubuntu and Debian.' ;;
 esac
 
+# A dry-run must never install packages or change the host.
+(( DRY_RUN )) && { log 'Dry-run completed without changing the host.'; exit 0; }
+
 # Bootstrap all panel prerequisites so the one-command installer is self-contained.
 export DEBIAN_FRONTEND=noninteractive
 log 'Installing system prerequisites (PHP 8.3, Composer, Node.js 22, PostgreSQL, Git and Nginx)...'
