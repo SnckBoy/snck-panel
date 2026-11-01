@@ -8,6 +8,7 @@ SNCK Panel is a self-hosted Minecraft server management panel. The **Laravel app
 
 | Path | Purpose |
 | --- | --- |
+| `install.sh` | Root entry point that fetches and runs the Laravel installer from the selected branch |
 | `laravel-panel/` | Laravel 12 application, Blade/Livewire UI, API routes, migrations and tests |
 | `scripts/install-laravel-panel.sh` | CLI installer for the Laravel application |
 | `scripts/` | Legacy/native panel scripts and utilities |
