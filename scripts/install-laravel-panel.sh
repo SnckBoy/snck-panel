@@ -114,5 +114,31 @@ Unit=snck-panel-laravel-scheduler.service
 [Install]
 WantedBy=timers.target
 EOF
-systemctl daemon-reload; systemctl enable --now nginx php8.3-fpm snck-panel-laravel.service snck-panel-laravel-scheduler.timer
+cat >/etc/systemd/system/snck-panel-discord-worker.service <<EOF
+[Unit]
+Description=SNCK Discord member reconciliation and retention worker
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=snck-panel
+Group=snck-panel
+WorkingDirectory=$APP_DIR
+EnvironmentFile=$APP_DIR/.env
+ExecStart=$(command -v php) $APP_DIR/artisan discord:maintenance --reconcile --cleanup
+EOF
+cat >/etc/systemd/system/snck-panel-discord-worker.timer <<EOF
+[Unit]
+Description=Run SNCK Discord maintenance every five minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+Unit=snck-panel-discord-worker.service
+
+[Install]
+WantedBy=timers.target
+EOF
+systemctl daemon-reload; systemctl enable --now nginx php8.3-fpm snck-panel-laravel.service snck-panel-laravel-scheduler.timer snck-panel-discord-worker.timer
 log 'CLI installation completed. The web installer is available at /setup for first-owner creation.'

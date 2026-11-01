@@ -1,9 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DiscordRewardsController;
 use App\Http\Controllers\ThemeExportController;
 use App\Livewire\AdminUsers;
+use App\Livewire\CloudflareManager;
 use App\Livewire\Dashboard;
+use App\Livewire\DiscordClaimsAdmin;
+use App\Livewire\DiscordRewardsPage;
 use App\Livewire\InfrastructureManager;
 use App\Livewire\ServerCreate;
 use App\Livewire\ServerDetail;
@@ -30,6 +34,9 @@ Route::middleware('guest')->group(function (): void {
 Route::middleware(['auth', 'account.enabled'])->group(function (): void {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
+    Route::get('/free-service/discord', DiscordRewardsPage::class)->name('discord.rewards');
+    Route::get('/auth/discord/redirect', [DiscordRewardsController::class, 'oauthRedirect'])->name('discord.oauth.redirect');
+    Route::get('/auth/discord/callback', [DiscordRewardsController::class, 'oauthCallback'])->name('discord.oauth.callback');
     Route::get('/servers', ServerIndex::class)->name('servers.index');
     Route::get('/servers/create', ServerCreate::class)->name('servers.create');
     Route::get('/servers/{server}', ServerDetail::class)->name('servers.show');
@@ -39,5 +46,7 @@ Route::middleware(['auth', 'account.enabled'])->group(function (): void {
         Route::get('/nodes', InfrastructureManager::class)->name('nodes.index');
         Route::get('/allocations', InfrastructureManager::class)->defaults('tab', 'allocations')->name('allocations.index');
         Route::get('/admin/users', AdminUsers::class)->name('admin.users');
+        Route::get('/cloudflare', CloudflareManager::class)->name('cloudflare.index');
+        Route::get('/admin/discord/claims', DiscordClaimsAdmin::class)->name('admin.discord.claims');
     });
 });

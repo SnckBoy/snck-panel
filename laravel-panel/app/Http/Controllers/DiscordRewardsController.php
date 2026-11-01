@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Services\DiscordRewardsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Throwable;
 
 class DiscordRewardsController extends Controller
@@ -84,6 +86,86 @@ class DiscordRewardsController extends Controller
         $state['plans'] = array_values(array_filter($state['plans'], fn (array $row): bool => $row['id'] !== $id));
         $this->rewards->save($state);
         $this->audit($user->id, 'discord.reward_plan_deleted', ['planId' => $id]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function oauthRedirect(Request $request)
+    {
+        $user = $request->user();
+        abort_unless($user instanceof User, 401);
+        $state = Str::random(48);
+        $request->session()->put('discord_oauth_state', $state);
+
+        return redirect()->away($this->rewards->oauthUrl($state));
+    }
+
+    public function oauthCallback(Request $request)
+    {
+        $user = $request->user();
+        abort_unless($user instanceof User, 401);
+        if (! hash_equals((string) $request->session()->pull('discord_oauth_state'), (string) $request->string('state'))) {
+            abort(419, 'Invalid Discord OAuth state.');
+        }
+        try {
+            $this->rewards->link($user, (string) $request->string('code'));
+
+            return redirect()->route('discord.rewards');
+        } catch (Throwable $error) {
+            return response()->json(['error' => $error->getMessage()], 400);
+        }
+    }
+
+    public function userState(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        abort_unless($user instanceof User, 401);
+
+        return response()->json($this->rewards->publicUserState($user));
+    }
+
+    public function unlink(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        abort_unless($user instanceof User, 401);
+        $this->rewards->unlink($user);
+        $this->audit($user->id, 'discord.account_unlinked', []);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function claim(Request $request, string $planId): JsonResponse
+    {
+        $user = $request->user();
+        abort_unless($user instanceof User, 401);
+        $request->validate(['planId' => ['nullable']]);
+        try {
+            $claim = $this->rewards->claim($user, $planId);
+            $this->audit($user->id, 'discord.reward_claimed', ['claimId' => $claim['id'], 'planId' => $planId]);
+
+            return response()->json(['claim' => $claim], 201);
+        } catch (Throwable $error) {
+            return response()->json(['error' => $error->getMessage()], 422);
+        }
+    }
+
+    public function updateClaim(Request $request, string $id): JsonResponse
+    {
+        $user = $this->staff($request);
+        $status = $request->validate(['status' => ['required', 'in:approved,rejected,reconciled']])['status'];
+        $state = $this->rewards->state();
+        $found = false;
+        foreach ($state['claims'] as &$claim) {
+            if (($claim['id'] ?? null) === $id) {
+                $claim['status'] = $status;
+                $claim['updatedAt'] = now()->toISOString();
+                $found = true;
+            }
+        }
+        unset($claim);
+        abort_unless($found, 404);
+        $this->rewards->save($state);
+        $this->audit($user->id, 'discord.claim_'.$status, ['claimId' => $id]);
 
         return response()->json(['success' => true]);
     }

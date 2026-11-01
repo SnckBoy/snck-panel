@@ -85,3 +85,21 @@ The Playit batch adds owner/staff-only status, start, stop, and reset endpoints,
 The first Discord rewards batch adds encrypted single-document state storage, redacted administrator configuration, strict Discord/OAuth validation, reward-plan CRUD, duplicate protection, audit events, and staff-only endpoints. Its focused suite passes 3 tests / 14 assertions. Live Discord gateway lifecycle, OAuth linking, invite attribution, retention cleanup, member reconciliation, and claim provisioning remain to be ported; this batch does not expose them as completed features.
 
 Remaining ordered work is now SFTP, remaining administration, the production installer, legacy PostgreSQL import verification, release hardening/PR preparation, and only then the remaining Discord worker features if credits remain.
+
+## discord-final
+
+### 1. Cloudflare UI — completed
+
+Added the staff-only `/cloudflare` Livewire page with zone selection, DNS record listing, create/edit/delete for A, AAAA, CNAME, TXT, MX, and SRV records, structured SRV fields, and a Minecraft SRV helper. The UI uses `CloudflareService`; focused coverage passes 2 tests / 5 assertions. Discord core remains next.
+
+### 2. Discord core — completed
+
+Added real Discord OAuth authorization, callback state validation, token/profile HTTP calls, encrypted linked-account storage, unlinking, user rewards UI, duplicate-safe rate-limited claims, and staff approve/reject/reconcile claim actions with audit events. Focused coverage passes 2 tests / 9 assertions using HTTP fakes only in tests. Gateway attribution, provisioning execution, and retention worker remain item 3.
+
+### 3. Discord worker — partial
+
+Added real Discord guild-member reconciliation, retention cleanup, an Artisan maintenance command, focused coverage (1 test / 3 assertions), and a five-minute systemd timer in the installer. A persistent WebSocket Gateway worker for invite attribution and automatic provisioning execution remains unfinished and is explicitly not marked DONE.
+
+### 4. Finish — verified
+
+The final Laravel run passed **70 tests / 330 assertions**, with 2 PostgreSQL-only importer tests skipped under the default SQLite configuration. Pint passes 105 files, Larastan reports no errors, Composer audit is clean, Blade cache passes, and installer shell syntax passes. Remaining work is only the persistent Discord Gateway invite-attribution worker and automatic ServerProvisioner execution for approved claims.

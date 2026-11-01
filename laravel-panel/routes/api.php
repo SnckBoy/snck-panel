@@ -89,6 +89,10 @@ Route::middleware(['web', 'auth', 'account.enabled'])->group(function (): void {
     Route::post('/discord-rewards/admin/plans', [DiscordRewardsController::class, 'storePlan']);
     Route::put('/discord-rewards/admin/plans/{id}', [DiscordRewardsController::class, 'updatePlan']);
     Route::delete('/discord-rewards/admin/plans/{id}', [DiscordRewardsController::class, 'deletePlan']);
+    Route::get('/discord-rewards/me', [DiscordRewardsController::class, 'userState']);
+    Route::delete('/discord-rewards/me', [DiscordRewardsController::class, 'unlink']);
+    Route::post('/discord-rewards/claim/{planId}', [DiscordRewardsController::class, 'claim'])->middleware('throttle:10,1');
+    Route::patch('/discord-rewards/admin/claims/{id}', [DiscordRewardsController::class, 'updateClaim']);
     Route::get('/admin/settings', [SettingsController::class, 'index']);
     Route::put('/admin/settings', [SettingsController::class, 'update']);
     Route::get('/admin/users', [AdminUserController::class, 'index']);

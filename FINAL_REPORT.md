@@ -1,48 +1,36 @@
-# SNCK Panel Laravel Migration — Final Report
+# SNCK Panel discord-final report
 
-**Date:** 2026-11-01  
-**Branch:** `php-migration-final`  
-**Repository:** `SnckBoy/snck-panel`
+## Delivered
 
-## Executive result
+This branch adds a complete staff Cloudflare DNS page with zone selection and CRUD for A, AAAA, CNAME, TXT, MX, and SRV records, including structured SRV editing and a Minecraft SRV helper.
 
-The Laravel migration branch is a substantial, tested release candidate. The ordered priorities requested for this work were completed through release preparation: plugins/mods/modpacks, SFTP, administrator configuration, production installer, legacy import verification, and security/tooling/documentation hardening. The remaining Discord gateway/OAuth/claim-worker scope was intentionally not started.
+Discord core now uses real Discord OAuth HTTP endpoints for authorization-code exchange and profile lookup. OAuth state is checked, access tokens are encrypted, accounts can be unlinked, users can see reward progress and submit duplicate-safe rate-limited claims, and staff can approve, reject, or reconcile claims with audit events.
 
-This is not a production cutover approval. PostgreSQL, node TLS/daemon compatibility, backup restoration, reverse proxy configuration, and the separate SFTP transport must be validated in the target environment before switching traffic.
+The worker foundation adds real Discord guild-member reconciliation and retention cleanup through `discord:maintenance`, with a five-minute systemd timer added to the production installer. The exact UI status is documented in `UI_PARITY.md`.
 
-## Delivered milestones
+## Verification
 
-- **Plugin/mod/modpack manager:** installed artifact listing/removal, bounded Modrinth download/install, validation, running-server protection, modpack replacement contract, and feature tests.
-- **SFTP:** one credential per server, hashed password storage, create/reset/delete lifecycle, password redaction on read, owner/staff policy boundary, audit events, and delegated-user denial. The API exposes connection metadata but does not install an SFTP daemon.
-- **Administrator configuration:** staff-only API and Livewire users page; account listing, role/status/password changes, owner/self-protection, validation, and audit events.
-- **Production installer:** `scripts/install-laravel-panel.sh` with `--dry-run`, OS/runtime checks, PostgreSQL client, Nginx/PHP-FPM, Laravel migrations, frontend build, queue worker, scheduler timer, rollback sibling backup, and systemd registration. `/install` aliases the guarded first-owner `/setup` flow.
-- **Legacy import:** importer behavior was tested on PostgreSQL 16, not only the lightweight local test database.
-- **Release hardening:** all 98 PHP files pass Pint; Composer audit reports no advisories; Larastan passes with a baseline containing pre-existing migration type debt; the root README, migration plan, installer runbook, progress log, and this report are current.
+Item-focused verification completed:
 
-## Verification evidence
+- Cloudflare UI: 2 tests / 5 assertions.
+- Discord core: 2 tests / 9 assertions.
+- Discord maintenance worker: 1 test / 3 assertions.
+- Pint and Blade cache passed during each focused item.
+- Installer shell syntax passed.
 
-| Check | Result |
-|---|---:|
-| Full PostgreSQL Laravel suite | **67 passed / 361 assertions** |
-| Legacy importer PostgreSQL tests | **2 passed / 48 assertions** |
-| Pint | **98 files pass** |
-| Larastan | **No new errors** |
-| Composer audit | **No security advisories** |
-| Shell syntax for Laravel installer | **Pass** |
-| Installer sandbox dry-run | Correctly stopped because sandbox Node.js is below required Node 20+ |
+Final verification passed **70 tests / 330 assertions**, with 2 PostgreSQL-only importer tests skipped under the default SQLite configuration. Pint passes 105 files, Larastan reports no errors, Composer audit is clean, Blade cache passes, and installer shell syntax passes.
 
-The normal lightweight suite also passed 65 tests / 313 assertions before PostgreSQL-specific verification. PostgreSQL-only coverage removed the two expected skips.
+## Installation
 
-## Security review
+```bash
+git clone --branch discord-final https://github.com/SnckBoy/snck-panel.git /opt/snck-panel
+cd /opt/snck-panel
+sudo bash scripts/install-laravel-panel.sh --dry-run
+sudo bash scripts/install-laravel-panel.sh --app-dir /opt/snck-panel/laravel-panel --repo https://github.com/SnckBoy/snck-panel.git --branch discord-final
+```
 
-The final scan found no use of `eval`, `unserialize`, shell command execution in the Laravel application, or unsafe plaintext credential persistence in the delivered integrations. Sensitive node, Cloudflare, and access credentials remain encrypted or hashed according to their use. File and archive operations continue through validated daemon contracts and bounded paths. SFTP plaintext passwords are returned only on create/reset responses and are never returned by GET.
+Configure PostgreSQL and Discord OAuth values in `.env`/the admin page, then open `/install` to create the first Owner. Configure the Discord OAuth redirect URI to `/auth/discord/callback`, the Discord bot token and guild ID, and run `BASE_URL=https://panel.example.test bash scripts/smoke-test.sh` after deployment.
 
-Residual deployment risks remain: node addresses are administrator-controlled outbound targets and must be protected by network policy; TLS verification and private CA configuration must be reviewed; the installer downloads package/repository content and should be run from a trusted source or pinned release; archive expanded-size and symlink behavior should be rechecked against the exact production runtime; and the Larastan baseline should be reduced as migration type annotations improve.
+## Remaining work
 
-## Release recommendation
-
-**Recommendation: approve for staging review, not immediate production cutover.** Merge the pull request only after reviewing the changed route/policy surface, validating the installer on the target supported distribution, rehearsing JSON import and restore, confirming the daemon version contract, and deciding how/where the SFTP transport will run. Keep the legacy runtime and backups available until those gates pass.
-
-## Deferred work
-
-Discord OAuth linking, invite attribution, reward claiming, gateway worker, retention cleanup, and related moderation/reconciliation flows remain deferred. These should be implemented as a separate post-release batch rather than being mixed into the migration cutover.
+A persistent WebSocket Gateway worker for invite attribution and automatic reward provisioning through `ServerProvisioner` is not complete. Claims are currently recorded for staff review; automatic provisioning is intentionally not claimed. These are the only Discord items marked `PARTIAL` in `UI_PARITY.md` and must be completed before describing Discord rewards as fully automated.
