@@ -172,7 +172,7 @@ fi
 info "Downloading node daemon source..."
 TMP="$(mktemp -d /tmp/shironex-node.XXXXXX)"
 trap 'rm -rf "$TMP"' EXIT
-curl -fsSL --retry 3 --retry-all-errors "$NODE_SOURCE_URL" -o "$TMP/repository.tar.gz" \
+curl -fsSL --retry 3 --retry-delay 2 "$NODE_SOURCE_URL" -o "$TMP/repository.tar.gz" \
   || fail "Could not download the node daemon source archive."
 tar -xzf "$TMP/repository.tar.gz" -C "$TMP"
 NODE_PACKAGE_FILE="$(find "$TMP" -type f -path '*/node-daemon/package.json' -print -quit)"
