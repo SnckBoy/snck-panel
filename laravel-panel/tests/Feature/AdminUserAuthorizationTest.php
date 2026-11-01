@@ -22,6 +22,20 @@ class AdminUserAuthorizationTest extends TestCase
         Livewire::test(AdminUsers::class)
             ->call('edit', $owner->id)
             ->assertForbidden();
+
+        Livewire::test(AdminUsers::class)
+            ->set('editing', $owner->id)
+            ->set('role', 'user')
+            ->set('disabled', true)
+            ->set('password', 'attempted-owner-password')
+            ->call('save')
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('users', [
+            'id' => $owner->id,
+            'role' => 'owner',
+            'disabled' => false,
+        ]);
     }
 
     public function test_last_owner_cannot_be_demoted_or_disabled_through_api(): void
@@ -36,6 +50,11 @@ class AdminUserAuthorizationTest extends TestCase
         $this->assertDatabaseHas('users', ['id' => $owner->id, 'role' => 'owner', 'disabled' => false]);
 
         $this->patchJson('/api/admin/users/'.$owner->id, ['disabled' => true])
+            ->assertUnprocessable();
+
+        $this->assertDatabaseHas('users', ['id' => $owner->id, 'role' => 'owner', 'disabled' => false]);
+
+        $this->deleteJson('/api/admin/users/'.$owner->id)
             ->assertUnprocessable();
 
         $this->assertDatabaseHas('users', ['id' => $owner->id, 'role' => 'owner', 'disabled' => false]);
