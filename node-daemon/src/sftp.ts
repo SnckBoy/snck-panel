@@ -4,7 +4,7 @@ import crypto from "node:crypto";
 import ssh2 from "ssh2";
 
 const SSHServer: any = (ssh2 as any).Server;
-const STATUS_CODE: any = (ssh2 as any).sftp.STATUS_CODE;
+const STATUS_CODE = { OK: 0, EOF: 1, NO_SUCH_FILE: 2, PERMISSION_DENIED: 3, FAILURE: 4 } as const;
 
 export const sftpOpenFlagsToNode = (flags: number): number => {
   const read = (flags & 0x00000001) !== 0;
