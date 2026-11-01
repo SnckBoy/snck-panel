@@ -5,6 +5,22 @@ import ssh2 from "ssh2";
 
 const SSHServer: any = (ssh2 as any).Server;
 
+// SSH_FXF_* values from the SFTP protocol. Preserve the requested access mode.
+export const sftpOpenFlagsToNode = (flags: number): number => {
+  const read = (flags & 0x00000001) !== 0;
+  const write = (flags & 0x00000002) !== 0;
+  if (!read && !write) throw new Error("SFTP open requires read or write permission");
+  if (!write && (flags & (0x00000004 | 0x00000008 | 0x00000010 | 0x00000020))) {
+    throw new Error("SFTP write flags require write permission");
+  }
+  let result = read && write ? fs.constants.O_RDWR : write ? fs.constants.O_WRONLY : fs.constants.O_RDONLY;
+  if (flags & 0x00000004) result |= fs.constants.O_APPEND;
+  if (flags & 0x00000008) result |= fs.constants.O_CREAT;
+  if (flags & 0x00000010) result |= fs.constants.O_TRUNC;
+  if (flags & 0x00000020) result |= fs.constants.O_EXCL;
+  return result;
+};
+
 export type SftpConfig = {
   host?: string;
   port?: number;
@@ -58,13 +74,13 @@ const authenticate = async (config: SftpConfig, username: string, password: stri
 };
 
 const handleSftp = (stream: any, root: string): void => {
-  const handles = new Map<string, { kind: "file" | "dir"; value: number | fs.Dir }>();
-  const handle = (value: number | fs.Dir, kind: "file" | "dir"): Buffer => {
+  const handles = new Map<string, { kind: "file" | "dir"; value: number | fs.Dir; directoryPath?: string }>();
+  const handle = (value: number | fs.Dir, kind: "file" | "dir", directoryPath?: string): Buffer => {
     const token = crypto.randomBytes(16).toString("hex");
-    handles.set(token, { kind, value });
+    handles.set(token, { kind, value, directoryPath });
     return Buffer.from(token);
   };
-  const get = (raw: Buffer): { kind: "file" | "dir"; value: number | fs.Dir } | null => handles.get(raw.toString()) || null;
+  const get = (raw: Buffer): { kind: "file" | "dir"; value: number | fs.Dir; directoryPath?: string } | null => handles.get(raw.toString()) || null;
   const close = (raw: Buffer): void => {
     const item = handles.get(raw.toString());
     if (!item) return;
@@ -75,12 +91,12 @@ const handleSftp = (stream: any, root: string): void => {
   stream.on("REALPATH", (req: any) => { try { const target = jailedPath(root, req.path); req.name(0, safeRelative(root, target), ""); } catch (e) { fail(req, e); } });
   stream.on("STAT", (req: any) => { try { const stat = fs.lstatSync(jailedPath(root, req.path)); req.attrs(0, { mode: stat.mode, size: stat.size, uid: stat.uid, gid: stat.gid, atime: stat.atimeMs / 1000, mtime: stat.mtimeMs / 1000 }); } catch (e) { fail(req, e); } });
   stream.on("LSTAT", (req: any) => { try { const stat = fs.lstatSync(jailedPath(root, req.path)); req.attrs(0, { mode: stat.mode, size: stat.size, uid: stat.uid, gid: stat.gid, atime: stat.atimeMs / 1000, mtime: stat.mtimeMs / 1000 }); } catch (e) { fail(req, e); } });
-  stream.on("OPEN", (req: any) => { try { const target = jailedPath(root, req.filename); const flags = req.flags & 2 ? "w+" : req.flags & 1 ? "r+" : "r"; req.handle(handle(fs.openSync(target, flags, 0o640), "file")); } catch (e) { fail(req, e); } });
+  stream.on("OPEN", (req: any) => { try { const target = jailedPath(root, req.filename); const flags = sftpOpenFlagsToNode(Number(req.flags)); req.handle(handle(fs.openSync(target, flags, 0o640), "file")); } catch (e) { fail(req, e); } });
   stream.on("READ", (req: any) => { try { const item = get(req.handle); if (!item || item.kind !== "file") throw new Error("Invalid file handle"); const buffer = Buffer.alloc(Math.min(req.length, 4 * 1024 * 1024)); const bytes = fs.readSync(item.value as number, buffer, 0, buffer.length, req.offset); req.data(buffer.subarray(0, bytes), 0); } catch (e) { fail(req, e); } });
   stream.on("WRITE", (req: any) => { try { const item = get(req.handle); if (!item || item.kind !== "file") throw new Error("Invalid file handle"); fs.writeSync(item.value as number, req.data, 0, req.data.length, req.offset); req.status(0); } catch (e) { fail(req, e); } });
   stream.on("CLOSE", (req: any) => { try { close(req.handle); req.status(0); } catch (e) { fail(req, e); } });
-  stream.on("OPENDIR", (req: any) => { try { req.handle(handle(fs.opendirSync(jailedPath(root, req.path)), "dir")); } catch (e) { fail(req, e); } });
-  stream.on("READDIR", (req: any) => { try { const item = get(req.handle); if (!item || item.kind !== "dir") throw new Error("Invalid directory handle"); const entry = (item.value as fs.Dir).readSync(); if (!entry) return req.end(); const target = path.join(root, safeRelative(root, path.join(root, entry.name))); const stat = fs.lstatSync(jailedPath(root, safeRelative(root, target))); req.file(0, { filename: entry.name, longname: entry.name, attrs: { mode: stat.mode, size: stat.size, uid: stat.uid, gid: stat.gid, atime: stat.atimeMs / 1000, mtime: stat.mtimeMs / 1000 } }); } catch (e) { fail(req, e); } });
+  stream.on("OPENDIR", (req: any) => { try { const directory = jailedPath(root, req.path); req.handle(handle(fs.opendirSync(directory), "dir", directory)); } catch (e) { fail(req, e); } });
+  stream.on("READDIR", (req: any) => { try { const item = get(req.handle); if (!item || item.kind !== "dir" || !item.directoryPath) throw new Error("Invalid directory handle"); const entry = (item.value as fs.Dir).readSync(); if (!entry) return req.end(); const relative = safeRelative(root, path.join(item.directoryPath, entry.name)); const target = jailedPath(root, relative); const stat = fs.lstatSync(target); req.file(0, { filename: entry.name, longname: entry.name, attrs: { mode: stat.mode, size: stat.size, uid: stat.uid, gid: stat.gid, atime: stat.atimeMs / 1000, mtime: stat.mtimeMs / 1000 } }); } catch (e) { fail(req, e); } });
   stream.on("REMOVE", (req: any) => { try { const target = jailedPath(root, req.path); if (fs.lstatSync(target).isDirectory()) throw new Error("Directory removal requires RMDIR"); fs.unlinkSync(target); req.status(0); } catch (e) { fail(req, e); } });
   stream.on("RMDIR", (req: any) => { try { fs.rmdirSync(jailedPath(root, req.path)); req.status(0); } catch (e) { fail(req, e); } });
   stream.on("MKDIR", (req: any) => { try { fs.mkdirSync(jailedPath(root, req.path), { recursive: false, mode: 0o750 }); req.status(0); } catch (e) { fail(req, e); } });
