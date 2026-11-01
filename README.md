@@ -2,7 +2,7 @@
 
 SNCK Panel is a self-hosted Minecraft server management panel. The **Laravel application in `laravel-panel/` is the PHP implementation and the intended primary panel** on this branch.
 
-> **Branch status:** This documentation is for `main`. The repository's root `install.sh` still belongs to the older React/Express installer path. It does **not** install the Laravel panel. Do not use the root one-command installer when you intend to deploy the PHP application.
+> **Primary implementation:** Laravel is the canonical panel. The root `install.sh` downloads and runs `scripts/install-laravel-panel.sh`; the older React/Express implementation and legacy scripts remain for compatibility work.
 
 ## Project layout
 
@@ -76,14 +76,21 @@ node --version
 npm --version
 ```
 
-### 2. Download and run the Laravel installer from this branch
+### 2. Run the Laravel installer
 
-The installer must be fetched from the same branch you intend to deploy. The following command installs this branch into the default directory, `/opt/snck-panel-laravel`:
+The standard one-command installer downloads the Laravel installer from `main` and installs into `/opt/snck-panel-laravel`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/scripts/install-laravel-panel.sh -o /tmp/snck-panel-installer.sh
-sudo bash /tmp/snck-panel-installer.sh --branch=main
+curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/install.sh | sudo bash
 ```
+
+To test this PR branch before it is merged:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/php-migration-final/install.sh | sudo env SNCK_BRANCH=php-migration-final bash
+```
+
+The installer prompts for PostgreSQL connection details and the public panel URL. For unattended installs, set `SNCK_DB_HOST`, `SNCK_DB_PORT`, `SNCK_DB_DATABASE`, `SNCK_DB_USERNAME`, `SNCK_DB_PASSWORD`, and `SNCK_APP_URL` in the root environment. It preserves an existing `.env` and application key when updating an existing install.
 
 Optional installer arguments:
 
@@ -154,7 +161,7 @@ The Laravel installer writes an Nginx site listening on HTTP port 80. It does **
 4. Set `APP_URL` to the public HTTPS URL and `SESSION_SECURE_COOKIE=true`.
 5. Restrict SSH and other administrative ports with your firewall. Do not expose PostgreSQL or a node's Docker API to the public internet.
 
-The installer currently writes the Nginx virtual host with `server_name _;` and removes the default Nginx site symlink. Review the generated Nginx configuration before using a host that already serves other websites.
+The installer sets the Nginx virtual host name from `APP_URL` and preserves the existing default Nginx site. Review the generated Nginx configuration before using a host that already serves other websites.
 
 ## Services and logs
 
@@ -224,10 +231,9 @@ The repository CI workflow now runs the Laravel test suite against PostgreSQL, P
 
 This branch is still being consolidated. In particular:
 
-- The root `install.sh` is still the legacy React/Express installer; it is not the Laravel installer.
 - The Laravel CLI installer requires PHP/Composer/Node/npm to be installed before it starts and requires a working PostgreSQL database.
 - The CLI installer currently assigns the application tree to the `snck-panel` user, while the default PHP-FPM pool may run as `www-data`. Verify and correct PHP-FPM write access for `storage/` and `bootstrap/cache/` before production use; do not solve this by making the whole application world-writable.
-- The installer does not configure HTTPS, DNS, Cloudflare Tunnel, PostgreSQL server provisioning, or node networking.
+- The panel installer does not configure HTTPS, DNS, Cloudflare Tunnel, PostgreSQL server provisioning, or panel reverse-proxy networking. The separate node installer configures node TLS but requires a public node FQDN and reachable HTTP-01 port 80.
 - Live node provisioning, heartbeat, Docker lifecycle, SFTP file transfer, firewall behavior, and certificate renewal must be verified in the target environment before treating remote-node deployment as production-ready.
 
 ## Security notes
