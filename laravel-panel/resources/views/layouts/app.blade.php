@@ -4,31 +4,67 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#080d1b">
     <title>{{ $title ?? 'Snck Panel' }} · {{ config('app.name', 'Snck Panel') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="min-h-screen bg-slate-950 text-slate-100 antialiased">
-<div class="min-h-screen lg:flex">
-    <aside class="border-b border-slate-800 bg-slate-900/80 p-5 lg:min-h-screen lg:w-64 lg:border-b-0 lg:border-r">
-        <a href="{{ route('dashboard') }}" class="text-lg font-bold tracking-wide text-violet-300">SNCK PANEL</a>
-        <p class="mt-1 text-xs text-slate-500">{{ auth()->user()->username ?? auth()->user()->name }} · {{ auth()->user()->role }}</p>
-        <nav class="mt-7 flex gap-3 text-sm lg:flex-col">
-            <a href="{{ route('dashboard') }}" class="rounded-lg px-3 py-2 hover:bg-slate-800">Dashboard</a>
-            <a href="{{ route('servers.index') }}" class="rounded-lg px-3 py-2 hover:bg-slate-800">Servers</a>
-            <a href="{{ route('servers.create') }}" class="rounded-lg px-3 py-2 hover:bg-slate-800">Create server</a>
-            @if (auth()->user()->isStaff())
-                <a href="{{ route('nodes.index') }}" class="rounded-lg px-3 py-2 hover:bg-slate-800">Nodes</a>
-                <a href="{{ route('themes.index') }}" class="rounded-lg px-3 py-2 hover:bg-slate-800">Snck Theme</a>
-            @endif
+<body class="snck-app min-h-screen bg-slate-950 text-slate-100 antialiased">
+@php
+    $snckNavigation = [
+        ['label' => 'Dashboard', 'route' => 'dashboard', 'icon' => '⌂'],
+        ['label' => 'Servers', 'route' => 'servers.index', 'icon' => '▦'],
+        ['label' => 'Create server', 'route' => 'servers.create', 'icon' => '+'],
+    ];
+    if (auth()->user()->isStaff()) {
+        $snckNavigation[] = ['label' => 'Nodes', 'route' => 'nodes.index', 'icon' => '◈'];
+        $snckNavigation[] = ['label' => 'Snck Theme', 'route' => 'themes.index', 'icon' => '✳'];
+    }
+@endphp
+<div class="snck-shell">
+    <header class="snck-mobile-header">
+        <a href="{{ route('dashboard') }}" class="snck-brand">SNCK <span>PANEL</span></a>
+        <details class="snck-mobile-menu">
+            <summary aria-label="Open navigation menu"><span></span><span></span><span></span></summary>
+            <nav class="snck-mobile-nav" aria-label="Main navigation">
+                @foreach ($snckNavigation as $item)
+                    <a href="{{ route($item['route']) }}" @if(request()->routeIs($item['route'])) aria-current="page" @endif>
+                        <span class="snck-nav-icon" aria-hidden="true">{{ $item['icon'] }}</span>{{ $item['label'] }}
+                    </a>
+                @endforeach
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="snck-signout"><span class="snck-nav-icon" aria-hidden="true">↪</span>Sign out</button>
+                </form>
+            </nav>
+        </details>
+    </header>
+
+    <aside class="snck-sidebar">
+        <a href="{{ route('dashboard') }}" class="snck-brand">SNCK <span>PANEL</span></a>
+        <div class="snck-user">
+            <span class="snck-avatar" aria-hidden="true">{{ strtoupper(substr(auth()->user()->username ?? auth()->user()->name, 0, 1)) }}</span>
+            <span><strong>{{ auth()->user()->username ?? auth()->user()->name }}</strong><small>{{ auth()->user()->role }}</small></span>
+        </div>
+        <p class="snck-nav-label">WORKSPACE</p>
+        <nav class="snck-nav" aria-label="Main navigation">
+            @foreach ($snckNavigation as $item)
+                <a href="{{ route($item['route']) }}" @if(request()->routeIs($item['route'])) class="is-active" aria-current="page" @endif>
+                    <span class="snck-nav-icon" aria-hidden="true">{{ $item['icon'] }}</span>{{ $item['label'] }}
+                </a>
+            @endforeach
         </nav>
-        <form method="POST" action="{{ route('logout') }}" class="mt-7">
-            @csrf
-            <button type="submit" class="rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800">Sign out</button>
-        </form>
+        <div class="snck-sidebar-bottom">
+            <div class="snck-sidebar-status"><span></span>Panel workspace</div>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="snck-signout"><span class="snck-nav-icon" aria-hidden="true">↪</span>Sign out</button>
+            </form>
+        </div>
     </aside>
-    <main class="min-w-0 flex-1 p-5 sm:p-8">
-        {{ $slot }}
+
+    <main class="snck-main">
+        <div class="snck-main-inner">{{ $slot }}</div>
     </main>
 </div>
 @livewireScripts
