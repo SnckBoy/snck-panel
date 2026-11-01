@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Livewire\AdminWorkspace;
 use App\Models\User;
+use Livewire\Livewire;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -32,6 +34,18 @@ class AdminConfigurationTest extends TestCase
         $this->actingAs($admin)->patchJson('/api/admin/users/'.$target->id, ['role' => 'owner'])->assertStatus(422);
         $this->actingAs($admin)->patchJson('/api/admin/users/'.$admin->id, ['disabled' => true])->assertStatus(422);
         $this->actingAs($regular)->getJson('/api/admin/users')->assertForbidden();
+    }
+
+
+    public function test_admin_workspace_rechecks_staff_access_after_role_is_removed(): void
+    {
+        $admin = $this->user('workspace-admin', 'admin');
+        $this->actingAs($admin);
+        $component = Livewire::test(AdminWorkspace::class);
+
+        $admin->forceFill(['role' => 'user'])->save();
+
+        $component->call('saveSettings')->assertForbidden();
     }
 
     private function user(string $id, string $role): User
