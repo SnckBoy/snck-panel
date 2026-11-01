@@ -75,6 +75,6 @@ The quota settings are `quota_max_servers`, `quota_total_ram_mb`, `quota_total_c
 
 ## Laravel migration batches
 
-The `php-migration-final` branch contains the Laravel 12 foundation, daemon/server integration, Batch 1 server experience, and Batch 2 API keys/admin settings. The Cloudflare batch now adds encrypted account storage, token verification, staff-only zone/DNS endpoints, validation, audit events, and HTTP-faked feature coverage. Local Laravel verification remains pending on environments without PHP 8.3, Composer, and PostgreSQL; do not treat this batch as release-verified until `composer install`, `php artisan test`, `composer audit`, and the frontend build complete in the project toolchain.
+The `php-migration-final` branch contains the Laravel 12 foundation, daemon/server integration, Batch 1 server experience, and Batch 2 API keys/admin settings. The Cloudflare batch now adds encrypted account storage, token verification, staff-only zone/DNS endpoints, SRV-aware validation, audit events, reconnect upserts, bounded pagination, and HTTP-faked feature coverage. Verification completed with the Laravel frontend build, `composer audit` reporting no advisories, and 54 passing tests / 259 assertions; two PostgreSQL-only importer tests are intentionally skipped under the SQLite test configuration.
 
 Remaining ordered work includes Playit, Discord rewards, plugins/mods/modpacks, SFTP contract work, remaining administration, the complete importer/installer rehearsal, security hardening, and final production-readiness testing.

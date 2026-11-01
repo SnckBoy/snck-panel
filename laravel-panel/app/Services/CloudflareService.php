@@ -6,7 +6,6 @@ use App\Models\CloudflareAccount;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 use RuntimeException;
 
 class CloudflareService
@@ -37,8 +36,7 @@ class CloudflareService
 
         $selectedAccount = collect($accounts)->firstWhere('id', $chosen);
 
-        return CloudflareAccount::query()->create([
-            'id' => (string) Str::uuid(),
+        return CloudflareAccount::query()->updateOrCreate(['account_id' => $chosen], [
             'account_id' => $chosen,
             'name' => $selectedAccount['name'] ?? null,
             'api_token_encrypted' => Crypt::encryptString($token),
@@ -60,7 +58,7 @@ class CloudflareService
     public function zones(?string $accountId = null): array
     {
         $account = $this->account($accountId);
-        return $this->request($this->token($account), 'GET', '/zones?account.id='.rawurlencode((string) $account->account_id).'&per_page=100')['result'] ?? [];
+        return $this->pagedResults($this->token($account), '/zones?account.id='.rawurlencode((string) $account->account_id).'&per_page=100');
     }
 
     public function zone(string $zoneId, ?string $accountId = null): array
@@ -70,7 +68,8 @@ class CloudflareService
 
     public function dns(string $zoneId, ?string $accountId = null): array
     {
-        return $this->request($this->token($this->account($accountId)), 'GET', '/zones/'.rawurlencode($zoneId).'/dns_records?per_page=100')['result'] ?? [];
+        $account = $this->account($accountId);
+        return $this->pagedResults($this->token($account), '/zones/'.rawurlencode($zoneId).'/dns_records?per_page=100');
     }
 
     public function createDns(string $zoneId, array $data, ?string $accountId = null): array
@@ -91,6 +90,21 @@ class CloudflareService
     private function token(CloudflareAccount $account): string
     {
         return Crypt::decryptString((string) $account->api_token_encrypted);
+    }
+
+    private function pagedResults(string $token, string $path): array
+    {
+        $results = [];
+        $page = 1;
+        $maxPages = 20;
+        do {
+            $separator = str_contains($path, '?') ? '&' : '?';
+            $body = $this->request($token, 'GET', $path.$separator.'page='.$page);
+            $results = array_merge($results, $body['result'] ?? []);
+            $totalPages = min((int) ($body['result_info']['total_pages'] ?? $page), $maxPages);
+            $page++;
+        } while ($page <= $totalPages);
+        return $results;
     }
 
     private function request(string $token, string $method, string $path, ?array $payload = null): array

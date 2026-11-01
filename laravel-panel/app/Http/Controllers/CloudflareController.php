@@ -6,6 +6,7 @@ use App\Services\CloudflareService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Throwable;
 
@@ -92,15 +93,28 @@ class CloudflareController extends Controller
 
     private function recordData(Request $request): array
     {
-        return $request->validate([
+        $type = (string) $request->input('type');
+        $data = Validator::make($request->all(), [
             'type' => ['required', Rule::in(['A', 'AAAA', 'CNAME', 'TXT', 'MX', 'SRV'])],
             'name' => ['required', 'string', 'max:255'],
-            'content' => ['required', 'string', 'max:2048'],
+            'content' => ['required_unless:type,SRV', 'nullable', 'string', 'max:2048'],
             'ttl' => ['sometimes', 'integer', 'min:60', 'max:86400'],
             'proxied' => ['sometimes', 'boolean'],
             'priority' => ['sometimes', 'integer', 'min:0', 'max:65535'],
-            'data' => ['sometimes', 'array'],
-        ]);
+            'data' => ['required_if:type,SRV', 'nullable', 'array'],
+            'data.service' => ['required_if:type,SRV', 'string', 'max:255'],
+            'data.proto' => ['required_if:type,SRV', 'string', 'max:255'],
+            'data.name' => ['required_if:type,SRV', 'string', 'max:255'],
+            'data.priority' => ['required_if:type,SRV', 'integer', 'min:0', 'max:65535'],
+            'data.weight' => ['required_if:type,SRV', 'integer', 'min:0', 'max:65535'],
+            'data.port' => ['required_if:type,SRV', 'integer', 'min:1', 'max:65535'],
+            'data.target' => ['required_if:type,SRV', 'string', 'max:255'],
+        ])->validate();
+
+        if (in_array($type, ['SRV', 'MX', 'TXT'], true)) {
+            unset($data['proxied']);
+        }
+        return $data;
     }
 
     private function staff(Request $request)
