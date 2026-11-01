@@ -50,3 +50,9 @@ The Infrastructure page now creates the node record with an encrypted bearer cre
 The node installer now matches that credential-based flow instead of calling the missing setup-token registration endpoint. It downloads the daemon source from the repository's main-branch archive, validates the node FQDN, obtains a Let's Encrypt certificate through HTTP-01 on TCP 80, generates a stable SSH host key, writes HTTPS/SFTP settings into the private daemon config, builds the daemon, and registers a systemd service. Certificate renewal restarts the daemon through a Certbot deploy hook.
 
 CI run 41290717602 passed for the node provisioning changes, including Laravel/PHPUnit against PostgreSQL, Pint, PHPStan, frontend build, node-daemon TypeScript build, SSH/SFTP protocol tests, and shell syntax/help checks. Live DNS, firewall, certificate issuance/renewal, daemon heartbeat, Docker lifecycle, and SFTP behavior on a real VPS remain deployment-stage checks.
+
+## Canonical Laravel installer
+
+The root `install.sh` now fetches and executes `scripts/install-laravel-panel.sh` from the selected branch. The Laravel installer performs OS/PHP/Composer/Node preflight, validates the application path and public URL, prompts for PostgreSQL settings, preserves an existing `.env` and application key, updates dotenv values without sourcing the file, builds the Laravel frontend, runs migrations, configures a dedicated PHP-FPM pool and Nginx site, and installs queue/scheduler/Discord systemd units. It intentionally does not provision PostgreSQL, issue a panel TLS certificate, or configure Cloudflare Tunnel.
+
+The installer no longer route-caches the app, and Laravel services load `.env` themselves rather than asking systemd to parse it. The root wrapper preserves explicit `SNCK_DB_*`, `SNCK_APP_URL`, and `SNCK_PANEL_DIR` environment values when it needs to elevate through sudo.
