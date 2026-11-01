@@ -1,60 +1,43 @@
-# SNCK Panel Laravel Migration — Final Report
+# SNCK Panel discord-final report
 
-**Date:** 2026-11-01  
-**Branch:** `php-migration-final`  
-**Pull request:** #39  
-**Legacy rollback tag:** `legacy-node-final`
+## Delivered
 
-## What was built
+This branch adds a complete staff Cloudflare DNS page with zone selection and CRUD for A, AAAA, CNAME, TXT, MX, and SRV records, including structured SRV editing and a Minecraft SRV helper.
 
-The Laravel release candidate now covers the original panel's authenticated foundation, Owner setup, PostgreSQL persistence, idempotent legacy JSON import, server provisioning and lifecycle, files, console/logs, players, properties, backups, sub-users, nodes, allocations, themes, Cloudflare DNS, Playit, plugin/mod/modpack management, SFTP, administrator settings/users, API keys, and UI parity. `UI_PARITY.md` is the page-by-page checklist.
+Discord core now uses real Discord OAuth HTTP endpoints for authorization-code exchange and profile lookup. OAuth state is checked, access tokens are encrypted, accounts can be unlinked, users can see reward progress and submit duplicate-safe rate-limited claims, and staff can approve, reject, or reconcile claims with audit events.
 
-The UI parity batch added an AdminWorkspace Livewire page for Settings, Cloudflare, API keys, and Discord configuration, and completed the missing ServerDetail tabs for SFTP, plugins, mods, modpacks, and Playit. Existing console, logs, players, properties, files, backups, and sub-user interfaces remain wired to Laravel services and the frozen daemon contract.
-
-SFTP is now a real SSH/SFTP transport in `node-daemon/src/sftp.ts`. The daemon calls Laravel for node-authenticated password validation, maps the authenticated account to its server root, and blocks absolute paths, `..` traversal, symlink escapes, and unsafe handles. Passwords remain hashed in Laravel and are returned only by create/reset operations.
-
-The production installer, `/install` web installer, `scripts/smoke-test.sh`, updated runbook, release documentation, and `legacy-node-final` tag are included.
+The worker foundation adds real Discord guild-member reconciliation and retention cleanup through `discord:maintenance`, with a five-minute systemd timer added to the production installer. The exact UI status is documented in `UI_PARITY.md`.
 
 ## Verification
 
-| Check | Result |
-|---|---:|
-| Complete Laravel PostgreSQL suite | **68 passed / 365 assertions** |
-| SFTP Laravel feature tests | **3 passed / 17 assertions** |
-| Node-daemon SFTP jail tests | **2 passed** |
-| Laravel Pint | **100 files pass** |
-| Larastan | **No errors** with baseline for pre-existing migration debt |
-| Composer audit | **No advisories** |
-| Laravel frontend build | **Pass** |
-| Node-daemon TypeScript build | **Pass** |
-| Blade cache and route compilation | **Pass** |
-| Smoke-test shell syntax | **Pass** |
+Item-focused verification completed:
 
-## Exact install steps
+- Cloudflare UI: 2 tests / 5 assertions.
+- Discord core: 2 tests / 9 assertions.
+- Discord maintenance worker: 1 test / 3 assertions.
+- Pint and Blade cache passed during each focused item.
+- Installer shell syntax passed.
 
-On Ubuntu/Debian with PHP 8.3, Node.js 20+, Composer, PostgreSQL access, and systemd:
+Final verification passed **70 tests / 330 assertions**, with 2 PostgreSQL-only importer tests skipped under the default SQLite configuration. Pint passes 105 files, Larastan reports no errors, Composer audit is clean, Blade cache passes, and installer shell syntax passes.
+
+## Installation
 
 ```bash
-git clone --branch php-migration-final https://github.com/SnckBoy/snck-panel.git /opt/snck-panel
+git clone --branch discord-final https://github.com/SnckBoy/snck-panel.git /opt/snck-panel
 cd /opt/snck-panel
 sudo bash scripts/install-laravel-panel.sh --dry-run
-sudo bash scripts/install-laravel-panel.sh --app-dir /opt/snck-panel/laravel-panel --repo https://github.com/SnckBoy/snck-panel.git --branch php-migration-final
+sudo bash scripts/install-laravel-panel.sh --app-dir /opt/snck-panel/laravel-panel --repo https://github.com/SnckBoy/snck-panel.git --branch discord-final
 ```
 
-Set the PostgreSQL values in `/opt/snck-panel/laravel-panel/.env`, place the daemon configuration and SFTP host key on each node, then open `/install` through HTTPS to create the first Owner. Provision a server SFTP credential from its SFTP tab and test it with an external client. Finally run:
+Configure PostgreSQL and Discord OAuth values in `.env`/the admin page, then open `/install` to create the first Owner. Configure the Discord OAuth redirect URI to `/auth/discord/callback`, the Discord bot token and guild ID, and run `BASE_URL=https://panel.example.test bash scripts/smoke-test.sh` after deployment.
 
-```bash
-BASE_URL=https://panel.example.test bash scripts/smoke-test.sh
-```
+## Remaining work
 
-## What still needs real-node testing
+A persistent WebSocket Gateway worker for invite attribution and automatic reward provisioning through `ServerProvisioner` is not complete. Claims are currently recorded for staff review; automatic provisioning is intentionally not claimed. These are the only Discord items marked `PARTIAL` in `UI_PARITY.md` and must be completed before describing Discord rewards as fully automated.
 
-The sandbox cannot prove Docker image pulls and container lifecycle, daemon TLS/heartbeat against a remote node, production filesystem ownership, external SFTP login and file operations, Playit/PM2 operation, Cloudflare DNS changes with a real token, Nginx/PHP-FPM/systemd restarts, queue/scheduler execution, PostgreSQL backup restoration, or importer results against a real production backup. These are mandatory staging gates before cutover.
 
-## Remaining engineering scope
+## PR #42 integration work — SFTP and administrator workspace
 
-Discord live OAuth/account linking, gateway invite attribution, reward claiming and provisioning, queue/systemd worker lifecycle, retention cleanup, member reconciliation, moderation/review/reconcile actions, and their complete reward UI remain open. The Laravel branch currently provides encrypted Discord configuration and strict reward-plan administration; it does not claim the full live Discord rewards system is complete.
+The `php-migration-final` PR adds the staff-only AdminWorkspace Livewire page for persisted settings, Cloudflare configuration, API-key management, and Discord administration configuration. It also adds the SFTP credential-authentication callback and a node-side SSH/SFTP listener using the `ssh2` package. SFTP requests use the SSH2 server protocol, validate the node bearer credential against Laravel, and resolve each authenticated account to its own server directory. Absolute virtual paths are rooted inside the jail; traversal and symlink components are rejected.
 
-## Recommendation
-
-Approve the branch for staging review and external-node testing. Do not perform production cutover until the real-node gates above pass, the importer and restore rehearsal are accepted, and the remaining Discord scope is either completed or explicitly removed from the release acceptance criteria.
+A real SSH/SFTP upload/download integration test has been added. The test and the complete combined Laravel/PostgreSQL and node-daemon suites must be run on the updated branch before this report can claim final verification. The main-branch Discord verification numbers above predate the PR #42 additions and are not a combined-suite result.
