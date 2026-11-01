@@ -16,18 +16,31 @@ class ThemeManager extends Component
     use WithFileUploads;
 
     public string $themeId = '';
+
     public string $name = '';
+
     public string $author = 'Administrator';
+
     public string $description = '';
+
     public string $version = '1.0.0';
+
     public array $config = [];
+
     public array $layout = [];
+
     public string $activeId = 'snck-default';
+
     public string $shortcutLabel = '';
+
     public string $shortcutUrl = '';
+
     public string $shortcutTarget = '';
+
     public $package = null;
+
     public string $notice = '';
+
     public string $noticeType = 'success';
 
     public function mount(ThemeCatalog $catalog): void
@@ -71,9 +84,14 @@ class ThemeManager extends Component
                 'layout' => $this->layout,
             ]);
             $existing = Theme::query()->find($data['id']);
-            if ($existing && ($existing->built_in || $catalog->isBuiltInId($existing->id))) throw new \RuntimeException('Built-in themes are protected; clone one to customize it.');
-            if ($existing) $existing->update($data);
-            else Theme::query()->create($data + ['enabled' => true, 'built_in' => false, 'protected' => false]);
+            if ($existing && ($existing->built_in || $catalog->isBuiltInId($existing->id))) {
+                throw new \RuntimeException('Built-in themes are protected; clone one to customize it.');
+            }
+            if ($existing) {
+                $existing->update($data);
+            } else {
+                Theme::query()->create($data + ['enabled' => true, 'built_in' => false, 'protected' => false]);
+            }
             $this->notice = $existing ? 'Theme saved.' : 'Theme created.';
             $this->noticeType = 'success';
         } catch (Throwable $exception) {
@@ -86,11 +104,17 @@ class ThemeManager extends Component
     {
         $this->requireStaff();
         $theme = collect($catalog->all())->firstWhere('id', $id);
-        if (!$theme) { $this->flashError('Theme not found.'); return; }
+        if (! $theme) {
+            $this->flashError('Theme not found.');
+
+            return;
+        }
         $base = Str::slug($theme['name']).'-copy';
         $newId = substr($base, 0, 40);
         $suffix = 2;
-        while (Theme::query()->whereKey($newId)->exists()) $newId = substr($base, 0, 44).'-'.$suffix++;
+        while (Theme::query()->whereKey($newId)->exists()) {
+            $newId = substr($base, 0, 44).'-'.$suffix++;
+        }
         $this->themeId = $newId;
         $this->name = $theme['name'].' Copy';
         $this->author = auth()->user()->username ?: 'Administrator';
@@ -107,9 +131,13 @@ class ThemeManager extends Component
         $this->requireStaff();
         $theme = Theme::query()->findOrFail($id);
         $selectedId = app(ThemeCatalog::class)->activeId();
-        if ($theme->id === 'snck-default' && $theme->enabled) { $this->flashError('Snck Default must remain enabled.'); return; }
-        $theme->update(['enabled' => !$theme->enabled]);
-        if (!$theme->enabled && $selectedId === $theme->id) {
+        if ($theme->id === 'snck-default' && $theme->enabled) {
+            $this->flashError('Snck Default must remain enabled.');
+
+            return;
+        }
+        $theme->update(['enabled' => ! $theme->enabled]);
+        if (! $theme->enabled && $selectedId === $theme->id) {
             app(ThemeCatalog::class)->storeActive('snck-default');
             $this->activeId = 'snck-default';
         }
@@ -120,8 +148,14 @@ class ThemeManager extends Component
     public function apply(string $id, ThemeCatalog $catalog): void
     {
         $this->requireStaff();
-        try { $catalog->apply($id); $this->activeId = $id; $this->notice = 'Theme applied.'; $this->noticeType = 'success'; }
-        catch (Throwable $exception) { $this->flashError($exception->getMessage()); }
+        try {
+            $catalog->apply($id);
+            $this->activeId = $id;
+            $this->notice = 'Theme applied.';
+            $this->noticeType = 'success';
+        } catch (Throwable $exception) {
+            $this->flashError($exception->getMessage());
+        }
     }
 
     public function restoreDefault(ThemeCatalog $catalog): void
@@ -137,9 +171,15 @@ class ThemeManager extends Component
     {
         $this->requireStaff();
         $theme = Theme::query()->findOrFail($id);
-        if ($theme->built_in || $theme->protected || app(ThemeCatalog::class)->isBuiltInId($theme->id)) { $this->flashError('System themes are protected.'); return; }
+        if ($theme->built_in || $theme->protected || app(ThemeCatalog::class)->isBuiltInId($theme->id)) {
+            $this->flashError('System themes are protected.');
+
+            return;
+        }
         DB::transaction(function () use ($theme): void {
-            if (app(ThemeCatalog::class)->activeId() === $theme->id) app(ThemeCatalog::class)->storeActive('snck-default');
+            if (app(ThemeCatalog::class)->activeId() === $theme->id) {
+                app(ThemeCatalog::class)->storeActive('snck-default');
+            }
             $theme->delete();
         });
         $this->activeId = app(ThemeCatalog::class)->activeId();
@@ -171,7 +211,9 @@ class ThemeManager extends Component
         $index = array_search($item, $items, true);
         abort_unless($index !== false, 422);
         $target = $index + $direction;
-        if ($target < 0 || $target >= count($items)) return;
+        if ($target < 0 || $target >= count($items)) {
+            return;
+        }
         [$items[$index], $items[$target]] = [$items[$target], $items[$index]];
         data_set($this->layout, $key, $items);
     }
@@ -180,7 +222,11 @@ class ThemeManager extends Component
     {
         $this->requireStaff();
         $labels = $this->layout['labels'] ?? [];
-        if (trim($label) === '') unset($labels[$id]); else $labels[$id] = mb_substr(trim($label), 0, 32);
+        if (trim($label) === '') {
+            unset($labels[$id]);
+        } else {
+            $labels[$id] = mb_substr(trim($label), 0, 32);
+        }
         $this->layout['labels'] = $labels;
     }
 
@@ -190,14 +236,30 @@ class ThemeManager extends Component
         $label = trim($this->shortcutLabel);
         $url = trim($this->shortcutUrl);
         $target = $this->shortcutTarget;
-        if ($label === '' || mb_strlen($label) > 32 || count($this->layout['customNavigation'] ?? []) >= 8 || (($url === '') === ($target === ''))) { $this->flashError('Provide a label and exactly one HTTPS URL or internal navigation target.'); return; }
+        if ($label === '' || mb_strlen($label) > 32 || count($this->layout['customNavigation'] ?? []) >= 8 || (($url === '') === ($target === ''))) {
+            $this->flashError('Provide a label and exactly one HTTPS URL or internal navigation target.');
+
+            return;
+        }
         if ($url !== '') {
             $parsed = parse_url($url);
-            if (($parsed['scheme'] ?? '') !== 'https' || isset($parsed['user']) || isset($parsed['pass']) || strlen($url) > 2048) { $this->flashError('Custom links must be HTTPS and may not contain credentials.'); return; }
-        } elseif (!in_array($target, ThemeCatalog::NAV, true)) { $this->flashError('Choose a supported internal target.'); return; }
+            if (($parsed['scheme'] ?? '') !== 'https' || isset($parsed['user']) || isset($parsed['pass']) || strlen($url) > 2048) {
+                $this->flashError('Custom links must be HTTPS and may not contain credentials.');
+
+                return;
+            }
+        } elseif (! in_array($target, ThemeCatalog::NAV, true)) {
+            $this->flashError('Choose a supported internal target.');
+
+            return;
+        }
         $id = 'custom-'.Str::lower(Str::random(8));
         $item = ['id' => $id, 'label' => $label];
-        if ($url !== '') $item['url'] = $url; else $item['target'] = $target;
+        if ($url !== '') {
+            $item['url'] = $url;
+        } else {
+            $item['target'] = $target;
+        }
         $this->layout['customNavigation'][] = $item;
         $this->shortcutLabel = $this->shortcutUrl = $this->shortcutTarget = '';
     }
@@ -212,18 +274,25 @@ class ThemeManager extends Component
     {
         $this->requireStaff();
         $this->validate(['package' => ['required', 'file', 'max:2048']]);
-        if (!str_ends_with(strtolower($this->package->getClientOriginalName()), '.zip')) { $this->flashError('Upload a ZIP theme package.'); return; }
+        if (! str_ends_with(strtolower($this->package->getClientOriginalName()), '.zip')) {
+            $this->flashError('Upload a ZIP theme package.');
+
+            return;
+        }
         try {
             $theme = $catalog->importZip($this->package->getRealPath());
             $this->package = null;
             $this->notice = 'Imported '.$theme->name.'.';
             $this->noticeType = 'success';
-        } catch (Throwable $exception) { $this->flashError($exception->getMessage()); }
+        } catch (Throwable $exception) {
+            $this->flashError($exception->getMessage());
+        }
     }
 
     public function render(ThemeCatalog $catalog): View
     {
         $this->requireStaff();
+
         return view('livewire.themes.manager', ['themes' => $catalog->all(), 'catalog' => $catalog])
             ->layout('layouts.app', ['title' => 'Snck Theme']);
     }

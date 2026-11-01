@@ -16,6 +16,7 @@ class NodeController extends Controller
     public function index(Request $request): JsonResponse
     {
         $this->adminOnly($request);
+
         return response()->json(Node::query()->latest()->get());
     }
 
@@ -64,6 +65,7 @@ class NodeController extends Controller
             'status' => 'offline',
             'docker_available' => false,
         ]);
+
         return response()->json(['node' => $node, 'daemonCredentialOnce' => $credential], 201);
     }
 
@@ -99,9 +101,12 @@ class NodeController extends Controller
             $data['credential_encrypted'] = Crypt::encryptString($credential);
             $data['credential_hash'] = hash('sha256', $credential);
         }
-        if (isset($data['daemon_port'])) $data['api_port'] = $data['daemon_port'];
+        if (isset($data['daemon_port'])) {
+            $data['api_port'] = $data['daemon_port'];
+        }
         $data['protocol'] = 'https';
         $node->update($data);
+
         return response()->json($node->fresh());
     }
 
@@ -117,6 +122,7 @@ class NodeController extends Controller
                 'last_heartbeat_at' => now(),
                 'last_health_check' => ['checkedAt' => now()->toISOString(), 'ok' => true, 'docker' => $payload['docker']],
             ])->save();
+
             return response()->json(['online' => true, 'node' => $node->fresh(), 'health' => $payload]);
         } catch (Throwable $exception) {
             Log::warning('Node health check failed.', ['node_id' => $node->id, 'exception' => $exception::class]);
@@ -125,6 +131,7 @@ class NodeController extends Controller
                 'docker_available' => false,
                 'last_health_check' => ['checkedAt' => now()->toISOString(), 'ok' => false],
             ])->save();
+
             return response()->json(['online' => false, 'error' => 'Node health check failed.', 'node' => $node->fresh()], 503);
         }
     }
@@ -134,9 +141,11 @@ class NodeController extends Controller
         $this->adminOnly($request);
         try {
             $result = $client->restartNode($node);
+
             return response()->json(['success' => true, 'node' => $node, 'daemon' => $result], 202);
         } catch (Throwable $exception) {
             Log::warning('Node daemon restart request failed.', ['node_id' => $node->id, 'exception' => $exception::class]);
+
             return response()->json(['error' => 'The node daemon restart request failed.'], 502);
         }
     }

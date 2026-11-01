@@ -1,20 +1,20 @@
 <?php
 
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AllocationController;
 use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CloudflareController;
 use App\Http\Controllers\DiscordRewardsController;
-use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\NodeAgentController;
 use App\Http\Controllers\NodeController;
 use App\Http\Controllers\PlayitController;
 use App\Http\Controllers\PluginManagerController;
 use App\Http\Controllers\ServerController;
-use App\Http\Controllers\SftpController;
 use App\Http\Controllers\ServerFilesController;
 use App\Http\Controllers\ServerSubuserController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SftpController;
 use Illuminate\Support\Facades\Route;
 
 // The node-agent callback authenticates exclusively with a per-node bearer

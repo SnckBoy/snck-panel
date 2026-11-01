@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Allocation;
 use App\Models\Node;
+use App\Models\Server;
 use App\Models\User;
 use App\Services\NodeClient;
 use App\Services\ServerProvisioner;
@@ -18,21 +19,32 @@ use Throwable;
 class ServerCreate extends Component
 {
     public string $nodeId = '';
+
     public string $allocationId = '';
+
     public string $ownerId = '';
+
     public string $name = '';
+
     public string $type = 'PAPER';
+
     public string $version = 'latest';
+
     public string $javaVersion = '21';
+
     public int $memoryLimitMb = 2048;
+
     public int $cpuLimitPercent = 100;
+
     public int $diskLimitMb = 10240;
+
     public string $notice = '';
+
     public string $noticeType = 'success';
 
     public function mount(): void
     {
-        abort_unless(Auth::user()?->can('create', \App\Models\Server::class), 403);
+        abort_unless(Auth::user()?->can('create', Server::class), 403);
         $this->ownerId = (string) Auth::id();
     }
 
@@ -72,6 +84,7 @@ class ServerCreate extends Component
 
         try {
             $result = $provisioner->provision(Auth::user(), $payload, $client);
+
             return redirect()->route('servers.show', (string) data_get($result, 'server.id'));
         } catch (ValidationException $exception) {
             throw $exception;

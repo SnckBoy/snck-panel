@@ -7,9 +7,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
-use Throwable;
 
 class ServerSubuserController extends Controller
 {
@@ -20,6 +18,7 @@ class ServerSubuserController extends Controller
         $this->authorize('manageSubusers', $server);
         $members = $server->subusers()->select(['users.id', 'users.name', 'users.username', 'users.email'])
             ->orderBy('users.username')->get();
+
         return response()->json($members);
     }
 
@@ -76,9 +75,11 @@ class ServerSubuserController extends Controller
                     'updated_at' => now(),
                 ]);
             }
+
             return $deleted;
         });
         abort_unless($deleted > 0, 404, 'Server sub-user not found.');
+
         return response()->json(['success' => true]);
     }
 }

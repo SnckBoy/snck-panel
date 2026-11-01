@@ -43,7 +43,9 @@ class Server extends Model
 
     public function scopeVisibleTo(Builder $query, User $user): Builder
     {
-        if ($user->isStaff()) return $query;
+        if ($user->isStaff()) {
+            return $query;
+        }
 
         return $query->where(function (Builder $visible) use ($user): void {
             $visible->where('owner_id', $user->id)

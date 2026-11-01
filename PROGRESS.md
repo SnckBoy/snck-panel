@@ -42,9 +42,8 @@ Added `scripts/install-laravel-panel.sh` with root/OS/PHP-extension/Node/Compose
 
 Installed PostgreSQL 16 in the sandbox, created an isolated `snck_panel_test` database, and ran the importer tests against the real PostgreSQL driver: 2 tests / 48 assertions passed. The complete PostgreSQL suite passes 67 tests / 361 assertions, including the importer, with Composer audit clean.
 
-### 6. Security hardening and release preparation
-
-Run security review, Pint, Larastan, README/MIGRATION_PLAN updates, final verification, `FINAL_REPORT.md`, and open the PR to `main`.
+### 6. Security hardening and release preparation — completed
+Security scan found no unsafe shell/deserialization primitives in the Laravel application. Pint passes all 98 PHP files, Larastan passes with a baseline for pre-existing migration type debt, Composer audit is clean, the production asset build passes, and the PostgreSQL suite passes 67 tests / 361 assertions. README, MIGRATION_PLAN.md, FINAL_REPORT.md, installer runbook, and this log are current. The remaining Discord gateway/OAuth/claim-worker scope stays deferred.
 
 ### 7. Discord remainder, credits permitting
 

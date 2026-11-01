@@ -23,7 +23,7 @@ class ServerProvisioner
     public function provision(User $actor, array $data, NodeClient $client): array
     {
         $ownerId = $actor->isStaff() ? (string) ($data['owner_id'] ?? $actor->id) : (string) $actor->id;
-        if (!$actor->isStaff() && isset($data['owner_id']) && (string) $data['owner_id'] !== (string) $actor->id) {
+        if (! $actor->isStaff() && isset($data['owner_id']) && (string) $data['owner_id'] !== (string) $actor->id) {
             abort(403, 'You cannot create a server for another owner.');
         }
 
@@ -36,7 +36,9 @@ class ServerProvisioner
         $server = DB::transaction(function () use ($actor, $data, $ownerId, $memoryMb, $cpuPercent, $diskMb, $serverId, $identifier): Server {
             // Serializing on the owner row makes quota checks and allocation claims atomic.
             $owner = User::query()->whereKey($ownerId)->lockForUpdate()->firstOrFail();
-            if (!$actor->isStaff()) $this->enforceUserQuota($owner, $memoryMb, $cpuPercent, $diskMb);
+            if (! $actor->isStaff()) {
+                $this->enforceUserQuota($owner, $memoryMb, $cpuPercent, $diskMb);
+            }
 
             $node = Node::query()->whereKey($data['node_id'])->lockForUpdate()->firstOrFail();
             abort_if($node->disabled || $node->maintenance, 409, 'The selected node is disabled or under maintenance.');
@@ -81,6 +83,7 @@ class ServerProvisioner
                 'environment_json' => $data['environment_json'] ?? [],
             ]);
             $allocation->update(['assigned_server_id' => $server->id]);
+
             return $server;
         }, 3);
 
@@ -109,6 +112,7 @@ class ServerProvisioner
                 Log::warning('Daemon accepted server creation but status inspection failed.', ['server_id' => $server->id, 'exception' => $statusError::class]);
                 $nodeResult['statusUnknown'] = true;
             }
+
             return ['server' => $server->fresh(['node', 'allocations', 'owner']), 'node' => $nodeResult, 'diskQuotaEnforced' => false];
         } catch (Throwable $exception) {
             $server->update(['status' => 'error']);
@@ -121,8 +125,11 @@ class ServerProvisioner
     {
         return collect(self::DEFAULT_QUOTAS)->mapWithKeys(function (int $default, string $key): array {
             $value = DB::table('settings')->where('key', 'quota_'.$key)->value('value');
-            if (is_string($value)) $value = json_decode($value, true) ?? $value;
+            if (is_string($value)) {
+                $value = json_decode($value, true) ?? $value;
+            }
             $value = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) ?: $default;
+
             return [$key => (int) $value];
         })->all();
     }
@@ -141,6 +148,7 @@ class ServerProvisioner
     {
         $state = $inspection['State'] ?? $inspection['state'] ?? $inspection;
         $status = strtolower((string) (is_array($state) ? ($state['Status'] ?? $state['status'] ?? 'unknown') : $state));
+
         return match ($status) {
             'running', 'online' => 'running',
             'stopped', 'offline', 'exited' => 'stopped',

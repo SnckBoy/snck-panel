@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Allocation;
-use App\Models\Node;
 use App\Models\Server;
-use App\Models\User;
 use App\Services\NodeClient;
 use App\Services\ServerProvisioner;
 use App\Services\ServerProvisioningException;
@@ -13,7 +11,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Throwable;
 
@@ -25,6 +22,7 @@ class ServerController extends Controller
         $user = $request->user();
         $servers = Server::query()->visibleTo($user)->with(['node', 'allocations', 'owner'])->latest()->get()
             ->filter(fn (Server $server): bool => $user->can('view', $server))->values();
+
         return response()->json($servers);
     }
 
@@ -53,6 +51,7 @@ class ServerController extends Controller
 
         try {
             $result = $provisioner->provision($request->user(), $data, $client);
+
             return response()->json($result, 201);
         } catch (ServerProvisioningException $exception) {
             return response()->json(['error' => $exception->getMessage(), 'server_id' => $exception->serverId], 502);
@@ -61,7 +60,7 @@ class ServerController extends Controller
 
     public function action(Request $request, Server $server, string $action, NodeClient $client): JsonResponse
     {
-        abort_if($server->suspended && !$request->user()->isStaff(), 403, 'This server is suspended.');
+        abort_if($server->suspended && ! $request->user()->isStaff(), 403, 'This server is suspended.');
         $this->authorize($action, $server);
         try {
             $nodeResponse = $client->serverAction($server->node, $server->id, $action);
@@ -74,23 +73,27 @@ class ServerController extends Controller
                 Log::warning('Daemon accepted lifecycle action but status inspection failed.', ['server_id' => $server->id, 'action' => $action, 'exception' => $statusError::class]);
                 $nodeResponse['statusUnknown'] = true;
             }
+
             return response()->json(['success' => true, 'server' => $server->fresh(), 'node' => $nodeResponse]);
         } catch (Throwable $exception) {
             Log::warning('Node daemon lifecycle operation failed.', ['server_id' => $server->id, 'action' => $action, 'exception' => $exception::class]);
+
             return response()->json(['error' => 'The node daemon could not complete the server action.'], 502);
         }
     }
 
     public function status(Request $request, Server $server, NodeClient $client): JsonResponse
     {
-        abort_if($server->suspended && !$request->user()->isStaff(), 403, 'This server is suspended.');
+        abort_if($server->suspended && ! $request->user()->isStaff(), 403, 'This server is suspended.');
         $this->authorize('status', $server);
         try {
             $inspection = $client->serverStatus($server->node, $server->id);
             $server->update(['status' => $this->panelStatus($inspection)]);
+
             return response()->json(['server' => $server->fresh(), 'inspection' => $inspection]);
         } catch (Throwable $exception) {
             Log::warning('Node server status check failed.', ['server_id' => $server->id, 'exception' => $exception::class]);
+
             return response()->json(['error' => 'The node daemon could not return server status.'], 502);
         }
     }
@@ -104,9 +107,11 @@ class ServerController extends Controller
                 Allocation::query()->where('assigned_server_id', $server->id)->update(['assigned_server_id' => null]);
                 $server->update(['status' => 'deleted', 'container_id' => null]);
             });
+
             return response()->json(['success' => true, 'server' => $server->fresh()]);
         } catch (Throwable $exception) {
             Log::warning('Node server deletion failed.', ['server_id' => $server->id, 'exception' => $exception::class]);
+
             return response()->json(['error' => 'The node daemon could not delete the server container.'], 502);
         }
     }
@@ -114,11 +119,20 @@ class ServerController extends Controller
     private function panelStatus(array $inspection): string
     {
         $state = $inspection['State'] ?? $inspection['state'] ?? null;
-        if (!is_array($state)) return 'unknown';
+        if (! is_array($state)) {
+            return 'unknown';
+        }
         $dockerState = strtolower((string) ($state['Status'] ?? $state['status'] ?? ''));
-        if ($dockerState === 'running') return 'running';
-        if (in_array($dockerState, ['created', 'restarting'], true)) return 'installing';
-        if (in_array($dockerState, ['exited', 'paused', 'dead', 'removing'], true)) return $dockerState;
+        if ($dockerState === 'running') {
+            return 'running';
+        }
+        if (in_array($dockerState, ['created', 'restarting'], true)) {
+            return 'installing';
+        }
+        if (in_array($dockerState, ['exited', 'paused', 'dead', 'removing'], true)) {
+            return $dockerState;
+        }
+
         return 'unknown';
     }
 }

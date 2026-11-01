@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Allocation;
-use App\Models\Node;
 use App\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class AllocationController extends Controller
 {
@@ -16,7 +14,10 @@ class AllocationController extends Controller
     {
         $this->adminOnly($request);
         $query = Allocation::query()->with(['node', 'server']);
-        if ($request->filled('node_id')) $query->where('node_id', $request->string('node_id'));
+        if ($request->filled('node_id')) {
+            $query->where('node_id', $request->string('node_id'));
+        }
+
         return response()->json($query->orderBy('port')->get());
     }
 
@@ -35,13 +36,16 @@ class AllocationController extends Controller
         abort_if($count > 10000, 422, 'Port range cannot exceed 10,000 ports.');
         $ports = range($data['start_port'], $data['end_port']);
         $existing = Allocation::query()->where('node_id', $data['node_id'])->where('ip', $data['ip'])->whereIn('port', $ports)->pluck('port')->all();
-        if ($existing) return response()->json(['error' => 'Some ports already exist', 'ports' => $existing], 409);
+        if ($existing) {
+            return response()->json(['error' => 'Some ports already exist', 'ports' => $existing], 409);
+        }
         $created = DB::transaction(function () use ($data, $ports) {
             return collect($ports)->map(fn (int $port) => Allocation::create([
                 'node_id' => $data['node_id'], 'ip' => $data['ip'], 'port' => $port,
                 'alias' => $data['alias'] ?? null, 'notes' => $data['notes'] ?? null,
             ]));
         });
+
         return response()->json($created->values(), 201);
     }
 
@@ -53,6 +57,7 @@ class AllocationController extends Controller
         $server = Server::findOrFail($data['server_id']);
         abort_unless($server->node_id === $allocation->node_id, 422, 'Allocation belongs to another node.');
         $allocation->update(['assigned_server_id' => $server->id]);
+
         return response()->json($allocation->fresh(['server', 'node']));
     }
 
@@ -60,6 +65,7 @@ class AllocationController extends Controller
     {
         $this->adminOnly($request);
         $allocation->update(['assigned_server_id' => null]);
+
         return response()->json($allocation->fresh(['server', 'node']));
     }
 

@@ -21,13 +21,17 @@ class NodeAgentController extends Controller
             'stats.timestamp' => ['sometimes', 'date'],
         ]);
         $node = Node::query()->find($data['nodeId']);
-        if (!$node) return response()->json(['error' => 'Unauthorized node.'], 401);
-        $header = (string) $request->header('Authorization', '');
-        $token = str_starts_with($header, 'Bearer ') ? substr($header, 7) : '';
-        if ($token === '' || strlen($token) > 512 || !$this->matchesCredential($node, $token)) {
+        if (! $node) {
             return response()->json(['error' => 'Unauthorized node.'], 401);
         }
-        if ($node->disabled) return response()->json(['error' => 'Node is disabled.'], 403);
+        $header = (string) $request->header('Authorization', '');
+        $token = str_starts_with($header, 'Bearer ') ? substr($header, 7) : '';
+        if ($token === '' || strlen($token) > 512 || ! $this->matchesCredential($node, $token)) {
+            return response()->json(['error' => 'Unauthorized node.'], 401);
+        }
+        if ($node->disabled) {
+            return response()->json(['error' => 'Node is disabled.'], 403);
+        }
         $stats = $data['stats'];
         $node->forceFill([
             'status' => 'online',
@@ -43,15 +47,25 @@ class NodeAgentController extends Controller
     private function matchesCredential(Node $node, string $token): bool
     {
         $expectedHash = (string) ($node->credential_hash ?? '');
-        if ($expectedHash !== '') return hash_equals($expectedHash, hash('sha256', $token));
+        if ($expectedHash !== '') {
+            return hash_equals($expectedHash, hash('sha256', $token));
+        }
 
         // Legacy Phase 2 imports may have encrypted credentials but no hash.
         // Verify the old secret once and backfill the one-way lookup hash.
-        if (!$node->credential_encrypted) return false;
-        try { $expected = Crypt::decryptString($node->credential_encrypted); }
-        catch (Throwable) { return false; }
-        if (!hash_equals($expected, $token)) return false;
+        if (! $node->credential_encrypted) {
+            return false;
+        }
+        try {
+            $expected = Crypt::decryptString($node->credential_encrypted);
+        } catch (Throwable) {
+            return false;
+        }
+        if (! hash_equals($expected, $token)) {
+            return false;
+        }
         DB::table('nodes')->where('id', $node->id)->whereNull('credential_hash')->update(['credential_hash' => hash('sha256', $token), 'updated_at' => now()]);
+
         return true;
     }
 }

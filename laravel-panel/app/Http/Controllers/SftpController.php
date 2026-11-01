@@ -17,6 +17,7 @@ class SftpController extends Controller
     {
         $this->authorize('sftp', $server);
         $result = $this->credentials->get($server);
+
         return $result ? response()->json($result) : response()->json(['error' => 'SFTP user not found.'], 404);
     }
 
@@ -35,14 +36,21 @@ class SftpController extends Controller
         $this->authorize('sftp', $server);
         $this->credentials->delete($server);
         $this->audit($request->user()->id, 'sftp.deleted', $server->id);
+
         return response()->json(['success' => true]);
     }
 
     private function issue(Request $request, Server $server, string $action, callable $callback): JsonResponse
     {
         $this->authorize('sftp', $server);
-        try { $result = $callback(); $this->audit($request->user()->id, $action, $server->id); return response()->json($result); }
-        catch (Throwable $error) { return response()->json(['error' => $error->getMessage()], 409); }
+        try {
+            $result = $callback();
+            $this->audit($request->user()->id, $action, $server->id);
+
+            return response()->json($result);
+        } catch (Throwable $error) {
+            return response()->json(['error' => $error->getMessage()], 409);
+        }
     }
 
     private function audit(string $userId, string $action, string $serverId): void

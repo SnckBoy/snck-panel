@@ -61,8 +61,8 @@ class CloudflareIntegrationTest extends TestCase
         $this->actingAs($admin)->postJson('/api/cloudflare/zones/zone-srv/dns', $payload)->assertCreated();
         $this->actingAs($admin)->putJson('/api/cloudflare/zones/zone-srv/dns/srv-1', $payload)->assertOk();
         Http::assertSentCount(2);
-        Http::assertSent(fn ($request) => $request->method() === 'POST' && !array_key_exists('content', $request->data()) && !array_key_exists('proxied', $request->data()) && $request->data()['data']['port'] === 25565);
-        Http::assertSent(fn ($request) => $request->method() === 'PUT' && !array_key_exists('content', $request->data()) && !array_key_exists('proxied', $request->data()) && $request->data()['data']['target'] === 'mc.example.test');
+        Http::assertSent(fn ($request) => $request->method() === 'POST' && ! array_key_exists('content', $request->data()) && ! array_key_exists('proxied', $request->data()) && $request->data()['data']['port'] === 25565);
+        Http::assertSent(fn ($request) => $request->method() === 'PUT' && ! array_key_exists('content', $request->data()) && ! array_key_exists('proxied', $request->data()) && $request->data()['data']['target'] === 'mc.example.test');
     }
 
     public function test_reconnecting_same_account_updates_the_existing_encrypted_token(): void
@@ -90,6 +90,7 @@ class CloudflareIntegrationTest extends TestCase
             if (str_contains($url, 'dns_records')) {
                 return Http::response(['success' => true, 'result' => [['id' => 'record-'.$page]], 'result_info' => ['total_pages' => 2]]);
             }
+
             return Http::response(['success' => true, 'result' => [['id' => 'zone-'.$page]], 'result_info' => ['total_pages' => 2]]);
         });
 

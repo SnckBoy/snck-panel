@@ -43,8 +43,12 @@ class User extends Authenticatable
     {
         static::creating(function (User $user): void {
             $user->id ??= (string) Str::uuid();
-            if ($user->username !== null) $user->username = mb_strtolower(trim($user->username));
-            if ($user->email !== null) $user->email = mb_strtolower(trim($user->email));
+            if ($user->username !== null) {
+                $user->username = mb_strtolower(trim($user->username));
+            }
+            if ($user->email !== null) {
+                $user->email = mb_strtolower(trim($user->email));
+            }
         });
     }
 

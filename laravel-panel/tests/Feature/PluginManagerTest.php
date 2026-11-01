@@ -15,7 +15,10 @@ class PluginManagerTest extends TestCase
 
     public function test_only_server_owner_or_delegated_plugin_permission_can_list_plugins(): void
     {
-        $owner = $this->user('plugin-owner'); $delegate = $this->user('plugin-delegate'); $outsider = $this->user('plugin-outsider'); $server = $this->server($owner);
+        $owner = $this->user('plugin-owner');
+        $delegate = $this->user('plugin-delegate');
+        $outsider = $this->user('plugin-outsider');
+        $server = $this->server($owner);
         $server->subusers()->attach($delegate->id, ['permissions' => json_encode(['plugins'])]);
         $this->mock(PluginManagerService::class, fn ($mock) => $mock->shouldReceive('installed')->twice()->andReturn(['items' => [['filename' => 'example.jar', 'size' => 12]]]));
         $this->actingAs($owner)->getJson('/api/servers/'.$server->id.'/plugins/installed')->assertOk()->assertJsonPath('items.0.filename', 'example.jar');
@@ -25,7 +28,8 @@ class PluginManagerTest extends TestCase
 
     public function test_mod_install_requires_mod_permission_and_modpack_upload_is_size_validated(): void
     {
-        $owner = $this->user('mod-owner'); $server = $this->server($owner);
+        $owner = $this->user('mod-owner');
+        $server = $this->server($owner);
         $this->mock(PluginManagerService::class, fn ($mock) => $mock->shouldReceive('install')->once()->andReturn(['success' => true, 'filename' => 'mod.jar']));
         $this->actingAs($owner)->postJson('/api/servers/'.$server->id.'/mods/install', ['projectId' => 'create']);
         $this->actingAs($owner)->postJson('/api/servers/'.$server->id.'/modpacks/import', ['confirmReplace' => false])->assertUnprocessable();
@@ -34,6 +38,7 @@ class PluginManagerTest extends TestCase
     private function server(User $owner): Server
     {
         $node = Node::query()->create(['id' => 'node-'.$owner->id, 'name' => 'Node']);
+
         return Server::query()->create(['id' => 'server-'.$owner->id, 'identifier' => 'server-'.$owner->id, 'owner_id' => $owner->id, 'node_id' => $node->id, 'name' => 'Test server', 'version' => '1.21.1', 'type' => 'PAPER']);
     }
 

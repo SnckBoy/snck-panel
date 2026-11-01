@@ -40,6 +40,7 @@ class PlayitIntegrationTest extends TestCase
     private function server(User $owner): Server
     {
         $node = Node::query()->create(['id' => 'node-'.$owner->id, 'name' => 'Playit node']);
+
         return Server::query()->create(['id' => 'server-'.$owner->id, 'identifier' => 'server-'.$owner->id, 'owner_id' => $owner->id, 'node_id' => $node->id, 'name' => 'Minecraft: '.$owner->id]);
     }
 

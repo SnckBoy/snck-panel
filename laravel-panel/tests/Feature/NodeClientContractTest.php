@@ -19,14 +19,31 @@ class NodeClientContractTest extends TestCase
         $node = $this->node();
         Http::fake(function ($request) {
             $url = $request->url();
-            if (str_ends_with($url, '/files/list')) return Http::response([['name' => 'plugins', 'isDirectory' => true, 'size' => 0]]);
-            if (str_ends_with($url, '/logs')) return Http::response("[Server thread/INFO]: ready\n", 200, ['Content-Type' => 'text/plain']);
-            if (str_ends_with($url, '/backups')) return Http::response([['filename' => 'backup-20261028.tar.gz', 'size' => 12, 'createdAt' => '2026-10-28T00:00:00Z']]);
-            if (str_ends_with($url, '/status')) return Http::response(['State' => ['Status' => 'running']]);
-            if (str_ends_with($url, '/daemon/restart')) return Http::response(['success' => true, 'restarting' => true], 202);
-            if (str_ends_with($url, '/start')) return Http::response(['success' => true]);
-            if (str_ends_with($url, '/servers/server-1')) return Http::response(['success' => true]);
-            if (str_ends_with($url, '/backups/backup-20261028.tar.gz')) return Http::response(['success' => true]);
+            if (str_ends_with($url, '/files/list')) {
+                return Http::response([['name' => 'plugins', 'isDirectory' => true, 'size' => 0]]);
+            }
+            if (str_ends_with($url, '/logs')) {
+                return Http::response("[Server thread/INFO]: ready\n", 200, ['Content-Type' => 'text/plain']);
+            }
+            if (str_ends_with($url, '/backups')) {
+                return Http::response([['filename' => 'backup-20261028.tar.gz', 'size' => 12, 'createdAt' => '2026-10-28T00:00:00Z']]);
+            }
+            if (str_ends_with($url, '/status')) {
+                return Http::response(['State' => ['Status' => 'running']]);
+            }
+            if (str_ends_with($url, '/daemon/restart')) {
+                return Http::response(['success' => true, 'restarting' => true], 202);
+            }
+            if (str_ends_with($url, '/start')) {
+                return Http::response(['success' => true]);
+            }
+            if (str_ends_with($url, '/servers/server-1')) {
+                return Http::response(['success' => true]);
+            }
+            if (str_ends_with($url, '/backups/backup-20261028.tar.gz')) {
+                return Http::response(['success' => true]);
+            }
+
             return Http::response(['error' => 'unexpected route'], 404);
         });
 
@@ -71,7 +88,9 @@ class NodeClientContractTest extends TestCase
         try {
             $this->assertSame("\x1F\x8Bbinary-backup", file_get_contents($path));
             $this->assertSame(0600, fileperms($path) & 0777);
-        } finally { @unlink($path); }
+        } finally {
+            @unlink($path);
+        }
         Http::assertSent(fn ($request) => $request->method() === 'GET' && str_ends_with($request->url(), '/v1/servers/server-1/backups/backup-20261028.tar.gz'));
     }
 

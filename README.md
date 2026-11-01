@@ -1,78 +1,50 @@
-# SNCK PANEL
+# SNCK Panel
 
-SNCK PANEL is a self-hosted web control panel for managing Minecraft servers and remote Docker nodes.
+SNCK Panel is a self-hosted Minecraft server control panel. This branch, `php-migration-final`, contains the Laravel migration release candidate under `laravel-panel/`; the legacy React/Express application remains available for controlled rollback and comparison.
 
-## One-command installer
+## Current status
 
-On a fresh Ubuntu 20.04+ or supported Debian VPS with a root/sudo account, run:
+Completed on this branch: Laravel authentication and PostgreSQL schema; server lifecycle, files, backups, sub-users, node heartbeat/client contracts, themes, Cloudflare DNS, Playit, plugin/mod/modpack management, SFTP credential lifecycle, administrator configuration, production installer, and legacy JSON import. Discord gateway/OAuth/claim-worker features are intentionally deferred until after release review.
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/install.sh | sudo bash
-```
+The migration targets Laravel 12 and PHP 8.3. PostgreSQL is the supported production database. The SFTP API stores and rotates credentials, but a live SFTP transport daemon is not part of the frozen node-daemon v1 contract and must be deployed separately before advertising file-transfer connectivity.
 
-This opens the **SNCK PANEL CONTROL CENTER** menu. It does not silently install on launch.
-
-Menu options:
-
-1. Install SNCK PANEL
-2. Update SNCK PANEL
-3. Repair / reinstall application files
-4. Status and health check
-5. Restart panel
-6. View panel and installer logs
-7. Create a data/config backup
-8. System information
-9. Complete uninstall (requires typing `DELETE-SNCK`; permanently removes panel data and all SNCK Panel backups)
-0. Exit
-
-Supported OS targets in the installer are Ubuntu 20.04+ and Debian 11/12/13 on `amd64` or `arm64`. A fresh install requires internet access to package repositories and GitHub. The installer installs Node.js when needed and Docker, builds the application, configures systemd when it is running, or uses PM2 with a cron `@reboot` hook on hosts without systemd. It checks that Docker is operational and that `/health` responds before reporting success. The non-systemd fallback requires working cron and a Docker daemon/init script; containers that cannot run Docker are not supported hosts for panel server management.
-
-## Access and operations
-
-Default application port: `6767`.
-
-After installation, open:
-
-```text
-http://YOUR_SERVER_IP:6767
-```
-
-Use the server's firewall and a reverse proxy with HTTPS for public deployments. Do not expose a panel or node daemon to the public internet without reviewing firewall rules and TLS configuration.
-
-Useful commands:
+## Development and verification
 
 ```bash
-sudo systemctl status snck-panel --no-pager
-sudo systemctl restart snck-panel
-sudo journalctl -u snck-panel -n 100 --no-pager
-curl -fsS http://127.0.0.1:6767/health
+cd laravel-panel
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+npm ci && npm run build
+php artisan test
+composer audit
+./vendor/bin/pint --test
+./vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=1G
 ```
 
-On non-systemd hosts, use `sudo snck-panel-service status|restart|logs` instead of `systemctl`/`journalctl`. PM2 logs are under `/var/lib/snck/pm2/logs/`; `/etc/cron.d/snck-panel` restores the saved PM2 process list at reboot.
+The supported database path can be verified with PostgreSQL:
 
-Run the same one-command installer again to open the menu for updates, repair, diagnostics, backups, or removal. Backups are stored under `/var/backups/snck-panel`. Complete uninstall permanently removes the SNCK Panel application, panel data/configuration/logs, and all backups under `/var/backups/snck-panel` after you type `DELETE-SNCK`. It does not target Docker containers, images, volumes, or Minecraft server files. No final backup is retained, so export anything you need before uninstalling.
+```bash
+DB_CONNECTION=pgsql DB_HOST=127.0.0.1 DB_PORT=5432 \
+DB_DATABASE=snck_panel_test DB_USERNAME=snck_panel DB_PASSWORD='secret' \
+php artisan test
+```
 
-## Runtime data and database note
+Final PostgreSQL verification passed **67 tests / 361 assertions**; Pint passes all 98 formatted files; Larastan passes with a checked-in baseline for pre-existing migration type debt, so new findings fail analysis.
 
-The current application reads and writes JSON files under `/opt/snck-panel/.data`. The installer therefore provisions this JSON store and does **not** claim to switch the application to PostgreSQL. The repository contains PostgreSQL schema/migration work, but that is not the active runtime storage path. Do not treat a PostgreSQL migration as complete until all application routes and services have been moved to and tested against the database.
+## Production installation
 
-## Snck Theme
+Run a non-destructive preflight first:
 
-Administrators can manage built-in and custom declarative themes from **Snck Theme** in the panel navigation. Create and edit color-token themes in the visual builder, apply them globally, import a validated ZIP manifest, export a theme, or restore the protected default. See [the Snck Theme guide](docs/SNCK_THEME.md) for permissions, package structure, storage, and recovery.
+```bash
+sudo bash scripts/install-laravel-panel.sh --dry-run
+```
 
-## Discord Invite Rewards
+The installer supports Ubuntu/Debian hosts with PHP 8.3, Node.js 20+, Composer, PostgreSQL connectivity, and systemd. It provisions Nginx, PHP-FPM, migrations, compiled assets, the queue worker, and scheduler. See [`docs/LARAVEL_INSTALLER.md`](docs/LARAVEL_INSTALLER.md). The first-run web installer is available at `/install` (also `/setup`) and creates the first Owner exactly once.
 
-Administrators can configure a Discord bot and safe invite-based Free Service reward plans under **Free Service → Discord Rewards**. Users can link a Discord identity with OAuth, track verified invite progress, and claim a new server or resource upgrade subject to the panel's existing Free Service, node, allocation, and ownership checks. See [the Discord Invite Rewards guide](docs/DISCORD_REWARDS.md) for setup, attribution limitations, privacy/retention behavior, deployment constraints, and tests.
+## Migration policy
 
-## Repository checks
+No destructive cutover is performed by this repository work. Back up the existing application and database, rehearse the JSON importer with `--dry-run`, compare counts and relationships, and keep the current deployment available until environment-specific review is complete. See [`MIGRATION_PLAN.md`](MIGRATION_PLAN.md), [`PROGRESS.md`](PROGRESS.md), and [`FINAL_REPORT.md`](FINAL_REPORT.md).
 
-GitHub Actions runs dependency installation, TypeScript checking, the production build, node-daemon build, and shell syntax checks on the configured branches. A green CI run is required before treating a particular commit as verified. The installer itself also runs TypeScript validation and the production build before restarting the service.
-
-## Security basics
-
-- Use a strong unique admin password and keep `.env` private.
-- Use HTTPS for public deployments and a firewall to restrict access.
-- Keep Ubuntu, Docker, Node.js dependencies, and this repository updated.
-- Keep backups outside the application directory.
-- Never expose the Docker socket directly to untrusted users.
-- Review node daemon TLS and network exposure before connecting remote nodes.
+Use HTTPS, a restrictive firewall, private `.env` permissions, rotated credentials, and a separate backup location in production. Do not expose the Docker socket or node daemon to untrusted networks.

@@ -16,7 +16,10 @@ class ApiKeyController extends Controller
     {
         $user = $request->user();
         $query = ApiKey::query()->with('user:id,username')->latest();
-        if (!$user->isStaff()) $query->where('user_id', $user->id);
+        if (! $user->isStaff()) {
+            $query->where('user_id', $user->id);
+        }
+
         return response()->json(['keys' => $query->get()->map(fn (ApiKey $key) => $this->publicKey($key))->values()]);
     }
 
@@ -30,13 +33,16 @@ class ApiKeyController extends Controller
             'expires_at' => ['nullable', 'date', 'after:now'],
             'user_id' => ['nullable', 'string', 'exists:users,id'],
         ]);
-        $ownerId = $user->isStaff() && !empty($data['user_id']) ? $data['user_id'] : $user->id;
-        if (!$user->isStaff() && array_intersect($data['scopes'], ['admin.settings', 'admin.users', 'nodes.write'])) abort(403, 'Only staff can issue administrative API scopes.');
+        $ownerId = $user->isStaff() && ! empty($data['user_id']) ? $data['user_id'] : $user->id;
+        if (! $user->isStaff() && array_intersect($data['scopes'], ['admin.settings', 'admin.users', 'nodes.write'])) {
+            abort(403, 'Only staff can issue administrative API scopes.');
+        }
         $plain = 'snck_'.Str::random(48);
         $key = ApiKey::query()->create([
             'user_id' => $ownerId, 'label' => trim($data['label']), 'key_hash' => hash('sha256', $plain),
             'scopes' => array_values(array_unique($data['scopes'])), 'expires_at' => $data['expires_at'] ?? null,
         ]);
+
         return response()->json(['key' => $this->publicKey($key), 'token' => $plain], 201);
     }
 
@@ -44,6 +50,7 @@ class ApiKeyController extends Controller
     {
         abort_unless($request->user()->isStaff() || (string) $apiKey->user_id === (string) $request->user()->id, 403);
         $apiKey->forceFill(['revoked_at' => now()])->save();
+
         return response()->json(['success' => true]);
     }
 

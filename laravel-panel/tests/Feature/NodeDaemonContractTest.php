@@ -18,7 +18,7 @@ class NodeDaemonContractTest extends TestCase
         $this->assertCount(29, $manifest['routes']);
 
         $daemon = dirname(base_path()).'/node-daemon/src/index.ts';
-        if (!is_file($daemon)) {
+        if (! is_file($daemon)) {
             $this->markTestSkipped('The stand-alone laravel-panel archive does not include the sibling node-daemon source.');
         }
         $source = file_get_contents($daemon);
@@ -26,11 +26,15 @@ class NodeDaemonContractTest extends TestCase
 
         preg_match_all('/app\.(get|post|put|patch|delete)\(\s*["\']([^"\']+)["\']\s*,\s*auth\b/i', $source, $matches, PREG_SET_ORDER);
         $actual = [];
-        foreach ($matches as $match) $actual[] = [strtoupper($match[1]), $match[2]];
+        foreach ($matches as $match) {
+            $actual[] = [strtoupper($match[1]), $match[2]];
+        }
 
         // These four handlers are emitted from the daemon's explicit action loop.
         $this->assertStringContainsString('for (const [route,method] of [["start","start"],["stop","stop"],["restart","restart"],["kill","kill"]]', $source);
-        foreach (['start', 'stop', 'restart', 'kill'] as $action) $actual[] = ['POST', '/v1/servers/:id/'.$action];
+        foreach (['start', 'stop', 'restart', 'kill'] as $action) {
+            $actual[] = ['POST', '/v1/servers/:id/'.$action];
+        }
         $this->assertStringContainsString('/api/node-agent/heartbeat', $source);
 
         $expected = array_map(fn (array $route) => [strtoupper($route['method']), $route['path']], $manifest['routes']);

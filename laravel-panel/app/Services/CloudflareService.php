@@ -30,7 +30,7 @@ class CloudflareService
 
         $accounts = $this->request($token, 'GET', '/accounts?per_page=50')['result'] ?? [];
         $chosen = $accountId ?: ($accounts[0]['id'] ?? null);
-        if (!$chosen) {
+        if (! $chosen) {
             throw new RuntimeException('No Cloudflare account is accessible by this token');
         }
 
@@ -49,15 +49,17 @@ class CloudflareService
         $account = $id
             ? CloudflareAccount::query()->find($id)
             : CloudflareAccount::query()->latest()->first();
-        if (!$account) {
+        if (! $account) {
             throw new RuntimeException('Cloudflare account is not connected');
         }
+
         return $account;
     }
 
     public function zones(?string $accountId = null): array
     {
         $account = $this->account($accountId);
+
         return $this->pagedResults($this->token($account), '/zones?account.id='.rawurlencode((string) $account->account_id).'&per_page=100');
     }
 
@@ -69,6 +71,7 @@ class CloudflareService
     public function dns(string $zoneId, ?string $accountId = null): array
     {
         $account = $this->account($accountId);
+
         return $this->pagedResults($this->token($account), '/zones/'.rawurlencode($zoneId).'/dns_records?per_page=100');
     }
 
@@ -104,6 +107,7 @@ class CloudflareService
             $totalPages = min((int) ($body['result_info']['total_pages'] ?? $page), $maxPages);
             $page++;
         } while ($page <= $totalPages);
+
         return $results;
     }
 
@@ -118,10 +122,11 @@ class CloudflareService
             default => $request->get(self::API.$path),
         };
         $body = $response->json() ?: [];
-        if (!$response->successful() || ($body['success'] ?? true) === false) {
+        if (! $response->successful() || ($body['success'] ?? true) === false) {
             $messages = collect($body['errors'] ?? [])->pluck('message')->filter()->implode(', ');
             throw new RuntimeException($messages ?: 'Cloudflare API request failed (HTTP '.$response->status().')');
         }
+
         return $body;
     }
 }
