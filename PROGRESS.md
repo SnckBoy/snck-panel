@@ -1,87 +1,46 @@
-# Snck migration progress
+# SNCK Panel migration progress
 
-Updated 2026-10-31 after Stage A2.
+Updated 2026-11-01 on `php-migration-final` / PR #39.
 
-## Completed before this stage
+## Completed migration batches
 
-The Laravel foundation, first-run Owner setup, authentication, PostgreSQL domain schema, JSON import validation, node heartbeat contract, authenticated HTTPS NodeClient, server policies, server lifecycle/file/backup contracts, sub-user authorization, theme catalog, safe theme import/export, nodes, allocations, server detail, and Phase 4 regression coverage were restored and verified. The baseline before Stage A passed 36 tests and 227 assertions.
+The Laravel 12 / PHP 8.3 implementation includes authentication and Owner setup, PostgreSQL schema and idempotent legacy JSON import, node heartbeat and HTTPS client contracts, server provisioning/lifecycle/files/backups, sub-users, themes, Cloudflare DNS, Playit, plugin/mod/modpack management, SFTP credentials, administrator users/settings, production installation, and regression coverage.
 
-## Stage A — completed
+The requested UI parity pass is documented in [`UI_PARITY.md`](UI_PARITY.md). Every original React page and user-visible feature is mapped to a Laravel Blade/Livewire surface. ServerDetail now includes console, logs, players, properties, files, backups, sub-users, SFTP, plugins, mods, modpacks, and Playit tabs. AdminWorkspace provides settings, Cloudflare, API keys, and Discord configuration UI.
 
-The Livewire server detail component now marks `serverId` with `#[Locked]`, preventing client-side Livewire payloads from changing the authorized server target. The browser now has a `/servers/create` page with node, allocation, owner, server type/version, Java, memory, CPU, and disk fields. Stage A2 moved provisioning into the shared `ServerProvisioner` service, so the API and Livewire flow use the same transaction, quota, authorization, allocation, and daemon logic.
+The SFTP transport is now implemented in `node-daemon/src/sftp.ts`. Passwords are validated by Laravel through the node-authenticated `/api/node-agent/sftp-auth` endpoint, and the daemon enforces a per-server jail with traversal and symlink escape rejection. Node-daemon build and SFTP security tests pass.
 
-Navigation was reduced to destinations that exist in the current migration. Unported global integrations and unported server tabs are no longer offered by the theme layout catalog. The main layout and server list expose only the shipped Dashboard, Servers, Create server, Nodes, and Snck Theme destinations.
+The installed-panel smoke script is [`scripts/smoke-test.sh`](scripts/smoke-test.sh). The legacy React/Express baseline has been tagged `legacy-node-final` at the current `main` commit for rollback and comparison.
 
-Registration is **disabled by default**. It becomes available only when an owner/admin explicitly enables the `enableRegistration` setting. First-run Owner setup remains available when no user exists.
+## Verification
 
-Non-staff server quotas now use safe defaults of 3 servers, 8,192 MB total RAM, 400 CPU percentage points, and 51,200 MB total disk metadata. Owner/admin configuration can override these values through the `quota_max_servers`, `quota_total_ram_mb`, `quota_total_cpu_percent`, and `quota_total_disk_mb` settings. Staff are unrestricted.
+- PostgreSQL Laravel suite: **67 passed / 361 assertions**.
+- SFTP-focused Laravel suite: **3 passed / 17 assertions**.
+- Node-daemon SFTP tests: **2 passed**.
+- Pint: **100 Laravel files pass** after the new UI/auth additions.
+- Larastan: **no errors** with the checked-in baseline for existing migration debt.
+- Composer audit: clean.
+- Laravel frontend and node-daemon production builds: pass.
+- Blade cache and route compilation: pass.
+- Smoke script syntax: pass.
 
-## Stage A2 — completed
+## Remaining release work
 
-`ServerProvisioner` is now the single provisioning implementation for the API controller and browser Livewire flow. Non-staff owner quotas are checked inside the same transaction that locks the owner row, node row, and allocation row. A2 regression coverage verifies quota rejection, non-staff cross-owner rejection through API and Livewire, staff creation for another owner, and a mocked-daemon Livewire create-and-redirect flow.
+The remaining Discord production work is the live OAuth/account-linking flow, gateway-based invite attribution, reward provisioning, worker/systemd lifecycle, retention cleanup, reconciliation, moderation actions, and their complete user/admin UI. The current Laravel Discord batch has strict encrypted configuration and plan CRUD; it must not be described as a finished live rewards system until those flows are ported and tested against Discord HTTP APIs.
 
-## Ordered remaining work
+Real-node staging still must verify Docker provisioning, daemon TLS and heartbeat, node filesystem ownership, SFTP login with an external client, Playit/PM2, Cloudflare credentials, Nginx/PHP-FPM/systemd, PostgreSQL restore, and the installer on a supported host.
 
-### 1. Plugins, mods, and modpacks manager — completed first batch
-
-The Laravel manager now lists/removes installed JARs, installs compatible Modrinth JARs through the daemon, validates archive paths and size limits, prevents imports while the server is running, and uses the daemon replacement contract with explicit confirmation. The focused suite passes 2 tests / 7 assertions. Modrinth dependency expansion and runtime auto-detection remain follow-up hardening within this item.
-
-### 2. SFTP — credential lifecycle completed
-
-The Laravel API now creates, reads, resets, and deletes one hashed SFTP credential per server, returns plaintext only on create/reset, uses the node hostname and configured SFTP port, audits mutations, and denies delegated sub-users. The focused suite passes 2 tests / 13 assertions. A real SFTP transport daemon remains deployment work because the frozen node-daemon v1 contract does not expose SFTP operations.
-
-### 3. Remaining administrator configuration pages — completed
-
-Added a staff-only administrator users page and API for account listing, role/status changes, password resets, owner/self-protection, validation, and audit events. Existing settings, nodes, allocations, API keys, themes, Cloudflare, Discord foundation, and infrastructure surfaces remain protected. The focused suite passes 2 tests / 11 assertions, including Blade route rendering.
-
-### 4. Production installer — completed
-
-Added `scripts/install-laravel-panel.sh` with root/OS/PHP-extension/Node/Composer preflight, non-destructive `--dry-run`, PostgreSQL client setup, Laravel dependency/build/migration steps, Nginx + PHP-FPM configuration, queue worker, scheduler timer, rollback sibling backup, and systemd registration. The first-run web installer is available at `/install` as an alias of the guarded `/setup` Owner flow. Shell syntax, route registration, and Blade cache pass; the sandbox preflight correctly stops because its Node.js version is below the production requirement.
-
-### 5. Legacy data import — completed and PostgreSQL-verified
-
-Installed PostgreSQL 16 in the sandbox, created an isolated `snck_panel_test` database, and ran the importer tests against the real PostgreSQL driver: 2 tests / 48 assertions passed. The complete PostgreSQL suite passes 67 tests / 361 assertions, including the importer, with Composer audit clean.
-
-### 6. Security hardening and release preparation — completed
-Security scan found no unsafe shell/deserialization primitives in the Laravel application. Pint passes all 98 PHP files, Larastan passes with a baseline for pre-existing migration type debt, Composer audit is clean, the production asset build passes, and the PostgreSQL suite passes 67 tests / 361 assertions. README, MIGRATION_PLAN.md, FINAL_REPORT.md, installer runbook, and this log are current. The remaining Discord gateway/OAuth/claim-worker scope stays deferred.
-
-### 7. Discord remainder, credits permitting
-
-Only after items 1–6: OAuth linking, invite attribution, reward claiming, gateway worker, and retention cleanup.
-
-## Stage test commands
-
-From `laravel-panel/`:
+## Verification commands
 
 ```bash
-composer install --no-interaction --prefer-dist
+cd laravel-panel
+php artisan view:cache
 php artisan test
-npm ci --no-audit --no-fund
-npm run build
-php artisan view:cache
+DB_CONNECTION=pgsql DB_HOST=127.0.0.1 DB_PORT=5432 DB_DATABASE=snck_panel_test DB_USERNAME=snck_panel DB_PASSWORD=secret php artisan test
+./vendor/bin/pint --test
+./vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=1G
+composer audit
+npm ci --no-audit --no-fund && npm run build
+cd ../node-daemon && npm run build && npm test
+cd .. && bash -n scripts/smoke-test.sh
 ```
-
-For Stage A specifically, also verify:
-
-```bash
-php artisan route:list --path=servers
-php artisan view:cache
-```
-
-For A2 specifically, run:
-
-```bash
-php artisan test --filter=ServerProvisioningA2Test
-```
-
-The quota settings are `quota_max_servers`, `quota_total_ram_mb`, `quota_total_cpu_percent`, and `quota_total_disk_mb`. Their safe defaults are used when the settings are absent or invalid.
-
-## Laravel migration batches
-
-The `php-migration-final` branch contains the Laravel 12 foundation, daemon/server integration, Batch 1 server experience, and Batch 2 API keys/admin settings. The Cloudflare batch now adds encrypted account storage, token verification, staff-only zone/DNS endpoints, SRV-aware validation, audit events, reconnect upserts, bounded pagination, and HTTP-faked feature coverage. Verification completed with the Laravel frontend build, `composer audit` reporting no advisories, and 54 passing tests / 259 assertions; two PostgreSQL-only importer tests are intentionally skipped under the SQLite test configuration.
-
-The Playit batch adds owner/staff-only status, start, stop, and reset endpoints, audit events, fixed-version agent download, server-specific storage, claim-link extraction, bounded PM2 process execution through argument arrays, and tests proving delegated users cannot access the integration. The focused Playit suite passes 2 tests / 9 assertions. Real Playit/PM2 operation still requires a deployment host with PM2 and network access.
-
-The first Discord rewards batch adds encrypted single-document state storage, redacted administrator configuration, strict Discord/OAuth validation, reward-plan CRUD, duplicate protection, audit events, and staff-only endpoints. Its focused suite passes 3 tests / 14 assertions. Live Discord gateway lifecycle, OAuth linking, invite attribution, retention cleanup, member reconciliation, and claim provisioning remain to be ported; this batch does not expose them as completed features.
-
-Remaining ordered work is now SFTP, remaining administration, the production installer, legacy PostgreSQL import verification, release hardening/PR preparation, and only then the remaining Discord worker features if credits remain.

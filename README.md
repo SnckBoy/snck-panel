@@ -1,12 +1,12 @@
 # SNCK Panel
 
-SNCK Panel is a self-hosted Minecraft server control panel. This branch, `php-migration-final`, contains the Laravel migration release candidate under `laravel-panel/`; the legacy React/Express application remains available for controlled rollback and comparison.
+SNCK Panel is a self-hosted Minecraft server control panel. This branch, `php-migration-final`, contains the Laravel migration release candidate under `laravel-panel/`. The legacy React/Express panel is now **deprecated** and retained only for controlled rollback and comparison; its baseline is tagged `legacy-node-final`.
 
 ## Current status
 
-Completed on this branch: Laravel authentication and PostgreSQL schema; server lifecycle, files, backups, sub-users, node heartbeat/client contracts, themes, Cloudflare DNS, Playit, plugin/mod/modpack management, SFTP credential lifecycle, administrator configuration, production installer, and legacy JSON import. Discord gateway/OAuth/claim-worker features are intentionally deferred until after release review.
+Completed on this branch: Laravel authentication and PostgreSQL schema; server lifecycle, files, backups, sub-users, node heartbeat/client contracts, themes, Cloudflare DNS, Playit, plugin/mod/modpack management, SFTP credential lifecycle and jailed transport, administrator configuration, production installer, UI parity, legacy JSON import, and the installed-panel smoke checks. Discord gateway/OAuth/claim-worker work remains the final post-parity engineering batch.
 
-The migration targets Laravel 12 and PHP 8.3. PostgreSQL is the supported production database. The SFTP API stores and rotates credentials, but a live SFTP transport daemon is not part of the frozen node-daemon v1 contract and must be deployed separately before advertising file-transfer connectivity.
+The migration targets Laravel 12 and PHP 8.3. PostgreSQL is the supported production database. The node daemon now provides a jailed SSH/SFTP listener; configure its host key and panel URL as described in [`docs/LARAVEL_INSTALLER.md`](docs/LARAVEL_INSTALLER.md).
 
 ## Development and verification
 
@@ -32,6 +32,8 @@ php artisan test
 ```
 
 Final PostgreSQL verification passed **67 tests / 361 assertions**; Pint passes all 98 formatted files; Larastan passes with a checked-in baseline for pre-existing migration type debt, so new findings fail analysis.
+
+After installation, run the endpoint smoke checks with `BASE_URL=https://panel.example.test bash scripts/smoke-test.sh`. The script reports PASS/FAIL for health, login, setup/install, dashboard redirect, and protected core APIs.
 
 ## Production installation
 

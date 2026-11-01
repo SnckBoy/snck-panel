@@ -2,47 +2,59 @@
 
 **Date:** 2026-11-01  
 **Branch:** `php-migration-final`  
-**Repository:** `SnckBoy/snck-panel`
+**Pull request:** #39  
+**Legacy rollback tag:** `legacy-node-final`
 
-## Executive result
+## What was built
 
-The Laravel migration branch is a substantial, tested release candidate. The ordered priorities requested for this work were completed through release preparation: plugins/mods/modpacks, SFTP, administrator configuration, production installer, legacy import verification, and security/tooling/documentation hardening. The remaining Discord gateway/OAuth/claim-worker scope was intentionally not started.
+The Laravel release candidate now covers the original panel's authenticated foundation, Owner setup, PostgreSQL persistence, idempotent legacy JSON import, server provisioning and lifecycle, files, console/logs, players, properties, backups, sub-users, nodes, allocations, themes, Cloudflare DNS, Playit, plugin/mod/modpack management, SFTP, administrator settings/users, API keys, and UI parity. `UI_PARITY.md` is the page-by-page checklist.
 
-This is not a production cutover approval. PostgreSQL, node TLS/daemon compatibility, backup restoration, reverse proxy configuration, and the separate SFTP transport must be validated in the target environment before switching traffic.
+The UI parity batch added an AdminWorkspace Livewire page for Settings, Cloudflare, API keys, and Discord configuration, and completed the missing ServerDetail tabs for SFTP, plugins, mods, modpacks, and Playit. Existing console, logs, players, properties, files, backups, and sub-user interfaces remain wired to Laravel services and the frozen daemon contract.
 
-## Delivered milestones
+SFTP is now a real SSH/SFTP transport in `node-daemon/src/sftp.ts`. The daemon calls Laravel for node-authenticated password validation, maps the authenticated account to its server root, and blocks absolute paths, `..` traversal, symlink escapes, and unsafe handles. Passwords remain hashed in Laravel and are returned only by create/reset operations.
 
-- **Plugin/mod/modpack manager:** installed artifact listing/removal, bounded Modrinth download/install, validation, running-server protection, modpack replacement contract, and feature tests.
-- **SFTP:** one credential per server, hashed password storage, create/reset/delete lifecycle, password redaction on read, owner/staff policy boundary, audit events, and delegated-user denial. The API exposes connection metadata but does not install an SFTP daemon.
-- **Administrator configuration:** staff-only API and Livewire users page; account listing, role/status/password changes, owner/self-protection, validation, and audit events.
-- **Production installer:** `scripts/install-laravel-panel.sh` with `--dry-run`, OS/runtime checks, PostgreSQL client, Nginx/PHP-FPM, Laravel migrations, frontend build, queue worker, scheduler timer, rollback sibling backup, and systemd registration. `/install` aliases the guarded first-owner `/setup` flow.
-- **Legacy import:** importer behavior was tested on PostgreSQL 16, not only the lightweight local test database.
-- **Release hardening:** all 98 PHP files pass Pint; Composer audit reports no advisories; Larastan passes with a baseline containing pre-existing migration type debt; the root README, migration plan, installer runbook, progress log, and this report are current.
+The production installer, `/install` web installer, `scripts/smoke-test.sh`, updated runbook, release documentation, and `legacy-node-final` tag are included.
 
-## Verification evidence
+## Verification
 
 | Check | Result |
 |---|---:|
-| Full PostgreSQL Laravel suite | **67 passed / 361 assertions** |
-| Legacy importer PostgreSQL tests | **2 passed / 48 assertions** |
-| Pint | **98 files pass** |
-| Larastan | **No new errors** |
-| Composer audit | **No security advisories** |
-| Shell syntax for Laravel installer | **Pass** |
-| Installer sandbox dry-run | Correctly stopped because sandbox Node.js is below required Node 20+ |
+| Complete Laravel PostgreSQL suite | **67 passed / 361 assertions** |
+| SFTP Laravel feature tests | **3 passed / 17 assertions** |
+| Node-daemon SFTP jail tests | **2 passed** |
+| Laravel Pint | **100 files pass** |
+| Larastan | **No errors** with baseline for pre-existing migration debt |
+| Composer audit | **No advisories** |
+| Laravel frontend build | **Pass** |
+| Node-daemon TypeScript build | **Pass** |
+| Blade cache and route compilation | **Pass** |
+| Smoke-test shell syntax | **Pass** |
 
-The normal lightweight suite also passed 65 tests / 313 assertions before PostgreSQL-specific verification. PostgreSQL-only coverage removed the two expected skips.
+## Exact install steps
 
-## Security review
+On Ubuntu/Debian with PHP 8.3, Node.js 20+, Composer, PostgreSQL access, and systemd:
 
-The final scan found no use of `eval`, `unserialize`, shell command execution in the Laravel application, or unsafe plaintext credential persistence in the delivered integrations. Sensitive node, Cloudflare, and access credentials remain encrypted or hashed according to their use. File and archive operations continue through validated daemon contracts and bounded paths. SFTP plaintext passwords are returned only on create/reset responses and are never returned by GET.
+```bash
+git clone --branch php-migration-final https://github.com/SnckBoy/snck-panel.git /opt/snck-panel
+cd /opt/snck-panel
+sudo bash scripts/install-laravel-panel.sh --dry-run
+sudo bash scripts/install-laravel-panel.sh --app-dir /opt/snck-panel/laravel-panel --repo https://github.com/SnckBoy/snck-panel.git --branch php-migration-final
+```
 
-Residual deployment risks remain: node addresses are administrator-controlled outbound targets and must be protected by network policy; TLS verification and private CA configuration must be reviewed; the installer downloads package/repository content and should be run from a trusted source or pinned release; archive expanded-size and symlink behavior should be rechecked against the exact production runtime; and the Larastan baseline should be reduced as migration type annotations improve.
+Set the PostgreSQL values in `/opt/snck-panel/laravel-panel/.env`, place the daemon configuration and SFTP host key on each node, then open `/install` through HTTPS to create the first Owner. Provision a server SFTP credential from its SFTP tab and test it with an external client. Finally run:
 
-## Release recommendation
+```bash
+BASE_URL=https://panel.example.test bash scripts/smoke-test.sh
+```
 
-**Recommendation: approve for staging review, not immediate production cutover.** Merge the pull request only after reviewing the changed route/policy surface, validating the installer on the target supported distribution, rehearsing JSON import and restore, confirming the daemon version contract, and deciding how/where the SFTP transport will run. Keep the legacy runtime and backups available until those gates pass.
+## What still needs real-node testing
 
-## Deferred work
+The sandbox cannot prove Docker image pulls and container lifecycle, daemon TLS/heartbeat against a remote node, production filesystem ownership, external SFTP login and file operations, Playit/PM2 operation, Cloudflare DNS changes with a real token, Nginx/PHP-FPM/systemd restarts, queue/scheduler execution, PostgreSQL backup restoration, or importer results against a real production backup. These are mandatory staging gates before cutover.
 
-Discord OAuth linking, invite attribution, reward claiming, gateway worker, retention cleanup, and related moderation/reconciliation flows remain deferred. These should be implemented as a separate post-release batch rather than being mixed into the migration cutover.
+## Remaining engineering scope
+
+Discord live OAuth/account linking, gateway invite attribution, reward claiming and provisioning, queue/systemd worker lifecycle, retention cleanup, member reconciliation, moderation/review/reconcile actions, and their complete reward UI remain open. The Laravel branch currently provides encrypted Discord configuration and strict reward-plan administration; it does not claim the full live Discord rewards system is complete.
+
+## Recommendation
+
+Approve the branch for staging review and external-node testing. Do not perform production cutover until the real-node gates above pass, the importer and restore rehearsal are accepted, and the remaining Discord scope is either completed or explicitly removed from the release acceptance criteria.

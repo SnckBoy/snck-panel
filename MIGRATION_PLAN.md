@@ -1,42 +1,38 @@
 # SNCK Panel Laravel Migration Plan
 
-Updated 2026-11-01 for `php-migration-final`.
-
-## Objective
-
-Move the panel from the legacy React/Express JSON-backed runtime to Laravel with PostgreSQL persistence while preserving authentication, ownership, server/node behavior, import safety, and operational recovery. This branch is a release candidate; it does not perform a production cutover.
+Updated 2026-11-01 for `php-migration-final` / PR #39.
 
 ## Completed scope
 
-- Laravel 12 / PHP 8.3 foundation, PostgreSQL schema, authentication, Owner setup, server policies, nodes, allocations, daemon/client contracts, server lifecycle, files, backups, sub-users, themes, and regression coverage.
-- Plugin/mod/modpack manager with bounded marketplace downloads, archive/path validation, running-server protection, and daemon replacement contract.
-- SFTP credential create/read/reset/delete API with hashed storage, password redaction, audit events, and delegated-user denial. A live SFTP transport remains a separate deployment dependency because it is absent from node-daemon v1.
-- Staff-only administrator users API and Livewire page for role/status/password management, owner/self protections, validation, and audit events.
-- Production installer with dry-run preflight, Ubuntu/Debian dependencies, Nginx/PHP-FPM, migrations, assets, queue worker, scheduler timer, rollback sibling backup, systemd units, and `/install` web setup alias.
-- Legacy JSON importer with dry-run, atomic/idempotent behavior, validation, and PostgreSQL 16 verification. Dedicated importer tests pass 2 tests / 48 assertions; the full PostgreSQL suite passes 67 tests / 361 assertions.
-- Release hardening: Pint formatting, Composer audit, Larastan configuration/baseline, security scan, README, final report, and PR preparation.
+The Laravel 12 / PHP 8.3 application now includes PostgreSQL schema and legacy JSON import, authentication and Owner setup, server provisioning/lifecycle/files/backups, sub-users, nodes/allocations/heartbeat contracts, themes, Cloudflare DNS, Playit, plugins/mods/modpacks, administrator users/settings, UI parity, and an installed-panel smoke test.
 
-## Required release gates
+`UI_PARITY.md` maps every original React page and user-visible feature to a Laravel Blade/Livewire surface. ServerDetail includes console, logs, players, properties, files, backups, sub-users, SFTP, plugins, mods, modpacks, and Playit. AdminWorkspace includes settings, Cloudflare, API keys, and Discord configuration.
 
-Before production use, an operator must configure PostgreSQL, run the installer dry-run, rehearse the importer against a backup, compare counts and relationships, verify node TLS and daemon versions, configure HTTPS/reverse proxying, restore a backup in a separate environment, and review the final pull request. No destructive migration command should run against the legacy database without a verified backup and rollback plan.
+SFTP is a real node-daemon SSH/SFTP subsystem. Laravel validates the username/password through the node-authenticated SFTP endpoint; the daemon maps the result to one server directory and rejects traversal, absolute paths, symlink escapes, and cross-server access.
 
-From `laravel-panel/`:
+## Exact installation steps
+
+On a supported Ubuntu/Debian host with PHP 8.3, Node.js 20+, Composer, PostgreSQL access, and systemd:
 
 ```bash
-composer install --no-interaction --prefer-dist
-php artisan test
-DB_CONNECTION=pgsql DB_HOST=127.0.0.1 DB_DATABASE=snck_panel_test DB_USERNAME=snck_panel DB_PASSWORD=secret php artisan test
-composer audit
-./vendor/bin/pint --test
-./vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=1G
-npm ci --no-audit --no-fund
-npm run build
+git clone --branch php-migration-final https://github.com/SnckBoy/snck-panel.git /opt/snck-panel
+cd /opt/snck-panel
+sudo bash scripts/install-laravel-panel.sh --dry-run
+sudo bash scripts/install-laravel-panel.sh --app-dir /opt/snck-panel/laravel-panel --repo https://github.com/SnckBoy/snck-panel.git --branch php-migration-final
 ```
 
-## Deferred scope
+Configure PostgreSQL credentials in `/opt/snck-panel/laravel-panel/.env`, then open `https://panel.example.test/install` behind TLS and create the first Owner. Configure each node with its daemon credential, `panelUrl`, `nodeId`, `serverDirectory`, `sftpHostKey`, and `sftpPort`. Provision an SFTP credential in the server SFTP tab and test with an external SFTP client. Run `BASE_URL=https://panel.example.test bash scripts/smoke-test.sh`.
 
-Discord OAuth linking, invite attribution, claim provisioning, gateway worker lifecycle, member reconciliation, retention cleanup, and remaining moderation/reconciliation endpoints are deferred until this release candidate is reviewed and accepted.
+## Release verification
 
-## Known limitations
+The PostgreSQL suite passes **67 tests / 361 assertions**. SFTP-focused Laravel coverage passes **3 tests / 17 assertions**. Node-daemon SFTP jail tests pass **2 tests**. Pint passes 100 Laravel files, Larastan reports no errors with the checked-in pre-existing-debt baseline, Composer audit is clean, the Laravel production build passes, the node-daemon TypeScript build passes, and the smoke script passes shell syntax validation.
 
-The target is Laravel 12, not Laravel 11. The installer requires Node.js 20+ and systemd for service registration. SFTP credentials do not create a transport service. Larastan uses a checked-in baseline for existing migration type findings; new findings must fail analysis. The legacy runtime and JSON data remain the rollback source until a separately approved cutover.
+## Real-node staging gates
+
+Before cutover, verify Docker image pull/provision/start/stop/restart, daemon TLS and authenticated heartbeat, node filesystem ownership, SFTP password login and upload/download/delete/traversal rejection, Playit agent/PM2, Cloudflare token and DNS CRUD, Nginx/PHP-FPM/systemd service restart, PostgreSQL backup/restore, queue/scheduler execution, and importer counts against a real backup. These cannot be proven by the sandbox test suite.
+
+## Remaining scope
+
+The remaining Discord production batch is live OAuth/account linking, gateway-based invite attribution, reward claiming and server/resource provisioning, queue/systemd worker lifecycle, retention cleanup, member reconciliation, moderation/review/reconcile endpoints, and complete user/admin reward UI. The current Discord batch provides strict encrypted configuration and plan CRUD; it must not be treated as a complete live rewards implementation until the remaining flows are ported and tested against Discord APIs.
+
+The deprecated React/Express baseline remains available under the repository root and is tagged `legacy-node-final`; do not delete it until staging cutover and rollback rehearsal are approved.

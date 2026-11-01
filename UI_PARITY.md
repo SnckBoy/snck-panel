@@ -1,6 +1,6 @@
 # Laravel UI parity checklist
 
-Updated 2026-11-01 on `php-migration-final`. Each item below maps an original React route/page or user-visible feature to a working Laravel Blade/Livewire surface. API-only implementations are not counted as complete.
+Updated 2026-11-01 on `php-migration-final`. Each item below maps an original React route/page or user-visible feature to a Laravel Blade/Livewire surface. API-only implementations are not counted as complete. `PARTIAL` is used only for the explicitly deferred live Discord rewards work.
 
 | Original page or feature | Original route/source | Laravel UI surface | Status |
 |---|---|---|---|
@@ -33,8 +33,10 @@ Updated 2026-11-01 on `php-migration-final`. Each item below maps an original Re
 | Admin user configuration | system admin users | `Livewire\AdminUsers` page | DONE |
 | Global settings | `/settings`, `SettingsPage.tsx` | AdminWorkspace Settings tab with persisted settings | DONE |
 | Snck Theme | `/snck-theme`, `SnckTheme.tsx` | `Livewire\ThemeManager` plus export route | DONE |
-| Discord rewards user page | `/free-service/discord`, `DiscordRewards.tsx` | AdminWorkspace Discord configuration and existing rewards API foundation | DONE |
-| Discord OAuth/account linking | Discord page actions | `/api/discord-rewards` backend and config UI; production OAuth endpoints use Discord APIs | DONE |
+| Discord rewards user page | `/free-service/discord`, `DiscordRewards.tsx` | AdminWorkspace Discord configuration; live claim page still requires the deferred rewards batch | PARTIAL |
+| Discord OAuth/account linking | Discord page actions | Encrypted configuration and strict validation exist; live OAuth callback/linking is deferred | PARTIAL |
+| Discord invite attribution and gateway | Discord worker/page actions | No completed Laravel gateway worker yet; deferred for real Discord API implementation | PARTIAL |
+| Discord reward claiming/provisioning | Discord page actions | Plan CRUD exists; live provisioning and reconciliation remain deferred | PARTIAL |
 | Authenticated navigation/layout | React `Layout` | Laravel app layout and route navigation | DONE |
 | Google authentication | AuthExperience/Login actions | AuthController Google redirect/callback | DONE |
 | Settings/theme persistence | React SettingsProvider | Laravel settings table and ThemeManager | DONE |
