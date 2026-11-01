@@ -18,7 +18,10 @@ class AuthController extends Controller
 {
     public function setupForm(): View|RedirectResponse
     {
-        if (User::query()->exists()) return redirect()->route('login');
+        if (User::query()->exists()) {
+            return redirect()->route('login');
+        }
+
         return view('auth.setup');
     }
 
@@ -63,13 +66,19 @@ class AuthController extends Controller
 
         Auth::login($user);
         $request->session()->regenerate();
+
         return redirect()->route('dashboard');
     }
 
     public function loginForm(): View|RedirectResponse
     {
-        if (!User::query()->exists()) return redirect()->route('setup');
-        if (Auth::check()) return redirect()->route('dashboard');
+        if (! User::query()->exists()) {
+            return redirect()->route('setup');
+        }
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
+
         return view('auth.login', ['registrationEnabled' => $this->registrationEnabled()]);
     }
 
@@ -85,19 +94,25 @@ class AuthController extends Controller
             $query->where('username', $identity)->orWhere('email', $identity);
         })->first();
 
-        if (!$user || $user->disabled || !Hash::check($data['password'], $user->password)) {
+        if (! $user || $user->disabled || ! Hash::check($data['password'], $user->password)) {
             return back()->withErrors(['identity' => 'The credentials are invalid or the account is disabled.'])->onlyInput('identity');
         }
 
         Auth::login($user, (bool) ($data['remember'] ?? false));
         $request->session()->regenerate();
+
         return redirect()->intended(route('dashboard'));
     }
 
     public function registerForm(): View|RedirectResponse
     {
-        if (!User::query()->exists()) return redirect()->route('setup');
-        if (!$this->registrationEnabled()) return redirect()->route('login')->withErrors(['registration' => 'Registration is disabled by the panel owner.']);
+        if (! User::query()->exists()) {
+            return redirect()->route('setup');
+        }
+        if (! $this->registrationEnabled()) {
+            return redirect()->route('login')->withErrors(['registration' => 'Registration is disabled by the panel owner.']);
+        }
+
         return view('auth.register');
     }
 
@@ -122,19 +137,23 @@ class AuthController extends Controller
         ]);
         Auth::login($user);
         $request->session()->regenerate();
+
         return redirect()->route('dashboard');
     }
 
     public function googleRedirect(): RedirectResponse
     {
         abort_unless(config('services.google.client_id') && config('services.google.client_secret'), 404);
+
         return Socialite::driver('google')->scopes(['openid', 'email', 'profile'])->redirect();
     }
 
     public function googleCallback(Request $request): RedirectResponse
     {
         abort_unless(config('services.google.client_id') && config('services.google.client_secret'), 404);
-        if (!User::query()->exists()) return redirect()->route('setup');
+        if (! User::query()->exists()) {
+            return redirect()->route('setup');
+        }
 
         $google = Socialite::driver('google')->user();
         $raw = $google->getRaw();
@@ -146,8 +165,10 @@ class AuthController extends Controller
             $user = User::query()->where('google_id', (string) $google->getId())
                 ->orWhere('email', $email)->lockForUpdate()->first();
 
-            if (!$user) {
-                if (!$this->registrationEnabled()) return null;
+            if (! $user) {
+                if (! $this->registrationEnabled()) {
+                    return null;
+                }
                 $username = $this->availableUsername(Str::before($email, '@'));
                 $user = User::create([
                     'name' => (string) ($google->getName() ?: $username),
@@ -170,12 +191,13 @@ class AuthController extends Controller
             return $user;
         });
 
-        if (!$user || $user->disabled) {
+        if (! $user || $user->disabled) {
             return redirect()->route('login')->withErrors(['identity' => 'This Google account cannot access the panel.']);
         }
 
         Auth::login($user);
         $request->session()->regenerate();
+
         return redirect()->intended(route('dashboard'));
     }
 
@@ -184,17 +206,22 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect()->route('login');
     }
 
     private function registrationEnabled(): bool
     {
         $value = DB::table('settings')->where('key', 'enableRegistration')->value('value');
-        if (is_bool($value)) return $value;
+        if (is_bool($value)) {
+            return $value;
+        }
         if (is_string($value)) {
             $decoded = json_decode($value, true);
+
             return $decoded === true || $decoded === 1 || $decoded === 'true';
         }
+
         return false;
     }
 
@@ -204,7 +231,10 @@ class AuthController extends Controller
         $base = trim(substr($base, 0, 24), '.-_') ?: 'player';
         $name = $base;
         $counter = 1;
-        while (User::query()->where('username', $name)->exists()) $name = $base.'-'.$counter++;
+        while (User::query()->where('username', $name)->exists()) {
+            $name = $base.'-'.$counter++;
+        }
+
         return $name;
     }
 }

@@ -97,6 +97,7 @@ class Batch1ServerExperienceTest extends TestCase
             'credential_hash' => hash('sha256', 'node-token'), 'status' => 'online',
             'docker_available' => true, 'last_heartbeat_at' => now(), 'memory_limit_mb' => 4096,
         ]);
+
         return Server::query()->create([
             'id' => 'server-1', 'identifier' => 'srv-test-1', 'owner_id' => $owner->id,
             'node_id' => $node->id, 'name' => 'Test server', 'port' => 25565,

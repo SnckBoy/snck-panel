@@ -10,8 +10,8 @@ use App\Services\ThemeCatalog;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Livewire\Component;
 use Livewire\Attributes\Locked;
+use Livewire\Component;
 use Livewire\WithFileUploads;
 use Throwable;
 
@@ -21,26 +21,47 @@ class ServerDetail extends Component
 
     #[Locked]
     public string $serverId;
+
     public string $tab = 'overview';
+
     public string $filePath = '.';
+
     public string $fileContent = '';
+
     public string $uploadPath = '';
+
     public string $renamePath = '';
+
     public string $archiveName = 'archive.zip';
+
     public array $selectedFiles = [];
+
     public $uploadFile = null;
+
     public string $commandText = '';
+
     public string $subuserEmail = '';
+
     public array $permissions = ['files'];
+
     public array $files = [];
+
     public array $backups = [];
+
     public array $subusers = [];
+
     public array $players = [];
+
     public ?int $maxPlayers = null;
+
     public string $propertiesContent = '';
+
     public string $logFilter = '';
+
     public string $logs = '';
+
     public string $notice = '';
+
     public string $noticeType = 'success';
 
     public function mount(string $server): void
@@ -63,8 +84,8 @@ class ServerDetail extends Component
     public function lifecycle(string $action, NodeClient $client): void
     {
         $server = $this->server();
-        abort_unless(in_array($action, ['start','stop','restart','kill'], true), 422);
-        abort_if($server->suspended && !auth()->user()->isStaff(), 403, 'This server is suspended.');
+        abort_unless(in_array($action, ['start', 'stop', 'restart', 'kill'], true), 422);
+        abort_if($server->suspended && ! auth()->user()->isStaff(), 403, 'This server is suspended.');
         $this->authorize($action, $server);
         try {
             $client->serverAction($server->node, $server->id, $action);
@@ -73,14 +94,19 @@ class ServerDetail extends Component
             $server->update(['status' => $status]);
             $this->notice = 'Action sent. Observed status: '.$status.'.';
             $this->noticeType = 'success';
-        } catch (Throwable $exception) { $this->failure('Server action failed.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('Server action failed.', $exception);
+        }
     }
 
     public function refreshLogs(NodeClient $client): void
     {
         $server = $this->authorizedServer('logs');
-        try { $this->logs = $client->serverLogs($server->node, $server->id); }
-        catch (Throwable $exception) { $this->failure('Logs are currently unavailable.', $exception); }
+        try {
+            $this->logs = $client->serverLogs($server->node, $server->id);
+        } catch (Throwable $exception) {
+            $this->failure('Logs are currently unavailable.', $exception);
+        }
     }
 
     public function refreshPlayers(NodeClient $client): void
@@ -89,7 +115,9 @@ class ServerDetail extends Component
         try {
             $result = $client->serverRequest($server->node, $server->id, 'POST', 'command', ['command' => 'list']);
             $this->parsePlayers((string) ($result['output'] ?? $result['content'] ?? ''));
-        } catch (Throwable $exception) { $this->failure('Player list is currently unavailable.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('Player list is currently unavailable.', $exception);
+        }
     }
 
     public function loadProperties(NodeClient $client): void
@@ -100,7 +128,9 @@ class ServerDetail extends Component
             $this->propertiesContent = (string) ($result['content'] ?? '');
             $this->notice = 'server.properties loaded.';
             $this->noticeType = 'success';
-        } catch (Throwable $exception) { $this->failure('server.properties is not available. Start the server once to generate it.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('server.properties is not available. Start the server once to generate it.', $exception);
+        }
     }
 
     public function saveProperties(NodeClient $client): void
@@ -111,21 +141,25 @@ class ServerDetail extends Component
             $client->serverRequest($server->node, $server->id, 'POST', 'files/write', ['path' => 'server.properties', 'content' => $this->propertiesContent]);
             $this->notice = 'server.properties saved.';
             $this->noticeType = 'success';
-        } catch (Throwable $exception) { $this->failure('server.properties could not be saved.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('server.properties could not be saved.', $exception);
+        }
     }
 
     public function sendCommand(NodeClient $client): void
     {
         $server = $this->authorizedServer('command');
-        abort_if($server->suspended && !auth()->user()->isStaff(), 403);
-        $data = $this->validate(['commandText' => ['required','string','min:1','max:4096']]);
+        abort_if($server->suspended && ! auth()->user()->isStaff(), 403);
+        $data = $this->validate(['commandText' => ['required', 'string', 'min:1', 'max:4096']]);
         try {
             $client->serverRequest($server->node, $server->id, 'POST', 'command', ['command' => $data['commandText']]);
             $this->commandText = '';
             $this->notice = 'Console command sent.';
             $this->noticeType = 'success';
             $this->refreshLogs($client);
-        } catch (Throwable $exception) { $this->failure('Console command failed.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('Console command failed.', $exception);
+        }
     }
 
     public function loadFiles(NodeClient $client): void
@@ -138,7 +172,9 @@ class ServerDetail extends Component
             $this->files = is_array($items) ? $items : [];
             $this->notice = 'File list refreshed.';
             $this->noticeType = 'success';
-        } catch (Throwable $exception) { $this->failure('Files are currently unavailable.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('Files are currently unavailable.', $exception);
+        }
     }
 
     public function readFile(NodeClient $client): void
@@ -150,7 +186,9 @@ class ServerDetail extends Component
             $this->fileContent = (string) ($result['content'] ?? '');
             $this->notice = 'File loaded for editing.';
             $this->noticeType = 'success';
-        } catch (Throwable $exception) { $this->failure('File could not be read.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('File could not be read.', $exception);
+        }
     }
 
     public function selectFile(string $name): void
@@ -170,7 +208,9 @@ class ServerDetail extends Component
             $this->loadFiles($client);
             $this->notice = 'File or directory deleted.';
             $this->noticeType = 'success';
-        } catch (Throwable $exception) { $this->failure('File or directory could not be deleted.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('File or directory could not be deleted.', $exception);
+        }
     }
 
     public function renameFile(NodeClient $client): void
@@ -179,28 +219,34 @@ class ServerDetail extends Component
         $oldPath = $this->safePath($this->filePath);
         $newPath = $this->safePath($this->renamePath);
         try {
-            $client->serverRequest($server->node, $server->id, 'POST', 'files/rename', ['oldPath'=>$oldPath,'newPath'=>$newPath]);
+            $client->serverRequest($server->node, $server->id, 'POST', 'files/rename', ['oldPath' => $oldPath, 'newPath' => $newPath]);
             $this->filePath = $newPath;
             $this->renamePath = '';
             $this->loadFiles($client);
             $this->notice = 'File or directory renamed.';
             $this->noticeType = 'success';
-        } catch (Throwable $exception) { $this->failure('Rename failed.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('Rename failed.', $exception);
+        }
     }
 
     public function zipSelected(NodeClient $client): void
     {
         $server = $this->authorizedServer('files');
         abort_unless(preg_match('/^[a-zA-Z0-9._-]{1,120}\.zip$/i', $this->archiveName), 422, 'Archive name must be a simple .zip filename.');
-        abort_if(!$this->selectedFiles || count($this->selectedFiles) > 1000, 422, 'Select between 1 and 1,000 directory entries.');
-        foreach ($this->selectedFiles as $name) abort_unless(is_string($name) && !in_array($name, ['', '.', '..'], true) && !str_contains($name, '/') && !str_contains($name, '\\'), 422);
+        abort_if(! $this->selectedFiles || count($this->selectedFiles) > 1000, 422, 'Select between 1 and 1,000 directory entries.');
+        foreach ($this->selectedFiles as $name) {
+            abort_unless(is_string($name) && ! in_array($name, ['', '.', '..'], true) && ! str_contains($name, '/') && ! str_contains($name, '\\'), 422);
+        }
         try {
-            $result = $client->serverRequest($server->node, $server->id, 'POST', 'files/zip', ['dirPath'=>$this->safePath($this->filePath),'fileNames'=>array_values($this->selectedFiles),'outputName'=>$this->archiveName]);
+            $result = $client->serverRequest($server->node, $server->id, 'POST', 'files/zip', ['dirPath' => $this->safePath($this->filePath), 'fileNames' => array_values($this->selectedFiles), 'outputName' => $this->archiveName]);
             $this->selectedFiles = [];
             $this->loadFiles($client);
             $this->notice = 'Archive created: '.($result['filename'] ?? $this->archiveName);
             $this->noticeType = 'success';
-        } catch (Throwable $exception) { $this->failure('Archive creation failed.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('Archive creation failed.', $exception);
+        }
     }
 
     public function unzipFile(NodeClient $client): void
@@ -208,17 +254,19 @@ class ServerDetail extends Component
         $server = $this->authorizedServer('files');
         $path = $this->safePath($this->filePath);
         try {
-            $client->serverRequest($server->node, $server->id, 'POST', 'files/unzip', ['path'=>$path]);
+            $client->serverRequest($server->node, $server->id, 'POST', 'files/unzip', ['path' => $path]);
             $this->loadFiles($client);
             $this->notice = 'Archive extracted.';
             $this->noticeType = 'success';
-        } catch (Throwable $exception) { $this->failure('Archive extraction failed.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('Archive extraction failed.', $exception);
+        }
     }
 
     public function uploadFileToServer(NodeClient $client): void
     {
         $server = $this->authorizedServer('files');
-        $this->validate(['uploadFile'=>['required','file','max:51200']]);
+        $this->validate(['uploadFile' => ['required', 'file', 'max:51200']]);
         $original = str_replace('\\', '/', $this->uploadFile->getClientOriginalName());
         $filename = basename($original);
         $target = $this->safePath($this->uploadPath !== '' ? $this->uploadPath : $filename);
@@ -230,16 +278,25 @@ class ServerDetail extends Component
         try {
             do {
                 $chunk = fread($stream, 4 * 1024 * 1024);
-                if (!is_string($chunk)) throw new \RuntimeException('Upload chunk could not be read.');
+                if (! is_string($chunk)) {
+                    throw new \RuntimeException('Upload chunk could not be read.');
+                }
                 $length = strlen($chunk);
                 $result = $client->serverRequest($server->node, $server->id, 'POST', 'files/write-chunk', [
-                    'uploadId'=>$uploadId,'path'=>$target,'offset'=>$offset,'totalSize'=>$size,'content'=>base64_encode($chunk),
+                    'uploadId' => $uploadId, 'path' => $target, 'offset' => $offset, 'totalSize' => $size, 'content' => base64_encode($chunk),
                 ]);
                 $offset += $length;
-                if ((int) ($result['offset'] ?? -1) !== $offset || (bool) ($result['complete'] ?? false) !== ($offset === $size)) throw new \RuntimeException('Node did not confirm the expected upload chunk state.');
+                if ((int) ($result['offset'] ?? -1) !== $offset || (bool) ($result['complete'] ?? false) !== ($offset === $size)) {
+                    throw new \RuntimeException('Node did not confirm the expected upload chunk state.');
+                }
             } while ($offset < $size);
-        } catch (Throwable $exception) { $this->failure('Upload failed.', $exception); return; }
-        finally { fclose($stream); }
+        } catch (Throwable $exception) {
+            $this->failure('Upload failed.', $exception);
+
+            return;
+        } finally {
+            fclose($stream);
+        }
         $this->uploadFile = null;
         $this->uploadPath = '';
         $this->filePath = $target;
@@ -252,12 +309,14 @@ class ServerDetail extends Component
     {
         $server = $this->authorizedServer('files');
         $path = $this->safePath($this->filePath);
-        $this->validate(['fileContent' => ['nullable','string','max:10485760']]);
+        $this->validate(['fileContent' => ['nullable', 'string', 'max:10485760']]);
         try {
             $client->serverRequest($server->node, $server->id, 'POST', 'files/write', ['path' => $path, 'content' => $this->fileContent]);
             $this->notice = 'File saved.';
             $this->noticeType = 'success';
-        } catch (Throwable $exception) { $this->failure('File could not be saved.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('File could not be saved.', $exception);
+        }
     }
 
     public function createDirectory(NodeClient $client): void
@@ -267,7 +326,9 @@ class ServerDetail extends Component
         try {
             $client->serverRequest($server->node, $server->id, 'POST', 'files/mkdir', ['path' => $path]);
             $this->loadFiles($client);
-        } catch (Throwable $exception) { $this->failure('Directory could not be created.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('Directory could not be created.', $exception);
+        }
     }
 
     public function createBackup(NodeClient $client): void
@@ -284,7 +345,9 @@ class ServerDetail extends Component
             $this->refreshBackups($client);
             $this->notice = 'Backup created.';
             $this->noticeType = 'success';
-        } catch (Throwable $exception) { $this->failure('Backup creation failed.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('Backup creation failed.', $exception);
+        }
     }
 
     public function deleteBackup(string $filename, NodeClient $client): void
@@ -297,16 +360,18 @@ class ServerDetail extends Component
             $this->refreshBackups($client);
             $this->notice = 'Backup deleted.';
             $this->noticeType = 'success';
-        } catch (Throwable $exception) { $this->failure('Backup deletion failed.', $exception); }
+        } catch (Throwable $exception) {
+            $this->failure('Backup deletion failed.', $exception);
+        }
     }
 
     public function addSubuser(): void
     {
         $server = $this->authorizedServer('manageSubusers');
         $data = $this->validate([
-            'subuserEmail' => ['required','email','max:255','exists:users,email'],
-            'permissions' => ['required','array','min:1','max:10'],
-            'permissions.*' => ['string','in:start,stop,restart,kill,files,backup,plugins,mods,properties,settings'],
+            'subuserEmail' => ['required', 'email', 'max:255', 'exists:users,email'],
+            'permissions' => ['required', 'array', 'min:1', 'max:10'],
+            'permissions.*' => ['string', 'in:start,stop,restart,kill,files,backup,plugins,mods,properties,settings'],
         ]);
         $user = User::query()->where('email', $data['subuserEmail'])->firstOrFail();
         abort_if((string) $user->id === (string) $server->owner_id, 422, 'The owner already has full access.');
@@ -331,30 +396,44 @@ class ServerDetail extends Component
     {
         $server = $this->authorizedServer('view');
         $serverLayout = $themes->activeTheme()['layout'];
+
         return view('livewire.servers.detail', compact('server', 'serverLayout'))
             ->layout('layouts.app', ['title' => $server->name]);
     }
 
     private function server(): Server
     {
-        return Server::query()->with(['node','owner','subusers'])->findOrFail($this->serverId);
+        return Server::query()->with(['node', 'owner', 'subusers'])->findOrFail($this->serverId);
     }
 
     private function authorizedServer(string $ability): Server
     {
         $server = $this->server();
         $this->authorize($ability, $server);
+
         return $server;
     }
 
     private function refreshTabData(NodeClient $client): void
     {
-        if ($this->tab === 'logs' || $this->tab === 'console') $this->refreshLogs($client);
-        if ($this->tab === 'players') $this->refreshPlayers($client);
-        if ($this->tab === 'properties') $this->loadProperties($client);
-        if ($this->tab === 'files') $this->loadFiles($client);
-        if ($this->tab === 'backups') $this->refreshBackups($client);
-        if ($this->tab === 'subusers') $this->refreshSubusers();
+        if ($this->tab === 'logs' || $this->tab === 'console') {
+            $this->refreshLogs($client);
+        }
+        if ($this->tab === 'players') {
+            $this->refreshPlayers($client);
+        }
+        if ($this->tab === 'properties') {
+            $this->loadProperties($client);
+        }
+        if ($this->tab === 'files') {
+            $this->loadFiles($client);
+        }
+        if ($this->tab === 'backups') {
+            $this->refreshBackups($client);
+        }
+        if ($this->tab === 'subusers') {
+            $this->refreshSubusers();
+        }
     }
 
     private function parsePlayers(string $output): void
@@ -371,17 +450,23 @@ class ServerDetail extends Component
     private function refreshBackups(NodeClient $client): void
     {
         $server = $this->authorizedServer('backup');
-        try { $this->backups = $client->listBackups($server->node, $server->id); }
-        catch (Throwable $exception) { $this->failure('Backups are currently unavailable.', $exception); }
+        try {
+            $this->backups = $client->listBackups($server->node, $server->id);
+        } catch (Throwable $exception) {
+            $this->failure('Backups are currently unavailable.', $exception);
+        }
     }
 
     private function refreshSubusers(): void
     {
         $server = $this->authorizedServer('manageSubusers');
-        $this->subusers = $server->subusers()->get(['users.id','users.username','users.email'])->map(function (User $user): array {
+        $this->subusers = $server->subusers()->get(['users.id', 'users.username', 'users.email'])->map(function (User $user): array {
             $permissions = $user->pivot->permissions;
-            if (is_string($permissions)) $permissions = json_decode($permissions, true) ?: [];
-            return ['id'=>$user->id,'username'=>$user->username,'email'=>$user->email,'permissions'=>is_array($permissions) ? $permissions : []];
+            if (is_string($permissions)) {
+                $permissions = json_decode($permissions, true) ?: [];
+            }
+
+            return ['id' => $user->id, 'username' => $user->username, 'email' => $user->email, 'permissions' => is_array($permissions) ? $permissions : []];
         })->all();
     }
 
@@ -389,13 +474,17 @@ class ServerDetail extends Component
     {
         $path = str_replace('\\', '/', trim($path));
         abort_if($path === '' || str_starts_with($path, '/') || str_contains($path, "\0") || preg_match('~(^|/)\.\.(/|$)~', $path), 422, 'A safe server-relative path is required.');
+
         return $path;
     }
 
     private function mapStatus(array $inspection): string
     {
         $state = $inspection['State'] ?? $inspection['state'] ?? null;
-        if (!is_array($state)) return 'unknown';
+        if (! is_array($state)) {
+            return 'unknown';
+        }
+
         return match (strtolower((string) ($state['Status'] ?? $state['status'] ?? ''))) {
             'running' => 'running', 'created','restarting' => 'installing', 'exited','paused','dead','removing' => strtolower((string) ($state['Status'] ?? $state['status'])), default => 'unknown',
         };

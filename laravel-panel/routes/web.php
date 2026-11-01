@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ThemeExportController;
+use App\Livewire\AdminUsers;
 use App\Livewire\Dashboard;
 use App\Livewire\InfrastructureManager;
 use App\Livewire\ServerCreate;
@@ -16,6 +17,8 @@ Route::get('/', fn () => redirect()->route(User::query()->exists() ? 'login' : '
 Route::middleware('guest')->group(function (): void {
     Route::get('/setup', [AuthController::class, 'setupForm'])->middleware('throttle:setup')->name('setup');
     Route::post('/setup', [AuthController::class, 'setup'])->middleware('throttle:setup')->name('setup.store');
+    Route::get('/install', [AuthController::class, 'setupForm'])->middleware('throttle:setup')->name('install');
+    Route::post('/install', [AuthController::class, 'setup'])->middleware('throttle:setup')->name('install.store');
     Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login')->name('login.store');
     Route::get('/register', [AuthController::class, 'registerForm'])->middleware('throttle:register')->name('register');
@@ -35,5 +38,6 @@ Route::middleware(['auth', 'account.enabled'])->group(function (): void {
         Route::get('/themes/{theme}/export', ThemeExportController::class)->name('themes.export');
         Route::get('/nodes', InfrastructureManager::class)->name('nodes.index');
         Route::get('/allocations', InfrastructureManager::class)->defaults('tab', 'allocations')->name('allocations.index');
+        Route::get('/admin/users', AdminUsers::class)->name('admin.users');
     });
 });

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\Theme;
 use App\Models\Node;
 use App\Models\Server;
+use App\Models\Theme;
 use App\Models\User;
 use App\Services\ThemeCatalog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,7 +36,7 @@ class ThemeSystemTest extends TestCase
             'config' => ThemeCatalog::DEFAULT_CONFIG, 'layout' => $catalog->defaultLayout(),
         ]);
         $path = $catalog->export($theme->id);
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         $this->assertTrue($zip->open($path) === true);
         $this->assertSame(1, $zip->numFiles);
         $this->assertSame('custom-night/theme.json', $zip->getNameIndex(0));
@@ -58,23 +58,31 @@ class ThemeSystemTest extends TestCase
     public function test_theme_import_rejects_assets_traversal_and_unsupported_manifest_fields(): void
     {
         $catalog = app(ThemeCatalog::class);
-        $manifest = ['id'=>'secure-test','name'=>'Secure Test','version'=>'1.0.0','author'=>'Tester','description'=>'','supportedPanelVersion'=>'>=0.2.0','config'=>ThemeCatalog::DEFAULT_CONFIG,'layout'=>$catalog->defaultLayout()];
+        $manifest = ['id' => 'secure-test', 'name' => 'Secure Test', 'version' => '1.0.0', 'author' => 'Tester', 'description' => '', 'supportedPanelVersion' => '>=0.2.0', 'config' => ThemeCatalog::DEFAULT_CONFIG, 'layout' => $catalog->defaultLayout()];
         $assetPackage = $this->zipWithManifest('secure-test/theme.json', json_encode($manifest, JSON_THROW_ON_ERROR), ['secure-test/theme.css' => 'body{}']);
-        try { $catalog->importZip($assetPackage); $this->fail('An archive containing non-JSON assets must be rejected.'); }
-        catch (RuntimeException $exception) { $this->assertStringContainsString('Only one JSON', $exception->getMessage()); }
+        try {
+            $catalog->importZip($assetPackage);
+            $this->fail('An archive containing non-JSON assets must be rejected.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('Only one JSON', $exception->getMessage());
+        }
         @unlink($assetPackage);
 
         $manifest['unsupported'] = true;
         $badFields = $this->zipWithManifest('secure-test/theme.json', json_encode($manifest, JSON_THROW_ON_ERROR));
-        try { $catalog->importZip($badFields); $this->fail('Unsupported fields must be rejected.'); }
-        catch (RuntimeException $exception) { $this->assertStringContainsString('unsupported fields', $exception->getMessage()); }
+        try {
+            $catalog->importZip($badFields);
+            $this->fail('Unsupported fields must be rejected.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('unsupported fields', $exception->getMessage());
+        }
         @unlink($badFields);
     }
 
     public function test_partial_legacy_theme_config_is_merged_with_canonical_defaults(): void
     {
         $catalog = app(ThemeCatalog::class);
-        $manifest = ['id'=>'legacy-partial','name'=>'Legacy Partial','version'=>'1.0.0','author'=>'Tester','description'=>'','supportedPanelVersion'=>'>=0.2.0','config'=>['primary'=>'#123456']];
+        $manifest = ['id' => 'legacy-partial', 'name' => 'Legacy Partial', 'version' => '1.0.0', 'author' => 'Tester', 'description' => '', 'supportedPanelVersion' => '>=0.2.0', 'config' => ['primary' => '#123456']];
         $package = $this->zipWithManifest('legacy-partial/theme.json', json_encode($manifest, JSON_THROW_ON_ERROR));
         $theme = $catalog->importZip($package);
         $this->assertSame('#123456', $theme->config['primary']);
@@ -86,37 +94,45 @@ class ThemeSystemTest extends TestCase
     public function test_theme_import_rejects_path_traversal_and_symlink_entries(): void
     {
         $catalog = app(ThemeCatalog::class);
-        $manifest = ['id'=>'safe-package','name'=>'Safe Package','version'=>'1.0.0','author'=>'Tester','description'=>'','supportedPanelVersion'=>'>=0.2.0','config'=>ThemeCatalog::DEFAULT_CONFIG];
+        $manifest = ['id' => 'safe-package', 'name' => 'Safe Package', 'version' => '1.0.0', 'author' => 'Tester', 'description' => '', 'supportedPanelVersion' => '>=0.2.0', 'config' => ThemeCatalog::DEFAULT_CONFIG];
         $traversal = $this->zipWithManifest('../safe-package/theme.json', json_encode($manifest, JSON_THROW_ON_ERROR));
-        try { $catalog->importZip($traversal); $this->fail('Traversal must be rejected.'); }
-        catch (RuntimeException $exception) { $this->assertStringContainsString('Unsafe theme archive path', $exception->getMessage()); }
+        try {
+            $catalog->importZip($traversal);
+            $this->fail('Traversal must be rejected.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('Unsafe theme archive path', $exception->getMessage());
+        }
         @unlink($traversal);
 
         $path = tempnam(sys_get_temp_dir(), 'snck-theme-link-');
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         $this->assertTrue($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true);
         $zip->addFromString('safe-package/', '');
         $zip->addFromString('safe-package/theme.json', json_encode($manifest, JSON_THROW_ON_ERROR));
         $zip->addFromString('safe-package/link', 'target');
         $this->assertTrue($zip->setExternalAttributesName('safe-package/link', ZipArchive::OPSYS_UNIX, 0120777 << 16));
         $zip->close();
-        try { $catalog->importZip($path); $this->fail('Symlinks must be rejected.'); }
-        catch (RuntimeException $exception) { $this->assertStringContainsString('symlinks', $exception->getMessage()); }
+        try {
+            $catalog->importZip($path);
+            $this->fail('Symlinks must be rejected.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('symlinks', $exception->getMessage());
+        }
         @unlink($path);
     }
 
     public function test_theme_builder_is_staff_only_and_users_cannot_access_export(): void
     {
-        $member = User::factory()->create(['role'=>'user']);
+        $member = User::factory()->create(['role' => 'user']);
         $this->actingAs($member)->get('/themes')->assertForbidden();
         $this->actingAs($member)->get('/themes/snck-default/export')->assertForbidden();
     }
 
     public function test_staff_can_render_phase_four_management_pages(): void
     {
-        $owner = User::factory()->create(['role'=>'owner']);
-        $node = Node::query()->create(['id'=>'phase4-node','name'=>'Phase 4 node']);
-        $server = Server::query()->create(['id'=>'phase4-server','identifier'=>'phase4-server','owner_id'=>$owner->id,'node_id'=>$node->id,'name'=>'Phase 4 server']);
+        $owner = User::factory()->create(['role' => 'owner']);
+        $node = Node::query()->create(['id' => 'phase4-node', 'name' => 'Phase 4 node']);
+        $server = Server::query()->create(['id' => 'phase4-server', 'identifier' => 'phase4-server', 'owner_id' => $owner->id, 'node_id' => $node->id, 'name' => 'Phase 4 server']);
         $this->actingAs($owner)->get('/themes')->assertOk()->assertSee('Theme builder');
         $this->actingAs($owner)->get('/nodes')->assertOk()->assertSee('Register daemon node');
         $this->actingAs($owner)->get('/allocations')->assertOk()->assertSee('Create port range');
@@ -126,12 +142,15 @@ class ThemeSystemTest extends TestCase
     private function zipWithManifest(string $manifestPath, string $manifest, array $extra = []): string
     {
         $path = tempnam(sys_get_temp_dir(), 'snck-theme-test-');
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         $this->assertTrue($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true);
         $zip->addFromString(dirname($manifestPath).'/', '');
         $zip->addFromString($manifestPath, $manifest);
-        foreach ($extra as $name => $contents) $zip->addFromString($name, $contents);
+        foreach ($extra as $name => $contents) {
+            $zip->addFromString($name, $contents);
+        }
         $zip->close();
+
         return $path;
     }
 }

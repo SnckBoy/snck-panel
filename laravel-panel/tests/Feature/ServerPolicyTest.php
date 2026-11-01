@@ -5,9 +5,9 @@ namespace Tests\Feature;
 use App\Models\Node;
 use App\Models\Server;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ServerPolicyTest extends TestCase
@@ -80,6 +80,7 @@ class ServerPolicyTest extends TestCase
     private function server(User $owner): Server
     {
         $node = Node::query()->create(['id' => 'node-1', 'name' => 'Test node', 'status' => 'offline']);
+
         return Server::query()->create([
             'id' => 'server-1',
             'identifier' => 'srv-test-1',

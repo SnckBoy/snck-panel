@@ -21,8 +21,13 @@ class ServerApiIntegrationTest extends TestCase
         $node = $this->node('node-1');
         $allocation = Allocation::query()->create(['id' => 'alloc-1', 'node_id' => $node->id, 'ip' => '203.0.113.10', 'port' => 25571]);
         Http::fake(function ($request) {
-            if ($request->url() === 'https://node.example.test:6768/v1/servers') return Http::response(['containerId' => str_repeat('a', 64)], 201);
-            if (preg_match('#/v1/servers/[a-z0-9]+/status$#', $request->url())) return Http::response(['State' => ['Status' => 'running']], 200);
+            if ($request->url() === 'https://node.example.test:6768/v1/servers') {
+                return Http::response(['containerId' => str_repeat('a', 64)], 201);
+            }
+            if (preg_match('#/v1/servers/[a-z0-9]+/status$#', $request->url())) {
+                return Http::response(['State' => ['Status' => 'running']], 200);
+            }
+
             return Http::response(['error' => 'Unexpected mock route'], 404);
         });
 
@@ -128,6 +133,7 @@ class ServerApiIntegrationTest extends TestCase
     private function server(User $owner): Server
     {
         $node = $this->node('node-1');
+
         return Server::query()->create([
             'id' => 'server-1',
             'identifier' => 'srv-test-1',

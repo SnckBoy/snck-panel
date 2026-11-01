@@ -130,8 +130,13 @@ class ServerProvisioningA2Test extends TestCase
     private function fakeDaemon(): void
     {
         Http::fake(function ($request) {
-            if (str_ends_with($request->url(), '/v1/servers')) return Http::response(['containerId' => str_repeat('a', 64)], 201);
-            if (str_ends_with($request->url(), '/status')) return Http::response(['State' => ['Status' => 'running']], 200);
+            if (str_ends_with($request->url(), '/v1/servers')) {
+                return Http::response(['containerId' => str_repeat('a', 64)], 201);
+            }
+            if (str_ends_with($request->url(), '/status')) {
+                return Http::response(['State' => ['Status' => 'running']], 200);
+            }
+
             return Http::response(['error' => 'Unexpected mock route'], 404);
         });
     }

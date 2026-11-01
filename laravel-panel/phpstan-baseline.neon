@@ -1,0 +1,247 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$username\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/ApiKeyController.php
+
+		-
+			message: '#^Cannot call method toISOString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Http/Controllers/ApiKeyController.php
+
+		-
+			message: '#^Call to an undefined method Laravel\\Socialite\\Contracts\\Provider\:\:scopes\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Call to an undefined method Laravel\\Socialite\\Contracts\\User\:\:getRaw\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Parameter \#1 \$boolean of function abort_unless expects bool, stdClass\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:createBackup\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/BackupController.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:deleteBackup\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/BackupController.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:downloadBackup\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/BackupController.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:listBackups\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/BackupController.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:deleteServer\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ServerController.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:serverAction\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ServerController.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:serverStatus\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/ServerController.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:downloadServerFile\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ServerFilesController.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:serverLogs\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ServerFilesController.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:serverRequest\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 13
+			path: app/Http/Controllers/ServerFilesController.php
+
+		-
+			message: '#^Constant App\\Http\\Controllers\\SettingsController\:\:OWNER_KEYS is unused\.$#'
+			identifier: classConstant.unused
+			count: 1
+			path: app/Http/Controllers/SettingsController.php
+
+		-
+			message: '#^Constant App\\Http\\Controllers\\SettingsController\:\:PUBLIC_KEYS is unused\.$#'
+			identifier: classConstant.unused
+			count: 1
+			path: app/Http/Controllers/SettingsController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$pivot\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/ServerDetail.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\)\: array\{id\: string, username\: string\|null, email\: string\|null, permissions\: array\<mixed\>\}, Closure\(App\\Models\\User\)\: array\{id\: string, username\: string\|null, email\: string\|null, permissions\: array\<mixed\>\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/ServerDetail.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:createBackup\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/ServerDetail.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:deleteBackup\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/ServerDetail.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:listBackups\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/ServerDetail.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:serverAction\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/ServerDetail.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:serverLogs\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/ServerDetail.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:serverRequest\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 13
+			path: app/Livewire/ServerDetail.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:serverStatus\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/ServerDetail.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>payload" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Services/DiscordRewardsService.php
+
+		-
+			message: '#^Match expression does not handle remaining value\: string$#'
+			identifier: match.unhandled
+			count: 1
+			path: app/Services/NodeClient.php
+
+		-
+			message: '#^Offset 0 on array\{list\<string\>\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Services/PlayitService.php
+
+		-
+			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Services/PluginManagerService.php
+
+		-
+			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Services/PluginManagerService.php
+
+		-
+			message: '#^Parameter \#1 \$array \(array\{0\?\: non\-falsy\-string\}\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 2
+			path: app/Services/PluginManagerService.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:serverRequest\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 4
+			path: app/Services/PluginManagerService.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:serverStatus\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/PluginManagerService.php
+
+		-
+			message: '#^Cannot call method greaterThan\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/ServerProvisioner.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:createServer\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/ServerProvisioner.php
+
+		-
+			message: '#^Parameter \#1 \$node of method App\\Services\\NodeClient\:\:serverStatus\(\) expects App\\Models\\Node, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/ServerProvisioner.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$fqdn\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/SftpCredentialService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$hostname\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/SftpCredentialService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$public_ip\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/SftpCredentialService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$sftp_port\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/SftpCredentialService.php

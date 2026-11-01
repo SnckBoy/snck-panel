@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 class SettingsController extends Controller
 {
     private const PUBLIC_KEYS = ['panelName', 'enableRegistration', 'enableGoogleLogin', 'enablePlayit', 'enableTutorial', 'enableLoginAnimation', 'theme', 'appearance', 'accent', 'backgroundEffect', 'reducedMotion'];
+
     private const OWNER_KEYS = ['quota_max_servers', 'quota_total_ram_mb', 'quota_total_cpu_percent', 'quota_total_disk_mb', 'free_service_enabled', 'free_service_ram_gb', 'free_service_cpu_percent', 'free_service_disk_gb', 'free_service_duration_hours'];
 
     public function index(Request $request): JsonResponse
@@ -18,7 +19,10 @@ class SettingsController extends Controller
         $this->staff($request);
         $rows = DB::table('settings')->get()->keyBy('key');
         $settings = [];
-        foreach ($rows as $key => $row) $settings[$key] = $row->is_encrypted ? null : json_decode((string) $row->value, true);
+        foreach ($rows as $key => $row) {
+            $settings[$key] = $row->is_encrypted ? null : json_decode((string) $row->value, true);
+        }
+
         return response()->json(['settings' => $settings]);
     }
 
@@ -49,6 +53,7 @@ class SettingsController extends Controller
             }
             DB::table('audit_events')->insert(['user_id' => $user->id, 'action' => 'settings.update', 'resource_type' => 'settings', 'result' => 'success', 'metadata' => json_encode(['keys' => array_keys($data)]), 'created_at' => now(), 'updated_at' => now()]);
         });
+
         return $this->index($request);
     }
 
@@ -56,6 +61,7 @@ class SettingsController extends Controller
     {
         abort_unless($request->user()?->isStaff(), 403, 'Staff access is required.');
         abort_unless($request->user()->isOwner() || $request->user()->isAdmin(), 403);
+
         return $request->user();
     }
 }

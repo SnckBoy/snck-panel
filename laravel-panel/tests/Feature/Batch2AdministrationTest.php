@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\ApiKey;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class Batch2AdministrationTest extends TestCase

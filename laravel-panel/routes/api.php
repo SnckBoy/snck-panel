@@ -1,14 +1,20 @@
 <?php
 
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AllocationController;
 use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\BackupController;
+use App\Http\Controllers\CloudflareController;
+use App\Http\Controllers\DiscordRewardsController;
 use App\Http\Controllers\NodeAgentController;
 use App\Http\Controllers\NodeController;
+use App\Http\Controllers\PlayitController;
+use App\Http\Controllers\PluginManagerController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ServerFilesController;
 use App\Http\Controllers\ServerSubuserController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SftpController;
 use Illuminate\Support\Facades\Route;
 
 // The node-agent callback authenticates exclusively with a per-node bearer
@@ -33,6 +39,10 @@ Route::middleware(['web', 'auth', 'account.enabled'])->group(function (): void {
     Route::get('/servers', [ServerController::class, 'index']);
     Route::post('/servers', [ServerController::class, 'store']);
     Route::post('/servers/{server}/status', [ServerController::class, 'status']);
+    Route::get('/servers/{server}/playit', [PlayitController::class, 'status']);
+    Route::post('/servers/{server}/playit/start', [PlayitController::class, 'start']);
+    Route::post('/servers/{server}/playit/stop', [PlayitController::class, 'stop']);
+    Route::post('/servers/{server}/playit/reset', [PlayitController::class, 'reset']);
     Route::delete('/servers/{server}', [ServerController::class, 'destroy']);
     Route::post('/servers/{server}/{action}', [ServerController::class, 'action'])
         ->whereIn('action', ['start', 'stop', 'restart', 'kill']);
@@ -53,6 +63,15 @@ Route::middleware(['web', 'auth', 'account.enabled'])->group(function (): void {
     Route::post('/servers/{server}/files/delete', [ServerFilesController::class, 'delete']);
     Route::post('/servers/{server}/files/zip', [ServerFilesController::class, 'zip']);
     Route::post('/servers/{server}/files/unzip', [ServerFilesController::class, 'unzip']);
+    Route::get('/servers/{server}/plugins/installed', [PluginManagerController::class, 'installed']);
+    Route::delete('/servers/{server}/plugins/{filename}', [PluginManagerController::class, 'remove']);
+    Route::post('/servers/{server}/plugins/install', [PluginManagerController::class, 'installPlugin']);
+    Route::post('/servers/{server}/mods/install', [PluginManagerController::class, 'installMod']);
+    Route::post('/servers/{server}/modpacks/import', [PluginManagerController::class, 'importModpack']);
+    Route::get('/servers/{server}/sftp', [SftpController::class, 'show']);
+    Route::post('/servers/{server}/sftp/create', [SftpController::class, 'create']);
+    Route::post('/servers/{server}/sftp/reset-password', [SftpController::class, 'reset']);
+    Route::delete('/servers/{server}/sftp', [SftpController::class, 'destroy']);
     Route::post('/servers/{server}/command', [ServerFilesController::class, 'command']);
     Route::get('/servers/{server}/logs', [ServerFilesController::class, 'logs']);
     Route::get('/servers/{server}/stats', [ServerFilesController::class, 'stats']);
@@ -65,6 +84,21 @@ Route::middleware(['web', 'auth', 'account.enabled'])->group(function (): void {
     Route::get('/api-keys', [ApiKeyController::class, 'index']);
     Route::post('/api-keys', [ApiKeyController::class, 'store']);
     Route::delete('/api-keys/{apiKey}', [ApiKeyController::class, 'destroy']);
+    Route::get('/discord-rewards/admin', [DiscordRewardsController::class, 'admin']);
+    Route::put('/discord-rewards/admin/config', [DiscordRewardsController::class, 'updateConfig']);
+    Route::post('/discord-rewards/admin/plans', [DiscordRewardsController::class, 'storePlan']);
+    Route::put('/discord-rewards/admin/plans/{id}', [DiscordRewardsController::class, 'updatePlan']);
+    Route::delete('/discord-rewards/admin/plans/{id}', [DiscordRewardsController::class, 'deletePlan']);
     Route::get('/admin/settings', [SettingsController::class, 'index']);
     Route::put('/admin/settings', [SettingsController::class, 'update']);
+    Route::get('/admin/users', [AdminUserController::class, 'index']);
+    Route::patch('/admin/users/{user}', [AdminUserController::class, 'update']);
+    Route::get('/cloudflare/connection', [CloudflareController::class, 'connection']);
+    Route::post('/cloudflare/connection', [CloudflareController::class, 'connect']);
+    Route::get('/cloudflare/zones', [CloudflareController::class, 'zones']);
+    Route::get('/cloudflare/zones/{zoneId}', [CloudflareController::class, 'zone']);
+    Route::get('/cloudflare/zones/{zoneId}/dns', [CloudflareController::class, 'dns']);
+    Route::post('/cloudflare/zones/{zoneId}/dns', [CloudflareController::class, 'createDns']);
+    Route::put('/cloudflare/zones/{zoneId}/dns/{recordId}', [CloudflareController::class, 'updateDns']);
+    Route::delete('/cloudflare/zones/{zoneId}/dns/{recordId}', [CloudflareController::class, 'deleteDns']);
 });

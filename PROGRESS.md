@@ -22,29 +22,32 @@ Non-staff server quotas now use safe defaults of 3 servers, 8,192 MB total RAM, 
 
 ## Ordered remaining work
 
-### B. Server properties, players, settings, and live console/logs
+### 1. Plugins, mods, and modpacks manager — completed first batch
 
-Add the missing browser pages and daemon/API contracts with explicit permissions, live console/log refresh behavior, and regression tests.
+The Laravel manager now lists/removes installed JARs, installs compatible Modrinth JARs through the daemon, validates archive paths and size limits, prevents imports while the server is running, and uses the daemon replacement contract with explicit confirmation. The focused suite passes 2 tests / 7 assertions. Modrinth dependency expansion and runtime auto-detection remain follow-up hardening within this item.
 
-### C. Production installer and migration rehearsal
+### 2. SFTP — credential lifecycle completed
 
-Build the Ubuntu/Debian installer for PHP-FPM, Nginx, Composer, queue worker, scheduler, systemd, database configuration, import rehearsal, rollback, and a documented runbook.
+The Laravel API now creates, reads, resets, and deletes one hashed SFTP credential per server, returns plaintext only on create/reset, uses the node hostname and configured SFTP port, audits mutations, and denies delegated sub-users. The focused suite passes 2 tests / 13 assertions. A real SFTP transport daemon remains deployment work because the frozen node-daemon v1 contract does not expose SFTP operations.
 
-### D. API keys and administrator configuration
+### 3. Remaining administrator configuration pages — completed
 
-Add scoped API keys, rotation/revocation, audit logging, and protected administrator configuration screens.
+Added a staff-only administrator users page and API for account listing, role/status changes, password resets, owner/self-protection, validation, and audit events. Existing settings, nodes, allocations, API keys, themes, Cloudflare, Discord foundation, and infrastructure surfaces remain protected. The focused suite passes 2 tests / 11 assertions, including Blade route rendering.
 
-### E. Discord, Cloudflare, and Playit
+### 4. Production installer — completed
 
-Implement each integration behind explicit configuration, secrets handling, health checks, and disabled-by-default behavior.
+Added `scripts/install-laravel-panel.sh` with root/OS/PHP-extension/Node/Composer preflight, non-destructive `--dry-run`, PostgreSQL client setup, Laravel dependency/build/migration steps, Nginx + PHP-FPM configuration, queue worker, scheduler timer, rollback sibling backup, and systemd registration. The first-run web installer is available at `/install` as an alias of the guarded `/setup` Owner flow. Shell syntax, route registration, and Blade cache pass; the sandbox preflight correctly stops because its Node.js version is below the production requirement.
 
-### F. Plugins, mods, modpacks, and SFTP contract proposal
+### 5. Legacy data import — completed and PostgreSQL-verified
 
-Add safe marketplace/import flows, runtime detection, archive validation, and document/version the SFTP contract before exposing it.
+Installed PostgreSQL 16 in the sandbox, created an isolated `snck_panel_test` database, and ran the importer tests against the real PostgreSQL driver: 2 tests / 48 assertions passed. The complete PostgreSQL suite passes 67 tests / 361 assertions, including the importer, with Composer audit clean.
 
-### G. Real Docker-node test matrix
+### 6. Security hardening and release preparation — completed
+Security scan found no unsafe shell/deserialization primitives in the Laravel application. Pint passes all 98 PHP files, Larastan passes with a baseline for pre-existing migration type debt, Composer audit is clean, the production asset build passes, and the PostgreSQL suite passes 67 tests / 361 assertions. README, MIGRATION_PLAN.md, FINAL_REPORT.md, installer runbook, and this log are current. The remaining Discord gateway/OAuth/claim-worker scope stays deferred.
 
-On a real disposable Docker node, test create, start, stop, files, backup, and a real Minecraft server. Record the results separately from mocked or contract tests.
+### 7. Discord remainder, credits permitting
+
+Only after items 1–6: OAuth linking, invite attribution, reward claiming, gateway worker, and retention cleanup.
 
 ## Stage test commands
 
@@ -72,3 +75,13 @@ php artisan test --filter=ServerProvisioningA2Test
 ```
 
 The quota settings are `quota_max_servers`, `quota_total_ram_mb`, `quota_total_cpu_percent`, and `quota_total_disk_mb`. Their safe defaults are used when the settings are absent or invalid.
+
+## Laravel migration batches
+
+The `php-migration-final` branch contains the Laravel 12 foundation, daemon/server integration, Batch 1 server experience, and Batch 2 API keys/admin settings. The Cloudflare batch now adds encrypted account storage, token verification, staff-only zone/DNS endpoints, SRV-aware validation, audit events, reconnect upserts, bounded pagination, and HTTP-faked feature coverage. Verification completed with the Laravel frontend build, `composer audit` reporting no advisories, and 54 passing tests / 259 assertions; two PostgreSQL-only importer tests are intentionally skipped under the SQLite test configuration.
+
+The Playit batch adds owner/staff-only status, start, stop, and reset endpoints, audit events, fixed-version agent download, server-specific storage, claim-link extraction, bounded PM2 process execution through argument arrays, and tests proving delegated users cannot access the integration. The focused Playit suite passes 2 tests / 9 assertions. Real Playit/PM2 operation still requires a deployment host with PM2 and network access.
+
+The first Discord rewards batch adds encrypted single-document state storage, redacted administrator configuration, strict Discord/OAuth validation, reward-plan CRUD, duplicate protection, audit events, and staff-only endpoints. Its focused suite passes 3 tests / 14 assertions. Live Discord gateway lifecycle, OAuth linking, invite attribution, retention cleanup, member reconciliation, and claim provisioning remain to be ported; this batch does not expose them as completed features.
+
+Remaining ordered work is now SFTP, remaining administration, the production installer, legacy PostgreSQL import verification, release hardening/PR preparation, and only then the remaining Discord worker features if credits remain.
