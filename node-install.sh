@@ -12,7 +12,6 @@ NODE_DIR="${SHIRONEX_NODE_DIR:-/opt/shironex-node}"
 CONFIG_DIR="/etc/shironex-node"
 DATA_DIR="/var/lib/shironex/servers"
 SERVICE="shironex-node"
-DAEMON_VERSION="1.1.0"
 
 info(){ printf '\033[1;36m[INFO]\033[0m %s\n' "$*"; }
 ok(){ printf '\033[1;32m[ OK ]\033[0m %s\n' "$*"; }
@@ -186,7 +185,8 @@ cd "$NODE_DIR"
 info "Writing private node configuration..."
 "$NODE_BIN" -e '
 const fs = require("node:fs");
-const [target, panelUrl, nodeId, credential, port, sftpPort, serverDirectory, tlsKey, tlsCert, sftpHostKey, daemonVersion] = process.argv.slice(1);
+const [target, panelUrl, nodeId, credential, port, sftpPort, serverDirectory, tlsKey, tlsCert, sftpHostKey] = process.argv.slice(1);
+const daemonVersion = JSON.parse(fs.readFileSync("package.json", "utf8")).version;
 const config = {
   panelUrl, nodeId, credential,
   port: Number(port), sftpPort: Number(sftpPort),
@@ -195,7 +195,7 @@ const config = {
   tlsKey, tlsCert, sftpHostKey
 };
 fs.writeFileSync(target, JSON.stringify(config) + "\n", { mode: 0o600 });
-' "$CONFIG_DIR/config.json" "$PANEL_URL" "$NODE_ID" "$NODE_CREDENTIAL" "$NODE_PORT" "$SFTP_PORT" "$DATA_DIR" "$TLS_KEY" "$TLS_CERT" "$HOST_KEY" "$DAEMON_VERSION"
+' "$CONFIG_DIR/config.json" "$PANEL_URL" "$NODE_ID" "$NODE_CREDENTIAL" "$NODE_PORT" "$SFTP_PORT" "$DATA_DIR" "$TLS_KEY" "$TLS_CERT" "$HOST_KEY"
 chmod 600 "$CONFIG_DIR/config.json"
 
 cat >"/etc/systemd/system/$SERVICE.service" <<EOF
