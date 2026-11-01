@@ -45,7 +45,6 @@ class AdminWorkspace extends Component
     public function mount(): void
     {
         $this->authorizeStaff();
-        abort_unless(auth()->user()?->isStaff(), 403);
         $this->loadAll();
     }
 
@@ -63,6 +62,7 @@ class AdminWorkspace extends Component
         $this->settings = DB::table('settings')->where('is_encrypted', false)->pluck('value', 'key')->map(fn ($value) => json_decode((string) $value, true))->all();
         $this->keys = ApiKey::query()->where('user_id', auth()->id())->latest()->get()->map(fn (ApiKey $key): array => ['id' => $key->id, 'label' => $key->label, 'scopes' => $key->scopes ?? [], 'revoked' => (bool) $key->revoked_at, 'expires_at' => $this->formatKeyDate($key)])->all();
         $this->discord = app(DiscordRewardsService::class)->publicState(app(DiscordRewardsService::class)->state());
+
         try {
             $this->zones = app(CloudflareService::class)->zones();
         } catch (Throwable) {
@@ -85,6 +85,7 @@ class AdminWorkspace extends Component
     {
         $this->authorizeStaff();
         $this->validate(['cloudflareToken' => ['required', 'string', 'max:512'], 'cloudflareAccountId' => ['nullable', 'string', 'max:64']]);
+
         try {
             $service->connect($this->cloudflareToken, $this->cloudflareAccountId ?: null);
             $this->cloudflareToken = '';
@@ -162,6 +163,7 @@ class AdminWorkspace extends Component
     public function render(): View
     {
         $this->authorizeStaff();
+
         return view('livewire.admin.workspace')->layout('layouts.app');
     }
 }
