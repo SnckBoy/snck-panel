@@ -319,7 +319,7 @@ Type=oneshot
 User=snck-panel
 Group=snck-panel
 WorkingDirectory=$APP_DIR
-EnvironmentFile=$APP_DIR/.env
+
 ExecStart=$(command -v php) $APP_DIR/artisan discord:maintenance --reconcile --cleanup
 EOF
 
@@ -455,7 +455,7 @@ Type=oneshot
 User=snck-panel
 Group=snck-panel
 WorkingDirectory=$APP_DIR
-EnvironmentFile=$APP_DIR/.env
+
 ExecStart=$(command -v php) $APP_DIR/artisan schedule:run
 EOF
 
@@ -483,7 +483,7 @@ Type=oneshot
 User=snck-panel
 Group=snck-panel
 WorkingDirectory=$APP_DIR
-EnvironmentFile=$APP_DIR/.env
+
 ExecStart=$(command -v php) $APP_DIR/artisan discord:maintenance --reconcile --cleanup
 EOF
 
@@ -641,7 +641,7 @@ Type=oneshot
 User=snck-panel
 Group=snck-panel
 WorkingDirectory=$APP_DIR
-EnvironmentFile=$APP_DIR/.env
+
 ExecStart=$(command -v php) $APP_DIR/artisan schedule:run
 EOF
 
@@ -669,7 +669,7 @@ Type=oneshot
 User=snck-panel
 Group=snck-panel
 WorkingDirectory=$APP_DIR
-EnvironmentFile=$APP_DIR/.env
+
 ExecStart=$(command -v php) $APP_DIR/artisan discord:maintenance --reconcile --cleanup
 EOF
 
