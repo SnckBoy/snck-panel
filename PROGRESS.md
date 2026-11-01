@@ -38,9 +38,9 @@ Added a staff-only administrator users page and API for account listing, role/st
 
 Added `scripts/install-laravel-panel.sh` with root/OS/PHP-extension/Node/Composer preflight, non-destructive `--dry-run`, PostgreSQL client setup, Laravel dependency/build/migration steps, Nginx + PHP-FPM configuration, queue worker, scheduler timer, rollback sibling backup, and systemd registration. The first-run web installer is available at `/install` as an alias of the guarded `/setup` Owner flow. Shell syntax, route registration, and Blade cache pass; the sandbox preflight correctly stops because its Node.js version is below the production requirement.
 
-### 5. Legacy data import
+### 5. Legacy data import — completed and PostgreSQL-verified
 
-Make the importer operational and run it against PostgreSQL when available; otherwise complete a careful static/schema review and document the limitation.
+Installed PostgreSQL 16 in the sandbox, created an isolated `snck_panel_test` database, and ran the importer tests against the real PostgreSQL driver: 2 tests / 48 assertions passed. The complete PostgreSQL suite passes 67 tests / 361 assertions, including the importer, with Composer audit clean.
 
 ### 6. Security hardening and release preparation
 
