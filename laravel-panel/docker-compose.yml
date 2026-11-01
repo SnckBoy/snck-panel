@@ -3,32 +3,44 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: unless-stopped
     working_dir: /var/www/html
     env_file: .env
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE:-snck_panel}
+      DB_USERNAME: ${DB_USERNAME:-snck_panel}
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      DB_SSLMODE: prefer
     depends_on:
       db:
         condition: service_healthy
-    volumes:
-      - .:/var/www/html
-    command: sh -lc "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000"
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "php", "-r", "$c = @file_get_contents('http://127.0.0.1:8000/up'); exit($c === false ? 1 : 0);"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    # Deliberately does not run migrations at startup; migrations are an explicit operator action.
 
   db:
-    image: mariadb:11.4
+    image: postgres:17-alpine
     restart: unless-stopped
     environment:
-      MARIADB_DATABASE: ${DB_DATABASE:-snck}
-      MARIADB_USER: ${DB_USERNAME:-snck}
-      MARIADB_PASSWORD: ${DB_PASSWORD:-change-this-password}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-change-this-root-password}
+      POSTGRES_DB: ${DB_DATABASE:-snck_panel}
+      POSTGRES_USER: ${DB_USERNAME:-snck_panel}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
     volumes:
-      - snck_mariadb:/var/lib/mysql
+      - snck_postgres:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
       interval: 5s
       timeout: 5s
       retries: 20
 
 volumes:
-  snck_mariadb:
+  snck_postgres:

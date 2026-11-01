@@ -1,0 +1,47 @@
+{
+  "contract": "snck-node-daemon-v1",
+  "sourceCommit": "580aae915d0c9e5d57d735ad2aa56a382587f577",
+  "authentication": {
+    "panelToDaemon": "Authorization: Bearer <per-node credential>",
+    "daemonToPanel": "POST /api/node-agent/heartbeat with Authorization: Bearer <per-node credential>",
+    "allDaemonRoutesRequireBearer": true
+  },
+  "transport": {
+    "panelToDaemon": "https",
+    "certificateVerification": "required",
+    "customCaPemAllowed": true,
+    "allowInsecureVerification": false,
+    "allowHttp": false
+  },
+  "routes": [
+    {"method":"GET","path":"/v1/health"},
+    {"method":"GET","path":"/v1/stats"},
+    {"method":"POST","path":"/v1/daemon/restart"},
+    {"method":"POST","path":"/v1/servers"},
+    {"method":"POST","path":"/v1/servers/:id/start"},
+    {"method":"POST","path":"/v1/servers/:id/stop"},
+    {"method":"POST","path":"/v1/servers/:id/restart"},
+    {"method":"POST","path":"/v1/servers/:id/kill"},
+    {"method":"DELETE","path":"/v1/servers/:id"},
+    {"method":"GET","path":"/v1/servers/:id/status"},
+    {"method":"GET","path":"/v1/servers/:id/stats"},
+    {"method":"GET","path":"/v1/servers/:id/logs"},
+    {"method":"POST","path":"/v1/servers/:id/command"},
+    {"method":"POST","path":"/v1/servers/:id/files/list"},
+    {"method":"POST","path":"/v1/servers/:id/files/read"},
+    {"method":"POST","path":"/v1/servers/:id/files/write"},
+    {"method":"POST","path":"/v1/servers/:id/files/write-base64"},
+    {"method":"POST","path":"/v1/servers/:id/files/write-chunk"},
+    {"method":"POST","path":"/v1/servers/:id/files/replace-batch"},
+    {"method":"POST","path":"/v1/servers/:id/files/mkdir"},
+    {"method":"POST","path":"/v1/servers/:id/files/rename"},
+    {"method":"POST","path":"/v1/servers/:id/files/delete"},
+    {"method":"POST","path":"/v1/servers/:id/files/zip"},
+    {"method":"POST","path":"/v1/servers/:id/files/unzip"},
+    {"method":"GET","path":"/v1/servers/:id/files/download"},
+    {"method":"GET","path":"/v1/servers/:id/backups"},
+    {"method":"GET","path":"/v1/servers/:id/backups/:filename"},
+    {"method":"DELETE","path":"/v1/servers/:id/backups/:filename"},
+    {"method":"POST","path":"/v1/servers/:id/backups"}
+  ]
+}

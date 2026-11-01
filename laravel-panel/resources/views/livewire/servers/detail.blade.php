@@ -1,0 +1,75 @@
+<div class="space-y-6">
+    <header class="flex flex-wrap items-center justify-between gap-4">
+        <div><a href="{{ route('servers.index') }}" class="text-sm text-violet-300 hover:text-violet-200">← Servers</a><h1 class="mt-2 text-3xl font-bold">{{ $server->name }}</h1><p class="mt-1 text-sm text-slate-400">{{ $server->id }} · {{ $server->node?->name ?? 'No node' }} · {{ $server->status }}</p></div>
+        <div class="flex flex-wrap gap-2">
+            @foreach (['start','stop','restart','kill'] as $action)
+                @can($action, $server)<button wire:click="lifecycle('{{ $action }}')" wire:confirm="Send {{ $action }} to this server?" class="rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold capitalize hover:bg-slate-800">{{ $action }}</button>@endcan
+            @endforeach
+        </div>
+    </header>
+    @if ($notice !== '')<div class="rounded-xl border px-4 py-3 text-sm {{ $noticeType === 'error' ? 'border-rose-500/40 bg-rose-950/40 text-rose-200' : 'border-emerald-500/30 bg-emerald-950/30 text-emerald-200' }}">{{ $notice }}</div>@endif
+
+    <nav class="flex flex-wrap gap-2 border-b border-slate-800 pb-3">
+        @php
+            $serverTabInfo = ['overview'=>['Overview','view'],'console'=>['Console','command'],'players'=>['Players','view'],'properties'=>['Properties','properties'],'files'=>['Files','files'],'backups'=>['Backups','backup'],'subusers'=>['Sub-users','manageSubusers']];
+            $serverOrder = data_get($serverLayout,'structure.serverNavigationOrder',\App\Services\ThemeCatalog::SERVER_NAV);
+            $hiddenServerTabs = data_get($serverLayout,'structure.hiddenServerNavigation',[]);
+        @endphp
+        @foreach ($serverOrder as $key)
+            @if (!in_array($key,$hiddenServerTabs,true) && isset($serverTabInfo[$key]))
+                @php([$label,$ability] = $serverTabInfo[$key])
+                @can($ability, $server)<button wire:click="setTab('{{ $key }}')" class="rounded-lg px-3 py-2 text-sm {{ $tab === $key ? 'bg-violet-500 text-white' : 'text-slate-300 hover:bg-slate-800' }}">{{ $serverLayout['labels'][$key] ?? $label }}</button>@endcan
+                @if ($key === 'console')@can('logs',$server)<button wire:click="setTab('logs')" class="rounded-lg px-3 py-2 text-sm {{ $tab === 'logs' ? 'bg-violet-500 text-white' : 'text-slate-300 hover:bg-slate-800' }}">Logs</button>@endcan @endif
+            @endif
+        @endforeach
+    </nav>
+
+    @if ($tab === 'overview')
+        <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            @foreach (['Runtime state'=>$server->status,'Owner'=>$server->owner?->username,'Node'=>$server->node?->name,'Address'=>$server->ip_alias ?: ($server->port ? $server->port : 'Not assigned'),'Memory'=>number_format($server->memory_limit_mb).' MB','CPU'=>number_format($server->cpu_limit_percent).'%','Disk'=>number_format($server->disk_limit_mb).' MB','Version'=>$server->version ?: 'Not set'] as $label => $value)
+                <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><p class="text-xs uppercase tracking-wide text-slate-500">{{ $label }}</p><p class="mt-2 font-semibold">{{ $value }}</p></article>
+            @endforeach
+        </section>
+        <section class="rounded-2xl border border-slate-800 bg-slate-900/50 p-5"><h2 class="font-semibold">Server access</h2><p class="mt-2 text-sm text-slate-400">All actions are checked by the server policy. A sub-user only sees capabilities explicitly assigned to this server.</p></section>
+    @elseif ($tab === 'console')
+        <section wire:poll.5s="refreshLogs" class="space-y-4 rounded-2xl border border-slate-800 bg-slate-950 p-5">
+            <div class="flex flex-wrap items-center justify-between gap-3"><div><p class="text-[10px] uppercase tracking-[.2em] text-emerald-300">Minecraft console</p><h2 class="font-semibold">Live server terminal</h2></div><button wire:click="refreshLogs" class="rounded-lg bg-slate-800 px-3 py-2 text-sm">Refresh</button></div>
+            <div class="flex flex-wrap gap-2"><input wire:model.live.debounce.250ms="logFilter" class="min-w-48 flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm" placeholder="Filter console output"><span class="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-200">Live · last 200 lines</span></div>
+            <pre class="max-h-[55vh] min-h-72 overflow-auto whitespace-pre-wrap rounded-xl border border-slate-800 bg-black/60 p-4 font-mono text-xs leading-6 text-emerald-100">@php($consoleLines = preg_split('/\r?\n/', $logs ?: '') ?: [])@forelse ($consoleLines as $line)@if($logFilter === '' || str_contains(strtolower($line), strtolower($logFilter))){{ $line }}
+@endif @empty<span class="text-slate-500">No recent Minecraft output loaded.</span>@endforelse</pre>
+            <form wire:submit="sendCommand" class="flex gap-2"><span class="rounded-lg bg-black px-3 py-2 font-mono text-emerald-300">&gt;</span><input wire:model="commandText" class="min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 font-mono text-sm" placeholder="Type a Minecraft command, for example list or tps" autocomplete="off"><button class="rounded-lg bg-violet-500 px-4 py-2 text-sm font-semibold">Execute</button></form>
+        </section>
+    @elseif ($tab === 'logs')
+        <section wire:poll.5s="refreshLogs" class="space-y-4 rounded-2xl border border-slate-800 bg-slate-950 p-5"><div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="font-semibold">Minecraft logs</h2><p class="text-xs text-slate-500">Live output from the node daemon, limited to the latest 200 lines.</p></div><button wire:click="refreshLogs" class="rounded-lg bg-slate-800 px-3 py-2 text-sm">Refresh</button></div><input wire:model.live.debounce.250ms="logFilter" class="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm" placeholder="Filter logs"><pre class="max-h-[70vh] min-h-72 overflow-auto whitespace-pre-wrap rounded-xl bg-black/50 p-4 font-mono text-xs text-slate-200">@php($logLines = preg_split('/\r?\n/', $logs ?: '') ?: [])@forelse ($logLines as $line)@if($logFilter === '' || str_contains(strtolower($line), strtolower($logFilter))){{ $line }}
+@endif @empty<span class="text-slate-500">No recent output loaded.</span>@endforelse</pre></section>
+    @elseif ($tab === 'players')
+        <section wire:poll.10s="refreshPlayers" class="space-y-5 rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="font-semibold">Online players</h2><p class="mt-1 text-sm text-slate-400">Live player list read through the Minecraft console.</p></div><button wire:click="refreshPlayers" class="rounded-lg bg-violet-500 px-4 py-2 text-sm font-semibold">Refresh players</button></div><div class="grid gap-3 sm:grid-cols-2"><div class="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4"><p class="text-xs uppercase tracking-wide text-slate-400">Online</p><p class="mt-1 text-2xl font-semibold text-emerald-200">{{ count($players) }}</p></div><div class="rounded-xl border border-slate-700 bg-slate-950/50 p-4"><p class="text-xs uppercase tracking-wide text-slate-400">Maximum</p><p class="mt-1 text-2xl font-semibold">{{ $maxPlayers ?? '—' }}</p></div></div><div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">@forelse ($players as $player)<div class="rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 font-medium">{{ $player }}</div>@empty<p class="text-sm text-slate-500">No players are currently online, or the server has not answered the list command.</p>@endforelse</div></section>
+    @elseif ($tab === 'properties')
+        <section class="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="font-semibold">server.properties</h2><p class="mt-1 text-sm text-slate-400">Edit Minecraft configuration as plain text. Changes apply after the next restart.</p></div><div class="flex gap-2"><button wire:click="loadProperties" class="rounded-lg bg-slate-800 px-3 py-2 text-sm">Reload</button><button wire:click="saveProperties" class="rounded-lg bg-emerald-700 px-3 py-2 text-sm font-semibold">Save properties</button></div></div><textarea wire:model="propertiesContent" spellcheck="false" class="min-h-[32rem] w-full rounded-xl border border-slate-800 bg-slate-950 p-4 font-mono text-xs leading-6 text-slate-200" placeholder="Start the server once to generate server.properties."></textarea></section>
+    @elseif ($tab === 'files')
+        <section class="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+            <div class="flex flex-wrap items-end gap-3"><label class="field min-w-64 flex-1">Server-relative path<input wire:model="filePath" placeholder="." autocomplete="off"></label><button wire:click="loadFiles" class="rounded-lg bg-violet-500 px-4 py-2.5 text-sm font-semibold">Browse</button><button wire:click="readFile" class="rounded-lg bg-slate-800 px-4 py-2.5 text-sm">Read file</button><button wire:click="createDirectory" class="rounded-lg bg-slate-800 px-4 py-2.5 text-sm">Create directory</button><a href="{{ url('/api/servers/'.rawurlencode($server->id).'/files/download?path='.rawurlencode($filePath)) }}" class="rounded-lg bg-slate-800 px-4 py-2.5 text-sm">Download path</a></div>
+            <div class="grid gap-5 xl:grid-cols-[.8fr_1.2fr]">
+                <div><h3 class="mb-2 text-sm font-semibold">Directory entries</h3><div class="max-h-80 space-y-1 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-3">
+                    @forelse ($files as $entry)
+                        @php($entryName = is_array($entry) ? (string) ($entry['name'] ?? $entry['path'] ?? '') : (string) $entry)
+                        @php($entryPath = trim(trim($filePath, './').'/' . $entryName, '/'))
+                        <div wire:key="file-{{ md5($entryPath) }}" class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-slate-800">
+                            <button wire:click="selectFile(@js($entryName))" class="min-w-0 flex-1 truncate text-left text-sm text-slate-300">{{ $entryName }}</button>
+                            <button wire:click="deleteFile(@js($entryPath))" wire:confirm="Delete {{ $entryName }}?" class="shrink-0 text-xs text-rose-300">Delete</button>
+                        </div>
+                    @empty
+                        <p class="text-sm text-slate-500">Browse a directory to view entries.</p>
+                    @endforelse
+                </div></div>
+                <div><div class="mb-2 flex items-center justify-between"><h3 class="text-sm font-semibold">Text editor</h3><button wire:click="saveFile" class="rounded-lg bg-emerald-700 px-3 py-2 text-sm">Save</button></div><textarea wire:model="fileContent" spellcheck="false" class="min-h-80 w-full rounded-xl border border-slate-800 bg-slate-950 p-4 font-mono text-xs text-slate-200" placeholder="Read a file to edit its text content"></textarea></div>
+            </div>
+            <p class="text-xs text-slate-500">Paths are confined to the server directory by the daemon and validated again by the panel. Binary assets should use Download.</p>
+        </section>
+    @elseif ($tab === 'backups')
+        <section class="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="font-semibold">Backups</h2><p class="mt-1 text-sm text-slate-400">Create and manage node-backed server archives.</p></div><button wire:click="createBackup" wire:confirm="Create a server backup now?" class="rounded-lg bg-violet-500 px-4 py-2.5 text-sm font-semibold">Create backup</button></div><div class="overflow-x-auto"><table class="w-full min-w-[36rem] text-left text-sm"><thead class="text-xs uppercase text-slate-500"><tr><th class="py-3">Filename</th><th>Size</th><th>Created</th><th></th></tr></thead><tbody>@forelse ($backups as $backup)<tr class="border-t border-slate-800"><td class="py-3 font-mono text-xs">{{ $backup['filename'] ?? 'unknown' }}</td><td>{{ number_format(($backup['size'] ?? $backup['sizeBytes'] ?? 0) / 1048576, 1) }} MiB</td><td>{{ $backup['createdAt'] ?? '—' }}</td><td class="text-right"><a href="{{ url('/api/servers/'.rawurlencode($server->id).'/backups/'.rawurlencode($backup['filename'] ?? '')) }}" class="mr-3 text-violet-300">Download</a><button wire:click="deleteBackup('{{ $backup['filename'] ?? '' }}')" wire:confirm="Delete this backup?" class="text-rose-300">Delete</button></td></tr>@empty<tr><td colspan="4" class="py-6 text-center text-slate-500">No backups returned by the node.</td></tr>@endforelse</tbody></table></div></section>
+    @elseif ($tab === 'subusers')
+        <section class="space-y-5 rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><div><h2 class="font-semibold">Sub-user access</h2><p class="mt-1 text-sm text-slate-400">Grant only the listed server permissions. `*` is never a delegated grant.</p></div><form wire:submit="addSubuser" class="space-y-4 rounded-xl border border-slate-800 bg-slate-950/60 p-4"><label class="field max-w-lg">Account email<input type="email" wire:model="subuserEmail" placeholder="player@example.com"></label><div class="grid gap-2 sm:grid-cols-3">@foreach (['start','stop','restart','kill','files','backup','plugins','mods','properties','settings'] as $permission)<label class="flex items-center gap-2 text-sm text-slate-300"><input type="checkbox" wire:model="permissions" value="{{ $permission }}">{{ ucfirst($permission) }}</label>@endforeach</div><button class="rounded-lg bg-violet-500 px-4 py-2 text-sm font-semibold">Save sub-user</button></form><div class="space-y-2">@forelse ($subusers as $subuser)<article class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-800 p-4"><div><strong>{{ $subuser['username'] }}</strong><p class="text-xs text-slate-400">{{ $subuser['email'] }} · {{ implode(', ', $subuser['permissions'] ?? []) }}</p></div><button wire:click="removeSubuser('{{ $subuser['id'] }}')" wire:confirm="Remove this server access?" class="rounded-lg bg-rose-950/60 px-3 py-2 text-sm text-rose-200">Remove</button></article>@empty<p class="text-sm text-slate-500">No sub-users have access.</p>@endforelse</div></section>
+    @endif
+    <style>.field{display:flex;flex-direction:column;gap:.45rem;font-size:.82rem;color:#cbd5e1}.field input{width:100%;border:1px solid #334155;border-radius:.7rem;background:#020617;padding:.65rem .75rem;color:#f1f5f9}</style>
+</div>
