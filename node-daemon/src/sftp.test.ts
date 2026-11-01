@@ -123,7 +123,6 @@ test("SSH/SFTP protocol uploads and downloads files inside the authenticated ser
 
     assert.equal(fs.readFileSync(localDownload, "utf8"), "real SFTP protocol works");
     assert.equal(fs.readFileSync(path.join(base, "servers", "server-1", "uploaded.txt"), "utf8"), "real SFTP protocol works");
-    await new Promise<void>((resolve, reject) => sftp.end(() => resolve()));
   } finally {
     client.end();
     await new Promise<void>(resolve => server.close(() => resolve()));
