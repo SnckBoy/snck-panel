@@ -76,11 +76,13 @@ class InfrastructureManager extends Component
         $host = trim((string) ($data['host'] ?: $data['fqdn']));
         $fqdn = trim($data['fqdn']);
         $credential = trim((string) ($data['credential'] ?? ''));
+
         if ($credential === '') {
             $credential = bin2hex(random_bytes(32));
         }
         $panelUrl = rtrim((string) config('app.url'), '/');
         abort_unless(str_starts_with($panelUrl, 'https://'), 422, 'Set APP_URL to the public HTTPS panel URL before registering nodes.');
+
         foreach ([$host, $fqdn] as $hostname) {
             abort_if(preg_match('/[\r\n\/@?#]/', $hostname), 422, 'Enter a hostname or IP without scheme or path.');
         }
@@ -103,7 +105,6 @@ class InfrastructureManager extends Component
         $this->notice = 'Node saved with HTTPS and certificate verification enabled. Status remains offline until a real probe or heartbeat.';
         $this->noticeType = 'success';
     }
-
 
     public function dismissNodeInstallCommand(): void
     {
