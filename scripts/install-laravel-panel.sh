@@ -52,7 +52,7 @@ esac
 export DEBIAN_FRONTEND=noninteractive
 log 'Installing system prerequisites (PHP 8.3, Composer, Node.js 22, PostgreSQL, Git and Nginx)...'
 apt-get update
-apt-get install -y ca-certificates curl git gnupg unzip zip software-properties-common postgresql postgresql-contrib
+apt-get install -y ca-certificates curl git gnupg unzip zip software-properties-common openssl postgresql postgresql-contrib
 if [[ "${ID:-}" == "ubuntu" && "${VERSION_ID:-}" == "22.04" ]]; then
   add-apt-repository -y ppa:ondrej/php
   apt-get update
@@ -167,11 +167,16 @@ SELECT format('ALTER DATABASE %I OWNER TO %I', :'dbname', :'dbuser') \gexec
 SQL
 fi
 
-if [[ -r /dev/tty ]]; then
-  APP_URL="$(prompt_value SNCK_APP_URL 'Public panel URL (set HTTPS after configuring TLS)' 'http://localhost')"
-else
-  [[ -n "${SNCK_APP_URL:-}" ]] || fail 'Set SNCK_APP_URL for non-interactive installation.'
+if [[ -n "${SNCK_APP_URL:-}" ]]; then
   APP_URL="$SNCK_APP_URL"
+else
+  PUBLIC_IP="$(curl -4 -fsS --max-time 8 https://api.ipify.org 2>/dev/null || true)"
+  DEFAULT_APP_URL="http://${PUBLIC_IP:-localhost}"
+  if [[ -r /dev/tty ]]; then
+    APP_URL="$(prompt_value SNCK_APP_URL 'Public panel URL (configure HTTPS before public use)' "$DEFAULT_APP_URL")"
+  else
+    APP_URL="$DEFAULT_APP_URL"
+  fi
 fi
 DB_SSLMODE="${SNCK_DB_SSLMODE:-prefer}"
 case "$DB_SSLMODE" in disable|allow|prefer|require|verify-ca|verify-full) ;; *) fail 'Invalid SNCK_DB_SSLMODE value.' ;; esac
