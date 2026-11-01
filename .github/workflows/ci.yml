@@ -73,6 +73,7 @@ jobs:
           bash -n scripts/test-service-fallback.sh
           bash scripts/test-service-fallback.sh
           bash -n node-install.sh
+          bash node-install.sh --help
           bash -n shironex
           bash -n scripts/install-laravel-panel.sh
           bash -n scripts/smoke-test.sh
