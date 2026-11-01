@@ -96,7 +96,7 @@ chmod 600 .env
 # Collect database settings before migrations. Values may be supplied through
 # SNCK_DB_* for automated deployments, otherwise the operator is prompted.
 prompt_value() {
-  local variable="$1" prompt="$2" default="$3" current
+  local variable="$1" prompt="$2" default="$3" current answer=""
   current="${!variable:-$default}"
   if [[ -r /dev/tty ]]; then
     read -r -p "$prompt [$current]: " answer </dev/tty || true
@@ -201,7 +201,10 @@ pm.max_children = 12
 pm.start_servers = 2
 pm.min_spare_servers = 1
 pm.max_spare_servers = 4
-clear_env = no
+php_admin_value[upload_max_filesize] = 512M
+php_admin_value[post_max_size] = 520M
+php_admin_value[max_execution_time] = 300
+php_admin_value[max_input_time] = 300
 chdir = /
 EOF
 
