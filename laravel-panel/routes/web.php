@@ -17,6 +17,8 @@ Route::get('/', fn () => redirect()->route(User::query()->exists() ? 'login' : '
 Route::middleware('guest')->group(function (): void {
     Route::get('/setup', [AuthController::class, 'setupForm'])->middleware('throttle:setup')->name('setup');
     Route::post('/setup', [AuthController::class, 'setup'])->middleware('throttle:setup')->name('setup.store');
+    Route::get('/install', [AuthController::class, 'setupForm'])->middleware('throttle:setup')->name('install');
+    Route::post('/install', [AuthController::class, 'setup'])->middleware('throttle:setup')->name('install.store');
     Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login')->name('login.store');
     Route::get('/register', [AuthController::class, 'registerForm'])->middleware('throttle:register')->name('register');

@@ -34,9 +34,9 @@ The Laravel API now creates, reads, resets, and deletes one hashed SFTP credenti
 
 Added a staff-only administrator users page and API for account listing, role/status changes, password resets, owner/self-protection, validation, and audit events. Existing settings, nodes, allocations, API keys, themes, Cloudflare, Discord foundation, and infrastructure surfaces remain protected. The focused suite passes 2 tests / 11 assertions, including Blade route rendering.
 
-### 4. Production installer
+### 4. Production installer — completed
 
-Build the Ubuntu/Debian CLI and web installer for PHP-FPM, Nginx, Composer, queue worker, scheduler, systemd, database configuration, import rehearsal, rollback, and the documented runbook.
+Added `scripts/install-laravel-panel.sh` with root/OS/PHP-extension/Node/Composer preflight, non-destructive `--dry-run`, PostgreSQL client setup, Laravel dependency/build/migration steps, Nginx + PHP-FPM configuration, queue worker, scheduler timer, rollback sibling backup, and systemd registration. The first-run web installer is available at `/install` as an alias of the guarded `/setup` Owner flow. Shell syntax, route registration, and Blade cache pass; the sandbox preflight correctly stops because its Node.js version is below the production requirement.
 
 ### 5. Legacy data import
 
