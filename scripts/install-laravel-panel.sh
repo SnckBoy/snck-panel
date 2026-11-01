@@ -114,7 +114,7 @@ if [[ -n "${SNCK_DB_PASSWORD:-}" ]]; then
   DB_PASSWORD="$SNCK_DB_PASSWORD"
 elif [[ -r /dev/tty ]]; then
   read -r -s -p 'PostgreSQL password: ' DB_PASSWORD </dev/tty || fail 'Could not read the PostgreSQL password.'
-  printf '\\n'
+  printf '\n'
 else
   fail 'Set SNCK_DB_PASSWORD for non-interactive installation.'
 fi
