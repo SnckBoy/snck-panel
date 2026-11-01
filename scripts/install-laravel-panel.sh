@@ -210,7 +210,8 @@ server {
 }
 EOF
 ln -sfn /etc/nginx/sites-available/snck-panel-laravel /etc/nginx/sites-enabled/snck-panel-laravel
-rm -f /etc/nginx/sites-enabled/default
+SERVER_NAME="$(php -r '$host = parse_url($argv[1], PHP_URL_HOST); echo $host ?: "_";' "$APP_URL")"
+sed -i "s/server_name _;/server_name $SERVER_NAME;/" /etc/nginx/sites-available/snck-panel-laravel
 nginx -t
 php-fpm8.3 -t
 systemctl restart php8.3-fpm
@@ -227,7 +228,6 @@ Type=simple
 User=snck-panel
 Group=snck-panel
 WorkingDirectory=$APP_DIR
-EnvironmentFile=$APP_DIR/.env
 ExecStart=$(command -v php) $APP_DIR/artisan queue:work --sleep=3 --tries=3 --timeout=120
 Restart=always
 RestartSec=5
