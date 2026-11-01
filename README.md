@@ -2,7 +2,7 @@
 
 SNCK Panel is a self-hosted Minecraft server management panel. The **Laravel application in `laravel-panel/` is the PHP implementation and the intended primary panel** on this branch.
 
-> **Branch status:** This documentation is for `repair/php-laravel-canonical`. The repository's root `install.sh` still belongs to the older React/Express installer path. It does **not** install the Laravel panel. Do not use the root one-command installer when you intend to deploy the PHP application.
+> **Branch status:** This documentation is for `main`. The repository's root `install.sh` still belongs to the older React/Express installer path. It does **not** install the Laravel panel. Do not use the root one-command installer when you intend to deploy the PHP application.
 
 ## Project layout
 
@@ -81,8 +81,8 @@ npm --version
 The installer must be fetched from the same branch you intend to deploy. The following command installs this branch into the default directory, `/opt/snck-panel-laravel`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/repair/php-laravel-canonical/scripts/install-laravel-panel.sh -o /tmp/snck-panel-installer.sh
-sudo bash /tmp/snck-panel-installer.sh --branch=repair/php-laravel-canonical
+curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/scripts/install-laravel-panel.sh -o /tmp/snck-panel-installer.sh
+sudo bash /tmp/snck-panel-installer.sh --branch=main
 ```
 
 Optional installer arguments:
@@ -190,6 +190,8 @@ Important compatibility and deployment requirements:
 - Panel-to-node traffic must use HTTPS with normal certificate and hostname verification.
 - The PHP client must preserve the frozen v1 methods, paths and payload formats.
 - The existing root `node-install.sh` identifies itself as a ShiroNex installer. Do not assume it is a supported installer for every Laravel deployment without verifying the daemon version and API compatibility first.
+
+The daemon also includes an SSH/SFTP listener (default port 2022). Configure `sftpHostKey`, `sftpPort`, `panelUrl`, `nodeId`, `credential`, and `serverDirectory` in the node config. The panel validates each SFTP password through the node-authenticated `/api/node-agent/sftp-auth` endpoint; each login is jailed to that server's directory. Restrict the SFTP port to trusted networks and use a stable administrator-owned host key.
 
 Do not expose Docker's socket or unauthenticated daemon endpoints to the internet. Use a private network or secure tunnel and firewall rules.
 

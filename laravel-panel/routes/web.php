@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DiscordRewardsController;
 use App\Http\Controllers\ThemeExportController;
 use App\Livewire\AdminUsers;
+use App\Livewire\AdminWorkspace;
 use App\Livewire\CloudflareManager;
 use App\Livewire\Dashboard;
 use App\Livewire\DiscordClaimsAdmin;
@@ -46,6 +47,7 @@ Route::middleware(['auth', 'account.enabled'])->group(function (): void {
         Route::get('/nodes', InfrastructureManager::class)->name('nodes.index');
         Route::get('/allocations', InfrastructureManager::class)->defaults('tab', 'allocations')->name('allocations.index');
         Route::get('/admin/users', AdminUsers::class)->name('admin.users');
+        Route::get('/admin/workspace', AdminWorkspace::class)->name('admin.workspace');
         Route::get('/cloudflare', CloudflareManager::class)->name('cloudflare.index');
         Route::get('/admin/discord/claims', DiscordClaimsAdmin::class)->name('admin.discord.claims');
     });

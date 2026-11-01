@@ -6,6 +6,7 @@ on:
       - main
       - "repair/**"
       - "security/**"
+      - "php-migration-final"
   pull_request:
     branches: [main]
 
@@ -59,6 +60,10 @@ jobs:
         working-directory: node-daemon
         run: npm run build
 
+      - name: Test node daemon SFTP protocol and jail
+        working-directory: node-daemon
+        run: npm test
+
       - name: Shell syntax checks
         run: |
           bash -n install.sh
@@ -69,3 +74,76 @@ jobs:
           bash scripts/test-service-fallback.sh
           bash -n node-install.sh
           bash -n shironex
+          bash -n scripts/install-laravel-panel.sh
+          bash -n scripts/smoke-test.sh
+
+  laravel:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: snck_panel_test
+          POSTGRES_USER: snck_panel
+          POSTGRES_PASSWORD: snck_panel
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U snck_panel -d snck_panel_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    defaults:
+      run:
+        working-directory: laravel-panel
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, pdo_pgsql, pgsql, zip, intl, bcmath, pcntl
+          coverage: none
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: laravel-panel/package-lock.json
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Audit Composer dependencies
+        run: composer audit
+
+      - name: Prepare Laravel environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate --force
+
+      - name: Check PHP formatting
+        run: ./vendor/bin/pint --test
+
+      - name: Analyze PHP types
+        run: ./vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=1G --no-progress
+
+      - name: Install frontend dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build Laravel frontend
+        run: npm run build
+
+      - name: Run Laravel tests against PostgreSQL
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: snck_panel_test
+          DB_USERNAME: snck_panel
+          DB_PASSWORD: snck_panel
+        run: php artisan test

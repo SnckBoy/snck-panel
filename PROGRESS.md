@@ -103,3 +103,11 @@ Added real Discord guild-member reconciliation, retention cleanup, an Artisan ma
 ### 4. Finish — verified
 
 The final Laravel run passed **70 tests / 330 assertions**, with 2 PostgreSQL-only importer tests skipped under the default SQLite configuration. Pint passes 105 files, Larastan reports no errors, Composer audit is clean, Blade cache passes, and installer shell syntax passes. Remaining work is only the persistent Discord Gateway invite-attribution worker and automatic ServerProvisioner execution for approved claims.
+
+
+## PR #42 follow-up — administrator workspace and SFTP transport
+
+- Added the staff-only AdminWorkspace Livewire page and route while preserving the main-branch Cloudflare and Discord pages/routes.
+- Added /api/node-agent/sftp-auth, authenticated by the per-node bearer credential, for password validation by the node's SSH/SFTP listener.
+- Added an SSH2 SFTP server with per-server jailed paths, no-follow file opens, path traversal rejection, symlink rejection, and file/directory operations.
+- Added a real SSH client integration test that uploads and downloads a file through the SFTP protocol. The combined test suites and live-node SFTP validation remain required before production sign-off.

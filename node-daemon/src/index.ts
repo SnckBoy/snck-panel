@@ -7,6 +7,7 @@ import crypto from "crypto";
 import https from "https";
 import * as archiverModule from "archiver";
 import yauzl from "yauzl";
+import { startSftpServer } from "./sftp.js";
 const archiver: any = (archiverModule as any).default || archiverModule;
 
 const cfgPath = process.env.SHIRONEX_CONFIG || "/etc/shironex-node/config.json";
@@ -222,4 +223,10 @@ app.delete("/v1/servers/:id/backups/:filename",auth,async(req,res)=>{try{const i
 app.post("/v1/servers/:id/backups",auth,async(req,res)=>{try{const serverId=safeId(req.params.id);const source=safePath(serverId,".");const backupRoot=path.join(serversDir,".backups",serverId);fs.mkdirSync(backupRoot,{recursive:true,mode:0o750});const filename=`backup-${new Date().toISOString().replace(/[:.]/g,"-")}.tar.gz`;const target=path.join(backupRoot,filename);const output=fs.createWriteStream(target,{mode:0o640});const archive=archiver("tar",{gzip:true,zlib:{level:6}});const done=new Promise<void>((resolve,reject)=>{output.on("close",()=>resolve());output.on("error",reject);archive.on("error",reject)});archive.pipe(output);archive.directory(source,false);await archive.finalize();await done;const stat=fs.statSync(target);const checksum=await new Promise<string>((resolve,reject)=>{const hash=crypto.createHash("sha256"),stream=fs.createReadStream(target);stream.on("data",chunk=>hash.update(chunk));stream.on("error",reject);stream.on("end",()=>resolve(hash.digest("hex")))});res.json({success:true,filename,sizeBytes:stat.size,checksum})}catch(e:any){res.status(400).json({error:e.message})}});
 const heartbeat=async()=>{try{const s=await stats();const url=`${String(cfg.panelUrl).replace(/\/$/,"")}/api/node-agent/heartbeat`;const r=await fetch(url,{method:"POST",headers:{"content-type":"application/json","authorization":`Bearer ${cfg.credential}`},body:JSON.stringify({nodeId:cfg.nodeId,stats:s})});if(!r.ok)console.error("Heartbeat failed",r.status)}catch(e:any){console.error("Heartbeat error",e.message)}};
 setInterval(heartbeat,Math.max(5000,Number(cfg.heartbeatIntervalMs||10000)));heartbeat();
+if (cfg.sftpHostKey && cfg.panelUrl && cfg.nodeId && cfg.credential) {
+  try {
+    startSftpServer({host:cfg.sftpHost,port:Number(cfg.sftpPort||2022),hostKey:String(cfg.sftpHostKey),panelUrl:String(cfg.panelUrl),nodeId:String(cfg.nodeId),credential:String(cfg.credential),serversDir});
+    console.log(`SNCK Panel SFTP listening on ${cfg.sftpHost || "0.0.0.0"}:${Number(cfg.sftpPort||2022)}`);
+  } catch (error:any) { console.error("SFTP startup failed", error?.message || error); process.exitCode = 1; }
+}
 const port=Number(cfg.port||6768); if(cfg.tlsKey&&cfg.tlsCert) https.createServer({key:fs.readFileSync(cfg.tlsKey),cert:fs.readFileSync(cfg.tlsCert)},app).listen(port,"0.0.0.0",()=>console.log(`ShiroNex Node Daemon HTTPS listening on ${port}`)); else app.listen(port,"0.0.0.0",()=>console.log(`ShiroNex Node Daemon HTTP listening on ${port}; use TLS in production`));

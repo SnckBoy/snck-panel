@@ -34,3 +34,10 @@ Configure PostgreSQL and Discord OAuth values in `.env`/the admin page, then ope
 ## Remaining work
 
 A persistent WebSocket Gateway worker for invite attribution and automatic reward provisioning through `ServerProvisioner` is not complete. Claims are currently recorded for staff review; automatic provisioning is intentionally not claimed. These are the only Discord items marked `PARTIAL` in `UI_PARITY.md` and must be completed before describing Discord rewards as fully automated.
+
+
+## PR #42 integration work — SFTP and administrator workspace
+
+The php-migration-final PR adds the staff-only AdminWorkspace Livewire page for persisted settings, Cloudflare configuration, API-key management, and Discord administration configuration. It also adds the SFTP credential-authentication callback and a node-side SSH/SFTP listener using the ssh2 package. SFTP requests use the SSH2 server protocol, validate the node bearer credential against Laravel, and resolve each authenticated account to its own server directory. Absolute virtual paths are rooted inside the jail; traversal and symlink components are rejected.
+
+A real SSH/SFTP upload/download integration test has been added. The test and the complete combined Laravel/PostgreSQL and node-daemon suites must be run on the updated branch before this report can claim final verification. The main-branch Discord verification numbers above predate the PR #42 additions and are not a combined-suite result.
