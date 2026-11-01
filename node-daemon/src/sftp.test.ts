@@ -42,3 +42,92 @@ test("SFTP open flags preserve create, truncate, append and exclusive semantics"
 test("SFTP open flags reject requests without read or write permission", () => {
   assert.throws(() => sftpOpenFlagsToNode(0), /read or write/);
 });
+
+
+test("SSH/SFTP protocol uploads and downloads files inside the authenticated server jail", async () => {
+  const { createServer } = await import("node:http");
+  const { generateKeyPairSync } = await import("node:crypto");
+  const { once } = await import("node:events");
+  const { Client } = await import("ssh2");
+  const { startSftpServer } = await import("./sftp.js");
+
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), "snck-sftp-protocol-"));
+  const hostKeyPath = path.join(base, "host.key");
+  const keys = generateKeyPairSync("rsa", {
+    modulusLength: 2048,
+    privateKeyEncoding: { type: "pkcs1", format: "pem" },
+    publicKeyEncoding: { type: "spki", format: "pem" },
+  });
+  fs.writeFileSync(hostKeyPath, keys.privateKey, { mode: 0o600 });
+
+  const panel = createServer((request, response) => {
+    if (request.url !== "/api/node-agent/sftp-auth") {
+      response.writeHead(404).end();
+      return;
+    }
+    let body = "";
+    request.setEncoding("utf8");
+    request.on("data", chunk => { body += chunk; });
+    request.on("end", () => {
+      const payload = JSON.parse(body);
+      const authorized = request.headers.authorization === "Bearer node-secret"
+        && payload.nodeId === "node-1"
+        && payload.username === "server-user"
+        && payload.password === "server-password";
+      response.writeHead(authorized ? 200 : 401, { "content-type": "application/json" });
+      response.end(JSON.stringify(authorized ? { authenticated: true, serverId: "server-1" } : { error: "unauthorized" }));
+    });
+  });
+  panel.listen(0, "127.0.0.1");
+  await once(panel, "listening");
+  const panelAddress = panel.address();
+  assert.ok(panelAddress && typeof panelAddress !== "string");
+
+  const server = startSftpServer({
+    host: "127.0.0.1",
+    port: 0,
+    hostKey: hostKeyPath,
+    panelUrl: `http://127.0.0.1:${panelAddress.port}`,
+    nodeId: "node-1",
+    credential: "node-secret",
+    serversDir: path.join(base, "servers"),
+  });
+  await once(server, "listening");
+  const serverAddress = server.address();
+  assert.ok(serverAddress && typeof serverAddress !== "string");
+
+  const localSource = path.join(base, "source.txt");
+  const localDownload = path.join(base, "download.txt");
+  fs.writeFileSync(localSource, "real SFTP protocol works");
+  const client = new Client();
+
+  try {
+    await new Promise<void>((resolve, reject) => {
+      client.once("ready", resolve);
+      client.once("error", reject);
+      client.connect({
+        host: "127.0.0.1",
+        port: serverAddress.port,
+        username: "server-user",
+        password: "server-password",
+        hostVerifier: () => true,
+        readyTimeout: 5000,
+      });
+    });
+
+    const sftp = await new Promise<any>((resolve, reject) => {
+      client.sftp((error, channel) => error ? reject(error) : resolve(channel));
+    });
+    await new Promise<void>((resolve, reject) => sftp.fastPut(localSource, "uploaded.txt", (error: Error | undefined) => error ? reject(error) : resolve()));
+    await new Promise<void>((resolve, reject) => sftp.fastGet("uploaded.txt", localDownload, (error: Error | undefined) => error ? reject(error) : resolve()));
+
+    assert.equal(fs.readFileSync(localDownload, "utf8"), "real SFTP protocol works");
+    assert.equal(fs.readFileSync(path.join(base, "servers", "server-1", "uploaded.txt"), "utf8"), "real SFTP protocol works");
+    await new Promise<void>((resolve, reject) => sftp.end(() => resolve()));
+  } finally {
+    client.end();
+    await new Promise<void>(resolve => server.close(() => resolve()));
+    await new Promise<void>(resolve => panel.close(() => resolve()));
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
