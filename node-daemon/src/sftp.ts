@@ -31,7 +31,7 @@ export const validatePanelBaseUrl = (raw: string): string => {
   if (parsed.username || parsed.password || parsed.search || parsed.hash) {
     throw new Error("SFTP panel URL cannot contain credentials, query parameters, or fragments");
   }
-  return parsed.toString().replace(/\\/+$/, "");
+  return parsed.toString().replace(/\/+$/, "");
 };
 
 export type SftpConfig = {
