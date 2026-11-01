@@ -99,3 +99,7 @@ Added real Discord OAuth authorization, callback state validation, token/profile
 ### 3. Discord worker — partial
 
 Added real Discord guild-member reconciliation, retention cleanup, an Artisan maintenance command, focused coverage (1 test / 3 assertions), and a five-minute systemd timer in the installer. A persistent WebSocket Gateway worker for invite attribution and automatic provisioning execution remains unfinished and is explicitly not marked DONE.
+
+### 4. Finish — verified
+
+The final Laravel run passed **70 tests / 330 assertions**, with 2 PostgreSQL-only importer tests skipped under the default SQLite configuration. Pint passes 105 files, Larastan reports no errors, Composer audit is clean, Blade cache passes, and installer shell syntax passes. Remaining work is only the persistent Discord Gateway invite-attribution worker and automatic ServerProvisioner execution for approved claims.

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Services\DiscordRewardsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -91,7 +92,8 @@ class DiscordRewardsController extends Controller
 
     public function oauthRedirect(Request $request)
     {
-        abort_unless($request->user(), 401);
+        $user = $request->user();
+        abort_unless($user instanceof User, 401);
         $state = Str::random(48);
         $request->session()->put('discord_oauth_state', $state);
 
@@ -100,12 +102,13 @@ class DiscordRewardsController extends Controller
 
     public function oauthCallback(Request $request)
     {
-        abort_unless($request->user(), 401);
+        $user = $request->user();
+        abort_unless($user instanceof User, 401);
         if (! hash_equals((string) $request->session()->pull('discord_oauth_state'), (string) $request->string('state'))) {
             abort(419, 'Invalid Discord OAuth state.');
         }
         try {
-            $this->rewards->link($request->user(), (string) $request->string('code'));
+            $this->rewards->link($user, (string) $request->string('code'));
 
             return redirect()->route('discord.rewards');
         } catch (Throwable $error) {
@@ -115,27 +118,30 @@ class DiscordRewardsController extends Controller
 
     public function userState(Request $request): JsonResponse
     {
-        abort_unless($request->user(), 401);
+        $user = $request->user();
+        abort_unless($user instanceof User, 401);
 
-        return response()->json($this->rewards->publicUserState($request->user()));
+        return response()->json($this->rewards->publicUserState($user));
     }
 
     public function unlink(Request $request): JsonResponse
     {
-        abort_unless($request->user(), 401);
-        $this->rewards->unlink($request->user());
-        $this->audit($request->user()->id, 'discord.account_unlinked', []);
+        $user = $request->user();
+        abort_unless($user instanceof User, 401);
+        $this->rewards->unlink($user);
+        $this->audit($user->id, 'discord.account_unlinked', []);
 
         return response()->json(['success' => true]);
     }
 
     public function claim(Request $request, string $planId): JsonResponse
     {
-        abort_unless($request->user(), 401);
+        $user = $request->user();
+        abort_unless($user instanceof User, 401);
         $request->validate(['planId' => ['nullable']]);
         try {
-            $claim = $this->rewards->claim($request->user(), $planId);
-            $this->audit($request->user()->id, 'discord.reward_claimed', ['claimId' => $claim['id'], 'planId' => $planId]);
+            $claim = $this->rewards->claim($user, $planId);
+            $this->audit($user->id, 'discord.reward_claimed', ['claimId' => $claim['id'], 'planId' => $planId]);
 
             return response()->json(['claim' => $claim], 201);
         } catch (Throwable $error) {
