@@ -5,6 +5,7 @@ use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CloudflareController;
 use App\Http\Controllers\DiscordRewardsController;
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\NodeAgentController;
 use App\Http\Controllers\NodeController;
 use App\Http\Controllers\PlayitController;
@@ -90,6 +91,8 @@ Route::middleware(['web', 'auth', 'account.enabled'])->group(function (): void {
     Route::delete('/discord-rewards/admin/plans/{id}', [DiscordRewardsController::class, 'deletePlan']);
     Route::get('/admin/settings', [SettingsController::class, 'index']);
     Route::put('/admin/settings', [SettingsController::class, 'update']);
+    Route::get('/admin/users', [AdminUserController::class, 'index']);
+    Route::patch('/admin/users/{user}', [AdminUserController::class, 'update']);
     Route::get('/cloudflare/connection', [CloudflareController::class, 'connection']);
     Route::post('/cloudflare/connection', [CloudflareController::class, 'connect']);
     Route::get('/cloudflare/zones', [CloudflareController::class, 'zones']);

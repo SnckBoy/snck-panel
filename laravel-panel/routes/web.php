@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ThemeExportController;
 use App\Livewire\Dashboard;
+use App\Livewire\AdminUsers;
 use App\Livewire\InfrastructureManager;
 use App\Livewire\ServerCreate;
 use App\Livewire\ServerDetail;
@@ -35,5 +36,6 @@ Route::middleware(['auth', 'account.enabled'])->group(function (): void {
         Route::get('/themes/{theme}/export', ThemeExportController::class)->name('themes.export');
         Route::get('/nodes', InfrastructureManager::class)->name('nodes.index');
         Route::get('/allocations', InfrastructureManager::class)->defaults('tab', 'allocations')->name('allocations.index');
+        Route::get('/admin/users', AdminUsers::class)->name('admin.users');
     });
 });

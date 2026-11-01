@@ -30,9 +30,9 @@ The Laravel manager now lists/removes installed JARs, installs compatible Modrin
 
 The Laravel API now creates, reads, resets, and deletes one hashed SFTP credential per server, returns plaintext only on create/reset, uses the node hostname and configured SFTP port, audits mutations, and denies delegated sub-users. The focused suite passes 2 tests / 13 assertions. A real SFTP transport daemon remains deployment work because the frozen node-daemon v1 contract does not expose SFTP operations.
 
-### 3. Remaining administrator configuration pages
+### 3. Remaining administrator configuration pages — completed
 
-Complete the remaining settings and administration surfaces with protected validation, audit logging, and browser coverage.
+Added a staff-only administrator users page and API for account listing, role/status changes, password resets, owner/self-protection, validation, and audit events. Existing settings, nodes, allocations, API keys, themes, Cloudflare, Discord foundation, and infrastructure surfaces remain protected. The focused suite passes 2 tests / 11 assertions, including Blade route rendering.
 
 ### 4. Production installer
 
