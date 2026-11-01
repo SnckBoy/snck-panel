@@ -5,6 +5,11 @@ import path from "node:path";
 import test from "node:test";
 import { jailedPath, safeServerRoot, sftpOpenFlagsToNode } from "./sftp.js";
 
+const waitForEvent = (emitter: any, event: string): Promise<void> => new Promise((resolve, reject) => {
+  emitter.once(event, () => resolve());
+  emitter.once("error", reject);
+});
+
 test("SFTP jail accepts a server-relative file and rejects traversal", () => {
   const base = fs.mkdtempSync(path.join(os.tmpdir(), "snck-sftp-"));
   const root = safeServerRoot(base, "server-1");
@@ -47,7 +52,6 @@ test("SFTP open flags reject requests without read or write permission", () => {
 test("SSH/SFTP protocol uploads and downloads files inside the authenticated server jail", async () => {
   const { createServer } = await import("node:http");
   const { generateKeyPairSync } = await import("node:crypto");
-  const { once } = await import("node:events");
   const { Client } = await import("ssh2");
   const { startSftpServer } = await import("./sftp.js");
 
@@ -79,7 +83,7 @@ test("SSH/SFTP protocol uploads and downloads files inside the authenticated ser
     });
   });
   panel.listen(0, "127.0.0.1");
-  await once(panel, "listening");
+  await waitForEvent(panel, "listening");
   const panelAddress = panel.address();
   assert.ok(panelAddress && typeof panelAddress !== "string");
 
@@ -92,7 +96,7 @@ test("SSH/SFTP protocol uploads and downloads files inside the authenticated ser
     credential: "node-secret",
     serversDir: path.join(base, "servers"),
   });
-  await once(server, "listening");
+  await waitForEvent(server, "listening");
   const serverAddress = server.address();
   assert.ok(serverAddress && typeof serverAddress !== "string");
 
