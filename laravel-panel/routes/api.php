@@ -99,6 +99,7 @@ Route::middleware(['web', 'auth', 'account.enabled'])->group(function (): void {
     Route::put('/admin/settings', [SettingsController::class, 'update']);
     Route::get('/admin/users', [AdminUserController::class, 'index']);
     Route::patch('/admin/users/{user}', [AdminUserController::class, 'update']);
+    Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy']);
     Route::get('/cloudflare/connection', [CloudflareController::class, 'connection']);
     Route::post('/cloudflare/connection', [CloudflareController::class, 'connect']);
     Route::get('/cloudflare/zones', [CloudflareController::class, 'zones']);
