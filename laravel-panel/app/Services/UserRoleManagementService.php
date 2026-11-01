@@ -24,6 +24,14 @@ class UserRoleManagementService
     public function update(User $actor, User $target, array $changes): User
     {
         return DB::transaction(function () use ($actor, $target, $changes): User {
+            // Lock Owner rows in a stable order before locking the target to
+            // serialize concurrent Owner changes without inconsistent lock order.
+            $owners = User::query()
+                ->where('role', 'owner')
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get(['id']);
+
             $lockedTarget = User::query()->whereKey($target->getKey())->lockForUpdate()->firstOrFail();
             $this->assertCanEdit($actor, $lockedTarget);
 
@@ -41,16 +49,8 @@ class UserRoleManagementService
                 throw ValidationException::withMessages(['user' => 'You cannot disable or demote your own account.']);
             }
 
-            if ($lockedTarget->isOwner() && ($roleChanged || ($disabledChanged && $requestedDisabled))) {
-                $ownerIds = User::query()
-                    ->where('role', 'owner')
-                    ->orderBy('id')
-                    ->lockForUpdate()
-                    ->pluck('id');
-
-                if ($ownerIds->count() <= 1) {
-                    throw ValidationException::withMessages(['user' => 'The last Owner account cannot be demoted or disabled.']);
-                }
+            if ($lockedTarget->isOwner() && ($roleChanged || ($disabledChanged && $requestedDisabled)) && $owners->count() <= 1) {
+                throw ValidationException::withMessages(['user' => 'The last Owner account cannot be demoted or disabled.']);
             }
 
             if ($roleChanged) {
@@ -90,6 +90,12 @@ class UserRoleManagementService
     public function delete(User $actor, User $target): void
     {
         DB::transaction(function () use ($actor, $target): void {
+            $owners = User::query()
+                ->where('role', 'owner')
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get(['id']);
+
             $lockedTarget = User::query()->whereKey($target->getKey())->lockForUpdate()->firstOrFail();
             $this->assertCanEdit($actor, $lockedTarget);
 
@@ -102,13 +108,7 @@ class UserRoleManagementService
                     throw new AuthorizationException('Only an Owner can delete an Owner account.');
                 }
 
-                $ownerIds = User::query()
-                    ->where('role', 'owner')
-                    ->orderBy('id')
-                    ->lockForUpdate()
-                    ->pluck('id');
-
-                if ($ownerIds->count() <= 1) {
+                if ($owners->count() <= 1) {
                     throw ValidationException::withMessages(['user' => 'The last Owner account cannot be deleted.']);
                 }
             }
