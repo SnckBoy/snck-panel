@@ -26,9 +26,9 @@ Non-staff server quotas now use safe defaults of 3 servers, 8,192 MB total RAM, 
 
 The Laravel manager now lists/removes installed JARs, installs compatible Modrinth JARs through the daemon, validates archive paths and size limits, prevents imports while the server is running, and uses the daemon replacement contract with explicit confirmation. The focused suite passes 2 tests / 7 assertions. Modrinth dependency expansion and runtime auto-detection remain follow-up hardening within this item.
 
-### 2. SFTP
+### 2. SFTP — credential lifecycle completed
 
-Port the SFTP credential/connection contract with owner/staff authorization, safe host-key handling, and regression coverage.
+The Laravel API now creates, reads, resets, and deletes one hashed SFTP credential per server, returns plaintext only on create/reset, uses the node hostname and configured SFTP port, audits mutations, and denies delegated sub-users. The focused suite passes 2 tests / 13 assertions. A real SFTP transport daemon remains deployment work because the frozen node-daemon v1 contract does not expose SFTP operations.
 
 ### 3. Remaining administrator configuration pages
 

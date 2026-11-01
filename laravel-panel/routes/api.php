@@ -10,6 +10,7 @@ use App\Http\Controllers\NodeController;
 use App\Http\Controllers\PlayitController;
 use App\Http\Controllers\PluginManagerController;
 use App\Http\Controllers\ServerController;
+use App\Http\Controllers\SftpController;
 use App\Http\Controllers\ServerFilesController;
 use App\Http\Controllers\ServerSubuserController;
 use App\Http\Controllers\SettingsController;
@@ -66,6 +67,10 @@ Route::middleware(['web', 'auth', 'account.enabled'])->group(function (): void {
     Route::post('/servers/{server}/plugins/install', [PluginManagerController::class, 'installPlugin']);
     Route::post('/servers/{server}/mods/install', [PluginManagerController::class, 'installMod']);
     Route::post('/servers/{server}/modpacks/import', [PluginManagerController::class, 'importModpack']);
+    Route::get('/servers/{server}/sftp', [SftpController::class, 'show']);
+    Route::post('/servers/{server}/sftp/create', [SftpController::class, 'create']);
+    Route::post('/servers/{server}/sftp/reset-password', [SftpController::class, 'reset']);
+    Route::delete('/servers/{server}/sftp', [SftpController::class, 'destroy']);
     Route::post('/servers/{server}/command', [ServerFilesController::class, 'command']);
     Route::get('/servers/{server}/logs', [ServerFilesController::class, 'logs']);
     Route::get('/servers/{server}/stats', [ServerFilesController::class, 'stats']);

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Server extends Model
 {
@@ -75,5 +76,10 @@ class Server extends Model
         return $this->belongsToMany(User::class, 'server_subusers', 'server_id', 'user_id')
             ->withPivot(['permissions', 'added_by'])
             ->withTimestamps();
+    }
+
+    public function sftpUser(): HasOne
+    {
+        return $this->hasOne(SftpUser::class, 'server_id', 'id');
     }
 }
