@@ -1,8 +1,8 @@
 # Laravel production installer
 
-The Laravel migration is installed with `sudo bash scripts/install-laravel-panel.sh`. The installer supports Ubuntu and Debian hosts, requires PHP 8.3 with `mbstring`, `openssl`, `pdo_pgsql`, and `zip`, Node.js 20+, Composer, and systemd. It installs Nginx, PHP-FPM, the PostgreSQL client, application dependencies, compiled assets, migrations, the queue worker, and a one-minute scheduler timer.
+The Laravel migration is installed with `curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/install.sh | sudo bash`. The root entry point fetches `scripts/install-laravel-panel.sh` from the selected branch; you can also run the inner installer directly with `sudo bash scripts/install-laravel-panel.sh`. The installer supports Ubuntu and Debian hosts, requires PHP 8.3 with `mbstring`, `openssl`, `pdo_pgsql`, and `zip`, Node.js 20+, Composer, and systemd. It installs Nginx, PHP-FPM, the PostgreSQL client, application dependencies, compiled assets, migrations, the queue worker, and a one-minute scheduler timer.
 
-Run the non-destructive preflight first:
+For a branch test, use `SNCK_BRANCH=php-migration-final` with the root entry point. Run the non-destructive preflight first:
 
 ```bash
 sudo bash scripts/install-laravel-panel.sh --dry-run
