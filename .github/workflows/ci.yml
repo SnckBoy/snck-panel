@@ -67,6 +67,7 @@ jobs:
       - name: Shell syntax checks
         run: |
           bash -n install.sh
+          bash install.sh --help
           bash -n scripts/snck-menu.sh
           bash -n scripts/install-panel.sh
           bash -n scripts/panel-service.sh
@@ -76,6 +77,7 @@ jobs:
           bash node-install.sh --help
           bash -n shironex
           bash -n scripts/install-laravel-panel.sh
+          bash scripts/install-laravel-panel.sh --help
           bash -n scripts/smoke-test.sh
 
   laravel:
