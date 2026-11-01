@@ -3,7 +3,8 @@
 namespace App\Livewire;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Services\UserRoleManagementService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
@@ -19,32 +20,34 @@ class AdminUsers extends Component
 
     public function mount(): void
     {
-        abort_unless(auth()->user()?->isStaff(), 403);
+        $this->authorizeStaff();
     }
 
-    public function edit(string $id): void
+    public function edit(string $id, UserRoleManagementService $roles): void
     {
+        $this->authorizeStaff();
         $user = User::query()->findOrFail($id);
+        $roles->assertCanEdit(Auth::user(), $user);
+
         $this->editing = $user->id;
         $this->role = $user->role;
         $this->disabled = $user->disabled;
         $this->password = '';
     }
 
-    public function save(): void
+    public function save(UserRoleManagementService $roles): void
     {
-        $actor = auth()->user();
+        $this->authorizeStaff();
+
+        $data = $this->validate([
+            'role' => ['required', Rule::in(['user', 'admin', 'owner'])],
+            'disabled' => ['boolean'],
+            'password' => ['nullable', 'string', 'min:12', 'max:200'],
+        ]);
+
         $user = User::query()->findOrFail($this->editing);
-        $data = $this->validate(['role' => ['required', Rule::in(['user', 'admin', 'owner'])], 'disabled' => ['boolean'], 'password' => ['nullable', 'string', 'min:12', 'max:200']]);
-        abort_if($user->is($actor) && ($data['disabled'] || $data['role'] !== $user->role), 422, 'You cannot disable or demote your own account.');
-        abort_if($data['role'] === 'owner' && ! $actor->isOwner(), 403);
-        if ($data['password'] !== '') {
-            $user->password = Hash::make($data['password']);
-            $user->password_version++;
-        }
-        $user->role = $data['role'];
-        $user->disabled = $data['disabled'];
-        $user->save();
+        $roles->update(Auth::user(), $user, $data);
+
         $this->editing = '';
         $this->password = '';
         session()->flash('notice', 'User settings saved.');
@@ -52,6 +55,14 @@ class AdminUsers extends Component
 
     public function render()
     {
-        return view('livewire.admin.users', ['users' => User::query()->orderBy('username')->get()])->layout('layouts.app', ['title' => 'Administrator users']);
+        $this->authorizeStaff();
+
+        return view('livewire.admin.users', ['users' => User::query()->orderBy('username')->get()])
+            ->layout('layouts.app', ['title' => 'Administrator users']);
+    }
+
+    private function authorizeStaff(): void
+    {
+        abort_unless(Auth::user()?->isStaff(), 403, 'Staff access is required.');
     }
 }
