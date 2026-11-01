@@ -42,9 +42,14 @@ class UserRoleManagementService
             }
 
             if ($lockedTarget->isOwner() && ($roleChanged || ($disabledChanged && $requestedDisabled))) {
-                $ownerIds = User::query()->where('role', 'owner')->lockForUpdate()->pluck('id');
+                $ownerIds = User::query()
+                    ->where('role', 'owner')
+                    ->orderBy('id')
+                    ->lockForUpdate()
+                    ->pluck('id');
+
                 if ($ownerIds->count() <= 1) {
-                    throw ValidationException::withMessages(['user' => 'The panel must retain at least one active Owner account.']);
+                    throw ValidationException::withMessages(['user' => 'The last Owner account cannot be demoted or disabled.']);
                 }
             }
 
@@ -62,11 +67,11 @@ class UserRoleManagementService
                 $lockedTarget->save();
             }
 
-            $metadata = [];
             if ($roleChanged) {
-                $metadata['from'] = $target->role;
-                $metadata['to'] = $requestedRole;
-                $this->audit($actor, $lockedTarget, 'admin.user_role_changed', $metadata);
+                $this->audit($actor, $lockedTarget, 'admin.user_role_changed', [
+                    'from' => $target->role,
+                    'to' => $requestedRole,
+                ]);
             }
             if ($disabledChanged) {
                 $this->audit($actor, $lockedTarget, $requestedDisabled ? 'admin.user_disabled' : 'admin.user_enabled', [
@@ -97,7 +102,12 @@ class UserRoleManagementService
                     throw new AuthorizationException('Only an Owner can delete an Owner account.');
                 }
 
-                $ownerIds = User::query()->where('role', 'owner')->lockForUpdate()->pluck('id');
+                $ownerIds = User::query()
+                    ->where('role', 'owner')
+                    ->orderBy('id')
+                    ->lockForUpdate()
+                    ->pluck('id');
+
                 if ($ownerIds->count() <= 1) {
                     throw ValidationException::withMessages(['user' => 'The last Owner account cannot be deleted.']);
                 }
