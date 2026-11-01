@@ -45,11 +45,12 @@ class AdminUserRoleService
                 throw ValidationException::withMessages(['user' => 'You cannot disable or demote your own account.']);
             }
 
-            $removingActiveOwner = $target->isOwner()
-                && ($nextRole !== 'owner' || $nextDisabled)
-                && ! $target->disabled;
+            if ($target->isOwner() && $nextRole !== 'owner' && $owners->count() <= 1) {
+                throw ValidationException::withMessages(['user' => 'The last Owner account cannot be demoted.']);
+            }
 
-            if ($removingActiveOwner && $owners->where('disabled', false)->count() <= 1) {
+            if ($target->isOwner() && $nextDisabled && ! $target->disabled
+                && $owners->where('disabled', false)->count() <= 1) {
                 throw ValidationException::withMessages(['user' => 'The panel must retain at least one enabled Owner account.']);
             }
 
@@ -94,6 +95,10 @@ class AdminUserRoleService
 
             if ($target->isOwner() && ! $actor->isOwner()) {
                 throw new AuthorizationException('Admins cannot delete an Owner account.');
+            }
+
+            if ($target->isOwner() && $owners->count() <= 1) {
+                throw ValidationException::withMessages(['user' => 'The last Owner account cannot be deleted.']);
             }
 
             if ($target->isOwner() && ! $target->disabled && $owners->where('disabled', false)->count() <= 1) {
