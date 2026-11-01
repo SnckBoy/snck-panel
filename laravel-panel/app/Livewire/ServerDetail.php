@@ -6,6 +6,9 @@ use App\Models\Backup;
 use App\Models\Server;
 use App\Models\User;
 use App\Services\NodeClient;
+use App\Services\PlayitService;
+use App\Services\PluginManagerService;
+use App\Services\SftpCredentialService;
 use App\Services\ThemeCatalog;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Log;
@@ -60,6 +63,18 @@ class ServerDetail extends Component
 
     public string $logs = '';
 
+    public array $installedPlugins = [];
+
+    public array $playit = [];
+
+    public array $sftp = [];
+
+    public string $marketplaceId = '';
+
+    public string $marketplaceKind = 'plugin';
+
+    public string $sftpPassword = '';
+
     public string $notice = '';
 
     public string $noticeType = 'success';
@@ -74,11 +89,78 @@ class ServerDetail extends Component
     public function setTab(string $tab, NodeClient $client): void
     {
         $server = $this->server();
-        $abilities = ['overview' => 'view', 'console' => 'command', 'logs' => 'logs', 'players' => 'view', 'properties' => 'properties', 'files' => 'files', 'backups' => 'backup', 'subusers' => 'manageSubusers'];
+        $abilities = ['overview' => 'view', 'console' => 'command', 'logs' => 'logs', 'players' => 'view', 'properties' => 'properties', 'files' => 'files', 'backups' => 'backup', 'subusers' => 'manageSubusers', 'sftp' => 'manageSubusers', 'plugins' => 'plugins', 'mods' => 'mods', 'modpacks' => 'mods', 'playit' => 'view'];
         abort_unless(isset($abilities[$tab]), 404);
         $this->authorize($abilities[$tab], $server);
         $this->tab = $tab;
         $this->refreshTabData($client);
+    }
+
+    public function refreshIntegrations(PluginManagerService $plugins, PlayitService $playit, SftpCredentialService $sftp): void
+    {
+        $server = $this->server();
+        if (in_array($this->tab, ['plugins', 'mods'], true)) {
+            $this->installedPlugins = $plugins->installed($server)['items'] ?? [];
+        }
+        if ($this->tab === 'playit') {
+            $this->playit = $playit->status($server);
+        }
+        if ($this->tab === 'sftp') {
+            $this->sftp = $sftp->get($server) ?? [];
+        }
+    }
+
+    public function installMarketplace(PluginManagerService $plugins): void
+    {
+        $kind = $this->marketplaceKind === 'mod' ? 'mod' : 'plugin';
+        $server = $this->authorizedServer($kind === 'plugin' ? 'plugins' : 'mods');
+        $this->validate(['marketplaceId' => ['required', 'regex:/^[A-Za-z0-9_-]{2,80}$/']]);
+        try {
+            $plugins->install($server, $kind, ['projectId' => $this->marketplaceId]);
+            $this->marketplaceId = '';
+            $this->installedPlugins = $plugins->installed($server)['items'] ?? [];
+            $this->notice = ucfirst($kind).' installed.';
+        } catch (Throwable $exception) {
+            $this->failure($exception->getMessage(), $exception);
+        }
+    }
+
+    public function removePlugin(string $filename, PluginManagerService $plugins): void
+    {
+        $plugins->remove($this->authorizedServer('plugins'), $filename);
+        $this->installedPlugins = $plugins->installed($this->server())['items'] ?? [];
+    }
+
+    public function startPlayit(PlayitService $service): void
+    {
+        $service->start($this->authorizedServer('view'));
+        $this->playit = $service->status($this->server());
+    }
+
+    public function stopPlayit(PlayitService $service): void
+    {
+        $service->stop($this->authorizedServer('view'));
+        $this->playit = $service->status($this->server());
+    }
+
+    public function resetPlayit(PlayitService $service): void
+    {
+        $service->reset($this->authorizedServer('view'));
+        $this->playit = $service->status($this->server());
+    }
+
+    public function createSftp(SftpCredentialService $service): void
+    {
+        $result = $service->create($this->authorizedServer('manageSubusers'));
+        $this->sftp = $result;
+        $this->sftpPassword = (string) ($result['password'] ?? '');
+    }
+
+    public function resetSftp(SftpCredentialService $service): void
+    {
+        $result = $service->reset($this->authorizedServer('manageSubusers'));
+        $this->sftp = $result;
+        $this->sftpPassword = (string) ($result['password'] ?? '');
     }
 
     public function lifecycle(string $action, NodeClient $client): void
@@ -433,6 +515,9 @@ class ServerDetail extends Component
         }
         if ($this->tab === 'subusers') {
             $this->refreshSubusers();
+        }
+        if (in_array($this->tab, ['sftp', 'plugins', 'mods', 'playit'], true)) {
+            $this->refreshIntegrations(app(PluginManagerService::class), app(PlayitService::class), app(SftpCredentialService::class));
         }
     }
 

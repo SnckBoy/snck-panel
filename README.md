@@ -2,16 +2,17 @@
 
 SNCK Panel is a self-hosted Minecraft server management panel. The **Laravel application in `laravel-panel/` is the PHP implementation and the intended primary panel** on this branch.
 
-> **Branch status:** This documentation is for `repair/php-laravel-canonical`. The repository's root `install.sh` still belongs to the older React/Express installer path. It does **not** install the Laravel panel. Do not use the root one-command installer when you intend to deploy the PHP application.
+> **Primary implementation:** Laravel is the canonical panel. The root `install.sh` downloads and runs `scripts/install-laravel-panel.sh`; the older React/Express implementation and legacy scripts remain for compatibility work.
 
 ## Project layout
 
 | Path | Purpose |
 | --- | --- |
+| `install.sh` | Root entry point that fetches and runs the Laravel installer from the selected branch |
 | `laravel-panel/` | Laravel 12 application, Blade/Livewire UI, API routes, migrations and tests |
 | `scripts/install-laravel-panel.sh` | CLI installer for the Laravel application |
 | `scripts/` | Legacy/native panel scripts and utilities |
-| `node-install.sh` | Existing ShiroNex node installer; its compatibility with the Laravel node client must be verified before production use |
+| `node-install.sh` | Laravel-compatible node installer; downloads the daemon source, provisions trusted TLS and an SSH host key, and configures the node service |
 | `.github/workflows/` | Repository CI workflows |
 
 The older React/Vite + Express/TypeScript application remains in the repository for migration/compatibility work. It is not the PHP application's runtime.
@@ -26,7 +27,7 @@ The Laravel application currently contains routes and UI components for:
 - Server lifecycle actions, console commands, logs and resource statistics.
 - Server file browsing, editing, upload/download, archive operations and backups.
 - Plugin, mod and modpack management endpoints.
-- Per-server subuser management and SFTP credential management.
+- Per-server subuser management, SFTP credentials, and an SSH/SFTP transport jailed to each server's files.
 - API key management.
 - Discord reward configuration and claim administration.
 - Cloudflare connection and DNS management screens.
@@ -76,14 +77,21 @@ node --version
 npm --version
 ```
 
-### 2. Download and run the Laravel installer from this branch
+### 2. Run the Laravel installer
 
-The installer must be fetched from the same branch you intend to deploy. The following command installs this branch into the default directory, `/opt/snck-panel-laravel`:
+The standard one-command installer downloads the Laravel installer from `main` and installs into `/opt/snck-panel-laravel`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/repair/php-laravel-canonical/scripts/install-laravel-panel.sh -o /tmp/snck-panel-installer.sh
-sudo bash /tmp/snck-panel-installer.sh --branch=repair/php-laravel-canonical
+curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/install.sh | sudo bash
 ```
+
+To test this PR branch before it is merged:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/php-migration-final/install.sh | sudo env SNCK_BRANCH=php-migration-final bash
+```
+
+The installer prompts for PostgreSQL connection details and the public panel URL. For unattended installs, set `SNCK_DB_HOST`, `SNCK_DB_PORT`, `SNCK_DB_DATABASE`, `SNCK_DB_USERNAME`, `SNCK_DB_PASSWORD`, and `SNCK_APP_URL` in the root environment. It preserves an existing `.env` and application key when updating an existing install.
 
 Optional installer arguments:
 
@@ -154,7 +162,7 @@ The Laravel installer writes an Nginx site listening on HTTP port 80. It does **
 4. Set `APP_URL` to the public HTTPS URL and `SESSION_SECURE_COOKIE=true`.
 5. Restrict SSH and other administrative ports with your firewall. Do not expose PostgreSQL or a node's Docker API to the public internet.
 
-The installer currently writes the Nginx virtual host with `server_name _;` and removes the default Nginx site symlink. Review the generated Nginx configuration before using a host that already serves other websites.
+The installer sets the Nginx virtual host name from `APP_URL` and preserves the existing default Nginx site. Review the generated Nginx configuration before using a host that already serves other websites.
 
 ## Services and logs
 
@@ -189,7 +197,10 @@ Important compatibility and deployment requirements:
 - Node credentials are per-node bearer credentials; they are not user login tokens.
 - Panel-to-node traffic must use HTTPS with normal certificate and hostname verification.
 - The PHP client must preserve the frozen v1 methods, paths and payload formats.
-- The existing root `node-install.sh` identifies itself as a ShiroNex installer. Do not assume it is a supported installer for every Laravel deployment without verifying the daemon version and API compatibility first.
+- The Infrastructure page creates a one-time install command using the node's bearer credential. The installer downloads the daemon from the repository's `main` branch; after merging this PR, the installer and panel API contract are aligned.
+- The node FQDN must resolve to the node VPS. The installer obtains a trusted certificate with Let's Encrypt HTTP-01 on TCP port 80, then starts the daemon over HTTPS. It also creates an SSH host key for SFTP.
+
+The node installer configures the SSH/SFTP listener on TCP port 2022 and generates a stable host key. The panel validates each SFTP password through the node-authenticated `/api/node-agent/sftp-auth` endpoint; each login is jailed to that server's directory. Restrict SFTP to trusted networks. Open inbound TCP 80 for certificate issuance/renewal, 6768 for the HTTPS daemon, and 2022 for SFTP.
 
 Do not expose Docker's socket or unauthenticated daemon endpoints to the internet. Use a private network or secure tunnel and firewall rules.
 
@@ -215,17 +226,16 @@ php artisan test
 
 The checked-in PHPUnit configuration also defines an in-memory SQLite test environment for tests that support it. Database-specific behavior should additionally be verified against PostgreSQL.
 
-The repository's existing root CI workflow primarily tests the older Node/TypeScript code. Do not interpret a green root CI run as proof that the complete Laravel application, PostgreSQL deployment, installer, or node integration has passed end-to-end testing.
+The repository CI workflow now runs the Laravel test suite against PostgreSQL, PHP formatting and static analysis, the Laravel frontend build, the node-daemon build, and SSH/SFTP protocol integration tests. A green CI run still does not replace a live node provisioning, heartbeat, file-transfer, firewall, and certificate-renewal test.
 
 ## Current deployment limitations
 
 This branch is still being consolidated. In particular:
 
-- The root `install.sh` is still the legacy React/Express installer; it is not the Laravel installer.
 - The Laravel CLI installer requires PHP/Composer/Node/npm to be installed before it starts and requires a working PostgreSQL database.
 - The CLI installer currently assigns the application tree to the `snck-panel` user, while the default PHP-FPM pool may run as `www-data`. Verify and correct PHP-FPM write access for `storage/` and `bootstrap/cache/` before production use; do not solve this by making the whole application world-writable.
-- The installer does not configure HTTPS, DNS, Cloudflare Tunnel, PostgreSQL server provisioning, or node networking.
-- Node daemon compatibility and full production integration tests must be completed before treating remote-node deployment as production-ready.
+- The panel installer does not configure HTTPS, DNS, Cloudflare Tunnel, PostgreSQL server provisioning, or panel reverse-proxy networking. The separate node installer configures node TLS but requires a public node FQDN and reachable HTTP-01 port 80.
+- Live node provisioning, heartbeat, Docker lifecycle, SFTP file transfer, firewall behavior, and certificate renewal must be verified in the target environment before treating remote-node deployment as production-ready.
 
 ## Security notes
 

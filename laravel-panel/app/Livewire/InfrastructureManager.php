@@ -30,6 +30,8 @@ class InfrastructureManager extends Component
 
     public string $credential = '';
 
+    public string $nodeInstallCommand = '';
+
     public string $nodeIdForAllocation = '';
 
     public string $allocationIp = '';
@@ -66,27 +68,48 @@ class InfrastructureManager extends Component
         $data = $this->validate([
             'nodeId' => ['required', 'string', 'regex:/^[a-zA-Z0-9_-]{1,64}$/', 'unique:nodes,id'],
             'nodeName' => ['required', 'string', 'max:128'],
-            'host' => ['required', 'string', 'max:255'],
-            'fqdn' => ['nullable', 'string', 'max:255'],
+            'host' => ['nullable', 'string', 'max:255'],
+            'fqdn' => ['required', 'string', 'max:253', 'regex:/^(?=.{1,253}$)(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,63}$/'],
             'daemonPort' => ['required', 'integer', 'between:1,65535'],
-            'credential' => ['required', 'string', 'min:32', 'max:512'],
+            'credential' => ['nullable', 'string', 'min:32', 'max:512'],
         ]);
-        $host = trim($data['host']);
-        $fqdn = trim((string) ($data['fqdn'] ?: $host));
+        $host = trim((string) ($data['host'] ?: $data['fqdn']));
+        $fqdn = trim($data['fqdn']);
+        $credential = trim((string) ($data['credential'] ?? ''));
+
+        if ($credential === '') {
+            $credential = bin2hex(random_bytes(32));
+        }
+        $panelUrl = rtrim((string) config('app.url'), '/');
+        abort_unless(str_starts_with($panelUrl, 'https://'), 422, 'Set APP_URL to the public HTTPS panel URL before registering nodes.');
+
         foreach ([$host, $fqdn] as $hostname) {
             abort_if(preg_match('/[\r\n\/@?#]/', $hostname), 422, 'Enter a hostname or IP without scheme or path.');
         }
-        abort_if(Node::query()->where('credential_hash', hash('sha256', $data['credential']))->exists(), 422, 'This daemon bearer token is already registered to another node.');
+        abort_if(Node::query()->where('credential_hash', hash('sha256', $credential))->exists(), 422, 'This daemon bearer token is already registered to another node.');
         Node::query()->create([
             'id' => $data['nodeId'], 'name' => $data['nodeName'], 'host' => $host, 'fqdn' => $fqdn,
             'protocol' => 'https', 'daemon_port' => $data['daemonPort'], 'api_port' => $data['daemonPort'],
-            'credential_encrypted' => Crypt::encryptString($data['credential']), 'credential_hash' => hash('sha256', $data['credential']),
+            'credential_encrypted' => Crypt::encryptString($credential), 'credential_hash' => hash('sha256', $credential),
             'status' => 'offline', 'docker_available' => false, 'disabled' => false,
         ]);
+        $installer = 'https://raw.githubusercontent.com/SnckBoy/snck-panel/main/node-install.sh';
+        $this->nodeInstallCommand = 'curl -fsSL '.escapeshellarg($installer).' | sudo bash -s --'
+            .' --panel '.escapeshellarg($panelUrl)
+            .' --node-id '.escapeshellarg($data['nodeId'])
+            .' --fqdn '.escapeshellarg($fqdn)
+            .' --credential '.escapeshellarg($credential)
+            .' --port '.(int) $data['daemonPort'];
         $this->credential = '';
         $this->nodeId = $this->nodeName = $this->host = $this->fqdn = '';
         $this->notice = 'Node saved with HTTPS and certificate verification enabled. Status remains offline until a real probe or heartbeat.';
         $this->noticeType = 'success';
+    }
+
+    public function dismissNodeInstallCommand(): void
+    {
+        $this->requireStaff();
+        $this->nodeInstallCommand = '';
     }
 
     public function checkNode(string $id, NodeClient $client): void

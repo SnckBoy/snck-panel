@@ -103,3 +103,28 @@ Added real Discord guild-member reconciliation, retention cleanup, an Artisan ma
 ### 4. Finish — verified
 
 The final Laravel run passed **70 tests / 330 assertions**, with 2 PostgreSQL-only importer tests skipped under the default SQLite configuration. Pint passes 105 files, Larastan reports no errors, Composer audit is clean, Blade cache passes, and installer shell syntax passes. Remaining work is only the persistent Discord Gateway invite-attribution worker and automatic ServerProvisioner execution for approved claims.
+
+
+## PR #42 follow-up — administrator workspace and SFTP transport
+
+- Added the staff-only AdminWorkspace Livewire page and route while preserving the main-branch Cloudflare and Discord pages/routes.
+- Added /api/node-agent/sftp-auth, authenticated by the per-node bearer credential, for password validation by the node's SSH/SFTP listener.
+- Added an SSH2 SFTP server with per-server jailed paths, no-follow file opens, path traversal rejection, symlink rejection, and file/directory operations.
+- Added a real SSH client integration test that uploads and downloads a file through the SFTP protocol. The combined test suites and live-node SFTP validation remain required before production sign-off.
+
+
+## Node provisioning alignment
+
+- Replaced the node installer's stale setup-token/register API expectation with the existing panel-created per-node bearer credential contract.
+- InfrastructureManager generates a secure credential when blank and presents a one-time shell command with panel URL, node ID, FQDN and daemon port.
+- node-install.sh downloads the daemon archive from GitHub main, obtains a trusted certificate with Certbot, creates an SSH host key, configures HTTPS and SFTP, builds the daemon, and installs its systemd service.
+- Added a PostgreSQL-backed Livewire test for the one-time command and non-staff access, plus CI checks for installer syntax and help output.
+- Real VPS DNS/firewall/certificate renewal/heartbeat/file-transfer checks are still required before production sign-off.
+
+## Canonical Laravel install entry point
+
+- Replaced the legacy root install entry point with a wrapper for the Laravel installer.
+- Installer preflight validates Ubuntu/Debian, PHP 8.3+, required extensions, Composer, Node 20+, npm, systemd, PostgreSQL settings, application path, and public URL.
+- Existing `.env` and application key are preserved on update; dotenv values are written safely; HTTPS URLs enable secure session cookies.
+- Nginx, a dedicated PHP-FPM pool, queue worker, scheduler and Discord maintenance timers are configured. Route caching remains disabled because a current route uses a closure.
+- PostgreSQL server provisioning, panel HTTPS/Cloudflare setup and live production deployment remain external tasks.
