@@ -24,7 +24,6 @@ class AdminUserController extends Controller
     public function update(Request $request, User $user, AdminUserRoleService $roleService): JsonResponse
     {
         $actor = $this->staff($request);
-
         $data = $request->validate([
             'role' => ['sometimes', 'required', Rule::in(['user', 'admin', 'owner'])],
             'disabled' => ['sometimes', 'boolean'],
@@ -36,6 +35,14 @@ class AdminUserController extends Controller
         return response()->json([
             'user' => $updated->only(['id', 'name', 'username', 'email', 'role', 'disabled', 'email_verified_at', 'created_at']),
         ]);
+    }
+
+    public function destroy(Request $request, User $user, AdminUserRoleService $roleService): JsonResponse
+    {
+        $actor = $this->staff($request);
+        $roleService->delete($actor, $user);
+
+        return response()->json(['success' => true]);
     }
 
     private function staff(Request $request): User
