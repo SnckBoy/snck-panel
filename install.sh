@@ -5,13 +5,30 @@ set -Eeuo pipefail
 # use SNCK_BRANCH=... to install a different branch explicitly.
 BRANCH="${SNCK_BRANCH:-main}"
 REPO_URL="${SNCK_REPO_URL:-https://github.com/SnckBoy/snck-panel.git}"
-INSTALLER_URL="${SNCK_INSTALLER_URL:-https://raw.githubusercontent.com/SnckBoy/snck-panel/$BRANCH/scripts/install-laravel-panel.sh}"
 FORWARD_ARGS=()
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --branch=*) BRANCH="${1#*=}"; shift ;;
     --repo=*) REPO_URL="${1#*=}"; shift ;;
+    -h|--help)
+      cat <<'EOF'
+SNCK Panel — Laravel installer entry point
+
+Usage:
+  curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/install.sh | sudo bash
+
+Options:
+  --branch=BRANCH
+  --repo=GIT_URL
+  --dry-run
+  --app-dir=/absolute/path
+  --help
+
+Prerequisites: PHP 8.3+, Composer, Node.js 20+, npm, and a configured PostgreSQL database.
+EOF
+      exit 0
+      ;;
     *) FORWARD_ARGS+=("$1"); shift ;;
   esac
 done
