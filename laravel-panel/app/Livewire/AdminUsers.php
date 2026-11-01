@@ -20,14 +20,14 @@ class AdminUsers extends Component
 
     public function mount(): void
     {
-        $this->authorizeStaff();
+        $this->staffUser();
     }
 
     public function edit(string $id, UserRoleManagementService $roles): void
     {
-        $this->authorizeStaff();
+        $actor = $this->staffUser();
         $user = User::query()->findOrFail($id);
-        $roles->assertCanEdit(Auth::user(), $user);
+        $roles->assertCanEdit($actor, $user);
 
         $this->editing = $user->id;
         $this->role = $user->role;
@@ -37,7 +37,7 @@ class AdminUsers extends Component
 
     public function save(UserRoleManagementService $roles): void
     {
-        $this->authorizeStaff();
+        $actor = $this->staffUser();
 
         $data = $this->validate([
             'role' => ['required', Rule::in(['user', 'admin', 'owner'])],
@@ -46,7 +46,7 @@ class AdminUsers extends Component
         ]);
 
         $user = User::query()->findOrFail($this->editing);
-        $roles->update(Auth::user(), $user, $data);
+        $roles->update($actor, $user, $data);
 
         $this->editing = '';
         $this->password = '';
@@ -55,14 +55,17 @@ class AdminUsers extends Component
 
     public function render()
     {
-        $this->authorizeStaff();
+        $this->staffUser();
 
         return view('livewire.admin.users', ['users' => User::query()->orderBy('username')->get()])
             ->layout('layouts.app', ['title' => 'Administrator users']);
     }
 
-    private function authorizeStaff(): void
+    private function staffUser(): User
     {
-        abort_unless(Auth::user()?->isStaff(), 403, 'Staff access is required.');
+        $user = Auth::user();
+        abort_unless($user instanceof User && $user->isStaff() && ! $user->disabled, 403, 'Staff access is required.');
+
+        return $user;
     }
 }
