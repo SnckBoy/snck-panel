@@ -79,4 +79,6 @@ The `php-migration-final` branch contains the Laravel 12 foundation, daemon/serv
 
 The Playit batch adds owner/staff-only status, start, stop, and reset endpoints, audit events, fixed-version agent download, server-specific storage, claim-link extraction, bounded PM2 process execution through argument arrays, and tests proving delegated users cannot access the integration. The focused Playit suite passes 2 tests / 9 assertions. Real Playit/PM2 operation still requires a deployment host with PM2 and network access.
 
+The first Discord rewards batch adds encrypted single-document state storage, redacted administrator configuration, strict Discord/OAuth validation, reward-plan CRUD, duplicate protection, audit events, and staff-only endpoints. Its focused suite passes 3 tests / 14 assertions. Live Discord gateway lifecycle, OAuth linking, invite attribution, retention cleanup, member reconciliation, and claim provisioning remain to be ported; this batch does not expose them as completed features.
+
 Remaining ordered work includes Playit, Discord rewards, plugins/mods/modpacks, SFTP contract work, remaining administration, the complete importer/installer rehearsal, security hardening, and final production-readiness testing.
