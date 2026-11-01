@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ThemeExportController;
 use App\Livewire\AdminUsers;
+use App\Livewire\AdminWorkspace;
 use App\Livewire\Dashboard;
 use App\Livewire\InfrastructureManager;
 use App\Livewire\ServerCreate;
@@ -13,6 +14,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route(User::query()->exists() ? 'login' : 'setup'))->name('home');
+Route::get('/health', fn () => response()->json(['ok' => true, 'service' => 'snck-panel-laravel']))->name('health');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/setup', [AuthController::class, 'setupForm'])->middleware('throttle:setup')->name('setup');
@@ -39,5 +41,6 @@ Route::middleware(['auth', 'account.enabled'])->group(function (): void {
         Route::get('/nodes', InfrastructureManager::class)->name('nodes.index');
         Route::get('/allocations', InfrastructureManager::class)->defaults('tab', 'allocations')->name('allocations.index');
         Route::get('/admin/users', AdminUsers::class)->name('admin.users');
+        Route::get('/admin/workspace', AdminWorkspace::class)->name('admin.workspace');
     });
 });
