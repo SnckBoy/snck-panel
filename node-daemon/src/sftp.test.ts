@@ -138,3 +138,11 @@ test("SSH/SFTP protocol uploads and downloads files inside the authenticated ser
     fs.rmSync(base, { recursive: true, force: true });
   }
 });
+
+test("SFTP panel authentication URL requires HTTPS outside loopback", () => {
+  assert.equal(validatePanelBaseUrl("http://127.0.0.1:3000/"), "http://127.0.0.1:3000");
+  assert.equal(validatePanelBaseUrl("https://panel.example.com/"), "https://panel.example.com");
+  assert.throws(() => validatePanelBaseUrl("http://panel.example.com"), /requires HTTPS/);
+  assert.throws(() => validatePanelBaseUrl("https://user:secret@panel.example.com"), /cannot contain credentials/);
+  assert.throws(() => validatePanelBaseUrl("https://panel.example.com/?token=secret"), /cannot contain credentials/);
+});
