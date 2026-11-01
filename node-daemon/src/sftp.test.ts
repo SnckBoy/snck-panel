@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { jailedPath, safeServerRoot, sftpOpenFlagsToNode } from "./sftp.js";
+import { jailedPath, safeServerRoot, sftpOpenFlagsToNode, validatePanelBaseUrl } from "./sftp.js";
 
 const waitForEvent = (emitter: any, event: string): Promise<void> => new Promise((resolve, reject) => {
   emitter.once(event, () => resolve());
