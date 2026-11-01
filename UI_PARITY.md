@@ -27,3 +27,10 @@ Updated on `discord-final`.
 | Discord retention/member reconciliation | Artisan maintenance command and installer timer | DONE |
 
 `PARTIAL` is intentionally limited to the two live Discord worker/provisioning capabilities that were not fabricated. The remaining work is recorded in `PROGRESS.md`.
+
+
+## Installer parity
+
+| Area | Implementation | Status |
+| --- | --- | --- |
+| Root installer | `install.sh` delegates to `scripts/install-laravel-panel.sh` for the Laravel app | DONE |
