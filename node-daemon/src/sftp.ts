@@ -22,6 +22,18 @@ export const sftpOpenFlagsToNode = (flags: number): number => {
   return result;
 };
 
+export const validatePanelBaseUrl = (raw: string): string => {
+  const parsed = new URL(raw);
+  const loopback = ["localhost", "127.0.0.1", "[::1]"].includes(parsed.hostname.toLowerCase());
+  if (parsed.protocol !== "https:" && !(parsed.protocol === "http:" && loopback)) {
+    throw new Error("SFTP authentication requires HTTPS except for loopback test endpoints");
+  }
+  if (parsed.username || parsed.password || parsed.search || parsed.hash) {
+    throw new Error("SFTP panel URL cannot contain credentials, query parameters, or fragments");
+  }
+  return parsed.toString().replace(/\\/+$/, "");
+};
+
 export type SftpConfig = {
   host?: string;
   port?: number;
