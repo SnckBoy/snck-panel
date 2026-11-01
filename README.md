@@ -133,7 +133,7 @@ SESSION_SECURE_COOKIE=true
 
 Use your real hostname and database details. Choose the PostgreSQL SSL mode that matches your database server's certificate configuration; do not weaken TLS verification just to bypass a certificate problem. Keep `.env` private and never commit it.
 
-The installer generates the Laravel application key if needed, installs Composer/npm dependencies, builds frontend assets and runs migrations. If you change environment values after installation, clear/rebuild Laravel's configuration cache as appropriate:
+The installer generates the Laravel application key if needed, installs Composer/npm dependencies, builds frontend assets, runs migrations, and caches configuration/views. It deliberately does not cache routes because the current home route uses a closure. If you change environment values after installation, clear/rebuild Laravel's configuration cache as appropriate:
 
 ```bash
 cd /opt/snck-panel-laravel
