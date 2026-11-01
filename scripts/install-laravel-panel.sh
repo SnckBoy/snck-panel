@@ -127,7 +127,29 @@ DB_SSLMODE="${SNCK_DB_SSLMODE:-prefer}"
 # Safely replace dotenv values without evaluating or sourcing .env.
 set_env() {
   local key="$1" value="$2"
-  [[ "$value" != *
+  [[ "$value" != *$'\n'* && "$value" != *$'\r'* ]] || fail "$key cannot contain a newline."
+  SNCK_ENV_KEY="$key" SNCK_ENV_VALUE="$value" php -r '
+    $path = ".env";
+    $key = getenv("SNCK_ENV_KEY");
+    $value = getenv("SNCK_ENV_VALUE");
+    $quoted = "\"" . str_replace(["\\", "\""], ["\\\\", "\\\""], $value) . "\"";
+    $lines = file($path, FILE_IGNORE_NEW_LINES);
+    if ($lines === false) { fwrite(STDERR, "Cannot read .env\n"); exit(1); }
+    $prefix = $key . "=";
+    $updated = false;
+    foreach ($lines as &$line) {
+      if (str_starts_with($line, $prefix)) {
+        $line = $prefix . $quoted;
+        $updated = true;
+      }
+    }
+    unset($line);
+    if (!$updated) { $lines[] = $prefix . $quoted; }
+    if (file_put_contents($path, implode(PHP_EOL, $lines) . PHP_EOL, LOCK_EX) === false) {
+      fwrite(STDERR, "Cannot write .env\n"); exit(1);
+    }
+  ' || fail "Could not update $key in .env."
+}
 set_env APP_ENV production
 set_env APP_DEBUG false
 set_env APP_URL "$APP_URL"
