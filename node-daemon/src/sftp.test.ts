@@ -119,7 +119,10 @@ test("SSH/SFTP protocol uploads and downloads files inside the authenticated ser
       client.sftp((error, channel) => error ? reject(error) : resolve(channel));
     });
     await new Promise<void>((resolve, reject) => sftp.fastPut(localSource, "uploaded.txt", (error: Error | undefined) => error ? reject(error) : resolve()));
-    await new Promise<void>((resolve, reject) => sftp.fastGet("uploaded.txt", localDownload, (error: Error | undefined) => error ? reject(error) : resolve()));
+    await new Promise<void>((resolve, reject) => sftp.fastGet("/uploaded.txt", localDownload, (error: Error | undefined) => error ? reject(error) : resolve()));
+    const entries = await new Promise<any[]>((resolve, reject) => sftp.readdir("/", (error: Error | undefined, files: any[]) => error ? reject(error) : resolve(files)));
+    assert.ok(entries.some(entry => entry.filename === "uploaded.txt"));
+    await new Promise<void>(resolve => sftp.stat("../outside.txt", (error: Error | undefined) => { assert.ok(error); resolve(); }));
 
     assert.equal(fs.readFileSync(localDownload, "utf8"), "real SFTP protocol works");
     assert.equal(fs.readFileSync(path.join(base, "servers", "server-1", "uploaded.txt"), "utf8"), "real SFTP protocol works");
