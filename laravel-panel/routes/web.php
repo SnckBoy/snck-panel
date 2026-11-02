@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DiscordRewardsController;
 use App\Http\Controllers\ThemeExportController;
+use App\Livewire\AdminDashboard;
 use App\Livewire\AdminUsers;
 use App\Livewire\AdminWorkspace;
 use App\Livewire\CloudflareManager;
@@ -42,6 +43,7 @@ Route::middleware(['auth', 'account.enabled'])->group(function (): void {
     Route::get('/servers/create', ServerCreate::class)->name('servers.create');
     Route::get('/servers/{server}', ServerDetail::class)->name('servers.show');
     Route::middleware('role:owner,admin')->group(function (): void {
+        Route::get('/admin', AdminDashboard::class)->name('admin.index');
         Route::get('/themes', ThemeManager::class)->name('themes.index');
         Route::get('/themes/{theme}/export', ThemeExportController::class)->name('themes.export');
         Route::get('/nodes', InfrastructureManager::class)->name('nodes.index');
