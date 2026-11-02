@@ -67,7 +67,7 @@ body.snck-app { margin: 0; color: var(--snck-text); background: var(--snck-bg); 
     .snck-mobile-menu summary { display: flex; width: 44px; height: 44px; flex-direction: column; align-items: center; justify-content: center; gap: 5px; border: 1px solid var(--snck-border); border-radius: 12px; background: #ffffff08; cursor: pointer; list-style: none; }
     .snck-mobile-menu summary::-webkit-details-marker { display: none; }
     .snck-mobile-menu summary span { width: 18px; height: 2px; border-radius: 2px; background: var(--snck-text); }
-    .snck-mobile-nav { position: fixed; z-index: 50; inset: 66px auto 0 0; display: none; align-content: start; width: min(280px, 84vw); gap: 5px; padding: 16px 12px; border: 1px solid var(--snck-border); border-left: 0; border-radius: 0 16px 16px 0; .background: #111b30; box-shadow: 18px 0 48px #0009; }
+    .snck-mobile-nav { position: fixed; z-index: 50; inset: 66px auto 0 0; display: none; align-content: start; width: min(280px, 84vw); gap: 5px; padding: 16px 12px; border: 1px solid var(--snck-border); border-left: 0; border-radius: 0 16px 16px 0; background: #111b30; box-shadow: 18px 0 48px #0009; }
     .snck-mobile-menu[open] .snck-mobile-nav { display: grid; }
     .snck-mobile-menu:not([open]) .snck-mobile-nav { display: none; }
     .snck-mobile-nav a { width: 100%; min-width: 0; }
