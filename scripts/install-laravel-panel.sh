@@ -285,7 +285,10 @@ EOF
 
 cat >/etc/nginx/sites-available/snck-panel-laravel <<EOF
 server {
-    listen 80;
+    # Make SNCK the default HTTP virtual host so the Ubuntu welcome site
+    # cannot intercept requests when its default site is also enabled.
+    listen 80 default_server;
+    listen [::]:80 default_server;
     server_name _;
     root $APP_DIR/public;
     index index.php;
@@ -299,12 +302,17 @@ server {
 }
 EOF
 ln -sfn /etc/nginx/sites-available/snck-panel-laravel /etc/nginx/sites-enabled/snck-panel-laravel
-SERVER_NAME="$(php -r '$host = parse_url($argv[1], PHP_URL_HOST); echo $host ?: "_";' "$APP_URL")"
-sed -i "s/server_name _;/server_name $SERVER_NAME;/" /etc/nginx/sites-available/snck-panel-laravel
+
+# The packaged Ubuntu default site serves /var/www/html and can return the
+# Nginx welcome page or 404 instead of forwarding requests to Laravel.
+rm -f /etc/nginx/sites-enabled/default
+
 nginx -t
 php-fpm8.3 -t
 systemctl restart php8.3-fpm
 systemctl enable --now nginx php8.3-fpm
+# --now does not reload an already-running Nginx process after config changes.
+systemctl reload nginx
 
 cat >/etc/systemd/system/snck-panel-laravel.service <<EOF
 [Unit]
