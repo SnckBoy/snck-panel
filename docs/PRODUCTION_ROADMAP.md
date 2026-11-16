@@ -57,7 +57,7 @@ This document records the production completion plan after the SNCK/JTG audit.
 
 ### Platform
 - [ ] Admin dashboard
-- [ ] Audit log
+- [x] Staff audit log console (viewer and filters)
 - [ ] Notifications
 - [ ] Global search
 - [ ] Health/readiness endpoints
