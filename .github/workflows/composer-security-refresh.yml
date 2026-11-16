@@ -2,14 +2,13 @@ name: Composer security refresh
 
 on:
   push:
-    branches: [feat/hosting-audit-console]
+    branches: [main]
   workflow_dispatch:
   schedule:
     - cron: "17 4 * * 1"
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   refresh:
@@ -106,17 +105,16 @@ jobs:
           DB_PASSWORD: snck_panel
         run: php artisan test
 
-      - name: Create dependency update pull request
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: security/composer-refresh
-          delete-branch: true
-          commit-message: "security: refresh vulnerable Composer dependencies"
-          title: "security: refresh vulnerable Composer dependencies"
-          body: |
-            Automated Composer security refresh.
-
-            This PR updates the Laravel framework, phpseclib and affected Symfony components.
-            The Composer security audit must pass before the PR is merged. The normal SNCK Panel CI workflow
-            runs formatting, static analysis, frontend build and PostgreSQL-backed feature tests.
+      - name: Publish audited dependency update branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch --force-create security/composer-refresh
+          git add laravel-panel/composer.lock laravel-panel/app/Services/AdminUserRoleService.php
+          if git diff --cached --quiet; then
+            echo "No dependency changes were produced." >> "$GITHUB_STEP_SUMMARY"
+          else
+            git commit -m "security: refresh vulnerable Composer dependencies"
+            git push --force origin HEAD:refs/heads/security/composer-refresh
+            echo "Published an audited update on `security/composer-refresh`. Review it and open a pull request into main." >> "$GITHUB_STEP_SUMMARY"
+          fi
