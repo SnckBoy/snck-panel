@@ -54,6 +54,9 @@ jobs:
       - name: Check PHP formatting
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
 
+      - name: Prepare test environment
+        run: cp .env.ci .env
+
       - name: Run unit tests
         run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
         env:
@@ -71,6 +74,14 @@ jobs:
 
       - name: Audit Composer dependencies
         run: composer audit
+
+      - name: Check installer scripts and branding tool
+        run: |
+          bash -n install.sh
+          bash install.sh --help
+          bash -n node-install.sh
+          bash node-install.sh --help
+          python3 -m py_compile scripts/rebrand-pterodactyl.py
 
   frontend:
     name: React frontend
