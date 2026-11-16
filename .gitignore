@@ -1,39 +1,37 @@
-# Dependencies
-node_modules/
-
-# Builds
-dist/
-build/
-coverage/
-
-# Runtime data
-.data/
-backups/
-logs/
-*.log
-*.pid
-
-# Environment / secrets
-.env
-.env.*
+/vendor
+*.DS_Store*
+!.env.ci
 !.env.example
-*.key
-*.pem
-*.p12
-secrets/
+.env*
+.vagrant/*
+.vscode/*
+storage/framework/*
+/.idea
+/nbproject
+/.direnv
 
-# Archives / generated packages
-*.zip
-*.tar.gz
-*.tgz
+node_modules
+*.log
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php
+.yarn
+public/assets/manifest.json
 
-# OS / editor
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
+# For local development with docker
+# Remove if we ever put the Dockerfile in the repo
+.dockerignore
+docker-compose.*
+!docker-compose.example.yml
+!docker-compose.example.yaml
 
-# Temporary files
-*.tmp
-*.swp
-*.swo
+# for image related files
+misc
+.php-cs-fixer.cache
+coverage.xml
+resources/lang/locales.js
+.phpunit.result.cache
+
+/public/build
+/public/hot
+result
