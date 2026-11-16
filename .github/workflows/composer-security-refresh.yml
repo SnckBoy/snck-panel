@@ -61,4 +61,3 @@ jobs:
             This PR updates the Laravel framework, phpseclib and affected Symfony components.
             The Composer security audit must pass before the PR is merged. The normal SNCK Panel CI workflow
             runs formatting, static analysis, frontend build and PostgreSQL-backed feature tests.
-          labels: security, dependencies
