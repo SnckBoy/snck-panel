@@ -1,0 +1,64 @@
+name: Composer security refresh
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * 1"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, pdo_pgsql, zip, intl, bcmath
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate Composer manifest
+        working-directory: laravel-panel
+        run: composer validate --strict
+
+      - name: Refresh vulnerable framework and transport packages
+        working-directory: laravel-panel
+        run: >-
+          composer update
+          laravel/framework
+          phpseclib/phpseclib
+          symfony/http-foundation
+          symfony/http-kernel
+          symfony/routing
+          symfony/yaml
+          --with-all-dependencies
+          --no-interaction
+          --prefer-dist
+          --no-progress
+
+      - name: Audit the refreshed dependency graph
+        working-directory: laravel-panel
+        run: composer audit
+
+      - name: Create dependency update pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: security/composer-refresh
+          delete-branch: true
+          commit-message: "security: refresh vulnerable Composer dependencies"
+          title: "security: refresh vulnerable Composer dependencies"
+          body: |
+            Automated Composer security refresh.
+
+            This PR updates the Laravel framework, phpseclib and affected Symfony components.
+            The Composer security audit must pass before the PR is merged. The normal SNCK Panel CI workflow
+            runs formatting, static analysis, frontend build and PostgreSQL-backed feature tests.
+          labels: security, dependencies
