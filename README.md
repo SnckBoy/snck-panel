@@ -43,7 +43,7 @@ The installer bootstraps PHP 8.3 and extensions, Composer, Node.js 22, Yarn Clas
 
 The installer is interactive for the Panel URL and first administrator. For a domain with automatic HTTPS, set these before running it:
 
-    sudo env SNCK_APP_URL=https://panel.example.com SNCK_LETSENCRYPT_EMAIL=admin@example.com bash
+    curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-pterodactyl-v1.15.2/install.sh | sudo env SNCK_APP_URL=https://panel.example.com SNCK_LETSENCRYPT_EMAIL=admin@example.com bash
 
 For non-default paths or database credentials, see the environment variables printed by:
 
