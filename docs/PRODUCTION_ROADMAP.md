@@ -56,13 +56,13 @@ This document records the production completion plan after the SNCK/JTG audit.
 - [ ] Playit integration
 
 ### Platform
-- [ ] Admin dashboard
+- [x] Owner/Admin dashboard with live user, server and node counts
 - [x] Staff audit log console (viewer and filters)
 - [ ] Notifications
 - [ ] Global search
 - [ ] Health/readiness endpoints
 - [ ] Update/rollback workflow
-- [ ] Panel installer
+- [ ] Panel installer (automated package bootstrap and optional HTTPS; fresh-host validation still required)
 - [ ] Node installer
 
 ### Verification
