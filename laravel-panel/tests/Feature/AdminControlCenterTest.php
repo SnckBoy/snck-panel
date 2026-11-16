@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Livewire\AdminDashboard;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -29,7 +30,7 @@ class AdminControlCenterTest extends TestCase
         $user = $this->user('control-user', 'user');
 
         $this->actingAs($user)->get('/admin')->assertForbidden();
-        Livewire::actingAs($user)->test(\App\Livewire\AdminDashboard::class)->assertForbidden();
+        Livewire::actingAs($user)->test(AdminDashboard::class)->assertForbidden();
     }
 
     private function user(string $id, string $role): User
