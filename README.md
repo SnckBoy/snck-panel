@@ -29,6 +29,7 @@ The Laravel application currently contains routes and UI components for:
 - Plugin, mod and modpack management endpoints.
 - Per-server subuser management, SFTP credentials, and an SSH/SFTP transport jailed to each server's files.
 - API key management.
+- Staff-only audit log console with searchable actor, resource, result, IP address and request context.
 - Discord reward configuration and claim administration.
 - Cloudflare connection and DNS management screens.
 - Theme management and export.
