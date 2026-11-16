@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-WINGS_VERSION="${SNCK_WINGS_VERSION:-v1.13.5}"
+WINGS_VERSION="v1.13.5"
 PANEL_URL="${SNCK_PANEL_URL:-}"
 NODE_ID="${SNCK_NODE_ID:-}"
 NODE_TOKEN="${SNCK_NODE_TOKEN:-}"
@@ -19,7 +19,6 @@ Usage:
 Options:
   --panel-url URL       SNCK Panel HTTPS URL
   --node-id ID          Numeric node ID from Admin > Nodes
-  --version VERSION     Wings release (default: v1.13.5)
   --help                Show this help
 
 The installer asks for the one-time auto-deploy token without echoing it.
@@ -31,7 +30,6 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --panel-url) PANEL_URL="${2:-}"; shift 2 ;;
     --node-id) NODE_ID="${2:-}"; shift 2 ;;
-    --version) WINGS_VERSION="${2:-}"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) fail "Unknown argument: $1" ;;
   esac
@@ -102,7 +100,6 @@ Requires=docker.service
 User=root
 WorkingDirectory=/etc/pterodactyl
 LimitNOFILE=4096
-PIDFile=/var/run/wings/daemon.pid
 ExecStart=/usr/local/bin/wings
 Restart=on-failure
 StartLimitIntervalSec=180
