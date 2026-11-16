@@ -188,7 +188,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
 
         Bus::assertDispatchedTimes(RevokeSftpAccessJob::class, 2);
         Bus::assertDispatched(fn (RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server->node));
-        Bus::assertDispatched(fn(RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server2->node));
+        Bus::assertDispatched(fn (RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server2->node));
     }
 
     /**
