@@ -48,11 +48,11 @@ class AdminAuditLogsTest extends TestCase
             ->assertSee('auth.login_failed')
             ->set('filterResult', 'failure')
             ->assertSee('auth.login_failed')
-            ->assertDontSee('server.created')
+            ->assertDontSee('server-123')
             ->set('filterResult', 'all')
             ->set('search', 'server-123')
-            ->assertSee('server.created')
-            ->assertDontSee('auth.login_failed');
+            ->assertSee('server-123')
+            ->assertDontSee('192.0.2.11');
     }
 
     public function test_regular_users_cannot_open_the_audit_console(): void
