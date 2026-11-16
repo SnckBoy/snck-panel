@@ -34,6 +34,13 @@ def replace_once(rel: str, old: str, new: str) -> None:
     write(rel, value.replace(old, new, 1))
 
 
+def replace_all(rel: str, old: str, new: str) -> None:
+    value = read(rel)
+    if old not in value:
+        raise ValueError(f"Expected branding marker not found in {rel}: {old!r}")
+    write(rel, value.replace(old, new))
+
+
 def main() -> None:
     if not (ROOT / "LICENSE.md").is_file():
         raise FileNotFoundError("Upstream LICENSE.md is missing; refusing to import.")
@@ -73,7 +80,7 @@ def main() -> None:
         "Pterodactyl&reg;",
         "SNCK Panel",
     )
-    replace_once(
+    replace_all(
         "resources/views/layouts/admin.blade.php",
         "config('app.name', 'Pterodactyl')",
         "config('app.name', 'SNCK Panel')",
@@ -90,11 +97,46 @@ def main() -> None:
     )
     replace_once(
         "resources/views/admin/index.blade.php",
-        "You are running Pterodactyl Panel version",
-        "You are running SNCK Panel version",
+        """<div class="box
+            @if($version->isLatestPanel())
+                box-success
+            @else
+                box-danger
+            @endif
+        ">
+            <div class="box-header with-border">
+                <h3 class="box-title">System Information</h3>
+            </div>
+            <div class="box-body">
+                @if ($version->isLatestPanel())
+                    You are running Pterodactyl Panel version <code>{{ config('app.version') }}</code>. Your panel is up-to-date!
+                @else
+                    Your panel is <strong>not up-to-date!</strong> The latest version is <a href="https://github.com/Pterodactyl/Panel/releases/v{{ $version->getPanel() }}" target="_blank"><code>{{ $version->getPanel() }}</code></a> and you are currently running version <code>{{ config('app.version') }}</code>. You can find instructions on how to update your panel <a href="https://github.com/pterodactyl/panel/panel/1.0/updating.html">here</a>.
+                @endif
+            </div>
+        </div>""",
+        """<div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">SNCK Panel Information</h3>
+            </div>
+            <div class="box-body">
+                SNCK Panel is based on Pterodactyl Panel v1.15.2. Follow the
+                <a href="https://github.com/SnckBoy/snck-panel/releases">SNCK Panel releases</a>
+                for project updates.
+            </div>
+        </div>""",
     )
-    replace_once("resources/views/admin/index.blade.php", "https://pterodactyl.io", REPO_URL)
-    replace_once("resources/views/admin/index.blade.php", "https://github.com/pterodactyl/panel", REPO_URL)
+    replace_once("resources/views/admin/index.blade.php", 'href="{{ $version->getDiscord() }}"', 'href="https://github.com/SnckBoy/snck-panel/issues"')
+    replace_once("resources/views/admin/index.blade.php", "Get Help <small>(via Discord)</small>", "Get Help <small>(GitHub Issues)</small>")
+    replace_once("resources/views/admin/index.blade.php", "https://pterodactyl.io", "https://github.com/SnckBoy/snck-panel#readme")
+    replace_once("resources/views/admin/index.blade.php", 'href="{{ $version->getDonations() }}"', 'href="https://github.com/SnckBoy/snck-panel"')
+    replace_once("resources/views/admin/nests/index.blade.php", "Eggs are a powerful feature of Pterodactyl Panel", "Eggs are a powerful feature of SNCK Panel")
+    replace_once("resources/views/admin/nests/index.blade.php", "those provided by <code>support@pterodactyl.io</code>", "the original Egg authors")
+    replace_once("resources/views/admin/nests/view.blade.php", "official option authored by <code>support@pterodactyl.io</code>", "official option authored by the upstream project")
+    replace_once("resources/views/admin/settings/advanced.blade.php", "Configure advanced settings for Pterodactyl.", "Configure advanced settings for SNCK Panel.")
+    replace_once("resources/views/admin/settings/index.blade.php", "Configure Pterodactyl to your liking.", "Configure SNCK Panel to your liking.")
+    replace_once("resources/views/admin/settings/mail.blade.php", "Configure how Pterodactyl should handle sending emails.", "Configure how SNCK Panel should handle sending emails.")
+    replace_once("resources/views/admin/servers/index.blade.php", "Pterodactyl Console", "SNCK Console")
     replace_once(
         "resources/scripts/components/server/console/Console.tsx",
         "container@pterodactyl~",
@@ -109,31 +151,44 @@ def main() -> None:
   <text x="112" y="64" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="48" font-weight="750" letter-spacing="-2">SNCK</text>
 </svg>
 """
+    write("public/.gitignore", "/assets/*\\n!/assets/svgs/\\n!/assets/svgs/*.svg\\n")
     write("public/assets/svgs/snck.svg", svg)
 
     readme = """# SNCK Panel
 
-SNCK Panel is a game-server hosting control panel based on the upstream Pterodactyl Panel v1.15.2 codebase. It retains the upstream PHP/Laravel application and React client so its existing API, database schema, and Wings integration remain compatible.
+SNCK Panel is a game-server hosting panel forked from Pterodactyl Panel v1.15.2. The Panel backend is PHP/Laravel, the browser UI is React/TypeScript, and game nodes run the separate Go-based Wings service.
 
-## Architecture
+## Features
 
-- **Panel:** PHP 8.3+, Laravel, and a React/TypeScript browser client.
-- **Node agent:** Pterodactyl Wings (Go), installed separately on each game node. The panel source archive does not include Wings.
-- **Database:** MariaDB/MySQL.
-- **Cache and queues:** Redis.
-- **Frontend build:** Node.js 22.12+ and Yarn Classic.
+- Users, authentication, two-factor authentication and administrator roles.
+- Servers, Nests/Eggs, startup variables, Docker images and install scripts.
+- Nodes, allocations, resource limits and server placement.
+- Live console, power controls, resource graphs, file manager and SFTP.
+- MySQL databases, scheduled tasks, backups and restore workflows.
+- Subusers, permissions, API keys and application/client APIs.
+- Admin settings, user/node/server management and activity logs.
+
+## One-command installation
+
+Panel: Ubuntu 22.04/24.04 and Debian 11/12/13.
+
+    curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-pterodactyl-v1.15.2/install.sh | sudo bash
+
+Game node: Ubuntu 22.04/24.04 and Debian 12/13. Create a node in Admin first, then run:
+
+    curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-pterodactyl-v1.15.2/node-install.sh | sudo bash -s -- --panel-url https://panel.example.com --node-id 1
+
+The node installer downloads Wings v1.13.5 and verifies the published SHA-256 digest before installation. It prompts for the node Auto-Deploy token.
+
+## Architecture and compatibility
+
+The Panel is PHP/Laravel with a React/TypeScript frontend. Wings is a separate Go service required on each game node. The old SNCK TypeScript daemon is not compatible with the Pterodactyl node API and must not be used with this fork.
 
 ## Upstream source and licence
 
-This repository contains a modified copy of Pterodactyl Panel, pinned to commit `90b2aa87469da4fffd941b3c99f3c1ca48a01b78` (v1.15.2). The upstream MIT licence and copyright notices are preserved in [LICENSE.md](LICENSE.md). SNCK branding changes are kept separate from upstream internal namespaces, database keys, and API contracts to avoid breaking compatibility.
+This repository contains a modified copy of Pterodactyl Panel pinned to commit 90b2aa87469da4fffd941b3c99f3c1ca48a01b78 (v1.15.2). The original MIT licence and copyright notice are preserved verbatim in LICENSE.md. See SNCK_UPSTREAM.md for attribution. SNCK branding leaves upstream internal namespaces, database keys, API contracts and Wings paths intact for compatibility.
 
-## Installation
-
-The production installer is being adapted for SNCK. Do not use the previous Laravel-migration installer against this fork. Use the SNCK installer instructions after the import PR's CI and clean-machine installation checks are complete.
-
-## Compatibility notes
-
-The panel and Wings communicate through the Pterodactyl node API. The previous SNCK TypeScript node daemon is not a drop-in Wings replacement and must not be installed with this panel. Install the matching SNCK-packaged Wings binary on each node after the node installer is published.
+The upstream project is not affiliated with or endorsing SNCK Panel.
 """
     write("README.md", readme)
 
