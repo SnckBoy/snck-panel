@@ -28,7 +28,7 @@ class AdminUserRoleService
             $target = User::query()->lockForUpdate()->findOrFail($target->getKey());
             $this->authorizeActor($actor);
 
-            if ($target->isOwner() && !$actor->isOwner()) {
+            if ($target->isOwner() && ! $actor->isOwner()) {
                 throw new AuthorizationException('Admins cannot modify an Owner account.');
             }
 
@@ -37,7 +37,7 @@ class AdminUserRoleService
                 ? (bool) $changes['disabled']
                 : (bool) $target->disabled;
 
-            if ($nextRole === 'owner' && !$actor->isOwner()) {
+            if ($nextRole === 'owner' && ! $actor->isOwner()) {
                 throw new AuthorizationException('Only the Owner can grant the Owner role.');
             }
 
@@ -93,7 +93,7 @@ class AdminUserRoleService
                 throw ValidationException::withMessages(['user' => 'You cannot delete your own account.']);
             }
 
-            if ($target->isOwner() && !$actor->isOwner()) {
+            if ($target->isOwner() && ! $actor->isOwner()) {
                 throw new AuthorizationException('Admins cannot delete an Owner account.');
             }
 
@@ -121,7 +121,7 @@ class AdminUserRoleService
 
     private function authorizeActor(User $actor): void
     {
-        if (!$actor->isStaff()) {
+        if (! $actor->isStaff()) {
             throw new AuthorizationException('Staff access is required.');
         }
     }
