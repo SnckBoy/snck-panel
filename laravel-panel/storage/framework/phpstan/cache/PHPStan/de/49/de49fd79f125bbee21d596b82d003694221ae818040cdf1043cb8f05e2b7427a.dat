@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-1171d10bc35e92b36a934e6cd3135dd1179fb3b4fc41e93d0302ed11e3437c3d-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:55:"illuminate\database\eloquent\relations\concerns\aspivot";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

@@ -1,0 +1,22 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-1689b1b63a29b05786ad32df4eef4ebf19250042b11238f7ae6444c45a286bbb-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:38:"Illuminate\Support\Facades\RateLimiter";s:8:"filename";s:137:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../laravel/framework/src/Illuminate/Support/Facades/RateLimiter.php";}}s:9:"namespace";s:26:"Illuminate\Support\Facades";s:4:"name";s:38:"Illuminate\Support\Facades\RateLimiter";s:9:"shortName";s:11:"RateLimiter";s:11:"isInterface";b:0;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:1123:"/**
+ * @method static \Illuminate\Cache\RateLimiter for(\UnitEnum|string $name, \Closure $callback)
+ * @method static \Closure|null limiter(\UnitEnum|string $name)
+ * @method static mixed attempt(string $key, int $maxAttempts, \Closure $callback, \DateTimeInterface|\DateInterval|int $decaySeconds = 60)
+ * @method static bool tooManyAttempts(string $key, int $maxAttempts)
+ * @method static int hit(string $key, \DateTimeInterface|\DateInterval|int $decaySeconds = 60)
+ * @method static int increment(string $key, \DateTimeInterface|\DateInterval|int $decaySeconds = 60, int $amount = 1)
+ * @method static int decrement(string $key, \DateTimeInterface|\DateInterval|int $decaySeconds = 60, int $amount = 1)
+ * @method static mixed attempts(string $key)
+ * @method static bool resetAttempts(string $key)
+ * @method static int remaining(string $key, int $maxAttempts)
+ * @method static int retriesLeft(string $key, int $maxAttempts)
+ * @method static void clear(string $key)
+ * @method static int availableIn(string $key)
+ * @method static string cleanRateLimiterKey(string $key)
+ *
+ * @see \Illuminate\Cache\RateLimiter
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:23;s:7:"endLine";i:34;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";s:33:"Illuminate\Support\Facades\Facade";s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:1:{s:17:"getFacadeAccessor";a:20:{s:4:"name";s:17:"getFacadeAccessor";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:73:"/**
+ * Get the registered name of the component.
+ *
+ * @return string
+ */";s:9:"startLine";i:30;s:7:"endLine";i:33;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:18;s:9:"namespace";s:26:"Illuminate\Support\Facades";s:18:"declaringClassName";s:38:"Illuminate\Support\Facades\RateLimiter";s:21:"implementingClassName";s:38:"Illuminate\Support\Facades\RateLimiter";s:16:"currentClassName";s:38:"Illuminate\Support\Facades\RateLimiter";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

@@ -1,0 +1,4 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:11:{s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:16:"FILTER_FLAG_IPV4";s:8:"filename";s:33:"phpstorm-stubs:filter/filter.stub";s:13:"extensionName";s:6:"filter";s:9:"aliasName";N;}}s:4:"name";s:16:"FILTER_FLAG_IPV4";s:9:"shortName";s:16:"FILTER_FLAG_IPV4";s:5:"value";a:2:{s:4:"code";s:7:"1048576";s:10:"attributes";a:6:{s:9:"startLine";i:7;s:7:"endLine";i:7;s:13:"startTokenPos";i:9;s:12:"startFilePos";i:150;s:11:"endTokenPos";i:9;s:10:"endFilePos";i:156;}}s:10:"docComment";s:115:"/**
+ * Allow only IPv4 address in "validate_ip" filter.
+ * @link https://php.net/manual/en/filter.constants.php
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:7;s:7:"endLine";i:7;s:11:"startColumn";i:1;s:9:"endColumn";i:35;s:9:"namespace";N;}}

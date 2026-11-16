@@ -1,0 +1,494 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-07c561aac8c52d6b9bf7a3bfecdebe3e1028637becf30da46a4fcf3e7ca5f1e7-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:24:"Illuminate\Routing\Route";s:8:"filename";s:123:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../laravel/framework/src/Illuminate/Routing/Route.php";}}s:9:"namespace";s:18:"Illuminate\Routing";s:4:"name";s:24:"Illuminate\Routing\Route";s:9:"shortName";s:5:"Route";s:11:"isInterface";b:0;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:30;s:7:"endLine";i:1423;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";N;s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:5:{i:0;s:39:"Illuminate\Support\Traits\Conditionable";i:1;s:59:"Illuminate\Routing\CreatesRegularExpressionRouteConstraints";i:2;s:46:"Illuminate\Routing\FiltersControllerMiddleware";i:3;s:35:"Illuminate\Support\Traits\Macroable";i:4;s:44:"Illuminate\Routing\ResolvesRouteDependencies";}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:19:{s:3:"uri";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:3:"uri";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:67:"/**
+ * The URI pattern the route responds to.
+ *
+ * @var string
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:39;s:7:"endLine";i:39;s:11:"startColumn";i:5;s:9:"endColumn";i:16;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:7:"methods";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:7:"methods";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:67:"/**
+ * The HTTP methods the route responds to.
+ *
+ * @var array
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:46;s:7:"endLine";i:46;s:11:"startColumn";i:5;s:9:"endColumn";i:20;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:6:"action";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:6:"action";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:51:"/**
+ * The route action array.
+ *
+ * @var array
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:53;s:7:"endLine";i:53;s:11:"startColumn";i:5;s:9:"endColumn";i:19;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:10:"isFallback";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:10:"isFallback";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";a:2:{s:4:"code";s:5:"false";s:10:"attributes";a:6:{s:9:"startLine";i:60;s:7:"endLine";i:60;s:13:"startTokenPos";i:184;s:12:"startFilePos";i:1570;s:11:"endTokenPos";i:184;s:10:"endFilePos";i:1574;}}s:10:"docComment";s:75:"/**
+ * Indicates whether the route is a fallback route.
+ *
+ * @var bool
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:60;s:7:"endLine";i:60;s:11:"startColumn";i:5;s:9:"endColumn";i:31;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:10:"controller";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:10:"controller";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:52:"/**
+ * The controller instance.
+ *
+ * @var mixed
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:67;s:7:"endLine";i:67;s:11:"startColumn";i:5;s:9:"endColumn";i:23;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:8:"defaults";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:8:"defaults";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";a:2:{s:4:"code";s:2:"[]";s:10:"attributes";a:6:{s:9:"startLine";i:74;s:7:"endLine";i:74;s:13:"startTokenPos";i:202;s:12:"startFilePos";i:1781;s:11:"endTokenPos";i:203;s:10:"endFilePos";i:1782;}}s:10:"docComment";s:61:"/**
+ * The default values for the route.
+ *
+ * @var array
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:74;s:7:"endLine";i:74;s:11:"startColumn";i:5;s:9:"endColumn";i:26;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:6:"wheres";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:6:"wheres";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";a:2:{s:4:"code";s:2:"[]";s:10:"attributes";a:6:{s:9:"startLine";i:81;s:7:"endLine";i:81;s:13:"startTokenPos";i:214;s:12:"startFilePos";i:1892;s:11:"endTokenPos";i:215;s:10:"endFilePos";i:1893;}}s:10:"docComment";s:64:"/**
+ * The regular expression requirements.
+ *
+ * @var array
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:81;s:7:"endLine";i:81;s:11:"startColumn";i:5;s:9:"endColumn";i:24;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:10:"parameters";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:10:"parameters";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:65:"/**
+ * The array of matched parameters.
+ *
+ * @var array|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:88;s:7:"endLine";i:88;s:11:"startColumn";i:5;s:9:"endColumn";i:23;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:14:"parameterNames";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:14:"parameterNames";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:67:"/**
+ * The parameter names for the route.
+ *
+ * @var array|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:95;s:7:"endLine";i:95;s:11:"startColumn";i:5;s:9:"endColumn";i:27;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:18:"originalParameters";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:18:"originalParameters";s:9:"modifiers";i:2;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:81:"/**
+ * The array of the matched parameters' original values.
+ *
+ * @var array
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:102;s:7:"endLine";i:102;s:11:"startColumn";i:5;s:9:"endColumn";i:34;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:19:"withTrashedBindings";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:19:"withTrashedBindings";s:9:"modifiers";i:2;s:4:"type";N;s:7:"default";a:2:{s:4:"code";s:5:"false";s:10:"attributes";a:6:{s:9:"startLine";i:109;s:7:"endLine";i:109;s:13:"startTokenPos";i:247;s:12:"startFilePos";i:2446;s:11:"endTokenPos";i:247;s:10:"endFilePos";i:2450;}}s:10:"docComment";s:125:"/**
+ * Indicates "trashed" models can be retrieved when resolving implicit model bindings for this route.
+ *
+ * @var bool
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:109;s:7:"endLine";i:109;s:11:"startColumn";i:5;s:9:"endColumn";i:43;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:11:"lockSeconds";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:11:"lockSeconds";s:9:"modifiers";i:2;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:115:"/**
+ * Indicates the maximum number of seconds the route should acquire a session lock for.
+ *
+ * @var int|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:116;s:7:"endLine";i:116;s:11:"startColumn";i:5;s:9:"endColumn";i:27;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:11:"waitSeconds";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:11:"waitSeconds";s:9:"modifiers";i:2;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:136:"/**
+ * Indicates the maximum number of seconds the route should wait while attempting to acquire a session lock.
+ *
+ * @var int|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:123;s:7:"endLine";i:123;s:11:"startColumn";i:5;s:9:"endColumn";i:27;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:18:"computedMiddleware";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:18:"computedMiddleware";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:66:"/**
+ * The computed gathered middleware.
+ *
+ * @var array|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:130;s:7:"endLine";i:130;s:11:"startColumn";i:5;s:9:"endColumn";i:31;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:8:"compiled";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:8:"compiled";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:97:"/**
+ * The compiled version of the route.
+ *
+ * @var \Symfony\Component\Routing\CompiledRoute
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:137;s:7:"endLine";i:137;s:11:"startColumn";i:5;s:9:"endColumn";i:21;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:6:"router";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:6:"router";s:9:"modifiers";i:2;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:87:"/**
+ * The router instance used by the route.
+ *
+ * @var \Illuminate\Routing\Router
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:144;s:7:"endLine";i:144;s:11:"startColumn";i:5;s:9:"endColumn";i:22;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:9:"container";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:9:"container";s:9:"modifiers";i:2;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:95:"/**
+ * The container instance used by the route.
+ *
+ * @var \Illuminate\Container\Container
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:151;s:7:"endLine";i:151;s:11:"startColumn";i:5;s:9:"endColumn";i:25;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:13:"bindingFields";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:13:"bindingFields";s:9:"modifiers";i:2;s:4:"type";N;s:7:"default";a:2:{s:4:"code";s:2:"[]";s:10:"attributes";a:6:{s:9:"startLine";i:158;s:7:"endLine";i:158;s:13:"startTokenPos";i:300;s:12:"startFilePos";i:3487;s:11:"endTokenPos";i:301;s:10:"endFilePos";i:3488;}}s:10:"docComment";s:94:"/**
+ * The fields that implicit binding should use for a given parameter.
+ *
+ * @var array
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:158;s:7:"endLine";i:158;s:11:"startColumn";i:5;s:9:"endColumn";i:34;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:10:"validators";a:16:{s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:4:"name";s:10:"validators";s:9:"modifiers";i:17;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:62:"/**
+ * The validators used by the routes.
+ *
+ * @var array
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:165;s:7:"endLine";i:165;s:11:"startColumn";i:5;s:9:"endColumn";i:30;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}}s:16:"immediateMethods";a:87:{s:11:"__construct";a:20:{s:4:"name";s:11:"__construct";s:10:"parameters";a:3:{s:7:"methods";a:14:{s:4:"name";s:7:"methods";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:174;s:7:"endLine";i:174;s:11:"startColumn";i:33;s:9:"endColumn";i:40;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:3:"uri";a:14:{s:4:"name";s:3:"uri";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:174;s:7:"endLine";i:174;s:11:"startColumn";i:43;s:9:"endColumn";i:46;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}s:6:"action";a:14:{s:4:"name";s:6:"action";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:174;s:7:"endLine";i:174;s:11:"startColumn";i:49;s:9:"endColumn";i:55;s:14:"parameterIndex";i:2;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:135:"/**
+ * Create a new Route instance.
+ *
+ * @param  array|string  $methods
+ * @param  string  $uri
+ * @param  \Closure|array  $action
+ */";s:9:"startLine";i:174;s:7:"endLine";i:185;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:11:"parseAction";a:20:{s:4:"name";s:11:"parseAction";s:10:"parameters";a:1:{s:6:"action";a:14:{s:4:"name";s:6:"action";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:195;s:7:"endLine";i:195;s:11:"startColumn";i:36;s:9:"endColumn";i:42;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:156:"/**
+ * Parse the route action into a standard array.
+ *
+ * @param  callable|array|null  $action
+ * @return array
+ *
+ * @throws \UnexpectedValueException
+ */";s:9:"startLine";i:195;s:7:"endLine";i:198;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:3:"run";a:20:{s:4:"name";s:3:"run";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:76:"/**
+ * Run the route action and return the response.
+ *
+ * @return mixed
+ */";s:9:"startLine";i:205;s:7:"endLine";i:218;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:18:"isControllerAction";a:20:{s:4:"name";s:18:"isControllerAction";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:80:"/**
+ * Checks whether the route's action is a controller.
+ *
+ * @return bool
+ */";s:9:"startLine";i:225;s:7:"endLine";i:228;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:11:"runCallable";a:20:{s:4:"name";s:11:"runCallable";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:76:"/**
+ * Run the route action and return the response.
+ *
+ * @return mixed
+ */";s:9:"startLine";i:235;s:7:"endLine";i:244;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:19:"isSerializedClosure";a:20:{s:4:"name";s:19:"isSerializedClosure";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:84:"/**
+ * Determine if the route action is a serialized Closure.
+ *
+ * @return bool
+ */";s:9:"startLine";i:251;s:7:"endLine";i:254;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:13:"runController";a:20:{s:4:"name";s:13:"runController";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:152:"/**
+ * Run the route action and return the response.
+ *
+ * @return mixed
+ *
+ * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+ */";s:9:"startLine";i:263;s:7:"endLine";i:268;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:13:"getController";a:20:{s:4:"name";s:13:"getController";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:146:"/**
+ * Get the controller instance for the route.
+ *
+ * @return mixed
+ *
+ * @throws \Illuminate\Contracts\Container\BindingResolutionException
+ */";s:9:"startLine";i:277;s:7:"endLine";i:290;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:18:"getControllerClass";a:20:{s:4:"name";s:18:"getControllerClass";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:81:"/**
+ * Get the controller class used for the route.
+ *
+ * @return string|null
+ */";s:9:"startLine";i:297;s:7:"endLine";i:300;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:19:"getControllerMethod";a:20:{s:4:"name";s:19:"getControllerMethod";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:77:"/**
+ * Get the controller method used for the route.
+ *
+ * @return string
+ */";s:9:"startLine";i:307;s:7:"endLine";i:310;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:23:"parseControllerCallback";a:20:{s:4:"name";s:23:"parseControllerCallback";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:52:"/**
+ * Parse the controller.
+ *
+ * @return array
+ */";s:9:"startLine";i:317;s:7:"endLine";i:320;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:15:"flushController";a:20:{s:4:"name";s:15:"flushController";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:79:"/**
+ * Flush the cached container instance on the route.
+ *
+ * @return void
+ */";s:9:"startLine";i:327;s:7:"endLine";i:331;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:7:"matches";a:20:{s:4:"name";s:7:"matches";s:10:"parameters";a:2:{s:7:"request";a:14:{s:4:"name";s:7:"request";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:23:"Illuminate\Http\Request";s:12:"isIdentifier";b:0;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:340;s:7:"endLine";i:340;s:11:"startColumn";i:29;s:9:"endColumn";i:44;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:15:"includingMethod";a:14:{s:4:"name";s:15:"includingMethod";s:7:"default";a:2:{s:4:"code";s:4:"true";s:10:"attributes";a:6:{s:9:"startLine";i:340;s:7:"endLine";i:340;s:13:"startTokenPos";i:986;s:12:"startFilePos";i:7851;s:11:"endTokenPos";i:986;s:10:"endFilePos";i:7854;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:340;s:7:"endLine";i:340;s:11:"startColumn";i:47;s:9:"endColumn";i:69;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:157:"/**
+ * Determine if the route matches a given request.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @param  bool  $includingMethod
+ * @return bool
+ */";s:9:"startLine";i:340;s:7:"endLine";i:355;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:12:"compileRoute";a:20:{s:4:"name";s:12:"compileRoute";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:122:"/**
+ * Compile the route into a Symfony CompiledRoute instance.
+ *
+ * @return \Symfony\Component\Routing\CompiledRoute
+ */";s:9:"startLine";i:362;s:7:"endLine";i:369;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:4:"bind";a:20:{s:4:"name";s:4:"bind";s:10:"parameters";a:1:{s:7:"request";a:14:{s:4:"name";s:7:"request";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:23:"Illuminate\Http\Request";s:12:"isIdentifier";b:0;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:377;s:7:"endLine";i:377;s:11:"startColumn";i:26;s:9:"endColumn";i:41;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:125:"/**
+ * Bind the route to a given request for execution.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return $this
+ */";s:9:"startLine";i:377;s:7:"endLine";i:387;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:13:"hasParameters";a:20:{s:4:"name";s:13:"hasParameters";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:68:"/**
+ * Determine if the route has parameters.
+ *
+ * @return bool
+ */";s:9:"startLine";i:394;s:7:"endLine";i:397;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:12:"hasParameter";a:20:{s:4:"name";s:12:"hasParameter";s:10:"parameters";a:1:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:405;s:7:"endLine";i:405;s:11:"startColumn";i:34;s:9:"endColumn";i:38;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:105:"/**
+ * Determine a given parameter exists from the route.
+ *
+ * @param  string  $name
+ * @return bool
+ */";s:9:"startLine";i:405;s:7:"endLine";i:412;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:9:"parameter";a:20:{s:4:"name";s:9:"parameter";s:10:"parameters";a:2:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:421;s:7:"endLine";i:421;s:11:"startColumn";i:31;s:9:"endColumn";i:35;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:7:"default";a:14:{s:4:"name";s:7:"default";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:421;s:7:"endLine";i:421;s:13:"startTokenPos";i:1273;s:12:"startFilePos";i:9684;s:11:"endTokenPos";i:1273;s:10:"endFilePos";i:9687;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:421;s:7:"endLine";i:421;s:11:"startColumn";i:38;s:9:"endColumn";i:52;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:146:"/**
+ * Get a given parameter from the route.
+ *
+ * @param  string  $name
+ * @param  string|object|null  $default
+ * @return string|object|null
+ */";s:9:"startLine";i:421;s:7:"endLine";i:424;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:17:"originalParameter";a:20:{s:4:"name";s:17:"originalParameter";s:10:"parameters";a:2:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:433;s:7:"endLine";i:433;s:11:"startColumn";i:39;s:9:"endColumn";i:43;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:7:"default";a:14:{s:4:"name";s:7:"default";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:433;s:7:"endLine";i:433;s:13:"startTokenPos";i:1315;s:12:"startFilePos";i:10001;s:11:"endTokenPos";i:1315;s:10:"endFilePos";i:10004;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:433;s:7:"endLine";i:433;s:11:"startColumn";i:46;s:9:"endColumn";i:60;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:150:"/**
+ * Get original value of a given parameter from the route.
+ *
+ * @param  string  $name
+ * @param  string|null  $default
+ * @return string|null
+ */";s:9:"startLine";i:433;s:7:"endLine";i:436;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:12:"setParameter";a:20:{s:4:"name";s:12:"setParameter";s:10:"parameters";a:2:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:445;s:7:"endLine";i:445;s:11:"startColumn";i:34;s:9:"endColumn";i:38;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:5:"value";a:14:{s:4:"name";s:5:"value";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:445;s:7:"endLine";i:445;s:11:"startColumn";i:41;s:9:"endColumn";i:46;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:128:"/**
+ * Set a parameter to the given value.
+ *
+ * @param  string  $name
+ * @param  string|object|null  $value
+ * @return void
+ */";s:9:"startLine";i:445;s:7:"endLine";i:450;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:15:"forgetParameter";a:20:{s:4:"name";s:15:"forgetParameter";s:10:"parameters";a:1:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:458;s:7:"endLine";i:458;s:11:"startColumn";i:37;s:9:"endColumn";i:41;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:99:"/**
+ * Unset a parameter on the route if it is set.
+ *
+ * @param  string  $name
+ * @return void
+ */";s:9:"startLine";i:458;s:7:"endLine";i:463;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:10:"parameters";a:20:{s:4:"name";s:10:"parameters";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:114:"/**
+ * Get the key / value list of parameters for the route.
+ *
+ * @return array
+ *
+ * @throws \LogicException
+ */";s:9:"startLine";i:472;s:7:"endLine";i:479;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:18:"originalParameters";a:20:{s:4:"name";s:18:"originalParameters";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:123:"/**
+ * Get the key / value list of original parameters for the route.
+ *
+ * @return array
+ *
+ * @throws \LogicException
+ */";s:9:"startLine";i:488;s:7:"endLine";i:495;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:22:"parametersWithoutNulls";a:20:{s:4:"name";s:22:"parametersWithoutNulls";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:90:"/**
+ * Get the key / value list of parameters without null values.
+ *
+ * @return array
+ */";s:9:"startLine";i:502;s:7:"endLine";i:505;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:14:"parameterNames";a:20:{s:4:"name";s:14:"parameterNames";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:76:"/**
+ * Get all of the parameter names for the route.
+ *
+ * @return array
+ */";s:9:"startLine";i:512;s:7:"endLine";i:519;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:21:"compileParameterNames";a:20:{s:4:"name";s:21:"compileParameterNames";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:69:"/**
+ * Get the parameter names for the route.
+ *
+ * @return array
+ */";s:9:"startLine";i:526;s:7:"endLine";i:531;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:19:"signatureParameters";a:20:{s:4:"name";s:19:"signatureParameters";s:10:"parameters";a:1:{s:10:"conditions";a:14:{s:4:"name";s:10:"conditions";s:7:"default";a:2:{s:4:"code";s:2:"[]";s:10:"attributes";a:6:{s:9:"startLine";i:539;s:7:"endLine";i:539;s:13:"startTokenPos";i:1671;s:12:"startFilePos";i:12403;s:11:"endTokenPos";i:1672;s:10:"endFilePos";i:12404;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:539;s:7:"endLine";i:539;s:11:"startColumn";i:41;s:9:"endColumn";i:56;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:132:"/**
+ * Get the parameters that are listed in the route / controller signature.
+ *
+ * @param  array  $conditions
+ * @return array
+ */";s:9:"startLine";i:539;s:7:"endLine";i:546;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:15:"bindingFieldFor";a:20:{s:4:"name";s:15:"bindingFieldFor";s:10:"parameters";a:1:{s:9:"parameter";a:14:{s:4:"name";s:9:"parameter";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:554;s:7:"endLine";i:554;s:11:"startColumn";i:37;s:9:"endColumn";i:46;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:117:"/**
+ * Get the binding field for the given parameter.
+ *
+ * @param  string|int  $parameter
+ * @return string|null
+ */";s:9:"startLine";i:554;s:7:"endLine";i:559;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:13:"bindingFields";a:20:{s:4:"name";s:13:"bindingFields";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:68:"/**
+ * Get the binding fields for the route.
+ *
+ * @return array
+ */";s:9:"startLine";i:566;s:7:"endLine";i:569;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:16:"setBindingFields";a:20:{s:4:"name";s:16:"setBindingFields";s:10:"parameters";a:1:{s:13:"bindingFields";a:14:{s:4:"name";s:13:"bindingFields";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:577;s:7:"endLine";i:577;s:11:"startColumn";i:38;s:9:"endColumn";i:57;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:101:"/**
+ * Set the binding fields for the route.
+ *
+ * @param  array  $bindingFields
+ * @return $this
+ */";s:9:"startLine";i:577;s:7:"endLine";i:582;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:17:"parentOfParameter";a:20:{s:4:"name";s:17:"parentOfParameter";s:10:"parameters";a:1:{s:9:"parameter";a:14:{s:4:"name";s:9:"parameter";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:590;s:7:"endLine";i:590;s:11:"startColumn";i:39;s:9:"endColumn";i:48;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:115:"/**
+ * Get the parent parameter of the given parameter.
+ *
+ * @param  string  $parameter
+ * @return string|null
+ */";s:9:"startLine";i:590;s:7:"endLine";i:599;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:11:"withTrashed";a:20:{s:4:"name";s:11:"withTrashed";s:10:"parameters";a:1:{s:11:"withTrashed";a:14:{s:4:"name";s:11:"withTrashed";s:7:"default";a:2:{s:4:"code";s:4:"true";s:10:"attributes";a:6:{s:9:"startLine";i:607;s:7:"endLine";i:607;s:13:"startTokenPos";i:1916;s:12:"startFilePos";i:14035;s:11:"endTokenPos";i:1916;s:10:"endFilePos";i:14038;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:607;s:7:"endLine";i:607;s:11:"startColumn";i:33;s:9:"endColumn";i:51;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:154:"/**
+ * Allow "trashed" models to be retrieved when resolving implicit model bindings for this route.
+ *
+ * @param  bool  $withTrashed
+ * @return $this
+ */";s:9:"startLine";i:607;s:7:"endLine";i:612;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:21:"allowsTrashedBindings";a:20:{s:4:"name";s:21:"allowsTrashedBindings";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:133:"/**
+ * Determines if the route allows "trashed" models to be retrieved when resolving implicit model bindings.
+ *
+ * @return bool
+ */";s:9:"startLine";i:619;s:7:"endLine";i:622;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:8:"defaults";a:20:{s:4:"name";s:8:"defaults";s:10:"parameters";a:2:{s:3:"key";a:14:{s:4:"name";s:3:"key";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:631;s:7:"endLine";i:631;s:11:"startColumn";i:30;s:9:"endColumn";i:33;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:5:"value";a:14:{s:4:"name";s:5:"value";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:631;s:7:"endLine";i:631;s:11:"startColumn";i:36;s:9:"endColumn";i:41;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:114:"/**
+ * Set a default value for the route.
+ *
+ * @param  string  $key
+ * @param  mixed  $value
+ * @return $this
+ */";s:9:"startLine";i:631;s:7:"endLine";i:636;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:11:"setDefaults";a:20:{s:4:"name";s:11:"setDefaults";s:10:"parameters";a:1:{s:8:"defaults";a:14:{s:4:"name";s:8:"defaults";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:644;s:7:"endLine";i:644;s:11:"startColumn";i:33;s:9:"endColumn";i:47;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:96:"/**
+ * Set the default values for the route.
+ *
+ * @param  array  $defaults
+ * @return $this
+ */";s:9:"startLine";i:644;s:7:"endLine";i:649;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:5:"where";a:20:{s:4:"name";s:5:"where";s:10:"parameters";a:2:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:658;s:7:"endLine";i:658;s:11:"startColumn";i:27;s:9:"endColumn";i:31;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:10:"expression";a:14:{s:4:"name";s:10:"expression";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:658;s:7:"endLine";i:658;s:13:"startTokenPos";i:2039;s:12:"startFilePos";i:15111;s:11:"endTokenPos";i:2039;s:10:"endFilePos";i:15114;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:658;s:7:"endLine";i:658;s:11:"startColumn";i:34;s:9:"endColumn";i:51;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:148:"/**
+ * Set a regular expression requirement on the route.
+ *
+ * @param  array|string  $name
+ * @param  string|null  $expression
+ * @return $this
+ */";s:9:"startLine";i:658;s:7:"endLine";i:665;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:10:"parseWhere";a:20:{s:4:"name";s:10:"parseWhere";s:10:"parameters";a:2:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:674;s:7:"endLine";i:674;s:11:"startColumn";i:35;s:9:"endColumn";i:39;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:10:"expression";a:14:{s:4:"name";s:10:"expression";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:674;s:7:"endLine";i:674;s:11:"startColumn";i:42;s:9:"endColumn";i:52;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:143:"/**
+ * Parse arguments to the where method into an array.
+ *
+ * @param  array|string  $name
+ * @param  string  $expression
+ * @return array
+ */";s:9:"startLine";i:674;s:7:"endLine";i:677;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:9:"setWheres";a:20:{s:4:"name";s:9:"setWheres";s:10:"parameters";a:1:{s:6:"wheres";a:14:{s:4:"name";s:6:"wheres";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:685;s:7:"endLine";i:685;s:11:"startColumn";i:31;s:9:"endColumn";i:43;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:116:"/**
+ * Set a list of regular expression requirements on the route.
+ *
+ * @param  array  $wheres
+ * @return $this
+ */";s:9:"startLine";i:685;s:7:"endLine";i:692;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:8:"fallback";a:20:{s:4:"name";s:8:"fallback";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:67:"/**
+ * Mark this route as a fallback route.
+ *
+ * @return $this
+ */";s:9:"startLine";i:699;s:7:"endLine";i:704;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:11:"setFallback";a:20:{s:4:"name";s:11:"setFallback";s:10:"parameters";a:1:{s:10:"isFallback";a:14:{s:4:"name";s:10:"isFallback";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:712;s:7:"endLine";i:712;s:11:"startColumn";i:33;s:9:"endColumn";i:43;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:83:"/**
+ * Set the fallback value.
+ *
+ * @param  bool  $isFallback
+ * @return $this
+ */";s:9:"startLine";i:712;s:7:"endLine";i:717;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:7:"methods";a:20:{s:4:"name";s:7:"methods";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:72:"/**
+ * Get the HTTP verbs the route responds to.
+ *
+ * @return array
+ */";s:9:"startLine";i:724;s:7:"endLine";i:727;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:8:"httpOnly";a:20:{s:4:"name";s:8:"httpOnly";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:84:"/**
+ * Determine if the route only responds to HTTP requests.
+ *
+ * @return bool
+ */";s:9:"startLine";i:734;s:7:"endLine";i:737;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:9:"httpsOnly";a:20:{s:4:"name";s:9:"httpsOnly";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:85:"/**
+ * Determine if the route only responds to HTTPS requests.
+ *
+ * @return bool
+ */";s:9:"startLine";i:744;s:7:"endLine";i:747;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:6:"secure";a:20:{s:4:"name";s:6:"secure";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:85:"/**
+ * Determine if the route only responds to HTTPS requests.
+ *
+ * @return bool
+ */";s:9:"startLine";i:754;s:7:"endLine";i:757;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:6:"domain";a:20:{s:4:"name";s:6:"domain";s:10:"parameters";a:1:{s:6:"domain";a:14:{s:4:"name";s:6:"domain";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:767;s:7:"endLine";i:767;s:13:"startTokenPos";i:2353;s:12:"startFilePos";i:17335;s:11:"endTokenPos";i:2353;s:10:"endFilePos";i:17338;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:767;s:7:"endLine";i:767;s:11:"startColumn";i:28;s:9:"endColumn";i:41;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:163:"/**
+ * Get or set the domain for the route.
+ *
+ * @param  \BackedEnum|string|null  $domain
+ * @return $this|string|null
+ *
+ * @throws \InvalidArgumentException
+ */";s:9:"startLine";i:767;s:7:"endLine";i:786;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:9:"getDomain";a:20:{s:4:"name";s:9:"getDomain";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:74:"/**
+ * Get the domain defined for the route.
+ *
+ * @return string|null
+ */";s:9:"startLine";i:793;s:7:"endLine";i:798;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:9:"getPrefix";a:20:{s:4:"name";s:9:"getPrefix";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:74:"/**
+ * Get the prefix of the route instance.
+ *
+ * @return string|null
+ */";s:9:"startLine";i:805;s:7:"endLine";i:808;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:6:"prefix";a:20:{s:4:"name";s:6:"prefix";s:10:"parameters";a:1:{s:6:"prefix";a:14:{s:4:"name";s:6:"prefix";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:816;s:7:"endLine";i:816;s:11:"startColumn";i:28;s:9:"endColumn";i:34;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:93:"/**
+ * Add a prefix to the route URI.
+ *
+ * @param  string|null  $prefix
+ * @return $this
+ */";s:9:"startLine";i:816;s:7:"endLine";i:825;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:20:"updatePrefixOnAction";a:20:{s:4:"name";s:20:"updatePrefixOnAction";s:10:"parameters";a:1:{s:6:"prefix";a:14:{s:4:"name";s:6:"prefix";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:833;s:7:"endLine";i:833;s:11:"startColumn";i:45;s:9:"endColumn";i:51;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:107:"/**
+ * Update the "prefix" attribute on the action array.
+ *
+ * @param  string  $prefix
+ * @return void
+ */";s:9:"startLine";i:833;s:7:"endLine";i:838;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:3:"uri";a:20:{s:4:"name";s:3:"uri";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:70:"/**
+ * Get the URI associated with the route.
+ *
+ * @return string
+ */";s:9:"startLine";i:845;s:7:"endLine";i:848;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:6:"setUri";a:20:{s:4:"name";s:6:"setUri";s:10:"parameters";a:1:{s:3:"uri";a:14:{s:4:"name";s:3:"uri";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:856;s:7:"endLine";i:856;s:11:"startColumn";i:28;s:9:"endColumn";i:31;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:94:"/**
+ * Set the URI that the route responds to.
+ *
+ * @param  string  $uri
+ * @return $this
+ */";s:9:"startLine";i:856;s:7:"endLine";i:861;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:8:"parseUri";a:20:{s:4:"name";s:8:"parseUri";s:10:"parameters";a:1:{s:3:"uri";a:14:{s:4:"name";s:3:"uri";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:869;s:7:"endLine";i:869;s:11:"startColumn";i:33;s:9:"endColumn";i:36;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:126:"/**
+ * Parse the route URI and normalize / store any implicit binding fields.
+ *
+ * @param  string  $uri
+ * @return string
+ */";s:9:"startLine";i:869;s:7:"endLine";i:876;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:7:"getName";a:20:{s:4:"name";s:7:"getName";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:72:"/**
+ * Get the name of the route instance.
+ *
+ * @return string|null
+ */";s:9:"startLine";i:883;s:7:"endLine";i:886;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:4:"name";a:20:{s:4:"name";s:4:"name";s:10:"parameters";a:1:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:896;s:7:"endLine";i:896;s:11:"startColumn";i:26;s:9:"endColumn";i:30;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:137:"/**
+ * Add or change the route name.
+ *
+ * @param  \BackedEnum|string  $name
+ * @return $this
+ *
+ * @throws \InvalidArgumentException
+ */";s:9:"startLine";i:896;s:7:"endLine";i:905;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:5:"named";a:20:{s:4:"name";s:5:"named";s:10:"parameters";a:1:{s:8:"patterns";a:14:{s:4:"name";s:8:"patterns";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:1;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:913;s:7:"endLine";i:913;s:11:"startColumn";i:27;s:9:"endColumn";i:38;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:123:"/**
+ * Determine whether the route's name matches the given patterns.
+ *
+ * @param  mixed  ...$patterns
+ * @return bool
+ */";s:9:"startLine";i:913;s:7:"endLine";i:926;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:1;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:4:"uses";a:20:{s:4:"name";s:4:"uses";s:10:"parameters";a:1:{s:6:"action";a:14:{s:4:"name";s:6:"action";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:934;s:7:"endLine";i:934;s:11:"startColumn";i:26;s:9:"endColumn";i:32;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:103:"/**
+ * Set the handler for the route.
+ *
+ * @param  \Closure|array|string  $action
+ * @return $this
+ */";s:9:"startLine";i:934;s:7:"endLine";i:946;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:29:"addGroupNamespaceToStringUses";a:20:{s:4:"name";s:29:"addGroupNamespaceToStringUses";s:10:"parameters";a:1:{s:6:"action";a:14:{s:4:"name";s:6:"action";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:954;s:7:"endLine";i:954;s:11:"startColumn";i:54;s:9:"endColumn";i:60;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:116:"/**
+ * Parse a string based action for the "uses" fluent method.
+ *
+ * @param  string  $action
+ * @return string
+ */";s:9:"startLine";i:954;s:7:"endLine";i:963;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:13:"getActionName";a:20:{s:4:"name";s:13:"getActionName";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:66:"/**
+ * Get the action name for the route.
+ *
+ * @return string
+ */";s:9:"startLine";i:970;s:7:"endLine";i:973;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:15:"getActionMethod";a:20:{s:4:"name";s:15:"getActionMethod";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:72:"/**
+ * Get the method name of the route action.
+ *
+ * @return string
+ */";s:9:"startLine";i:980;s:7:"endLine";i:983;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:9:"getAction";a:20:{s:4:"name";s:9:"getAction";s:10:"parameters";a:1:{s:3:"key";a:14:{s:4:"name";s:3:"key";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:991;s:7:"endLine";i:991;s:13:"startTokenPos";i:3295;s:12:"startFilePos";i:22523;s:11:"endTokenPos";i:3295;s:10:"endFilePos";i:22526;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:991;s:7:"endLine";i:991;s:11:"startColumn";i:31;s:9:"endColumn";i:41;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:120:"/**
+ * Get the action array or one of its properties for the route.
+ *
+ * @param  string|null  $key
+ * @return mixed
+ */";s:9:"startLine";i:991;s:7:"endLine";i:994;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:9:"setAction";a:20:{s:4:"name";s:9:"setAction";s:10:"parameters";a:1:{s:6:"action";a:14:{s:4:"name";s:6:"action";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:1002;s:7:"endLine";i:1002;s:11:"startColumn";i:31;s:9:"endColumn";i:43;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:92:"/**
+ * Set the action array for the route.
+ *
+ * @param  array  $action
+ * @return $this
+ */";s:9:"startLine";i:1002;s:7:"endLine";i:1017;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:10:"getMissing";a:20:{s:4:"name";s:10:"getMissing";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:117:"/**
+ * Get the value of the action that should be taken on a missing model exception.
+ *
+ * @return \Closure|null
+ */";s:9:"startLine";i:1024;s:7:"endLine";i:1033;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:7:"missing";a:20:{s:4:"name";s:7:"missing";s:10:"parameters";a:1:{s:7:"missing";a:14:{s:4:"name";s:7:"missing";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:1041;s:7:"endLine";i:1041;s:11:"startColumn";i:29;s:9:"endColumn";i:36;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:133:"/**
+ * Define the callable that should be invoked on a missing model exception.
+ *
+ * @param  \Closure  $missing
+ * @return $this
+ */";s:9:"startLine";i:1041;s:7:"endLine";i:1046;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:16:"gatherMiddleware";a:20:{s:4:"name";s:16:"gatherMiddleware";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:90:"/**
+ * Get all middleware, including the ones from the controller.
+ *
+ * @return array
+ */";s:9:"startLine";i:1053;s:7:"endLine";i:1064;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:10:"middleware";a:20:{s:4:"name";s:10:"middleware";s:10:"parameters";a:1:{s:10:"middleware";a:14:{s:4:"name";s:10:"middleware";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:1072;s:7:"endLine";i:1072;s:13:"startTokenPos";i:3631;s:12:"startFilePos";i:24596;s:11:"endTokenPos";i:3631;s:10:"endFilePos";i:24599;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:1072;s:7:"endLine";i:1072;s:11:"startColumn";i:32;s:9:"endColumn";i:49;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:154:"/**
+ * Get or set the middlewares attached to the route.
+ *
+ * @param  array|string|null  $middleware
+ * @return ($middleware is null ? array : $this)
+ */";s:9:"startLine";i:1072;s:7:"endLine";i:1091;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:1;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:3:"can";a:20:{s:4:"name";s:3:"can";s:10:"parameters";a:2:{s:7:"ability";a:14:{s:4:"name";s:7:"ability";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:1100;s:7:"endLine";i:1100;s:11:"startColumn";i:25;s:9:"endColumn";i:32;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:6:"models";a:14:{s:4:"name";s:6:"models";s:7:"default";a:2:{s:4:"code";s:2:"[]";s:10:"attributes";a:6:{s:9:"startLine";i:1100;s:7:"endLine";i:1100;s:13:"startTokenPos";i:3778;s:12:"startFilePos";i:25364;s:11:"endTokenPos";i:3779;s:10:"endFilePos";i:25365;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:1100;s:7:"endLine";i:1100;s:11:"startColumn";i:35;s:9:"endColumn";i:46;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:204:"/**
+ * Specify that the "Authorize" / "can" middleware should be applied to the route with the given options.
+ *
+ * @param  \UnitEnum|string  $ability
+ * @param  array|string  $models
+ * @return $this
+ */";s:9:"startLine";i:1100;s:7:"endLine";i:1107;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:20:"controllerMiddleware";a:20:{s:4:"name";s:20:"controllerMiddleware";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:77:"/**
+ * Get the middleware for the route's controller.
+ *
+ * @return array
+ */";s:9:"startLine";i:1114;s:7:"endLine";i:1138;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:38:"staticallyProvidedControllerMiddleware";a:20:{s:4:"name";s:38:"staticallyProvidedControllerMiddleware";s:10:"parameters";a:2:{s:5:"class";a:14:{s:4:"name";s:5:"class";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:1147;s:7:"endLine";i:1147;s:11:"startColumn";i:63;s:9:"endColumn";i:75;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:6:"method";a:14:{s:4:"name";s:6:"method";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:1147;s:7:"endLine";i:1147;s:11:"startColumn";i:78;s:9:"endColumn";i:91;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:165:"/**
+ * Get the statically provided controller middleware for the given class and method.
+ *
+ * @param  string  $class
+ * @param  string  $method
+ * @return array
+ */";s:9:"startLine";i:1147;s:7:"endLine";i:1165;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:17:"withoutMiddleware";a:20:{s:4:"name";s:17:"withoutMiddleware";s:10:"parameters";a:1:{s:10:"middleware";a:14:{s:4:"name";s:10:"middleware";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:1173;s:7:"endLine";i:1173;s:11:"startColumn";i:39;s:9:"endColumn";i:49;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:131:"/**
+ * Specify middleware that should be removed from the given route.
+ *
+ * @param  array|string  $middleware
+ * @return $this
+ */";s:9:"startLine";i:1173;s:7:"endLine";i:1180;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:18:"excludedMiddleware";a:20:{s:4:"name";s:18:"excludedMiddleware";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:88:"/**
+ * Get the middleware that should be removed from the route.
+ *
+ * @return array
+ */";s:9:"startLine";i:1187;s:7:"endLine";i:1190;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:13:"scopeBindings";a:20:{s:4:"name";s:13:"scopeBindings";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:117:"/**
+ * Indicate that the route should enforce scoping of multiple implicit Eloquent bindings.
+ *
+ * @return $this
+ */";s:9:"startLine";i:1197;s:7:"endLine";i:1202;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:21:"withoutScopedBindings";a:20:{s:4:"name";s:21:"withoutScopedBindings";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:121:"/**
+ * Indicate that the route should not enforce scoping of multiple implicit Eloquent bindings.
+ *
+ * @return $this
+ */";s:9:"startLine";i:1209;s:7:"endLine";i:1214;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:22:"enforcesScopedBindings";a:20:{s:4:"name";s:22:"enforcesScopedBindings";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:115:"/**
+ * Determine if the route should enforce scoping of multiple implicit Eloquent bindings.
+ *
+ * @return bool
+ */";s:9:"startLine";i:1221;s:7:"endLine";i:1224;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:22:"preventsScopedBindings";a:20:{s:4:"name";s:22:"preventsScopedBindings";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:115:"/**
+ * Determine if the route should prevent scoping of multiple implicit Eloquent bindings.
+ *
+ * @return bool
+ */";s:9:"startLine";i:1231;s:7:"endLine";i:1234;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:5:"block";a:20:{s:4:"name";s:5:"block";s:10:"parameters";a:2:{s:11:"lockSeconds";a:14:{s:4:"name";s:11:"lockSeconds";s:7:"default";a:2:{s:4:"code";s:2:"10";s:10:"attributes";a:6:{s:9:"startLine";i:1243;s:7:"endLine";i:1243;s:13:"startTokenPos";i:4376;s:12:"startFilePos";i:29290;s:11:"endTokenPos";i:4376;s:10:"endFilePos";i:29291;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:1243;s:7:"endLine";i:1243;s:11:"startColumn";i:27;s:9:"endColumn";i:43;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}s:11:"waitSeconds";a:14:{s:4:"name";s:11:"waitSeconds";s:7:"default";a:2:{s:4:"code";s:2:"10";s:10:"attributes";a:6:{s:9:"startLine";i:1243;s:7:"endLine";i:1243;s:13:"startTokenPos";i:4383;s:12:"startFilePos";i:29309;s:11:"endTokenPos";i:4383;s:10:"endFilePos";i:29310;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:1243;s:7:"endLine";i:1243;s:11:"startColumn";i:46;s:9:"endColumn";i:62;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:181:"/**
+ * Specify that the route should not allow concurrent requests from the same session.
+ *
+ * @param  int|null  $lockSeconds
+ * @param  int|null  $waitSeconds
+ * @return $this
+ */";s:9:"startLine";i:1243;s:7:"endLine";i:1249;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:15:"withoutBlocking";a:20:{s:4:"name";s:15:"withoutBlocking";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:109:"/**
+ * Specify that the route should allow concurrent requests from the same session.
+ *
+ * @return $this
+ */";s:9:"startLine";i:1256;s:7:"endLine";i:1259;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:8:"locksFor";a:20:{s:4:"name";s:8:"locksFor";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:112:"/**
+ * Get the maximum number of seconds the route's session lock should be held for.
+ *
+ * @return int|null
+ */";s:9:"startLine";i:1266;s:7:"endLine";i:1269;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:8:"waitsFor";a:20:{s:4:"name";s:8:"waitsFor";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:119:"/**
+ * Get the maximum number of seconds to wait while attempting to acquire a session lock.
+ *
+ * @return int|null
+ */";s:9:"startLine";i:1276;s:7:"endLine";i:1279;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:20:"controllerDispatcher";a:20:{s:4:"name";s:20:"controllerDispatcher";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:195:"/**
+ * Get the dispatcher for the route's controller.
+ *
+ * @return \Illuminate\Routing\Contracts\ControllerDispatcher
+ *
+ * @throws \Illuminate\Contracts\Container\BindingResolutionException
+ */";s:9:"startLine";i:1288;s:7:"endLine";i:1295;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:13:"getValidators";a:20:{s:4:"name";s:13:"getValidators";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:73:"/**
+ * Get the route validators for the instance.
+ *
+ * @return array
+ */";s:9:"startLine";i:1302;s:7:"endLine";i:1315;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:14:"toSymfonyRoute";a:20:{s:4:"name";s:14:"toSymfonyRoute";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:95:"/**
+ * Convert the route to a Symfony route.
+ *
+ * @return \Symfony\Component\Routing\Route
+ */";s:9:"startLine";i:1322;s:7:"endLine";i:1337;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:25:"getOptionalParameterNames";a:20:{s:4:"name";s:25:"getOptionalParameterNames";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:92:"/**
+ * Get the optional parameter names for the route.
+ *
+ * @return array<string, null>
+ */";s:9:"startLine";i:1344;s:7:"endLine";i:1349;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:11:"getCompiled";a:20:{s:4:"name";s:11:"getCompiled";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:104:"/**
+ * Get the compiled version of the route.
+ *
+ * @return \Symfony\Component\Routing\CompiledRoute
+ */";s:9:"startLine";i:1356;s:7:"endLine";i:1359;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:9:"setRouter";a:20:{s:4:"name";s:9:"setRouter";s:10:"parameters";a:1:{s:6:"router";a:14:{s:4:"name";s:6:"router";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:25:"Illuminate\Routing\Router";s:12:"isIdentifier";b:0;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:1367;s:7:"endLine";i:1367;s:11:"startColumn";i:31;s:9:"endColumn";i:44;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:115:"/**
+ * Set the router instance on the route.
+ *
+ * @param  \Illuminate\Routing\Router  $router
+ * @return $this
+ */";s:9:"startLine";i:1367;s:7:"endLine";i:1372;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:12:"setContainer";a:20:{s:4:"name";s:12:"setContainer";s:10:"parameters";a:1:{s:9:"container";a:14:{s:4:"name";s:9:"container";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:30:"Illuminate\Container\Container";s:12:"isIdentifier";b:0;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:1380;s:7:"endLine";i:1380;s:11:"startColumn";i:34;s:9:"endColumn";i:53;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:126:"/**
+ * Set the container instance on the route.
+ *
+ * @param  \Illuminate\Container\Container  $container
+ * @return $this
+ */";s:9:"startLine";i:1380;s:7:"endLine";i:1385;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:23:"prepareForSerialization";a:20:{s:4:"name";s:23:"prepareForSerialization";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:105:"/**
+ * Prepare the route instance for serialization.
+ *
+ * @return void
+ *
+ * @throws \LogicException
+ */";s:9:"startLine";i:1394;s:7:"endLine";i:1411;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}s:5:"__get";a:20:{s:4:"name";s:5:"__get";s:10:"parameters";a:1:{s:3:"key";a:14:{s:4:"name";s:3:"key";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:1419;s:7:"endLine";i:1419;s:11:"startColumn";i:27;s:9:"endColumn";i:30;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:91:"/**
+ * Dynamically access route parameters.
+ *
+ * @param  string  $key
+ * @return mixed
+ */";s:9:"startLine";i:1419;s:7:"endLine";i:1422;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:18:"Illuminate\Routing";s:18:"declaringClassName";s:24:"Illuminate\Routing\Route";s:21:"implementingClassName";s:24:"Illuminate\Routing\Route";s:16:"currentClassName";s:24:"Illuminate\Routing\Route";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

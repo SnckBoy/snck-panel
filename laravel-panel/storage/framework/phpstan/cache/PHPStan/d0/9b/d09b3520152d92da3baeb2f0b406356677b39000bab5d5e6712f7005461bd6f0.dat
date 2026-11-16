@@ -1,0 +1,56 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:17:{s:4:"name";s:14:"preg_match_all";s:10:"parameters";a:5:{s:7:"pattern";a:14:{s:4:"name";s:7:"pattern";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:61;s:7:"endLine";i:61;s:11:"startColumn";i:29;s:9:"endColumn";i:43;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:7:"subject";a:14:{s:4:"name";s:7:"subject";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:61;s:7:"endLine";i:61;s:11:"startColumn";i:46;s:9:"endColumn";i:60;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}s:7:"matches";a:14:{s:4:"name";s:7:"matches";s:7:"default";a:2:{s:4:"code";s:5:"\null";s:10:"attributes";a:6:{s:9:"startLine";i:61;s:7:"endLine";i:61;s:13:"startTokenPos";i:49;s:12:"startFilePos";i:2352;s:11:"endTokenPos";i:49;s:10:"endFilePos";i:2355;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"null";s:12:"isIdentifier";b:1;}}}}}s:10:"isVariadic";b:0;s:5:"byRef";b:1;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:61;s:7:"endLine";i:61;s:11:"startColumn";i:63;s:9:"endColumn";i:85;s:14:"parameterIndex";i:2;s:10:"isOptional";b:1;}s:5:"flags";a:14:{s:4:"name";s:5:"flags";s:7:"default";a:2:{s:4:"code";s:1:"0";s:10:"attributes";a:6:{s:9:"startLine";i:61;s:7:"endLine";i:61;s:13:"startTokenPos";i:58;s:12:"startFilePos";i:2371;s:11:"endTokenPos";i:58;s:10:"endFilePos";i:2371;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:61;s:7:"endLine";i:61;s:11:"startColumn";i:88;s:9:"endColumn";i:101;s:14:"parameterIndex";i:3;s:10:"isOptional";b:1;}s:6:"offset";a:14:{s:4:"name";s:6:"offset";s:7:"default";a:2:{s:4:"code";s:1:"0";s:10:"attributes";a:6:{s:9:"startLine";i:61;s:7:"endLine";i:61;s:13:"startTokenPos";i:67;s:12:"startFilePos";i:2388;s:11:"endTokenPos";i:67;s:10:"endFilePos";i:2388;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:61;s:7:"endLine";i:61;s:11:"startColumn";i:104;s:9:"endColumn";i:118;s:14:"parameterIndex";i:4;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"false";s:12:"isIdentifier";b:1;}}}}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:50:"JetBrains\PhpStorm\Internal\LanguageLevelTypeAware";s:10:"isRepeated";b:0;s:9:"arguments";a:2:{i:0;a:2:{s:4:"code";s:22:"['8.0' => 'int|false']";s:10:"attributes";a:6:{s:9:"startLine";i:60;s:7:"endLine";i:60;s:13:"startTokenPos";i:11;s:12:"startFilePos";i:2219;s:11:"endTokenPos";i:17;s:10:"endFilePos";i:2240;}}s:7:"default";a:2:{s:4:"code";s:16:"'int|false|null'";s:10:"attributes";a:6:{s:9:"startLine";i:60;s:7:"endLine";i:60;s:13:"startTokenPos";i:23;s:12:"startFilePos";i:2252;s:11:"endTokenPos";i:23;s:10:"endFilePos";i:2267;}}}}}s:10:"docComment";s:1917:"/**
+ * Perform a global regular expression match
+ * @link https://php.net/manual/en/function.preg-match-all.php
+ * @param string $pattern <p>
+ * The pattern to search for, as a string.
+ * </p>
+ * @param string $subject <p>
+ * The input string.
+ * </p>
+ * @param null|string[][] &$matches [optional] <p>
+ * Array of all matches in multi-dimensional array ordered according to flags.
+ * </p>
+ * @param int $flags <p>
+ * Can be a combination of the following flags (note that it doesn't make
+ * sense to use <b>PREG_PATTERN_ORDER</b> together with
+ * <b>PREG_SET_ORDER</b>):
+ * <b>PREG_PATTERN_ORDER</b>
+ * <br>
+ * Orders results so that $matches[0] is an array of full
+ * pattern matches, $matches[1] is an array of strings matched by
+ * the first parenthesized subpattern, and so on.
+ * </p>
+ * @param int $offset [optional] <p>
+ * Normally, the search starts from the beginning of the subject string.
+ * The optional parameter <i>offset</i> can be used to
+ * specify the alternate place from which to start the search (in bytes).
+ * </p>
+ * <p>
+ * Using <i>offset</i> is not equivalent to passing
+ * substr($subject, $offset) to
+ * <b>preg_match_all</b> in place of the subject string,
+ * because <i>pattern</i> can contain assertions such as
+ * ^, $ or
+ * (?&lt;=x). See <b>preg_match</b>
+ * for examples.
+ * </p>
+ * <p>
+ * <code>
+ * preg_match_all("|]+>(.*)]+>|U",
+ * "example: this is a test",
+ * $out, PREG_PATTERN_ORDER);
+ * echo $out[0][0] . ", " . $out[0][1] . "\n";
+ * echo $out[1][0] . ", " . $out[1][1] . "\n";
+ * </code>
+ * The above example will output:</p>
+ * <pre>
+ * example: , this is a test
+ * example: , this is a test
+ * </pre>
+ * <p>
+ * So, $out[0] contains array of strings that matched full pattern,
+ * and $out[1] contains array of strings enclosed by tags.
+ * </p>
+ * @return int|false|null the number of full pattern matches (which might be zero),
+ * or <b>FALSE</b> if an error occurred.
+ */";s:9:"startLine";i:60;s:7:"endLine";i:63;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:8:"isStatic";b:0;s:9:"namespace";N;s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:14:"preg_match_all";s:8:"filename";s:29:"phpstorm-stubs:pcre/pcre.stub";s:13:"extensionName";s:4:"pcre";s:9:"aliasName";N;}}}}

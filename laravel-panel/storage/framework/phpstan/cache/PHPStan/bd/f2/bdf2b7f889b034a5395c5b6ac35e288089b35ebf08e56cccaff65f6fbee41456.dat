@@ -1,0 +1,67 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-a0d2e4a3ffda64f98f11539d4ca03d881275be0f19fa67c431888228665beb8c-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:33:"Illuminate\Support\Facades\Schema";s:8:"filename";s:132:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../laravel/framework/src/Illuminate/Support/Facades/Schema.php";}}s:9:"namespace";s:26:"Illuminate\Support\Facades";s:4:"name";s:33:"Illuminate\Support\Facades\Schema";s:9:"shortName";s:6:"Schema";s:11:"isInterface";b:0;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:3279:"/**
+ * @method static void defaultStringLength(int $length)
+ * @method static void defaultTimePrecision(int|null $precision)
+ * @method static void defaultMorphKeyType(string $type)
+ * @method static void morphUsingUuids()
+ * @method static void morphUsingUlids()
+ * @method static bool createDatabase(string $name)
+ * @method static bool dropDatabaseIfExists(string $name)
+ * @method static array getSchemas()
+ * @method static bool hasTable(string $table)
+ * @method static bool hasView(string $view)
+ * @method static array getTables(string|string[]|null $schema = null)
+ * @method static array getTableListing(string|string[]|null $schema = null, bool $schemaQualified = true)
+ * @method static array getViews(string|string[]|null $schema = null)
+ * @method static array getTypes(string|string[]|null $schema = null)
+ * @method static bool hasColumn(string $table, string $column)
+ * @method static bool hasColumns(string $table, array $columns)
+ * @method static void whenTableHasColumn(string $table, string $column, \Closure $callback)
+ * @method static void whenTableDoesntHaveColumn(string $table, string $column, \Closure $callback)
+ * @method static void whenTableHasIndex(string $table, string|array $index, \Closure $callback, string|null $type = null)
+ * @method static void whenTableDoesntHaveIndex(string $table, string|array $index, \Closure $callback, string|null $type = null)
+ * @method static string getColumnType(string $table, string $column, bool $fullDefinition = false)
+ * @method static array getColumnListing(string $table)
+ * @method static array getColumns(string $table)
+ * @method static array getIndexes(string $table)
+ * @method static array getIndexListing(string $table)
+ * @method static bool hasIndex(string $table, string|array $index, string|null $type = null)
+ * @method static array getForeignKeys(string $table)
+ * @method static void table(string $table, \Closure $callback)
+ * @method static void create(string $table, \Closure $callback)
+ * @method static void drop(string $table)
+ * @method static void dropIfExists(string $table)
+ * @method static void dropColumns(string $table, string|array $columns)
+ * @method static void dropAllTables()
+ * @method static void dropAllViews()
+ * @method static void dropAllTypes()
+ * @method static void rename(string $from, string $to)
+ * @method static bool enableForeignKeyConstraints()
+ * @method static bool disableForeignKeyConstraints()
+ * @method static mixed withoutForeignKeyConstraints(\Closure $callback)
+ * @method static void ensureVectorExtensionExists(string|null $schema = null)
+ * @method static void ensureExtensionExists(string $name, string|null $schema = null)
+ * @method static string[]|null getCurrentSchemaListing()
+ * @method static string|null getCurrentSchemaName()
+ * @method static array parseSchemaAndTable(string $reference, string|bool|null $withDefaultSchema = null)
+ * @method static \Illuminate\Database\Connection getConnection()
+ * @method static void blueprintResolver(\Closure $resolver)
+ * @method static void macro(string $name, object|callable $macro)
+ * @method static void mixin(object $mixin, bool $replace = true)
+ * @method static bool hasMacro(string $name)
+ * @method static void flushMacros()
+ *
+ * @see \Illuminate\Database\Schema\Builder
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:59;s:7:"endLine";i:88;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";s:33:"Illuminate\Support\Facades\Facade";s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:1:{s:6:"cached";a:16:{s:18:"declaringClassName";s:33:"Illuminate\Support\Facades\Schema";s:21:"implementingClassName";s:33:"Illuminate\Support\Facades\Schema";s:4:"name";s:6:"cached";s:9:"modifiers";i:18;s:4:"type";N;s:7:"default";a:2:{s:4:"code";s:5:"false";s:10:"attributes";a:6:{s:9:"startLine";i:66;s:7:"endLine";i:66;s:13:"startTokenPos";i:29;s:12:"startFilePos";i:3485;s:11:"endTokenPos";i:29;s:10:"endFilePos";i:3489;}}s:10:"docComment";s:77:"/**
+ * Indicates if the resolved facade should be cached.
+ *
+ * @var bool
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:66;s:7:"endLine";i:66;s:11:"startColumn";i:5;s:9:"endColumn";i:37;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}}s:16:"immediateMethods";a:2:{s:10:"connection";a:20:{s:4:"name";s:10:"connection";s:10:"parameters";a:1:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:74;s:7:"endLine";i:74;s:11:"startColumn";i:39;s:9:"endColumn";i:43;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:138:"/**
+ * Get a schema builder instance for a connection.
+ *
+ * @param  string|null  $name
+ * @return \Illuminate\Database\Schema\Builder
+ */";s:9:"startLine";i:74;s:7:"endLine";i:77;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:26:"Illuminate\Support\Facades";s:18:"declaringClassName";s:33:"Illuminate\Support\Facades\Schema";s:21:"implementingClassName";s:33:"Illuminate\Support\Facades\Schema";s:16:"currentClassName";s:33:"Illuminate\Support\Facades\Schema";s:9:"aliasName";N;}s:17:"getFacadeAccessor";a:20:{s:4:"name";s:17:"getFacadeAccessor";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:73:"/**
+ * Get the registered name of the component.
+ *
+ * @return string
+ */";s:9:"startLine";i:84;s:7:"endLine";i:87;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:18;s:9:"namespace";s:26:"Illuminate\Support\Facades";s:18:"declaringClassName";s:33:"Illuminate\Support\Facades\Schema";s:21:"implementingClassName";s:33:"Illuminate\Support\Facades\Schema";s:16:"currentClassName";s:33:"Illuminate\Support\Facades\Schema";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

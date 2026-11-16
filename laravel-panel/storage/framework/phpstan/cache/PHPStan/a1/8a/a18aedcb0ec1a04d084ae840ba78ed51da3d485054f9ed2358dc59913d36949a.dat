@@ -1,0 +1,29 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:17:{s:4:"name";s:11:"array_slice";s:10:"parameters";a:4:{s:5:"array";a:14:{s:4:"name";s:5:"array";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:34;s:7:"endLine";i:34;s:11:"startColumn";i:26;s:9:"endColumn";i:37;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:6:"offset";a:14:{s:4:"name";s:6:"offset";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:34;s:7:"endLine";i:34;s:11:"startColumn";i:40;s:9:"endColumn";i:50;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}s:6:"length";a:14:{s:4:"name";s:6:"length";s:7:"default";a:2:{s:4:"code";s:5:"\null";s:10:"attributes";a:6:{s:9:"startLine";i:34;s:7:"endLine";i:34;s:13:"startTokenPos";i:33;s:12:"startFilePos";i:1206;s:11:"endTokenPos";i:33;s:10:"endFilePos";i:1209;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"null";s:12:"isIdentifier";b:1;}}}}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:34;s:7:"endLine";i:34;s:11:"startColumn";i:53;s:9:"endColumn";i:71;s:14:"parameterIndex";i:2;s:10:"isOptional";b:1;}s:13:"preserve_keys";a:14:{s:4:"name";s:13:"preserve_keys";s:7:"default";a:2:{s:4:"code";s:6:"\false";s:10:"attributes";a:6:{s:9:"startLine";i:34;s:7:"endLine";i:34;s:13:"startTokenPos";i:42;s:12:"startFilePos";i:1234;s:11:"endTokenPos";i:42;s:10:"endFilePos";i:1238;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:34;s:7:"endLine";i:34;s:11:"startColumn";i:74;s:9:"endColumn";i:100;s:14:"parameterIndex";i:3;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:23:"JetBrains\PhpStorm\Pure";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:971:"/**
+ * Extract a slice of the array
+ * @link https://php.net/manual/en/function.array-slice.php
+ * @param array $array <p>
+ * The input array.
+ * </p>
+ * @param int $offset <p>
+ * If offset is non-negative, the sequence will
+ * start at that offset in the array. If
+ * offset is negative, the sequence will
+ * start that far from the end of the array.
+ * </p>
+ * @param int|null $length [optional] <p>
+ * If length is given and is positive, then
+ * the sequence will have that many elements in it. If
+ * length is given and is negative then the
+ * sequence will stop that many elements from the end of the
+ * array. If it is omitted, then the sequence will have everything
+ * from offset up until the end of the
+ * array.
+ * </p>
+ * @param bool $preserve_keys [optional] <p>
+ * Note that array_slice will reorder and reset the
+ * array indices by default. You can change this behaviour by setting
+ * preserve_keys to true.
+ * </p>
+ * @return array the slice.
+ * @meta
+ */";s:9:"startLine";i:33;s:7:"endLine";i:36;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:8:"isStatic";b:0;s:9:"namespace";N;s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:11:"array_slice";s:8:"filename";s:39:"phpstorm-stubs:standard/standard_8.stub";s:13:"extensionName";s:8:"standard";s:9:"aliasName";N;}}}}

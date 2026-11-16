@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-d680a3155f868fd7a9e3082eb15c3c293f9c566990d89795a2c309d58bc58019-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:43:"illuminate\contracts\translation\translator";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

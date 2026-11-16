@@ -1,0 +1,14 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:16:"JsonSerializable";s:8:"filename";s:29:"phpstorm-stubs:json/json.stub";s:13:"extensionName";s:4:"json";s:9:"aliasName";N;}}s:9:"namespace";N;s:4:"name";s:16:"JsonSerializable";s:9:"shortName";s:16:"JsonSerializable";s:11:"isInterface";b:1;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:208:"/**
+ * Objects implementing JsonSerializable
+ * can customize their JSON representation when encoded with
+ * <b>json_encode</b>.
+ * @link https://php.net/manual/en/class.jsonserializable.php
+ * @since 5.4
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:11;s:7:"endLine";i:23;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:15:"parentClassName";N;s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:1:{s:13:"jsonSerialize";a:20:{s:4:"name";s:13:"jsonSerialize";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:41:"JetBrains\PhpStorm\Internal\TentativeType";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:306:"/**
+ * Specify data which should be serialized to JSON
+ * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+ * @return mixed data which can be serialized by <b>json_encode</b>,
+ * which is a value of any type other than a resource.
+ * @since 5.4
+ * @betterReflectionTentativeReturnType
+ */";s:9:"startLine";i:21;s:7:"endLine";i:22;s:11:"startColumn";i:9;s:9:"endColumn";i:47;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:16:"JsonSerializable";s:21:"implementingClassName";s:16:"JsonSerializable";s:16:"currentClassName";s:16:"JsonSerializable";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

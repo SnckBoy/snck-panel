@@ -1,0 +1,24 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-cdfd556914698604c646b1c5d1acd0cbd73be5846dbcb0f3858073772a46f064-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:31:"Illuminate\Support\Facades\Hash";s:8:"filename";s:130:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../laravel/framework/src/Illuminate/Support/Facades/Hash.php";}}s:9:"namespace";s:26:"Illuminate\Support\Facades";s:4:"name";s:31:"Illuminate\Support\Facades\Hash";s:9:"shortName";s:4:"Hash";s:11:"isInterface";b:0;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:1128:"/**
+ * @method static \Illuminate\Hashing\BcryptHasher createBcryptDriver()
+ * @method static \Illuminate\Hashing\ArgonHasher createArgonDriver()
+ * @method static \Illuminate\Hashing\Argon2IdHasher createArgon2idDriver()
+ * @method static array info(string $hashedValue)
+ * @method static string make(string $value, array $options = [])
+ * @method static bool check(string $value, string $hashedValue, array $options = [])
+ * @method static bool needsRehash(string $hashedValue, array $options = [])
+ * @method static bool isHashed(string $value)
+ * @method static string getDefaultDriver()
+ * @method static mixed driver(string|null $driver = null)
+ * @method static \Illuminate\Hashing\HashManager extend(string $driver, \Closure $callback)
+ * @method static array getDrivers()
+ * @method static \Illuminate\Contracts\Container\Container getContainer()
+ * @method static \Illuminate\Hashing\HashManager setContainer(\Illuminate\Contracts\Container\Container $container)
+ * @method static \Illuminate\Hashing\HashManager forgetDrivers()
+ *
+ * @see \Illuminate\Hashing\HashManager
+ * @see \Illuminate\Hashing\AbstractHasher
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:25;s:7:"endLine";i:36;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";s:33:"Illuminate\Support\Facades\Facade";s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:1:{s:17:"getFacadeAccessor";a:20:{s:4:"name";s:17:"getFacadeAccessor";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:73:"/**
+ * Get the registered name of the component.
+ *
+ * @return string
+ */";s:9:"startLine";i:32;s:7:"endLine";i:35;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:18;s:9:"namespace";s:26:"Illuminate\Support\Facades";s:18:"declaringClassName";s:31:"Illuminate\Support\Facades\Hash";s:21:"implementingClassName";s:31:"Illuminate\Support\Facades\Hash";s:16:"currentClassName";s:31:"Illuminate\Support\Facades\Hash";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

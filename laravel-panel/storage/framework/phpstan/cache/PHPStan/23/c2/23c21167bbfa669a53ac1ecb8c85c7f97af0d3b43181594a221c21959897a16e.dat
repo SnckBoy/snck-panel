@@ -1,0 +1,80 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-0ef3d75f6f5a57a48e333a12b1e9ab47d204e78e97c7b80f156a2e6c93564501-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:27:"Carbon\Traits\StaticOptions";s:8:"filename";s:122:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../nesbot/carbon/src/Carbon/Traits/StaticOptions.php";}}s:9:"namespace";s:13:"Carbon\Traits";s:4:"name";s:27:"Carbon\Traits\StaticOptions";s:9:"shortName";s:13:"StaticOptions";s:11:"isInterface";b:0;s:7:"isTrait";b:1;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:48:"/**
+ * Options related to a static variable.
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:21;s:7:"endLine";i:164;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";N;s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:3:{s:14:"formatFunction";a:16:{s:18:"declaringClassName";s:27:"Carbon\Traits\StaticOptions";s:21:"implementingClassName";s:27:"Carbon\Traits\StaticOptions";s:4:"name";s:14:"formatFunction";s:9:"modifiers";i:18;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:78:"/**
+ * Function to call instead of format.
+ *
+ * @var string|callable|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:32;s:7:"endLine";i:32;s:11:"startColumn";i:5;s:9:"endColumn";i:37;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:24:"createFromFormatFunction";a:16:{s:18:"declaringClassName";s:27:"Carbon\Traits\StaticOptions";s:21:"implementingClassName";s:27:"Carbon\Traits\StaticOptions";s:4:"name";s:24:"createFromFormatFunction";s:9:"modifiers";i:18;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:88:"/**
+ * Function to call instead of createFromFormat.
+ *
+ * @var string|callable|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:39;s:7:"endLine";i:39;s:11:"startColumn";i:5;s:9:"endColumn";i:47;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:13:"parseFunction";a:16:{s:18:"declaringClassName";s:27:"Carbon\Traits\StaticOptions";s:21:"implementingClassName";s:27:"Carbon\Traits\StaticOptions";s:4:"name";s:13:"parseFunction";s:9:"modifiers";i:18;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:77:"/**
+ * Function to call instead of parse.
+ *
+ * @var string|callable|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:46;s:7:"endLine";i:46;s:11:"startColumn";i:5;s:9:"endColumn";i:36;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}}s:16:"immediateMethods";a:8:{s:13:"useStrictMode";a:20:{s:4:"name";s:13:"useStrictMode";s:10:"parameters";a:1:{s:17:"strictModeEnabled";a:14:{s:4:"name";s:17:"strictModeEnabled";s:7:"default";a:2:{s:4:"code";s:4:"true";s:10:"attributes";a:6:{s:9:"startLine";i:61;s:7:"endLine";i:61;s:13:"startTokenPos";i:85;s:12:"startFilePos";i:1650;s:11:"endTokenPos";i:85;s:10:"endFilePos";i:1653;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:61;s:7:"endLine";i:61;s:11:"startColumn";i:42;s:9:"endColumn";i:71;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"void";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:294:"/**
+ * @deprecated To avoid conflict between different third-party libraries, static setters should not be used.
+ *             You should rather use the ->settings() method.
+ * @see settings
+ *
+ * Enable the strict mode (or disable with passing false).
+ *
+ * @param bool $strictModeEnabled
+ */";s:9:"startLine";i:61;s:7:"endLine";i:64;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\StaticOptions";s:21:"implementingClassName";s:27:"Carbon\Traits\StaticOptions";s:16:"currentClassName";s:27:"Carbon\Traits\StaticOptions";s:9:"aliasName";N;}s:19:"isStrictModeEnabled";a:20:{s:4:"name";s:19:"isStrictModeEnabled";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:142:"/**
+ * Returns true if the strict mode is globally in use, false else.
+ * (It can be overridden in specific instances.)
+ *
+ * @return bool
+ */";s:9:"startLine";i:72;s:7:"endLine";i:75;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\StaticOptions";s:21:"implementingClassName";s:27:"Carbon\Traits\StaticOptions";s:16:"currentClassName";s:27:"Carbon\Traits\StaticOptions";s:9:"aliasName";N;}s:17:"useMonthsOverflow";a:20:{s:4:"name";s:17:"useMonthsOverflow";s:10:"parameters";a:1:{s:14:"monthsOverflow";a:14:{s:4:"name";s:14:"monthsOverflow";s:7:"default";a:2:{s:4:"code";s:4:"true";s:10:"attributes";a:6:{s:9:"startLine";i:90;s:7:"endLine";i:90;s:13:"startTokenPos";i:155;s:12:"startFilePos";i:2707;s:11:"endTokenPos";i:155;s:10:"endFilePos";i:2710;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:90;s:7:"endLine";i:90;s:11:"startColumn";i:46;s:9:"endColumn";i:72;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"void";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:522:"/**
+ * @deprecated To avoid conflict between different third-party libraries, static setters should not be used.
+ *             You should rather use the ->settings() method.
+ *             Or you can use method variants: addMonthsWithOverflow/addMonthsNoOverflow, same variants
+ *             are available for quarters, years, decade, centuries, millennia (singular and plural forms).
+ * @see settings
+ *
+ * Indicates if months should be calculated with overflow.
+ *
+ * @param bool $monthsOverflow
+ *
+ * @return void
+ */";s:9:"startLine";i:90;s:7:"endLine";i:93;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\StaticOptions";s:21:"implementingClassName";s:27:"Carbon\Traits\StaticOptions";s:16:"currentClassName";s:27:"Carbon\Traits\StaticOptions";s:9:"aliasName";N;}s:19:"resetMonthsOverflow";a:20:{s:4:"name";s:19:"resetMonthsOverflow";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"void";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:467:"/**
+ * @deprecated To avoid conflict between different third-party libraries, static setters should not be used.
+ *             You should rather use the ->settings() method.
+ *             Or you can use method variants: addMonthsWithOverflow/addMonthsNoOverflow, same variants
+ *             are available for quarters, years, decade, centuries, millennia (singular and plural forms).
+ * @see settings
+ *
+ * Reset the month overflow behavior.
+ *
+ * @return void
+ */";s:9:"startLine";i:106;s:7:"endLine";i:109;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\StaticOptions";s:21:"implementingClassName";s:27:"Carbon\Traits\StaticOptions";s:16:"currentClassName";s:27:"Carbon\Traits\StaticOptions";s:9:"aliasName";N;}s:20:"shouldOverflowMonths";a:20:{s:4:"name";s:20:"shouldOverflowMonths";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:111:"/**
+ * Get the month overflow global behavior (can be overridden in specific instances).
+ *
+ * @return bool
+ */";s:9:"startLine";i:116;s:7:"endLine";i:119;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\StaticOptions";s:21:"implementingClassName";s:27:"Carbon\Traits\StaticOptions";s:16:"currentClassName";s:27:"Carbon\Traits\StaticOptions";s:9:"aliasName";N;}s:16:"useYearsOverflow";a:20:{s:4:"name";s:16:"useYearsOverflow";s:10:"parameters";a:1:{s:13:"yearsOverflow";a:14:{s:4:"name";s:13:"yearsOverflow";s:7:"default";a:2:{s:4:"code";s:4:"true";s:10:"attributes";a:6:{s:9:"startLine";i:134;s:7:"endLine";i:134;s:13:"startTokenPos";i:255;s:12:"startFilePos";i:4377;s:11:"endTokenPos";i:255;s:10:"endFilePos";i:4380;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:134;s:7:"endLine";i:134;s:11:"startColumn";i:45;s:9:"endColumn";i:70;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"void";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:518:"/**
+ * @deprecated To avoid conflict between different third-party libraries, static setters should not be used.
+ *             You should rather use the ->settings() method.
+ *             Or you can use method variants: addYearsWithOverflow/addYearsNoOverflow, same variants
+ *             are available for quarters, years, decade, centuries, millennia (singular and plural forms).
+ * @see settings
+ *
+ * Indicates if years should be calculated with overflow.
+ *
+ * @param bool $yearsOverflow
+ *
+ * @return void
+ */";s:9:"startLine";i:134;s:7:"endLine";i:137;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\StaticOptions";s:21:"implementingClassName";s:27:"Carbon\Traits\StaticOptions";s:16:"currentClassName";s:27:"Carbon\Traits\StaticOptions";s:9:"aliasName";N;}s:18:"resetYearsOverflow";a:20:{s:4:"name";s:18:"resetYearsOverflow";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"void";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:465:"/**
+ * @deprecated To avoid conflict between different third-party libraries, static setters should not be used.
+ *             You should rather use the ->settings() method.
+ *             Or you can use method variants: addYearsWithOverflow/addYearsNoOverflow, same variants
+ *             are available for quarters, years, decade, centuries, millennia (singular and plural forms).
+ * @see settings
+ *
+ * Reset the month overflow behavior.
+ *
+ * @return void
+ */";s:9:"startLine";i:150;s:7:"endLine";i:153;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\StaticOptions";s:21:"implementingClassName";s:27:"Carbon\Traits\StaticOptions";s:16:"currentClassName";s:27:"Carbon\Traits\StaticOptions";s:9:"aliasName";N;}s:19:"shouldOverflowYears";a:20:{s:4:"name";s:19:"shouldOverflowYears";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:111:"/**
+ * Get the month overflow global behavior (can be overridden in specific instances).
+ *
+ * @return bool
+ */";s:9:"startLine";i:160;s:7:"endLine";i:163;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\StaticOptions";s:21:"implementingClassName";s:27:"Carbon\Traits\StaticOptions";s:16:"currentClassName";s:27:"Carbon\Traits\StaticOptions";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

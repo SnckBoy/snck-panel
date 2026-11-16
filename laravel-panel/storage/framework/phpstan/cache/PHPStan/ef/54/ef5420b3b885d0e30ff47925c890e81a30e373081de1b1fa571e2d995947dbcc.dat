@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-c71f63f7f781df4bfec67c7828e34bb48c0f25435c26a20a15d2ec8c80f75299-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:37:"illuminate\http\client\pendingrequest";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

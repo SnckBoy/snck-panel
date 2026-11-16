@@ -1,0 +1,21 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-04052ccf8d845ffa117f09b7d74da90f5a1e2a00dabf8db3026985860d111cb5-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:52:"Illuminate\Contracts\Pagination\LengthAwarePaginator";s:8:"filename";s:151:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../laravel/framework/src/Illuminate/Contracts/Pagination/LengthAwarePaginator.php";}}s:9:"namespace";s:31:"Illuminate\Contracts\Pagination";s:4:"name";s:52:"Illuminate\Contracts\Pagination\LengthAwarePaginator";s:9:"shortName";s:20:"LengthAwarePaginator";s:11:"isInterface";b:1;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:110:"/**
+ * @template TKey of array-key
+ *
+ * @template-covariant TValue
+ *
+ * @extends Paginator<TKey, TValue>
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:12;s:7:"endLine";i:36;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";N;s:20:"implementsClassNames";a:1:{i:0;s:41:"Illuminate\Contracts\Pagination\Paginator";}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:3:{s:11:"getUrlRange";a:20:{s:4:"name";s:11:"getUrlRange";s:10:"parameters";a:2:{s:5:"start";a:14:{s:4:"name";s:5:"start";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:21;s:7:"endLine";i:21;s:11:"startColumn";i:33;s:9:"endColumn";i:38;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:3:"end";a:14:{s:4:"name";s:3:"end";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:21;s:7:"endLine";i:21;s:11:"startColumn";i:41;s:9:"endColumn";i:44;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:109:"/**
+ * Create a range of pagination URLs.
+ *
+ * @param  int  $start
+ * @param  int  $end
+ * @return array
+ */";s:9:"startLine";i:21;s:7:"endLine";i:21;s:11:"startColumn";i:5;s:9:"endColumn";i:46;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:31:"Illuminate\Contracts\Pagination";s:18:"declaringClassName";s:52:"Illuminate\Contracts\Pagination\LengthAwarePaginator";s:21:"implementingClassName";s:52:"Illuminate\Contracts\Pagination\LengthAwarePaginator";s:16:"currentClassName";s:52:"Illuminate\Contracts\Pagination\LengthAwarePaginator";s:9:"aliasName";N;}s:5:"total";a:20:{s:4:"name";s:5:"total";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:83:"/**
+ * Determine the total number of items in the data store.
+ *
+ * @return int
+ */";s:9:"startLine";i:28;s:7:"endLine";i:28;s:11:"startColumn";i:5;s:9:"endColumn";i:28;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:31:"Illuminate\Contracts\Pagination";s:18:"declaringClassName";s:52:"Illuminate\Contracts\Pagination\LengthAwarePaginator";s:21:"implementingClassName";s:52:"Illuminate\Contracts\Pagination\LengthAwarePaginator";s:16:"currentClassName";s:52:"Illuminate\Contracts\Pagination\LengthAwarePaginator";s:9:"aliasName";N;}s:8:"lastPage";a:20:{s:4:"name";s:8:"lastPage";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:76:"/**
+ * Get the page number of the last available page.
+ *
+ * @return int
+ */";s:9:"startLine";i:35;s:7:"endLine";i:35;s:11:"startColumn";i:5;s:9:"endColumn";i:31;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:31:"Illuminate\Contracts\Pagination";s:18:"declaringClassName";s:52:"Illuminate\Contracts\Pagination\LengthAwarePaginator";s:21:"implementingClassName";s:52:"Illuminate\Contracts\Pagination\LengthAwarePaginator";s:16:"currentClassName";s:52:"Illuminate\Contracts\Pagination\LengthAwarePaginator";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

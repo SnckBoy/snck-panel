@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-1689b1b63a29b05786ad32df4eef4ebf19250042b11238f7ae6444c45a286bbb-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:38:"illuminate\support\facades\ratelimiter";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

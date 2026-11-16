@@ -1,0 +1,16 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:17:{s:4:"name";s:6:"rename";s:10:"parameters";a:3:{s:4:"from";a:14:{s:4:"name";s:4:"from";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:32:"JetBrains\PhpStorm\FileReference";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:9:"startLine";i:21;s:7:"endLine";i:22;s:11:"startColumn";i:9;s:9:"endColumn";i:20;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:2:"to";a:14:{s:4:"name";s:2:"to";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:32:"JetBrains\PhpStorm\FileReference";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:9:"startLine";i:23;s:7:"endLine";i:24;s:11:"startColumn";i:9;s:9:"endColumn";i:18;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}s:7:"context";a:14:{s:4:"name";s:7:"context";s:7:"default";a:2:{s:4:"code";s:5:"\null";s:10:"attributes";a:6:{s:9:"startLine";i:25;s:7:"endLine";i:25;s:13:"startTokenPos";i:35;s:12:"startFilePos";i:632;s:11:"endTokenPos";i:35;s:10:"endFilePos";i:635;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:25;s:7:"endLine";i:25;s:11:"startColumn";i:9;s:9:"endColumn";i:23;s:14:"parameterIndex";i:2;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:376:"/**
+ * Renames a file or directory
+ * @link https://php.net/manual/en/function.rename.php
+ * @param string $from <p>
+ * </p>
+ * <p>
+ * The old name. The wrapper used in oldname
+ * must match the wrapper used in
+ * newname.
+ * </p>
+ * @param string $to <p>
+ * The new name.
+ * </p>
+ * @param resource $context [optional]
+ * @return bool true on success or false on failure.
+ */";s:9:"startLine";i:20;s:7:"endLine";i:28;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:8:"isStatic";b:0;s:9:"namespace";N;s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:6:"rename";s:8:"filename";s:39:"phpstorm-stubs:standard/standard_5.stub";s:13:"extensionName";s:8:"standard";s:9:"aliasName";N;}}}}

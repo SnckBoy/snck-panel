@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-3c38451b2504a6e098246c57be042c48c857cda17e4b8a14904f9c93bfed2a1a-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:45:"illuminate\contracts\auth\access\authorizable";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

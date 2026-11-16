@@ -1,0 +1,25 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:17:{s:4:"name";s:11:"str_replace";s:10:"parameters";a:4:{s:6:"search";a:14:{s:4:"name";s:6:"search";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}}}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:29;s:7:"endLine";i:29;s:11:"startColumn";i:26;s:9:"endColumn";i:45;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:7:"replace";a:14:{s:4:"name";s:7:"replace";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}}}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:29;s:7:"endLine";i:29;s:11:"startColumn";i:48;s:9:"endColumn";i:68;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}s:7:"subject";a:14:{s:4:"name";s:7:"subject";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}}}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:29;s:7:"endLine";i:29;s:11:"startColumn";i:71;s:9:"endColumn";i:91;s:14:"parameterIndex";i:2;s:10:"isOptional";b:0;}s:5:"count";a:14:{s:4:"name";s:5:"count";s:7:"default";a:2:{s:4:"code";s:5:"\null";s:10:"attributes";a:6:{s:9:"startLine";i:29;s:7:"endLine";i:29;s:13:"startTokenPos";i:38;s:12:"startFilePos";i:1207;s:11:"endTokenPos";i:38;s:10:"endFilePos";i:1210;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:1;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:29;s:7:"endLine";i:29;s:11:"startColumn";i:94;s:9:"endColumn";i:107;s:14:"parameterIndex";i:3;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}}}}s:10:"attributes";a:0:{}s:10:"docComment";s:984:"/**
+ * Replace all occurrences of the search string with the replacement string
+ * @link https://php.net/manual/en/function.str-replace.php
+ * @param string|string[] $search <p>
+ * The value being searched for, otherwise known as the needle.
+ * An array may be used to designate multiple needles.
+ * </p>
+ * @param string|string[] $replace <p>
+ * The replacement value that replaces found search
+ * values. An array may be used to designate multiple replacements.
+ * </p>
+ * @param string|string[] $subject <p>
+ * The string or array being searched and replaced on,
+ * otherwise known as the haystack.
+ * </p>
+ * <p>
+ * If subject is an array, then the search and
+ * replace is performed with every entry of
+ * subject, and the return value is an array as
+ * well.
+ * </p>
+ * @param int &$count [optional] If passed, this will hold the number of matched and replaced needles.
+ * @return string|string[] This function returns a string or an array with the replaced values.
+ * @meta
+ */";s:9:"startLine";i:29;s:7:"endLine";i:31;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:8:"isStatic";b:0;s:9:"namespace";N;s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:11:"str_replace";s:8:"filename";s:39:"phpstorm-stubs:standard/standard_1.stub";s:13:"extensionName";s:8:"standard";s:9:"aliasName";N;}}}}

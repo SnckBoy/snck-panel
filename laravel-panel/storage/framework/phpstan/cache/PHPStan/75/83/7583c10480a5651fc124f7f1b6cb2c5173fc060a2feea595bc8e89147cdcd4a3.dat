@@ -1,0 +1,148 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-1ef5798924509ccea3ff3e596af4c5b6b63e121f7d0441503310b29cf837b9df-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:33:"Psr\Http\Message\MessageInterface";s:8:"filename";s:114:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../psr/http-message/src/MessageInterface.php";}}s:9:"namespace";s:16:"Psr\Http\Message";s:4:"name";s:33:"Psr\Http\Message\MessageInterface";s:9:"shortName";s:16:"MessageInterface";s:11:"isInterface";b:1;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:484:"/**
+ * HTTP messages consist of requests from a client to a server and responses
+ * from a server to a client. This interface defines the methods common to
+ * each.
+ *
+ * Messages are considered immutable; all methods that might change state MUST
+ * be implemented such that they retain the internal state of the current
+ * message and return an instance that contains the changed state.
+ *
+ * @link http://www.ietf.org/rfc/rfc7230.txt
+ * @link http://www.ietf.org/rfc/rfc7231.txt
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:17;s:7:"endLine";i:187;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";N;s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:11:{s:18:"getProtocolVersion";a:20:{s:4:"name";s:18:"getProtocolVersion";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:184:"/**
+ * Retrieves the HTTP protocol version as a string.
+ *
+ * The string MUST contain only the HTTP version number (e.g., "1.1", "1.0").
+ *
+ * @return string HTTP protocol version.
+ */";s:9:"startLine";i:26;s:7:"endLine";i:26;s:11:"startColumn";i:5;s:9:"endColumn";i:49;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:16:"Psr\Http\Message";s:18:"declaringClassName";s:33:"Psr\Http\Message\MessageInterface";s:21:"implementingClassName";s:33:"Psr\Http\Message\MessageInterface";s:16:"currentClassName";s:33:"Psr\Http\Message\MessageInterface";s:9:"aliasName";N;}s:19:"withProtocolVersion";a:20:{s:4:"name";s:19:"withProtocolVersion";s:10:"parameters";a:1:{s:7:"version";a:14:{s:4:"name";s:7:"version";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:41;s:7:"endLine";i:41;s:11:"startColumn";i:41;s:9:"endColumn";i:55;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:33:"Psr\Http\Message\MessageInterface";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:399:"/**
+ * Return an instance with the specified HTTP protocol version.
+ *
+ * The version string MUST contain only the HTTP version number (e.g.,
+ * "1.1", "1.0").
+ *
+ * This method MUST be implemented in such a way as to retain the
+ * immutability of the message, and MUST return an instance that has the
+ * new protocol version.
+ *
+ * @param string $version HTTP protocol version
+ * @return static
+ */";s:9:"startLine";i:41;s:7:"endLine";i:41;s:11:"startColumn";i:5;s:9:"endColumn";i:75;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:16:"Psr\Http\Message";s:18:"declaringClassName";s:33:"Psr\Http\Message\MessageInterface";s:21:"implementingClassName";s:33:"Psr\Http\Message\MessageInterface";s:16:"currentClassName";s:33:"Psr\Http\Message\MessageInterface";s:9:"aliasName";N;}s:10:"getHeaders";a:20:{s:4:"name";s:10:"getHeaders";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:916:"/**
+ * Retrieves all message header values.
+ *
+ * The keys represent the header name as it will be sent over the wire, and
+ * each value is an array of strings associated with the header.
+ *
+ *     // Represent the headers as a string
+ *     foreach ($message->getHeaders() as $name => $values) {
+ *         echo $name . ": " . implode(", ", $values);
+ *     }
+ *
+ *     // Emit headers iteratively:
+ *     foreach ($message->getHeaders() as $name => $values) {
+ *         foreach ($values as $value) {
+ *             header(sprintf('%s: %s', $name, $value), false);
+ *         }
+ *     }
+ *
+ * While header names are not case-sensitive, getHeaders() will preserve the
+ * exact case in which headers were originally specified.
+ *
+ * @return string[][] Returns an associative array of the message's headers. Each
+ *     key MUST be a header name, and each value MUST be an array of strings
+ *     for that header.
+ */";s:9:"startLine";i:68;s:7:"endLine";i:68;s:11:"startColumn";i:5;s:9:"endColumn";i:40;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:16:"Psr\Http\Message";s:18:"declaringClassName";s:33:"Psr\Http\Message\MessageInterface";s:21:"implementingClassName";s:33:"Psr\Http\Message\MessageInterface";s:16:"currentClassName";s:33:"Psr\Http\Message\MessageInterface";s:9:"aliasName";N;}s:9:"hasHeader";a:20:{s:4:"name";s:9:"hasHeader";s:10:"parameters";a:1:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:78;s:7:"endLine";i:78;s:11:"startColumn";i:31;s:9:"endColumn";i:42;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:335:"/**
+ * Checks if a header exists by the given case-insensitive name.
+ *
+ * @param string $name Case-insensitive header field name.
+ * @return bool Returns true if any header names match the given header
+ *     name using a case-insensitive string comparison. Returns false if
+ *     no matching header name is found in the message.
+ */";s:9:"startLine";i:78;s:7:"endLine";i:78;s:11:"startColumn";i:5;s:9:"endColumn";i:50;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:16:"Psr\Http\Message";s:18:"declaringClassName";s:33:"Psr\Http\Message\MessageInterface";s:21:"implementingClassName";s:33:"Psr\Http\Message\MessageInterface";s:16:"currentClassName";s:33:"Psr\Http\Message\MessageInterface";s:9:"aliasName";N;}s:9:"getHeader";a:20:{s:4:"name";s:9:"getHeader";s:10:"parameters";a:1:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:94;s:7:"endLine";i:94;s:11:"startColumn";i:31;s:9:"endColumn";i:42;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:520:"/**
+ * Retrieves a message header value by the given case-insensitive name.
+ *
+ * This method returns an array of all the header values of the given
+ * case-insensitive header name.
+ *
+ * If the header does not appear in the message, this method MUST return an
+ * empty array.
+ *
+ * @param string $name Case-insensitive header field name.
+ * @return string[] An array of string values as provided for the given
+ *    header. If the header does not appear in the message, this method MUST
+ *    return an empty array.
+ */";s:9:"startLine";i:94;s:7:"endLine";i:94;s:11:"startColumn";i:5;s:9:"endColumn";i:51;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:16:"Psr\Http\Message";s:18:"declaringClassName";s:33:"Psr\Http\Message\MessageInterface";s:21:"implementingClassName";s:33:"Psr\Http\Message\MessageInterface";s:16:"currentClassName";s:33:"Psr\Http\Message\MessageInterface";s:9:"aliasName";N;}s:13:"getHeaderLine";a:20:{s:4:"name";s:13:"getHeaderLine";s:10:"parameters";a:1:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:115;s:7:"endLine";i:115;s:11:"startColumn";i:35;s:9:"endColumn";i:46;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:784:"/**
+ * Retrieves a comma-separated string of the values for a single header.
+ *
+ * This method returns all of the header values of the given
+ * case-insensitive header name as a string concatenated together using
+ * a comma.
+ *
+ * NOTE: Not all header values may be appropriately represented using
+ * comma concatenation. For such headers, use getHeader() instead
+ * and supply your own delimiter when concatenating.
+ *
+ * If the header does not appear in the message, this method MUST return
+ * an empty string.
+ *
+ * @param string $name Case-insensitive header field name.
+ * @return string A string of values as provided for the given header
+ *    concatenated together using a comma. If the header does not appear in
+ *    the message, this method MUST return an empty string.
+ */";s:9:"startLine";i:115;s:7:"endLine";i:115;s:11:"startColumn";i:5;s:9:"endColumn";i:56;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:16:"Psr\Http\Message";s:18:"declaringClassName";s:33:"Psr\Http\Message\MessageInterface";s:21:"implementingClassName";s:33:"Psr\Http\Message\MessageInterface";s:16:"currentClassName";s:33:"Psr\Http\Message\MessageInterface";s:9:"aliasName";N;}s:10:"withHeader";a:20:{s:4:"name";s:10:"withHeader";s:10:"parameters";a:2:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:132;s:7:"endLine";i:132;s:11:"startColumn";i:32;s:9:"endColumn";i:43;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:5:"value";a:14:{s:4:"name";s:5:"value";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:132;s:7:"endLine";i:132;s:11:"startColumn";i:46;s:9:"endColumn";i:51;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:33:"Psr\Http\Message\MessageInterface";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:613:"/**
+ * Return an instance with the provided value replacing the specified header.
+ *
+ * While header names are case-insensitive, the casing of the header will
+ * be preserved by this function, and returned from getHeaders().
+ *
+ * This method MUST be implemented in such a way as to retain the
+ * immutability of the message, and MUST return an instance that has the
+ * new and/or updated header and value.
+ *
+ * @param string $name Case-insensitive header field name.
+ * @param string|string[] $value Header value(s).
+ * @return static
+ * @throws \InvalidArgumentException for invalid header names or values.
+ */";s:9:"startLine";i:132;s:7:"endLine";i:132;s:11:"startColumn";i:5;s:9:"endColumn";i:71;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:16:"Psr\Http\Message";s:18:"declaringClassName";s:33:"Psr\Http\Message\MessageInterface";s:21:"implementingClassName";s:33:"Psr\Http\Message\MessageInterface";s:16:"currentClassName";s:33:"Psr\Http\Message\MessageInterface";s:9:"aliasName";N;}s:15:"withAddedHeader";a:20:{s:4:"name";s:15:"withAddedHeader";s:10:"parameters";a:2:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:150;s:7:"endLine";i:150;s:11:"startColumn";i:37;s:9:"endColumn";i:48;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:5:"value";a:14:{s:4:"name";s:5:"value";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:150;s:7:"endLine";i:150;s:11:"startColumn";i:51;s:9:"endColumn";i:56;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:33:"Psr\Http\Message\MessageInterface";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:653:"/**
+ * Return an instance with the specified header appended with the given value.
+ *
+ * Existing values for the specified header will be maintained. The new
+ * value(s) will be appended to the existing list. If the header did not
+ * exist previously, it will be added.
+ *
+ * This method MUST be implemented in such a way as to retain the
+ * immutability of the message, and MUST return an instance that has the
+ * new header and/or value.
+ *
+ * @param string $name Case-insensitive header field name to add.
+ * @param string|string[] $value Header value(s).
+ * @return static
+ * @throws \InvalidArgumentException for invalid header names or values.
+ */";s:9:"startLine";i:150;s:7:"endLine";i:150;s:11:"startColumn";i:5;s:9:"endColumn";i:76;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:16:"Psr\Http\Message";s:18:"declaringClassName";s:33:"Psr\Http\Message\MessageInterface";s:21:"implementingClassName";s:33:"Psr\Http\Message\MessageInterface";s:16:"currentClassName";s:33:"Psr\Http\Message\MessageInterface";s:9:"aliasName";N;}s:13:"withoutHeader";a:20:{s:4:"name";s:13:"withoutHeader";s:10:"parameters";a:1:{s:4:"name";a:14:{s:4:"name";s:4:"name";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:164;s:7:"endLine";i:164;s:11:"startColumn";i:35;s:9:"endColumn";i:46;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:33:"Psr\Http\Message\MessageInterface";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:375:"/**
+ * Return an instance without the specified header.
+ *
+ * Header resolution MUST be done without case-sensitivity.
+ *
+ * This method MUST be implemented in such a way as to retain the
+ * immutability of the message, and MUST return an instance that removes
+ * the named header.
+ *
+ * @param string $name Case-insensitive header field name to remove.
+ * @return static
+ */";s:9:"startLine";i:164;s:7:"endLine";i:164;s:11:"startColumn";i:5;s:9:"endColumn";i:66;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:16:"Psr\Http\Message";s:18:"declaringClassName";s:33:"Psr\Http\Message\MessageInterface";s:21:"implementingClassName";s:33:"Psr\Http\Message\MessageInterface";s:16:"currentClassName";s:33:"Psr\Http\Message\MessageInterface";s:9:"aliasName";N;}s:7:"getBody";a:20:{s:4:"name";s:7:"getBody";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:32:"Psr\Http\Message\StreamInterface";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:100:"/**
+ * Gets the body of the message.
+ *
+ * @return StreamInterface Returns the body as a stream.
+ */";s:9:"startLine";i:171;s:7:"endLine";i:171;s:11:"startColumn";i:5;s:9:"endColumn";i:47;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:16:"Psr\Http\Message";s:18:"declaringClassName";s:33:"Psr\Http\Message\MessageInterface";s:21:"implementingClassName";s:33:"Psr\Http\Message\MessageInterface";s:16:"currentClassName";s:33:"Psr\Http\Message\MessageInterface";s:9:"aliasName";N;}s:8:"withBody";a:20:{s:4:"name";s:8:"withBody";s:10:"parameters";a:1:{s:4:"body";a:14:{s:4:"name";s:4:"body";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:32:"Psr\Http\Message\StreamInterface";s:12:"isIdentifier";b:0;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:186;s:7:"endLine";i:186;s:11:"startColumn";i:30;s:9:"endColumn";i:50;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:33:"Psr\Http\Message\MessageInterface";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:400:"/**
+ * Return an instance with the specified message body.
+ *
+ * The body MUST be a StreamInterface object.
+ *
+ * This method MUST be implemented in such a way as to retain the
+ * immutability of the message, and MUST return a new instance that has the
+ * new body stream.
+ *
+ * @param StreamInterface $body Body.
+ * @return static
+ * @throws \InvalidArgumentException When the body is not valid.
+ */";s:9:"startLine";i:186;s:7:"endLine";i:186;s:11:"startColumn";i:5;s:9:"endColumn";i:70;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:16:"Psr\Http\Message";s:18:"declaringClassName";s:33:"Psr\Http\Message\MessageInterface";s:21:"implementingClassName";s:33:"Psr\Http\Message\MessageInterface";s:16:"currentClassName";s:33:"Psr\Http\Message\MessageInterface";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

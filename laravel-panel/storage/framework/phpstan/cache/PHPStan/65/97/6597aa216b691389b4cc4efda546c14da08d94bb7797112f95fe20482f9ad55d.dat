@@ -1,0 +1,54 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:9:"Throwable";s:8:"filename";s:31:"phpstorm-stubs:Core/Core_c.stub";s:13:"extensionName";s:4:"Core";s:9:"aliasName";N;}}s:9:"namespace";N;s:4:"name";s:9:"Throwable";s:9:"shortName";s:9:"Throwable";s:11:"isInterface";b:1;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:211:"/**
+ * Throwable is the base interface for any object that can be thrown via a throw statement in PHP 7,
+ * including Error and Exception.
+ * @link https://php.net/manual/en/class.throwable.php
+ * @since 7.0
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:10;s:7:"endLine";i:78;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:15:"parentClassName";N;s:20:"implementsClassNames";a:1:{i:0;s:10:"Stringable";}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:8:{s:10:"getMessage";a:20:{s:4:"name";s:10:"getMessage";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:174:"/**
+ * Gets the message
+ * @link https://php.net/manual/en/throwable.getmessage.php
+ * @return string Returns the message associated with the thrown object.
+ * @since 7.0
+ */";s:9:"startLine";i:18;s:7:"endLine";i:18;s:11:"startColumn";i:9;s:9:"endColumn";i:45;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Throwable";s:21:"implementingClassName";s:9:"Throwable";s:16:"currentClassName";s:9:"Throwable";s:9:"aliasName";N;}s:7:"getCode";a:20:{s:4:"name";s:7:"getCode";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:309:"/**
+ * Gets the exception code
+ * @link https://php.net/manual/en/throwable.getcode.php
+ * @return int <p>
+ * Returns the exception code as integer in
+ * {@see Exception} but possibly as other type in
+ * {@see Exception} descendants (for example as
+ * string in {@see PDOException}).
+ * </p>
+ * @since 7.0
+ */";s:9:"startLine";i:30;s:7:"endLine";i:30;s:11:"startColumn";i:9;s:9:"endColumn";i:34;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Throwable";s:21:"implementingClassName";s:9:"Throwable";s:16:"currentClassName";s:9:"Throwable";s:9:"aliasName";N;}s:7:"getFile";a:20:{s:4:"name";s:7:"getFile";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:208:"/**
+ * Gets the file in which the exception occurred
+ * @link https://php.net/manual/en/throwable.getfile.php
+ * @return string Returns the name of the file from which the object was thrown.
+ * @since 7.0
+ */";s:9:"startLine";i:37;s:7:"endLine";i:37;s:11:"startColumn";i:9;s:9:"endColumn";i:42;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Throwable";s:21:"implementingClassName";s:9:"Throwable";s:16:"currentClassName";s:9:"Throwable";s:9:"aliasName";N;}s:7:"getLine";a:20:{s:4:"name";s:7:"getLine";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:213:"/**
+ * Gets the line on which the object was instantiated
+ * @link https://php.net/manual/en/throwable.getline.php
+ * @return int Returns the line number where the thrown object was instantiated.
+ * @since 7.0
+ */";s:9:"startLine";i:44;s:7:"endLine";i:44;s:11:"startColumn";i:9;s:9:"endColumn";i:39;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Throwable";s:21:"implementingClassName";s:9:"Throwable";s:16:"currentClassName";s:9:"Throwable";s:9:"aliasName";N;}s:8:"getTrace";a:20:{s:4:"name";s:8:"getTrace";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:222:"/**
+ * Gets the stack trace
+ * @link https://php.net/manual/en/throwable.gettrace.php
+ * @return array <p>
+ * Returns the stack trace as an array in the same format as
+ * {@see debug_backtrace()}.
+ * </p>
+ * @since 7.0
+ */";s:9:"startLine";i:54;s:7:"endLine";i:54;s:11:"startColumn";i:9;s:9:"endColumn";i:42;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Throwable";s:21:"implementingClassName";s:9:"Throwable";s:16:"currentClassName";s:9:"Throwable";s:9:"aliasName";N;}s:16:"getTraceAsString";a:20:{s:4:"name";s:16:"getTraceAsString";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:178:"/**
+ * Gets the stack trace as a string
+ * @link https://php.net/manual/en/throwable.gettraceasstring.php
+ * @return string Returns the stack trace as a string.
+ * @since 7.0
+ */";s:9:"startLine";i:61;s:7:"endLine";i:61;s:11:"startColumn";i:9;s:9:"endColumn";i:51;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Throwable";s:21:"implementingClassName";s:9:"Throwable";s:16:"currentClassName";s:9:"Throwable";s:9:"aliasName";N;}s:11:"getPrevious";a:20:{s:4:"name";s:11:"getPrevious";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:9:"Throwable";s:12:"isIdentifier";b:0;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"null";s:12:"isIdentifier";b:1;}}}}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:50:"JetBrains\PhpStorm\Internal\LanguageLevelTypeAware";s:10:"isRepeated";b:0;s:9:"arguments";a:2:{i:0;a:2:{s:4:"code";s:27:"['8.0' => 'Throwable|null']";s:10:"attributes";a:6:{s:9:"startLine";i:68;s:7:"endLine";i:68;s:13:"startTokenPos";i:104;s:12:"startFilePos";i:2557;s:11:"endTokenPos";i:110;s:10:"endFilePos";i:2583;}}s:7:"default";a:2:{s:4:"code";s:2:"''";s:10:"attributes";a:6:{s:9:"startLine";i:68;s:7:"endLine";i:68;s:13:"startTokenPos";i:116;s:12:"startFilePos";i:2595;s:11:"endTokenPos";i:116;s:10:"endFilePos";i:2596;}}}}}s:10:"docComment";s:220:"/**
+ * Returns the previous Throwable
+ * @link https://php.net/manual/en/throwable.getprevious.php
+ * @return null|Throwable Returns the previous {@see Throwable} if available, or <b>NULL</b> otherwise.
+ * @since 7.0
+ */";s:9:"startLine";i:68;s:7:"endLine";i:69;s:11:"startColumn";i:9;s:9:"endColumn";i:54;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Throwable";s:21:"implementingClassName";s:9:"Throwable";s:16:"currentClassName";s:9:"Throwable";s:9:"aliasName";N;}s:10:"__toString";a:20:{s:4:"name";s:10:"__toString";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:50:"JetBrains\PhpStorm\Internal\LanguageLevelTypeAware";s:10:"isRepeated";b:0;s:9:"arguments";a:2:{i:0;a:2:{s:4:"code";s:19:"['8.0' => 'string']";s:10:"attributes";a:6:{s:9:"startLine";i:76;s:7:"endLine";i:76;s:13:"startTokenPos";i:139;s:12:"startFilePos";i:2979;s:11:"endTokenPos";i:145;s:10:"endFilePos";i:2997;}}s:7:"default";a:2:{s:4:"code";s:2:"''";s:10:"attributes";a:6:{s:9:"startLine";i:76;s:7:"endLine";i:76;s:13:"startTokenPos";i:151;s:12:"startFilePos";i:3009;s:11:"endTokenPos";i:151;s:10:"endFilePos";i:3010;}}}}}s:10:"docComment";s:213:"/**
+ * Gets a string representation of the thrown object
+ * @link https://php.net/manual/en/throwable.tostring.php
+ * @return string <p>Returns the string representation of the thrown object.</p>
+ * @since 7.0
+ */";s:9:"startLine";i:76;s:7:"endLine";i:77;s:11:"startColumn";i:9;s:9:"endColumn";i:45;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Throwable";s:21:"implementingClassName";s:9:"Throwable";s:16:"currentClassName";s:9:"Throwable";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

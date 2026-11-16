@@ -1,0 +1,53 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:17:{s:4:"name";s:10:"filter_var";s:10:"parameters";a:3:{s:5:"value";a:14:{s:4:"name";s:5:"value";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:58;s:7:"endLine";i:58;s:11:"startColumn";i:25;s:9:"endColumn";i:36;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:6:"filter";a:14:{s:4:"name";s:6:"filter";s:7:"default";a:2:{s:4:"code";s:15:"\FILTER_DEFAULT";s:10:"attributes";a:6:{s:9:"startLine";i:58;s:7:"endLine";i:58;s:13:"startTokenPos";i:27;s:12:"startFilePos";i:2229;s:11:"endTokenPos";i:27;s:10:"endFilePos";i:2242;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:58;s:7:"endLine";i:58;s:11:"startColumn";i:39;s:9:"endColumn";i:66;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}s:7:"options";a:14:{s:4:"name";s:7:"options";s:7:"default";a:2:{s:4:"code";s:1:"0";s:10:"attributes";a:6:{s:9:"startLine";i:58;s:7:"endLine";i:58;s:13:"startTokenPos";i:38;s:12:"startFilePos";i:2266;s:11:"endTokenPos";i:38;s:10:"endFilePos";i:2266;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}}}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:58;s:7:"endLine";i:58;s:11:"startColumn";i:69;s:9:"endColumn";i:90;s:14:"parameterIndex";i:2;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:23:"JetBrains\PhpStorm\Pure";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:1913:"/**
+ * Filters a variable with a specified filter
+ * @link https://php.net/manual/en/function.filter-var.php
+ * @param mixed $value <p>
+ * Value to filter.
+ * </p>
+ * @param int $filter [optional] <p>
+ * The ID of the filter to apply. The
+ * manual page lists the available filters.
+ * </p>
+ * @param array|int $options <p>
+ * Associative array of options or bitwise disjunction of flags. If filter
+ * accepts options, flags can be provided in "flags" field of array. For
+ * the "callback" filter, callable type should be passed. The
+ * callback must accept one argument, the value to be filtered, and return
+ * the value after filtering/sanitizing it.
+ * </p>
+ * <p>
+ * <code>
+ * // for filters that accept options, use this format
+ * $options = array(
+ * 'options' => array(
+ * 'default' => 3, // value to return if the filter fails
+ * // other options here
+ * 'min_range' => 0
+ * ),
+ * 'flags' => FILTER_FLAG_ALLOW_OCTAL,
+ * );
+ * $var = filter_var('0755', FILTER_VALIDATE_INT, $options);
+ * // for filter that only accept flags, you can pass them directly
+ * $var = filter_var('oops', FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+ * // for filter that only accept flags, you can also pass as an array
+ * $var = filter_var('oops', FILTER_VALIDATE_BOOLEAN,
+ * array('flags' => FILTER_NULL_ON_FAILURE));
+ * // callback validate filter
+ * function foo($value)
+ * {
+ * // Expected format: Surname, GivenNames
+ * if (strpos($value, ", ") === false) return false;
+ * list($surname, $givennames) = explode(", ", $value, 2);
+ * $empty = (empty($surname) || empty($givennames));
+ * $notstrings = (!is_string($surname) || !is_string($givennames));
+ * if ($empty || $notstrings) {
+ * return false;
+ * } else {
+ * return $value;
+ * }
+ * }
+ * $var = filter_var('Doe, Jane Sue', FILTER_CALLBACK, array('options' => 'foo'));
+ * </code>
+ * </p>
+ * @return mixed the filtered data, or <b>FALSE</b> if the filter fails.
+ */";s:9:"startLine";i:57;s:7:"endLine";i:60;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:8:"isStatic";b:0;s:9:"namespace";N;s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:10:"filter_var";s:8:"filename";s:33:"phpstorm-stubs:filter/filter.stub";s:13:"extensionName";s:6:"filter";s:9:"aliasName";N;}}}}

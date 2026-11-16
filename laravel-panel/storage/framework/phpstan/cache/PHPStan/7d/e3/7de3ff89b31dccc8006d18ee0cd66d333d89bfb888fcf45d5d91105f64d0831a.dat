@@ -1,0 +1,34 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:8:"Iterator";s:8:"filename";s:31:"phpstorm-stubs:Core/Core_c.stub";s:13:"extensionName";s:4:"Core";s:9:"aliasName";N;}}s:9:"namespace";N;s:4:"name";s:8:"Iterator";s:9:"shortName";s:8:"Iterator";s:11:"isInterface";b:1;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:250:"/**
+ * Interface for external iterators or objects that can be iterated
+ * themselves internally.
+ * @link https://php.net/manual/en/class.iterator.php
+ * @template TKey
+ * @template-covariant TValue
+ * @template-extends Traversable<TKey, TValue>
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:12;s:7:"endLine";i:55;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:15:"parentClassName";N;s:20:"implementsClassNames";a:1:{i:0;s:11:"Traversable";}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:5:{s:7:"current";a:20:{s:4:"name";s:7:"current";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:41:"JetBrains\PhpStorm\Internal\TentativeType";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:172:"/**
+ * Return the current element
+ * @link https://php.net/manual/en/iterator.current.php
+ * @return TValue Can return any type.
+ * @betterReflectionTentativeReturnType
+ */";s:9:"startLine";i:20;s:7:"endLine";i:21;s:11:"startColumn";i:9;s:9:"endColumn";i:41;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Iterator";s:21:"implementingClassName";s:8:"Iterator";s:16:"currentClassName";s:8:"Iterator";s:9:"aliasName";N;}s:4:"next";a:20:{s:4:"name";s:4:"next";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"void";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:41:"JetBrains\PhpStorm\Internal\TentativeType";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:179:"/**
+ * Move forward to next element
+ * @link https://php.net/manual/en/iterator.next.php
+ * @return void Any returned value is ignored.
+ * @betterReflectionTentativeReturnType
+ */";s:9:"startLine";i:28;s:7:"endLine";i:29;s:11:"startColumn";i:9;s:9:"endColumn";i:37;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Iterator";s:21:"implementingClassName";s:8:"Iterator";s:16:"currentClassName";s:8:"Iterator";s:9:"aliasName";N;}s:3:"key";a:20:{s:4:"name";s:3:"key";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:41:"JetBrains\PhpStorm\Internal\TentativeType";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:198:"/**
+ * Return the key of the current element
+ * @link https://php.net/manual/en/iterator.key.php
+ * @return TKey|null TKey on success, or null on failure.
+ * @betterReflectionTentativeReturnType
+ */";s:9:"startLine";i:36;s:7:"endLine";i:37;s:11:"startColumn";i:9;s:9:"endColumn";i:37;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Iterator";s:21:"implementingClassName";s:8:"Iterator";s:16:"currentClassName";s:8:"Iterator";s:9:"aliasName";N;}s:5:"valid";a:20:{s:4:"name";s:5:"valid";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:41:"JetBrains\PhpStorm\Internal\TentativeType";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:267:"/**
+ * Checks if current position is valid
+ * @link https://php.net/manual/en/iterator.valid.php
+ * @return bool The return value will be casted to boolean and then evaluated.
+ * Returns true on success or false on failure.
+ * @betterReflectionTentativeReturnType
+ */";s:9:"startLine";i:45;s:7:"endLine";i:46;s:11:"startColumn";i:9;s:9:"endColumn";i:38;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Iterator";s:21:"implementingClassName";s:8:"Iterator";s:16:"currentClassName";s:8:"Iterator";s:9:"aliasName";N;}s:6:"rewind";a:20:{s:4:"name";s:6:"rewind";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"void";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:41:"JetBrains\PhpStorm\Internal\TentativeType";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:193:"/**
+ * Rewind the Iterator to the first element
+ * @link https://php.net/manual/en/iterator.rewind.php
+ * @return void Any returned value is ignored.
+ * @betterReflectionTentativeReturnType
+ */";s:9:"startLine";i:53;s:7:"endLine";i:54;s:11:"startColumn";i:9;s:9:"endColumn";i:39;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Iterator";s:21:"implementingClassName";s:8:"Iterator";s:16:"currentClassName";s:8:"Iterator";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

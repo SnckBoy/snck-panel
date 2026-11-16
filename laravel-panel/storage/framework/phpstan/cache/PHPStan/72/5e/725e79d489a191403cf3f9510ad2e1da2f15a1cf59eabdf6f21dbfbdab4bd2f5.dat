@@ -1,0 +1,33 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:17:{s:4:"name";s:11:"json_decode";s:10:"parameters";a:4:{s:4:"json";a:14:{s:4:"name";s:4:"json";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:27:"JetBrains\PhpStorm\Language";s:10:"isRepeated";b:0;s:9:"arguments";a:1:{i:0;a:2:{s:4:"code";s:6:""JSON"";s:10:"attributes";a:6:{s:9:"startLine";i:38;s:7:"endLine";i:38;s:13:"startTokenPos";i:16;s:12:"startFilePos";i:2493;s:11:"endTokenPos";i:16;s:10:"endFilePos";i:2498;}}}}}s:9:"startLine";i:38;s:7:"endLine";i:39;s:11:"startColumn";i:9;s:9:"endColumn";i:20;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:11:"associative";a:14:{s:4:"name";s:11:"associative";s:7:"default";a:2:{s:4:"code";s:5:"\null";s:10:"attributes";a:6:{s:9:"startLine";i:40;s:7:"endLine";i:40;s:13:"startTokenPos";i:32;s:12:"startFilePos";i:2553;s:11:"endTokenPos";i:32;s:10:"endFilePos";i:2556;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"null";s:12:"isIdentifier";b:1;}}}}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:40;s:7:"endLine";i:40;s:11:"startColumn";i:9;s:9:"endColumn";i:33;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}s:5:"depth";a:14:{s:4:"name";s:5:"depth";s:7:"default";a:2:{s:4:"code";s:3:"512";s:10:"attributes";a:6:{s:9:"startLine";i:41;s:7:"endLine";i:41;s:13:"startTokenPos";i:41;s:12:"startFilePos";i:2580;s:11:"endTokenPos";i:41;s:10:"endFilePos";i:2582;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:41;s:7:"endLine";i:41;s:11:"startColumn";i:9;s:9:"endColumn";i:24;s:14:"parameterIndex";i:2;s:10:"isOptional";b:1;}s:5:"flags";a:14:{s:4:"name";s:5:"flags";s:7:"default";a:2:{s:4:"code";s:1:"0";s:10:"attributes";a:6:{s:9:"startLine";i:42;s:7:"endLine";i:42;s:13:"startTokenPos";i:50;s:12:"startFilePos";i:2606;s:11:"endTokenPos";i:50;s:10:"endFilePos";i:2606;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:42;s:7:"endLine";i:42;s:11:"startColumn";i:9;s:9:"endColumn";i:22;s:14:"parameterIndex";i:3;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:2276:"/**
+ * (PHP 5 &gt;= 5.2.0, PECL json &gt;= 1.2.0)<br/>
+ * Takes a JSON encoded string and converts it into a PHP value.
+ * @link https://www.php.net/manual/en/function.json-decode.php
+ * @param string $json <p>
+ * The <i>json</i> string being decoded.
+ * </p>
+ * <p>
+ * This function only works with UTF-8 encoded strings.
+ * </p>
+ * <p>PHP implements a superset of JSON as specified by <a href="https://datatracker.ietf.org/doc/html/rfc7159">RFC 7159</a>.
+ * </p>
+ * @param bool|null $associative <p>
+ * When <b>TRUE</b>, JSON objects will be returned as associative arrays; when <b>FALSE</b>, JSON objects will be returned as objects.
+ * When <b>NULL</b>, JSON objects will be returned as associative arrays or objects depending on whether JSON_OBJECT_AS_ARRAY is set in the flags.
+ * </p>
+ * @param int $depth [optional] <p>
+ * Maximum nesting depth of the structure being decoded. The value must be greater than 0, and less than or equal to 2147483647.
+ * </p>
+ * @param int $flags [optional] <p>
+ * Bitmask of JSON decode options:<br/>
+ * {@see JSON_BIGINT_AS_STRING} decodes large integers as their original string value.<br/>
+ * {@see JSON_INVALID_UTF8_IGNORE} ignores invalid UTF-8 characters,
+ * {@see JSON_INVALID_UTF8_SUBSTITUTE} converts invalid UTF-8 characters to \0xfffd, Available as of PHP 7.2.0.
+ * {@see JSON_OBJECT_AS_ARRAY} Decodes JSON objects as PHP array. This option can be added automatically by calling json_decode() with the second parameter equal to true.
+ * {@see JSON_THROW_ON_ERROR} Throws JsonException if an error occurs instead of setting the global error state that is retrieved with json_last_error() and json_last_error_msg(). JSON_PARTIAL_OUTPUT_ON_ERROR takes precedence over JSON_THROW_ON_ERROR. Available as of PHP 7.3.0.<br/>
+ * </p>
+ * @return mixed Returns the value encoded in <i>json</i> as an appropriate PHP type. Unquoted values true, <b>FALSE</b>
+ * and <b>NULL</b> are returned as <b>TRUE</b>, <b>FALSE</b> and <b>NULL</b> respectively. <b>NULL</b> is returned
+ * if the <i>json</i> cannot be decoded or if the encoded data is deeper than the nesting limit.
+ * @throws \ValueError If depth is outside the allowed range, a ValueError is thrown as of PHP
+ * 8.0.0, while previously, an error of level E_WARNING was raised.
+ */";s:9:"startLine";i:37;s:7:"endLine";i:45;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:8:"isStatic";b:0;s:9:"namespace";N;s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:11:"json_decode";s:8:"filename";s:29:"phpstorm-stubs:json/json.stub";s:13:"extensionName";s:4:"json";s:9:"aliasName";N;}}}}

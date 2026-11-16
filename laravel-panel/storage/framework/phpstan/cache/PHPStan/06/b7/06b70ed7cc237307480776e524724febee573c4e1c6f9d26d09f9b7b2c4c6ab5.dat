@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-b13e21923f19afa3f7d27913996b8c49da8d2e4790c8a4dbb5632b0d23b9bfea-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:42:"illuminate\auth\passwords\canresetpassword";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

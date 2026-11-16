@@ -1,0 +1,127 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-2127cfb37bcf79389c7b8be4995b4078f5ca7d71933e89adda340422328a5652-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:31:"Illuminate\Support\Facades\Http";s:8:"filename";s:130:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../laravel/framework/src/Illuminate/Support/Facades/Http.php";}}s:9:"namespace";s:26:"Illuminate\Support\Facades";s:4:"name";s:31:"Illuminate\Support\Facades\Http";s:9:"shortName";s:4:"Http";s:11:"isInterface";b:0;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:9052:"/**
+ * @method static \Illuminate\Http\Client\Factory globalMiddleware(callable $middleware)
+ * @method static \Illuminate\Http\Client\Factory globalRequestMiddleware(callable $middleware)
+ * @method static \Illuminate\Http\Client\Factory globalResponseMiddleware(callable $middleware)
+ * @method static \Illuminate\Http\Client\Factory globalOptions(\Closure|array $options)
+ * @method static mixed withoutGlobalConfiguration(\Closure $callback)
+ * @method static \GuzzleHttp\Promise\PromiseInterface response(array|string|null $body = null, int $status = 200, array $headers = [])
+ * @method static \GuzzleHttp\Psr7\Response psr7Response(array|string|null $body = null, int $status = 200, array $headers = [])
+ * @method static \Illuminate\Http\Client\RequestException failedRequest(array|string|null $body = null, int $status = 200, array $headers = [])
+ * @method static \Closure failedConnection(string|null $message = null)
+ * @method static \Illuminate\Http\Client\ResponseSequence sequence(array $responses = [])
+ * @method static bool preventingStrayRequests()
+ * @method static \Illuminate\Http\Client\Factory allowStrayRequests(array|null $only = null)
+ * @method static \Illuminate\Http\Client\Factory record()
+ * @method static void recordRequestResponsePair(\Illuminate\Http\Client\Request $request, \Illuminate\Http\Client\Response|null $response)
+ * @method static void assertSent(callable|\Closure $callback)
+ * @method static void assertSentInOrder(array $callbacks)
+ * @method static void assertNotSent(callable|\Closure $callback)
+ * @method static void assertNothingSent()
+ * @method static void assertSentCount(int $count)
+ * @method static void assertSequencesAreEmpty()
+ * @method static \Illuminate\Support\Collection recorded(\Closure|callable $callback = null)
+ * @method static \Illuminate\Http\Client\PendingRequest createPendingRequest()
+ * @method static \Illuminate\Contracts\Events\Dispatcher|null getDispatcher()
+ * @method static array getGlobalMiddleware()
+ * @method static void macro(string $name, object|callable $macro)
+ * @method static void mixin(object $mixin, bool $replace = true)
+ * @method static bool hasMacro(string $name)
+ * @method static void flushMacros()
+ * @method static mixed macroCall(string $method, array $parameters)
+ * @method static \Illuminate\Http\Client\PendingRequest baseUrl(string $url)
+ * @method static \Illuminate\Http\Client\PendingRequest withBody(\Psr\Http\Message\StreamInterface|string $content, string $contentType = 'application/json')
+ * @method static \Illuminate\Http\Client\PendingRequest asJson()
+ * @method static \Illuminate\Http\Client\PendingRequest asForm()
+ * @method static \Illuminate\Http\Client\PendingRequest attach(string|array $name, string|resource $contents = '', string|null $filename = null, array $headers = [])
+ * @method static \Illuminate\Http\Client\PendingRequest asMultipart()
+ * @method static \Illuminate\Http\Client\PendingRequest bodyFormat(string $format)
+ * @method static \Illuminate\Http\Client\PendingRequest withQueryParameters(array $parameters)
+ * @method static \Illuminate\Http\Client\PendingRequest contentType(string $contentType)
+ * @method static \Illuminate\Http\Client\PendingRequest acceptJson()
+ * @method static \Illuminate\Http\Client\PendingRequest accept(string $contentType)
+ * @method static \Illuminate\Http\Client\PendingRequest withHeaders(array $headers)
+ * @method static \Illuminate\Http\Client\PendingRequest withHeader(string $name, mixed $value)
+ * @method static \Illuminate\Http\Client\PendingRequest replaceHeaders(array $headers)
+ * @method static \Illuminate\Http\Client\PendingRequest withBasicAuth(string $username, string $password)
+ * @method static \Illuminate\Http\Client\PendingRequest withDigestAuth(string $username, string $password)
+ * @method static \Illuminate\Http\Client\PendingRequest withNtlmAuth(string $username, string $password)
+ * @method static \Illuminate\Http\Client\PendingRequest withToken(string $token, string $type = 'Bearer')
+ * @method static \Illuminate\Http\Client\PendingRequest withUserAgent(string|bool $userAgent)
+ * @method static \Illuminate\Http\Client\PendingRequest withUrlParameters(array $parameters = [])
+ * @method static \Illuminate\Http\Client\PendingRequest withCookies(array $cookies, string $domain)
+ * @method static \Illuminate\Http\Client\PendingRequest maxRedirects(int $max)
+ * @method static \Illuminate\Http\Client\PendingRequest withoutRedirecting()
+ * @method static \Illuminate\Http\Client\PendingRequest withoutVerifying()
+ * @method static \Illuminate\Http\Client\PendingRequest sink(string|resource $to)
+ * @method static \Illuminate\Http\Client\PendingRequest timeout(int|float $seconds)
+ * @method static \Illuminate\Http\Client\PendingRequest connectTimeout(int|float $seconds)
+ * @method static \Illuminate\Http\Client\PendingRequest retry(array|int $times, \Closure|int $sleepMilliseconds = 0, callable|null $when = null, bool $throw = true)
+ * @method static \Illuminate\Http\Client\PendingRequest withOptions(array $options)
+ * @method static \Illuminate\Http\Client\PendingRequest withMiddleware(callable $middleware)
+ * @method static \Illuminate\Http\Client\PendingRequest withRequestMiddleware(callable $middleware)
+ * @method static \Illuminate\Http\Client\PendingRequest withResponseMiddleware(callable $middleware)
+ * @method static \Illuminate\Http\Client\PendingRequest withAttributes(array $attributes)
+ * @method static \Illuminate\Http\Client\PendingRequest beforeSending(callable $callback)
+ * @method static \Illuminate\Http\Client\PendingRequest afterResponse(callable|null $callback)
+ * @method static \Illuminate\Http\Client\PendingRequest throw(callable|null $callback = null)
+ * @method static \Illuminate\Http\Client\PendingRequest throwIf(callable|bool $condition)
+ * @method static \Illuminate\Http\Client\PendingRequest throwUnless(callable|bool $condition)
+ * @method static \Illuminate\Http\Client\PendingRequest dump()
+ * @method static \Illuminate\Http\Client\PendingRequest dd()
+ * @method static \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface get(string $url, array|string|null $query = null)
+ * @method static \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface head(string $url, array|string|null $query = null)
+ * @method static \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface post(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
+ * @method static \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface patch(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
+ * @method static \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface put(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
+ * @method static \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface delete(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
+ * @method static array pool(callable $callback, int|null $concurrency = null)
+ * @method static \Illuminate\Http\Client\Batch batch(callable $callback)
+ * @method static \Illuminate\Http\Client\Response|\Illuminate\Http\Client\Promises\LazyPromise send(string $method, string $url, array $options = [])
+ * @method static \GuzzleHttp\Client buildClient()
+ * @method static \GuzzleHttp\Client createClient(\GuzzleHttp\HandlerStack $handlerStack)
+ * @method static \GuzzleHttp\HandlerStack buildHandlerStack()
+ * @method static \GuzzleHttp\HandlerStack pushHandlers(\GuzzleHttp\HandlerStack $handlerStack)
+ * @method static \Closure buildBeforeSendingHandler()
+ * @method static \Closure buildRecorderHandler()
+ * @method static \Closure buildStubHandler()
+ * @method static \Psr\Http\Message\RequestInterface runBeforeSendingCallbacks(\Psr\Http\Message\RequestInterface $request, array $options)
+ * @method static array mergeOptions(array ...$options)
+ * @method static \Illuminate\Http\Client\PendingRequest stub(callable $callback)
+ * @method static bool isAllowedRequestUrl(string $url)
+ * @method static \Illuminate\Http\Client\PendingRequest async(bool $async = true)
+ * @method static \GuzzleHttp\Promise\PromiseInterface|null getPromise()
+ * @method static \Illuminate\Http\Client\PendingRequest truncateExceptionsAt(int $length)
+ * @method static \Illuminate\Http\Client\PendingRequest dontTruncateExceptions()
+ * @method static \Illuminate\Http\Client\PendingRequest setClient(\GuzzleHttp\Client $client)
+ * @method static \Illuminate\Http\Client\PendingRequest setHandler(callable $handler)
+ * @method static array getOptions()
+ * @method static \Illuminate\Http\Client\PendingRequest|mixed when(\Closure|mixed|null $value = null, callable|null $callback = null, callable|null $default = null)
+ * @method static \Illuminate\Http\Client\PendingRequest|mixed unless(\Closure|mixed|null $value = null, callable|null $callback = null, callable|null $default = null)
+ *
+ * @see \Illuminate\Http\Client\Factory
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:109;s:7:"endLine";i:175;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";s:33:"Illuminate\Support\Facades\Facade";s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:5:{s:17:"getFacadeAccessor";a:20:{s:4:"name";s:17:"getFacadeAccessor";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:73:"/**
+ * Get the registered name of the component.
+ *
+ * @return string
+ */";s:9:"startLine";i:116;s:7:"endLine";i:119;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:18;s:9:"namespace";s:26:"Illuminate\Support\Facades";s:18:"declaringClassName";s:31:"Illuminate\Support\Facades\Http";s:21:"implementingClassName";s:31:"Illuminate\Support\Facades\Http";s:16:"currentClassName";s:31:"Illuminate\Support\Facades\Http";s:9:"aliasName";N;}s:4:"fake";a:20:{s:4:"name";s:4:"fake";s:10:"parameters";a:1:{s:8:"callback";a:14:{s:4:"name";s:8:"callback";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:127;s:7:"endLine";i:127;s:13:"startTokenPos";i:61;s:12:"startFilePos";i:9611;s:11:"endTokenPos";i:61;s:10:"endFilePos";i:9614;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:127;s:7:"endLine";i:127;s:11:"startColumn";i:33;s:9:"endColumn";i:48;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:190:"/**
+ * Register a stub callable that will intercept requests and be able to return stub responses.
+ *
+ * @param  \Closure|array|null  $callback
+ * @return \Illuminate\Http\Client\Factory
+ */";s:9:"startLine";i:127;s:7:"endLine";i:132;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:26:"Illuminate\Support\Facades";s:18:"declaringClassName";s:31:"Illuminate\Support\Facades\Http";s:21:"implementingClassName";s:31:"Illuminate\Support\Facades\Http";s:16:"currentClassName";s:31:"Illuminate\Support\Facades\Http";s:9:"aliasName";N;}s:12:"fakeSequence";a:20:{s:4:"name";s:12:"fakeSequence";s:10:"parameters";a:1:{s:10:"urlPattern";a:14:{s:4:"name";s:10:"urlPattern";s:7:"default";a:2:{s:4:"code";s:3:"'*'";s:10:"attributes";a:6:{s:9:"startLine";i:140;s:7:"endLine";i:140;s:13:"startTokenPos";i:126;s:12:"startFilePos";i:10009;s:11:"endTokenPos";i:126;s:10:"endFilePos";i:10011;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:140;s:7:"endLine";i:140;s:11:"startColumn";i:41;s:9:"endColumn";i:64;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:152:"/**
+ * Register a response sequence for the given URL pattern.
+ *
+ * @param  string  $urlPattern
+ * @return \Illuminate\Http\Client\ResponseSequence
+ */";s:9:"startLine";i:140;s:7:"endLine";i:147;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:26:"Illuminate\Support\Facades";s:18:"declaringClassName";s:31:"Illuminate\Support\Facades\Http";s:21:"implementingClassName";s:31:"Illuminate\Support\Facades\Http";s:16:"currentClassName";s:31:"Illuminate\Support\Facades\Http";s:9:"aliasName";N;}s:20:"preventStrayRequests";a:20:{s:4:"name";s:20:"preventStrayRequests";s:10:"parameters";a:1:{s:7:"prevent";a:14:{s:4:"name";s:7:"prevent";s:7:"default";a:2:{s:4:"code";s:4:"true";s:10:"attributes";a:6:{s:9:"startLine";i:155;s:7:"endLine";i:155;s:13:"startTokenPos";i:190;s:12:"startFilePos";i:10425;s:11:"endTokenPos";i:190;s:10:"endFilePos";i:10428;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:155;s:7:"endLine";i:155;s:11:"startColumn";i:49;s:9:"endColumn";i:63;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:155:"/**
+ * Indicate that an exception should be thrown if any request is not faked.
+ *
+ * @param  bool  $prevent
+ * @return \Illuminate\Http\Client\Factory
+ */";s:9:"startLine";i:155;s:7:"endLine";i:160;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:26:"Illuminate\Support\Facades";s:18:"declaringClassName";s:31:"Illuminate\Support\Facades\Http";s:21:"implementingClassName";s:31:"Illuminate\Support\Facades\Http";s:16:"currentClassName";s:31:"Illuminate\Support\Facades\Http";s:9:"aliasName";N;}s:7:"stubUrl";a:20:{s:4:"name";s:7:"stubUrl";s:10:"parameters";a:2:{s:3:"url";a:14:{s:4:"name";s:3:"url";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:169;s:7:"endLine";i:169;s:11:"startColumn";i:36;s:9:"endColumn";i:39;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:8:"callback";a:14:{s:4:"name";s:8:"callback";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:169;s:7:"endLine";i:169;s:11:"startColumn";i:42;s:9:"endColumn";i:50;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:226:"/**
+ * Stub the given URL using the given callback.
+ *
+ * @param  string  $url
+ * @param  \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface|callable  $callback
+ * @return \Illuminate\Http\Client\Factory
+ */";s:9:"startLine";i:169;s:7:"endLine";i:174;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:26:"Illuminate\Support\Facades";s:18:"declaringClassName";s:31:"Illuminate\Support\Facades\Http";s:21:"implementingClassName";s:31:"Illuminate\Support\Facades\Http";s:16:"currentClassName";s:31:"Illuminate\Support\Facades\Http";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

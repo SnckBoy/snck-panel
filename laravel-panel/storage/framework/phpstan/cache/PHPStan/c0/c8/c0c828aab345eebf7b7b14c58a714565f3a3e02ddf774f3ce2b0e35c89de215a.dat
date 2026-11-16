@@ -1,0 +1,27 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:17:{s:4:"name";s:10:"preg_split";s:10:"parameters";a:4:{s:7:"pattern";a:14:{s:4:"name";s:7:"pattern";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:32;s:7:"endLine";i:32;s:11:"startColumn";i:25;s:9:"endColumn";i:39;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:7:"subject";a:14:{s:4:"name";s:7:"subject";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:32;s:7:"endLine";i:32;s:11:"startColumn";i:42;s:9:"endColumn";i:56;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}s:5:"limit";a:14:{s:4:"name";s:5:"limit";s:7:"default";a:2:{s:4:"code";s:2:"-1";s:10:"attributes";a:6:{s:9:"startLine";i:32;s:7:"endLine";i:32;s:13:"startTokenPos";i:32;s:12:"startFilePos";i:1254;s:11:"endTokenPos";i:33;s:10:"endFilePos";i:1255;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:32;s:7:"endLine";i:32;s:11:"startColumn";i:59;s:9:"endColumn";i:73;s:14:"parameterIndex";i:2;s:10:"isOptional";b:1;}s:5:"flags";a:14:{s:4:"name";s:5:"flags";s:7:"default";a:2:{s:4:"code";s:1:"0";s:10:"attributes";a:6:{s:9:"startLine";i:32;s:7:"endLine";i:32;s:13:"startTokenPos";i:42;s:12:"startFilePos";i:1271;s:11:"endTokenPos";i:42;s:10:"endFilePos";i:1271;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:32;s:7:"endLine";i:32;s:11:"startColumn";i:76;s:9:"endColumn";i:89;s:14:"parameterIndex";i:3;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"false";s:12:"isIdentifier";b:1;}}}}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:23:"JetBrains\PhpStorm\Pure";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:1023:"/**
+ * Split string by a regular expression
+ * @link https://php.net/manual/en/function.preg-split.php
+ * @param string $pattern <p>
+ * The pattern to search for, as a string.
+ * </p>
+ * @param string $subject <p>
+ * The input string.
+ * </p>
+ * @param int $limit [optional] <p>
+ * If specified, then only substrings up to <i>limit</i>
+ * are returned with the rest of the string being placed in the last
+ * substring. A <i>limit</i> of -1, 0 or <b>NULL</b> means "no limit"
+ * and, as is standard across PHP, you can use <b>NULL</b> to skip to the
+ * <i>flags</i> parameter.
+ * </p>
+ * @param int $flags [optional] <p>
+ * <i>flags</i> can be any combination of the following
+ * flags (combined with the | bitwise operator):
+ * <b>PREG_SPLIT_NO_EMPTY</b>
+ * If this flag is set, only non-empty pieces will be returned by
+ * <b>preg_split</b>.
+ * </p>
+ * @return string[]|false an array containing substrings of <i>subject</i>
+ * split along boundaries matched by <i>pattern</i>, or <b>FALSE</b>
+ * if an error occurred.
+ */";s:9:"startLine";i:31;s:7:"endLine";i:34;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:8:"isStatic";b:0;s:9:"namespace";N;s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:10:"preg_split";s:8:"filename";s:29:"phpstorm-stubs:pcre/pcre.stub";s:13:"extensionName";s:4:"pcre";s:9:"aliasName";N;}}}}

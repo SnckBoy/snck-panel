@@ -1,0 +1,121 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:8:"Threaded";s:8:"filename";s:37:"phpstorm-stubs:pthreads/pthreads.stub";s:13:"extensionName";s:8:"pthreads";s:9:"aliasName";N;}}s:9:"namespace";N;s:4:"name";s:8:"Threaded";s:9:"shortName";s:8:"Threaded";s:11:"isInterface";b:0;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:369:"/**
+ * Threaded objects form the basis of pthreads ability to execute user code
+ * in parallel; they expose synchronization methods and various useful
+ * interfaces.<br/>
+ * Threaded objects, most importantly, provide implicit safety for the programmer;
+ * all operations on the object scope are safe.
+ *
+ * @link https://secure.php.net/manual/en/class.threaded.php
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:13;s:7:"endLine";i:213;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:15:"parentClassName";N;s:20:"implementsClassNames";a:4:{i:0;s:11:"Collectable";i:1;s:11:"Traversable";i:2;s:9:"Countable";i:3;s:11:"ArrayAccess";}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:1:{s:6:"worker";a:16:{s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:4:"name";s:6:"worker";s:9:"modifiers";i:2;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:80:"/**
+ * Worker object in which this Threaded is being executed
+ * @var Worker
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:19;s:7:"endLine";i:19;s:11:"startColumn";i:9;s:9:"endColumn";i:26;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}}s:16:"immediateMethods";a:21:{s:6:"addRef";a:20:{s:4:"name";s:6:"addRef";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:128:"/**
+ * (PECL pthreads &gt;= 3.0.0)<br/>
+ * Increments the internal number of references to a Threaded object
+ * @return void
+ */";s:9:"startLine";i:25;s:7:"endLine";i:27;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:5:"chunk";a:20:{s:4:"name";s:5:"chunk";s:10:"parameters";a:2:{s:4:"size";a:14:{s:4:"name";s:4:"size";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:37;s:7:"endLine";i:37;s:11:"startColumn";i:31;s:9:"endColumn";i:35;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:8:"preserve";a:14:{s:4:"name";s:8:"preserve";s:7:"default";a:2:{s:4:"code";s:6:"\false";s:10:"attributes";a:6:{s:9:"startLine";i:37;s:7:"endLine";i:37;s:13:"startTokenPos";i:63;s:12:"startFilePos";i:1420;s:11:"endTokenPos";i:63;s:10:"endFilePos";i:1424;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:37;s:7:"endLine";i:37;s:11:"startColumn";i:38;s:9:"endColumn";i:54;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:422:"/**
+ * (PECL pthreads &gt;= 2.0.0)<br/>
+ * Fetches a chunk of the objects property table of the given size,
+ * optionally preserving keys
+ * @link https://secure.php.net/manual/en/threaded.chunk.php
+ * @param int $size <p>The number of items to fetch</p>
+ * @param bool $preserve [optional] <p>Preserve the keys of members, by default false</p>
+ * @return array <p>An array of items from the objects property table</p>
+ */";s:9:"startLine";i:37;s:7:"endLine";i:39;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:5:"count";a:20:{s:4:"name";s:5:"count";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:219:"/**
+ * (PECL pthreads &gt;= 2.0.0)<br/>
+ * Returns the number of properties for this object
+ * @link https://secure.php.net/manual/en/threaded.count.php
+ * @return int <p>The number of properties for this object</p>
+ */";s:9:"startLine";i:46;s:7:"endLine";i:48;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:6:"delRef";a:20:{s:4:"name";s:6:"delRef";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:128:"/**
+ * (PECL pthreads &gt;= 3.0.0)<br/>
+ * Decrements the internal number of references to a Threaded object
+ * @return void
+ */";s:9:"startLine";i:54;s:7:"endLine";i:56;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:6:"extend";a:20:{s:4:"name";s:6:"extend";s:10:"parameters";a:1:{s:5:"class";a:14:{s:4:"name";s:5:"class";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:64;s:7:"endLine";i:64;s:11:"startColumn";i:39;s:9:"endColumn";i:44;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:258:"/**
+ * (PECL pthreads &gt;= 2.0.8)<br/>
+ * Makes thread safe standard class at runtime
+ * @link https://secure.php.net/manual/en/threaded.extend.php
+ * @param string $class <p>The class to extend</p>
+ * @return bool <p>A boolean indication of success</p>
+ */";s:9:"startLine";i:64;s:7:"endLine";i:66;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:11:"getRefCount";a:20:{s:4:"name";s:11:"getRefCount";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:181:"/**
+ * (PECL pthreads &gt;= 3.0.0)<br/>
+ * Retrieves the internal number of references to a Threaded object
+ * @return int <p>The number of references to the Threaded object</p>
+ */";s:9:"startLine";i:72;s:7:"endLine";i:74;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:9:"isRunning";a:20:{s:4:"name";s:9:"isRunning";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:205:"/**
+ * (PECL pthreads &gt;= 2.0.0)<br/>
+ * Tell if the referenced object is executing
+ * @link https://secure.php.net/manual/en/thread.isrunning.php
+ * @return bool <p>A boolean indication of state</p>
+ */";s:9:"startLine";i:81;s:7:"endLine";i:83;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:9:"isGarbage";a:20:{s:4:"name";s:9:"isGarbage";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:91:"/**
+ * (PECL pthreads &gt;= 3.1.0)<br/>
+ * @inheritdoc
+ * @see Collectable::isGarbage()
+ */";s:9:"startLine";i:89;s:7:"endLine";i:91;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:12:"isTerminated";a:20:{s:4:"name";s:12:"isTerminated";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:285:"/**
+ * (PECL pthreads &gt;= 2.0.0)<br/>
+ * Tell if the referenced object was terminated during execution; suffered
+ * fatal errors, or threw uncaught exceptions
+ * @link https://secure.php.net/manual/en/threaded.isterminated.php
+ * @return bool <p>A boolean indication of state</p>
+ */";s:9:"startLine";i:99;s:7:"endLine";i:101;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:5:"merge";a:20:{s:4:"name";s:5:"merge";s:10:"parameters";a:2:{s:4:"from";a:14:{s:4:"name";s:4:"from";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:110;s:7:"endLine";i:110;s:11:"startColumn";i:31;s:9:"endColumn";i:35;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:9:"overwrite";a:14:{s:4:"name";s:9:"overwrite";s:7:"default";a:2:{s:4:"code";s:5:"\true";s:10:"attributes";a:6:{s:9:"startLine";i:110;s:7:"endLine";i:110;s:13:"startTokenPos";i:189;s:12:"startFilePos";i:3979;s:11:"endTokenPos";i:189;s:10:"endFilePos";i:3982;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:110;s:7:"endLine";i:110;s:11:"startColumn";i:38;s:9:"endColumn";i:54;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:309:"/**
+ * (PECL pthreads &gt;= 2.0.0)<br/>
+ * Merges data into the current object
+ * @link https://secure.php.net/manual/en/threaded.merge.php
+ * @var mixed <p>The data to merge</p>
+ * @var bool [optional] <p>Overwrite existing keys, by default true</p>
+ * @return bool <p>A boolean indication of success</p>
+ */";s:9:"startLine";i:110;s:7:"endLine";i:112;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:6:"notify";a:20:{s:4:"name";s:6:"notify";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:206:"/**
+ * (PECL pthreads &gt;= 2.0.0)<br/>
+ * Send notification to the referenced object
+ * @link https://secure.php.net/manual/en/threaded.notify.php
+ * @return bool <p>A boolean indication of success</p>
+ */";s:9:"startLine";i:119;s:7:"endLine";i:121;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:9:"notifyOne";a:20:{s:4:"name";s:9:"notifyOne";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:339:"/**
+ * (PECL pthreads &gt;= 3.0.0)<br/>
+ * Send notification to the referenced object. This unblocks at least one
+ * of the blocked threads (as opposed to unblocking all of them, as seen with
+ * Threaded::notify()).
+ * @link https://secure.php.net/manual/en/threaded.notifyone.php
+ * @return bool <p>A boolean indication of success</p>
+ */";s:9:"startLine";i:130;s:7:"endLine";i:132;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:3:"pop";a:20:{s:4:"name";s:3:"pop";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:220:"/**
+ * (PECL pthreads &gt;= 2.0.0)<br/>
+ * Pops an item from the objects property table
+ * @link https://secure.php.net/manual/en/threaded.pop.php
+ * @return mixed <p>The last item from the objects property table</p>
+ */";s:9:"startLine";i:139;s:7:"endLine";i:141;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:3:"run";a:20:{s:4:"name";s:3:"run";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:274:"/**
+ * (PECL pthreads &gt;= 2.0.0)<br/>
+ * The programmer should always implement the run method for objects
+ * that are intended for execution.
+ * @link https://secure.php.net/manual/en/threaded.run.php
+ * @return void The methods return value, if used, will be ignored
+ */";s:9:"startLine";i:149;s:7:"endLine";i:151;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:5:"shift";a:20:{s:4:"name";s:5:"shift";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:225:"/**
+ * (PECL pthreads &gt;= 2.0.0)<br/>
+ * Shifts an item from the objects property table
+ * @link https://secure.php.net/manual/en/threaded.shift.php
+ * @return mixed <p>The first item from the objects property table</p>
+ */";s:9:"startLine";i:158;s:7:"endLine";i:160;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:12:"synchronized";a:20:{s:4:"name";s:12:"synchronized";s:10:"parameters";a:2:{s:5:"block";a:14:{s:4:"name";s:5:"block";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:7:"Closure";s:12:"isIdentifier";b:0;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:171;s:7:"endLine";i:171;s:11:"startColumn";i:38;s:9:"endColumn";i:52;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:1:"_";a:14:{s:4:"name";s:1:"_";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:1;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:171;s:7:"endLine";i:171;s:11:"startColumn";i:55;s:9:"endColumn";i:59;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:456:"/**
+ * (PECL pthreads &gt;= 2.0.0)<br/>
+ * Executes the block while retaining the referenced objects
+ * synchronization lock for the calling context
+ * @link https://secure.php.net/manual/en/threaded.synchronized.php
+ * @param Closure $block <p>The block of code to execute</p>
+ * @param mixed ...$_ [optional] <p>Variable length list of arguments
+ * to use as function arguments to the block</p>
+ * @return mixed <p>The return value from the block</p>
+ */";s:9:"startLine";i:171;s:7:"endLine";i:173;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:1;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:4:"wait";a:20:{s:4:"name";s:4:"wait";s:10:"parameters";a:1:{s:7:"timeout";a:14:{s:4:"name";s:7:"timeout";s:7:"default";a:2:{s:4:"code";s:1:"0";s:10:"attributes";a:6:{s:9:"startLine";i:182;s:7:"endLine";i:182;s:13:"startTokenPos";i:301;s:12:"startFilePos";i:6850;s:11:"endTokenPos";i:301;s:10:"endFilePos";i:6850;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:182;s:7:"endLine";i:182;s:11:"startColumn";i:30;s:9:"endColumn";i:45;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:324:"/**
+ * (PECL pthreads &gt;= 2.0.0)<br/>
+ * Will cause the calling context to wait for notification from the
+ * referenced object
+ * @link https://secure.php.net/manual/en/threaded.wait.php
+ * @param int $timeout [optional] <p>An optional timeout in microseconds</p>
+ * @return bool <p>A boolean indication of success</p>
+ */";s:9:"startLine";i:182;s:7:"endLine";i:184;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:12:"offsetExists";a:20:{s:4:"name";s:12:"offsetExists";s:10:"parameters";a:1:{s:6:"offset";a:14:{s:4:"name";s:6:"offset";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:189;s:7:"endLine";i:189;s:11:"startColumn";i:38;s:9:"endColumn";i:44;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:58:"/**
+ * @inheritdoc
+ * @see ArrayAccess::offsetExists()
+ */";s:9:"startLine";i:189;s:7:"endLine";i:191;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:9:"offsetGet";a:20:{s:4:"name";s:9:"offsetGet";s:10:"parameters";a:1:{s:6:"offset";a:14:{s:4:"name";s:6:"offset";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:196;s:7:"endLine";i:196;s:11:"startColumn";i:35;s:9:"endColumn";i:41;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:55:"/**
+ * @inheritdoc
+ * @see ArrayAccess::offsetGet()
+ */";s:9:"startLine";i:196;s:7:"endLine";i:198;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:9:"offsetSet";a:20:{s:4:"name";s:9:"offsetSet";s:10:"parameters";a:2:{s:6:"offset";a:14:{s:4:"name";s:6:"offset";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:203;s:7:"endLine";i:203;s:11:"startColumn";i:35;s:9:"endColumn";i:41;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:5:"value";a:14:{s:4:"name";s:5:"value";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:203;s:7:"endLine";i:203;s:11:"startColumn";i:44;s:9:"endColumn";i:49;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:55:"/**
+ * @inheritdoc
+ * @see ArrayAccess::offsetSet()
+ */";s:9:"startLine";i:203;s:7:"endLine";i:205;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}s:11:"offsetUnset";a:20:{s:4:"name";s:11:"offsetUnset";s:10:"parameters";a:1:{s:6:"offset";a:14:{s:4:"name";s:6:"offset";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:210;s:7:"endLine";i:210;s:11:"startColumn";i:37;s:9:"endColumn";i:43;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:57:"/**
+ * @inheritdoc
+ * @see ArrayAccess::offsetUnset()
+ */";s:9:"startLine";i:210;s:7:"endLine";i:212;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:8:"Threaded";s:21:"implementingClassName";s:8:"Threaded";s:16:"currentClassName";s:8:"Threaded";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

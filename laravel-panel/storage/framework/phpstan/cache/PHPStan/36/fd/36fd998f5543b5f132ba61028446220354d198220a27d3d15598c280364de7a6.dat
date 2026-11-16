@@ -1,0 +1,27 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:17:{s:4:"name";s:5:"count";s:10:"parameters";a:2:{s:5:"value";a:14:{s:4:"name";s:5:"value";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:9:"Countable";s:12:"isIdentifier";b:0;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}}}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:32;s:7:"endLine";i:32;s:11:"startColumn";i:20;s:9:"endColumn";i:42;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:4:"mode";a:14:{s:4:"name";s:4:"mode";s:7:"default";a:2:{s:4:"code";s:13:"\COUNT_NORMAL";s:10:"attributes";a:6:{s:9:"startLine";i:32;s:7:"endLine";i:32;s:13:"startTokenPos";i:29;s:12:"startFilePos";i:1569;s:11:"endTokenPos";i:29;s:10:"endFilePos";i:1580;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:32;s:7:"endLine";i:32;s:11:"startColumn";i:45;s:9:"endColumn";i:68;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:23:"JetBrains\PhpStorm\Pure";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:1353:"/**
+ * Counts all elements in an array, or something in an object.
+ * <p>For objects, if you have SPL installed, you can hook into count() by implementing interface {@see Countable}.
+ * The interface has exactly one method, {@see Countable::count()}, which returns the return value for the count() function.
+ * Please see the {@see Array} section of the manual for a detailed explanation of how arrays are implemented and used in PHP.</p>
+ * @link https://php.net/manual/en/function.count.php
+ * @param array|Countable $value The array or the object.
+ * @param int $mode [optional] If the optional mode parameter is set to
+ * COUNT_RECURSIVE (or 1), count
+ * will recursively count the array. This is particularly useful for
+ * counting all the elements of a multidimensional array. count does not detect infinite recursion.
+ * @return int<0,max> the number of elements in var, which is
+ * typically an array, since anything else will have one
+ * element.
+ * <p>
+ * If var is not an array or an object with
+ * implemented Countable interface,
+ * 1 will be returned.
+ * There is one exception, if var is null,
+ * 0 will be returned.
+ * </p>
+ * <p>
+ * Caution: count may return 0 for a variable that isn't set,
+ * but it may also return 0 for a variable that has been initialized with an
+ * empty array. Use isset to test if a variable is set.
+ * </p>
+ */";s:9:"startLine";i:31;s:7:"endLine";i:34;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:8:"isStatic";b:0;s:9:"namespace";N;s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:5:"count";s:8:"filename";s:39:"phpstorm-stubs:standard/standard_8.stub";s:13:"extensionName";s:8:"standard";s:9:"aliasName";N;}}}}

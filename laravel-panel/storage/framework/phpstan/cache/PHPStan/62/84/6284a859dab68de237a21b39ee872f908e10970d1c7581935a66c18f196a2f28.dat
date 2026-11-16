@@ -1,0 +1,39 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:11:"DOMNodeList";s:8:"filename";s:29:"phpstorm-stubs:dom/dom_c.stub";s:13:"extensionName";s:3:"dom";s:9:"aliasName";N;}}s:9:"namespace";N;s:4:"name";s:11:"DOMNodeList";s:9:"shortName";s:11:"DOMNodeList";s:11:"isInterface";b:0;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:194:"/**
+ * The DOMNodeList class
+ * @link https://php.net/manual/en/class.domnodelist.php
+ *
+ * @template-covariant TNode of DOMNode|DOMNameSpaceNode
+ * @implements IteratorAggregate<int, TNode>
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:11;s:7:"endLine";i:72;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:15:"parentClassName";N;s:20:"implementsClassNames";a:2:{i:0;s:17:"IteratorAggregate";i:1;s:9:"Countable";}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:1:{s:6:"length";a:16:{s:18:"declaringClassName";s:11:"DOMNodeList";s:21:"implementingClassName";s:11:"DOMNodeList";s:4:"name";s:6:"length";s:9:"modifiers";i:1;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:7:"default";N;s:10:"docComment";s:205:"/**
+ * @var int
+ * The number of nodes in the list. The range of valid child node indices is 0 to length - 1 inclusive.
+ * @link https://php.net/manual/en/class.domnodelist.php#domnodelist.props.length
+ */";s:10:"attributes";a:2:{i:0;a:3:{s:4:"name";s:50:"JetBrains\PhpStorm\Internal\LanguageLevelTypeAware";s:10:"isRepeated";b:0;s:9:"arguments";a:2:{i:0;a:2:{s:4:"code";s:16:"['8.1' => 'int']";s:10:"attributes";a:6:{s:9:"startLine";i:25;s:7:"endLine";i:25;s:13:"startTokenPos";i:43;s:12:"startFilePos";i:903;s:11:"endTokenPos";i:49;s:10:"endFilePos";i:918;}}s:7:"default";a:2:{s:4:"code";s:2:"''";s:10:"attributes";a:6:{s:9:"startLine";i:25;s:7:"endLine";i:25;s:13:"startTokenPos";i:55;s:12:"startFilePos";i:930;s:11:"endTokenPos";i:55;s:10:"endFilePos";i:931;}}}}i:1;a:3:{s:4:"name";s:28:"JetBrains\PhpStorm\Immutable";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:9:"startLine";i:25;s:7:"endLine";i:27;s:11:"startColumn";i:9;s:9:"endColumn";i:27;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}}s:16:"immediateMethods";a:3:{s:4:"item";a:20:{s:4:"name";s:4:"item";s:10:"parameters";a:1:{s:5:"index";a:14:{s:4:"name";s:5:"index";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:50:"JetBrains\PhpStorm\Internal\LanguageLevelTypeAware";s:10:"isRepeated";b:0;s:9:"arguments";a:2:{i:0;a:2:{s:4:"code";s:16:"['8.0' => 'int']";s:10:"attributes";a:6:{s:9:"startLine";i:40;s:7:"endLine";i:40;s:13:"startTokenPos";i:82;s:12:"startFilePos";i:1556;s:11:"endTokenPos";i:88;s:10:"endFilePos";i:1571;}}s:7:"default";a:2:{s:4:"code";s:2:"''";s:10:"attributes";a:6:{s:9:"startLine";i:40;s:7:"endLine";i:40;s:13:"startTokenPos";i:94;s:12:"startFilePos";i:1583;s:11:"endTokenPos";i:94;s:10:"endFilePos";i:1584;}}}}}s:9:"startLine";i:40;s:7:"endLine";i:41;s:11:"startColumn";i:13;s:9:"endColumn";i:22;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:367:"/**
+ * Retrieves a node specified by index
+ * @link https://php.net/manual/en/domnodelist.item.php
+ * @param int $index <p>
+ * Index of the node into the collection.
+ * The range of valid child node indices is 0 to length - 1 inclusive.
+ * </p>
+ * @return TNode|null The node at the indexth position in the
+ * DOMNodeList, or null if that is not a valid
+ * index.
+ */";s:9:"startLine";i:39;s:7:"endLine";i:44;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:11:"DOMNodeList";s:21:"implementingClassName";s:11:"DOMNodeList";s:16:"currentClassName";s:11:"DOMNodeList";s:9:"aliasName";N;}s:5:"count";a:20:{s:4:"name";s:5:"count";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:41:"JetBrains\PhpStorm\Internal\TentativeType";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:310:"/**
+ * Get number of nodes in the list
+ *
+ * Gets the number of nodes in the list.
+ *
+ * @link https://php.net/manual/en/domnodelist.count.php
+ * @return int<0, max> Returns the number of nodes in the list, which is identical to the length
+ * property.
+ * @since 7.2
+ * @betterReflectionTentativeReturnType
+ */";s:9:"startLine";i:56;s:7:"endLine";i:59;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:11:"DOMNodeList";s:21:"implementingClassName";s:11:"DOMNodeList";s:16:"currentClassName";s:11:"DOMNodeList";s:9:"aliasName";N;}s:11:"getIterator";a:20:{s:4:"name";s:11:"getIterator";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:8:"Iterator";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:268:"/**
+ * Retrieve an external iterator
+ *
+ * Returns an external iterator for the node list.
+ *
+ * @link https://php.net/manual/en/domnodelist.getiterator.php
+ * @return Iterator<int, TNode> An instance of an object implementing Iterator or Traversable
+ * @since 8.0
+ */";s:9:"startLine";i:69;s:7:"endLine";i:71;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:11:"DOMNodeList";s:21:"implementingClassName";s:11:"DOMNodeList";s:16:"currentClassName";s:11:"DOMNodeList";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

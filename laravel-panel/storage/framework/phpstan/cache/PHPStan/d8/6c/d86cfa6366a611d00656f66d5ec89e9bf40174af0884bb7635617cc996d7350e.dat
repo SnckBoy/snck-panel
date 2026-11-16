@@ -1,0 +1,39 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-0c810160cc2c1b41ceeac0721dfdff8ef85be67f8c8a49e0f260f7d66d2535fc-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:30:"Illuminate\Support\Facades\Log";s:8:"filename";s:129:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../laravel/framework/src/Illuminate/Support/Facades/Log.php";}}s:9:"namespace";s:26:"Illuminate\Support\Facades";s:4:"name";s:30:"Illuminate\Support\Facades\Log";s:9:"shortName";s:3:"Log";s:11:"isInterface";b:0;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:2625:"/**
+ * @method static \Psr\Log\LoggerInterface build(array $config)
+ * @method static \Psr\Log\LoggerInterface stack(array $channels, string|null $channel = null)
+ * @method static \Psr\Log\LoggerInterface channel(string|null $channel = null)
+ * @method static \Psr\Log\LoggerInterface driver(string|null $driver = null)
+ * @method static \Illuminate\Log\LogManager shareContext(array $context)
+ * @method static array sharedContext()
+ * @method static \Illuminate\Log\LogManager withoutContext(string[]|null $keys = null)
+ * @method static \Illuminate\Log\LogManager flushSharedContext()
+ * @method static string|null getDefaultDriver()
+ * @method static void setDefaultDriver(string $name)
+ * @method static \Illuminate\Log\LogManager extend(string $driver, \Closure $callback)
+ * @method static void forgetChannel(string|null $driver = null)
+ * @method static array getChannels()
+ * @method static void emergency(string|\Stringable $message, array $context = [])
+ * @method static void alert(string|\Stringable $message, array $context = [])
+ * @method static void critical(string|\Stringable $message, array $context = [])
+ * @method static void error(string|\Stringable $message, array $context = [])
+ * @method static void warning(string|\Stringable $message, array $context = [])
+ * @method static void notice(string|\Stringable $message, array $context = [])
+ * @method static void info(string|\Stringable $message, array $context = [])
+ * @method static void debug(string|\Stringable $message, array $context = [])
+ * @method static void log(mixed $level, string|\Stringable $message, array $context = [])
+ * @method static \Illuminate\Log\LogManager setApplication(\Illuminate\Contracts\Foundation\Application $app)
+ * @method static void write(string $level, \Illuminate\Contracts\Support\Arrayable|\Illuminate\Contracts\Support\Jsonable|\Illuminate\Support\Stringable|array|string $message, array $context = [])
+ * @method static \Illuminate\Log\Logger withContext(array $context = [])
+ * @method static void listen(\Closure $callback)
+ * @method static \Psr\Log\LoggerInterface getLogger()
+ * @method static \Illuminate\Contracts\Events\Dispatcher|null getEventDispatcher()
+ * @method static void setEventDispatcher(\Illuminate\Contracts\Events\Dispatcher $dispatcher)
+ * @method static \Illuminate\Log\Logger|mixed when(\Closure|mixed|null $value = null, callable|null $callback = null, callable|null $default = null)
+ * @method static \Illuminate\Log\Logger|mixed unless(\Closure|mixed|null $value = null, callable|null $callback = null, callable|null $default = null)
+ *
+ * @see \Illuminate\Log\LogManager
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:40;s:7:"endLine";i:51;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";s:33:"Illuminate\Support\Facades\Facade";s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:1:{s:17:"getFacadeAccessor";a:20:{s:4:"name";s:17:"getFacadeAccessor";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:73:"/**
+ * Get the registered name of the component.
+ *
+ * @return string
+ */";s:9:"startLine";i:47;s:7:"endLine";i:50;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:18;s:9:"namespace";s:26:"Illuminate\Support\Facades";s:18:"declaringClassName";s:30:"Illuminate\Support\Facades\Log";s:21:"implementingClassName";s:30:"Illuminate\Support\Facades\Log";s:16:"currentClassName";s:30:"Illuminate\Support\Facades\Log";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

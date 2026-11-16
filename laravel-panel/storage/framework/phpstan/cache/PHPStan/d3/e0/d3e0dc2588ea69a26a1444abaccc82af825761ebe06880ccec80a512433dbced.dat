@@ -1,0 +1,74 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-29d8b7cc5fd4d37bd472abefdc8de2785c75f4bbe7a911def9b84fa3aca6a8ed-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:31:"Illuminate\Support\Facades\Auth";s:8:"filename";s:130:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../laravel/framework/src/Illuminate/Support/Facades/Auth.php";}}s:9:"namespace";s:26:"Illuminate\Support\Facades";s:4:"name";s:31:"Illuminate\Support\Facades\Auth";s:9:"shortName";s:4:"Auth";s:11:"isInterface";b:0;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:4326:"/**
+ * @method static \Illuminate\Contracts\Auth\Guard|\Illuminate\Contracts\Auth\StatefulGuard guard(string|null $name = null)
+ * @method static \Illuminate\Auth\SessionGuard createSessionDriver(string $name, array $config)
+ * @method static \Illuminate\Auth\TokenGuard createTokenDriver(string $name, array $config)
+ * @method static string getDefaultDriver()
+ * @method static void shouldUse(string $name)
+ * @method static void setDefaultDriver(string $name)
+ * @method static \Illuminate\Auth\AuthManager viaRequest(string $driver, callable $callback)
+ * @method static \Closure userResolver()
+ * @method static \Illuminate\Auth\AuthManager resolveUsersUsing(\Closure $userResolver)
+ * @method static \Illuminate\Auth\AuthManager extend(string $driver, \Closure $callback)
+ * @method static \Illuminate\Auth\AuthManager provider(string $name, \Closure $callback)
+ * @method static bool hasResolvedGuards()
+ * @method static \Illuminate\Auth\AuthManager forgetGuards()
+ * @method static \Illuminate\Auth\AuthManager setApplication(\Illuminate\Contracts\Foundation\Application $app)
+ * @method static \Illuminate\Contracts\Auth\UserProvider|null createUserProvider(string|null $provider = null)
+ * @method static string getDefaultUserProvider()
+ * @method static bool check()
+ * @method static bool guest()
+ * @method static \Illuminate\Contracts\Auth\Authenticatable|null user()
+ * @method static int|string|null id()
+ * @method static bool validate(array $credentials = [])
+ * @method static bool hasUser()
+ * @method static \Illuminate\Contracts\Auth\Guard setUser(\Illuminate\Contracts\Auth\Authenticatable $user)
+ * @method static bool attempt(array $credentials = [], bool $remember = false)
+ * @method static bool once(array $credentials = [])
+ * @method static void login(\Illuminate\Contracts\Auth\Authenticatable $user, bool $remember = false)
+ * @method static \Illuminate\Contracts\Auth\Authenticatable|false loginUsingId(mixed $id, bool $remember = false)
+ * @method static \Illuminate\Contracts\Auth\Authenticatable|false onceUsingId(mixed $id)
+ * @method static bool viaRemember()
+ * @method static void logout()
+ * @method static \Symfony\Component\HttpFoundation\Response|null basic(string $field = 'email', array $extraConditions = [])
+ * @method static \Symfony\Component\HttpFoundation\Response|null onceBasic(string $field = 'email', array $extraConditions = [])
+ * @method static bool attemptWhen(array $credentials = [], array|callable|null $callbacks = null, bool $remember = false)
+ * @method static string hashPasswordForCookie(string $passwordHash)
+ * @method static void logoutCurrentDevice()
+ * @method static \Illuminate\Contracts\Auth\Authenticatable|null logoutOtherDevices(string $password)
+ * @method static void attempting(mixed $callback)
+ * @method static \Illuminate\Contracts\Auth\Authenticatable getLastAttempted()
+ * @method static string getName()
+ * @method static string getRecallerName()
+ * @method static \Illuminate\Auth\SessionGuard setRememberDuration(int $minutes)
+ * @method static \Illuminate\Contracts\Cookie\QueueingFactory getCookieJar()
+ * @method static void setCookieJar(\Illuminate\Contracts\Cookie\QueueingFactory $cookie)
+ * @method static \Illuminate\Contracts\Events\Dispatcher getDispatcher()
+ * @method static void setDispatcher(\Illuminate\Contracts\Events\Dispatcher $events)
+ * @method static \Illuminate\Contracts\Session\Session getSession()
+ * @method static \Illuminate\Contracts\Auth\Authenticatable|null getUser()
+ * @method static \Symfony\Component\HttpFoundation\Request getRequest()
+ * @method static \Illuminate\Auth\SessionGuard setRequest(\Symfony\Component\HttpFoundation\Request $request)
+ * @method static \Illuminate\Support\Timebox getTimebox()
+ * @method static \Illuminate\Contracts\Auth\Authenticatable authenticate()
+ * @method static \Illuminate\Auth\SessionGuard forgetUser()
+ * @method static \Illuminate\Contracts\Auth\UserProvider getProvider()
+ * @method static void setProvider(\Illuminate\Contracts\Auth\UserProvider $provider)
+ * @method static void macro(string $name, object|callable $macro)
+ * @method static void mixin(object $mixin, bool $replace = true)
+ * @method static bool hasMacro(string $name)
+ * @method static void flushMacros()
+ *
+ * @see \Illuminate\Auth\AuthManager
+ * @see \Illuminate\Auth\SessionGuard
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:71;s:7:"endLine";i:99;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";s:33:"Illuminate\Support\Facades\Facade";s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:2:{s:17:"getFacadeAccessor";a:20:{s:4:"name";s:17:"getFacadeAccessor";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:73:"/**
+ * Get the registered name of the component.
+ *
+ * @return string
+ */";s:9:"startLine";i:78;s:7:"endLine";i:81;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:18;s:9:"namespace";s:26:"Illuminate\Support\Facades";s:18:"declaringClassName";s:31:"Illuminate\Support\Facades\Auth";s:21:"implementingClassName";s:31:"Illuminate\Support\Facades\Auth";s:16:"currentClassName";s:31:"Illuminate\Support\Facades\Auth";s:9:"aliasName";N;}s:6:"routes";a:20:{s:4:"name";s:6:"routes";s:10:"parameters";a:1:{s:7:"options";a:14:{s:4:"name";s:7:"options";s:7:"default";a:2:{s:4:"code";s:2:"[]";s:10:"attributes";a:6:{s:9:"startLine";i:91;s:7:"endLine";i:91;s:13:"startTokenPos";i:66;s:12:"startFilePos";i:4873;s:11:"endTokenPos";i:67;s:10:"endFilePos";i:4874;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:91;s:7:"endLine";i:91;s:11:"startColumn";i:35;s:9:"endColumn";i:53;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:151:"/**
+ * Register the typical authentication routes for an application.
+ *
+ * @param  array  $options
+ * @return void
+ *
+ * @throws \RuntimeException
+ */";s:9:"startLine";i:91;s:7:"endLine";i:98;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:26:"Illuminate\Support\Facades";s:18:"declaringClassName";s:31:"Illuminate\Support\Facades\Auth";s:21:"implementingClassName";s:31:"Illuminate\Support\Facades\Auth";s:16:"currentClassName";s:31:"Illuminate\Support\Facades\Auth";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

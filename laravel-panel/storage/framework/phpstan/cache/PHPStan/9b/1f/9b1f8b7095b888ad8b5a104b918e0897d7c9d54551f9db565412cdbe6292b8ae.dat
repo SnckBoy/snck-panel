@@ -1,0 +1,23 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:17:{s:4:"name";s:5:"rtrim";s:10:"parameters";a:2:{s:6:"string";a:14:{s:4:"name";s:6:"string";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:29;s:7:"endLine";i:29;s:11:"startColumn";i:9;s:9:"endColumn";i:22;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:10:"characters";a:14:{s:4:"name";s:10:"characters";s:7:"default";a:2:{s:4:"code";s:15:"" \n\r\t\v\x00"";s:10:"attributes";a:6:{s:9:"startLine";i:31;s:7:"endLine";i:31;s:13:"startTokenPos";i:38;s:12:"startFilePos";i:1154;s:11:"endTokenPos";i:38;s:10:"endFilePos";i:1168;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:57:"JetBrains\PhpStorm\Internal\PhpStormStubsElementAvailable";s:10:"isRepeated";b:0;s:9:"arguments";a:1:{s:2:"to";a:2:{s:4:"code";s:5:"'8.5'";s:10:"attributes";a:6:{s:9:"startLine";i:30;s:7:"endLine";i:30;s:13:"startTokenPos";i:28;s:12:"startFilePos";i:1117;s:11:"endTokenPos";i:28;s:10:"endFilePos";i:1121;}}}}}s:9:"startLine";i:30;s:7:"endLine";i:31;s:11:"startColumn";i:9;s:9:"endColumn";i:44;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:23:"JetBrains\PhpStorm\Pure";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:856:"/**
+ * Strip whitespace (or other characters) from the end of a string.
+ * Without the second parameter, rtrim() will strip these characters:
+ * <ul>
+ * <li>" " (ASCII 32 (0x20)), an ordinary space.
+ * <li>"\t" (ASCII 9 (0x09)), a tab.
+ * <li>"\n" (ASCII 10 (0x0A)), a new line (line feed).
+ * <li>"\r" (ASCII 13 (0x0D)), a carriage return.
+ * <li>"\0" (ASCII 0 (0x00)), the NUL-byte.
+ * <li>"\x0B" (ASCII 11 (0x0B)), a vertical tab.
+ * </ul>
+ * @link https://php.net/manual/en/function.rtrim.php
+ * @param string $string <p>
+ * The input string.
+ * </p>
+ * @param string $characters [optional] <p>
+ * You can also specify the characters you want to strip, by means
+ * of the charlist parameter.
+ * Simply list all characters that you want to be stripped. With
+ * .. you can specify a range of characters.
+ * </p>
+ * @return string the modified string.
+ */";s:9:"startLine";i:27;s:7:"endLine";i:34;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:8:"isStatic";b:0;s:9:"namespace";N;s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:5:"rtrim";s:8:"filename";s:39:"phpstorm-stubs:standard/standard_1.stub";s:13:"extensionName";s:8:"standard";s:9:"aliasName";N;}}}}

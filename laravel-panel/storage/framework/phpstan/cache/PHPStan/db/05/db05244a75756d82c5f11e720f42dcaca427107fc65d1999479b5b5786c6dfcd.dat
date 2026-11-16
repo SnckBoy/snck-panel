@@ -1,0 +1,85 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-3d359a77de9279b72d4e63139e3d0f25a96a83b1d0a9e141b625194213d2f76c-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:27:"Carbon\Traits\Serialization";s:8:"filename";s:122:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../nesbot/carbon/src/Carbon/Traits/Serialization.php";}}s:9:"namespace";s:13:"Carbon\Traits";s:4:"name";s:27:"Carbon\Traits\Serialization";s:9:"shortName";s:13:"Serialization";s:11:"isInterface";b:0;s:7:"isTrait";b:1;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:376:"/**
+ * Trait Serialization.
+ *
+ * Serialization and JSON stuff.
+ *
+ * Depends on the following properties:
+ *
+ * @property int $year
+ * @property int $month
+ * @property int $daysInMonth
+ * @property int $quarter
+ *
+ * Depends on the following methods:
+ *
+ * @method string|static locale(string $locale = null, string ...$fallbackLocales)
+ * @method string        toJSON()
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:39;s:7:"endLine";i:260;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";N;s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:1:{i:0;s:34:"Carbon\Traits\ObjectInitialisation";}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:3:{s:14:"dumpProperties";a:16:{s:18:"declaringClassName";s:27:"Carbon\Traits\Serialization";s:21:"implementingClassName";s:27:"Carbon\Traits\Serialization";s:4:"name";s:14:"dumpProperties";s:9:"modifiers";i:2;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:7:"default";a:2:{s:4:"code";s:37:"['date', 'timezone_type', 'timezone']";s:10:"attributes";a:6:{s:9:"startLine";i:48;s:7:"endLine";i:48;s:13:"startTokenPos";i:65;s:12:"startFilePos";i:982;s:11:"endTokenPos";i:73;s:10:"endFilePos";i:1018;}}s:10:"docComment";s:73:"/**
+ * List of key to use for dump/serialization.
+ *
+ * @var string[]
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:48;s:7:"endLine";i:48;s:11:"startColumn";i:5;s:9:"endColumn";i:76;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:10:"dumpLocale";a:16:{s:18:"declaringClassName";s:27:"Carbon\Traits\Serialization";s:21:"implementingClassName";s:27:"Carbon\Traits\Serialization";s:4:"name";s:10:"dumpLocale";s:9:"modifiers";i:2;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:81:"/**
+ * Locale to dump comes here before serialization.
+ *
+ * @var string|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:55;s:7:"endLine";i:55;s:11:"startColumn";i:5;s:9:"endColumn";i:26;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:18:"dumpDateProperties";a:16:{s:18:"declaringClassName";s:27:"Carbon\Traits\Serialization";s:21:"implementingClassName";s:27:"Carbon\Traits\Serialization";s:4:"name";s:18:"dumpDateProperties";s:9:"modifiers";i:2;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:132:"/**
+ * Embed date properties to dump in a dedicated variables so it won't overlap native
+ * DateTime ones.
+ *
+ * @var array|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:63;s:7:"endLine";i:63;s:11:"startColumn";i:5;s:9:"endColumn";i:34;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}}s:16:"immediateMethods";a:9:{s:9:"serialize";a:20:{s:4:"name";s:9:"serialize";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:54:"/**
+ * Return a serialized string of the instance.
+ */";s:9:"startLine";i:68;s:7:"endLine";i:71;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\Serialization";s:21:"implementingClassName";s:27:"Carbon\Traits\Serialization";s:16:"currentClassName";s:27:"Carbon\Traits\Serialization";s:9:"aliasName";N;}s:14:"fromSerialized";a:20:{s:4:"name";s:14:"fromSerialized";s:10:"parameters";a:2:{s:5:"value";a:14:{s:4:"name";s:5:"value";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:102;s:7:"endLine";i:102;s:11:"startColumn";i:43;s:9:"endColumn";i:48;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:7:"options";a:14:{s:4:"name";s:7:"options";s:7:"default";a:2:{s:4:"code";s:2:"[]";s:10:"attributes";a:6:{s:9:"startLine";i:102;s:7:"endLine";i:102;s:13:"startTokenPos";i:134;s:12:"startFilePos";i:2823;s:11:"endTokenPos";i:135;s:10:"endFilePos";i:2824;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:102;s:7:"endLine";i:102;s:11:"startColumn";i:51;s:9:"endColumn";i:69;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"static";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:1141:"/**
+ * Create an instance from a serialized string.
+ *
+ * Unserializing object can lead to arbitrary execution of period filters, and assignation
+ * of unvalidated values to properties.
+ *
+ * You should never unserialize a value from not from a trusted source. Ensure you unserialize
+ * only strings coming from storage no unauthorized party can read nor write, prefer to exchange
+ * data with other systems via static formats such as JSON.
+ *
+ * If the data has to transit via untrusted systems before unserialization, then you should
+ * sign it cryptographically (with HMAC or OpenSSL for example), and verify the signature
+ * before unserializing it.
+ *
+ * If the content of $value is unknown, consider using the allowed_classes option to limit
+ * the types of objects that can be built, for instance:
+ *
+ * @example
+ * ```php
+ * $object = Carbon::fromSerialized($value, ['allowed_classes' => [Carbon::class, CarbonImmutable::class]]);
+ * ```
+ *
+ * @param \Stringable|string $value
+ * @param array              $options example: ['allowed_classes' => [CarbonImmutable::class]]
+ *
+ * @throws InvalidFormatException
+ *
+ * @return static
+ */";s:9:"startLine";i:102;s:7:"endLine";i:111;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\Serialization";s:21:"implementingClassName";s:27:"Carbon\Traits\Serialization";s:16:"currentClassName";s:27:"Carbon\Traits\Serialization";s:9:"aliasName";N;}s:11:"__set_state";a:20:{s:4:"name";s:11:"__set_state";s:10:"parameters";a:1:{s:4:"dump";a:14:{s:4:"name";s:4:"dump";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:121;s:7:"endLine";i:121;s:11:"startColumn";i:40;s:9:"endColumn";i:44;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"static";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:20:"ReturnTypeWillChange";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:88:"/**
+ * The __set_state handler.
+ *
+ * @param string|array $dump
+ *
+ * @return static
+ */";s:9:"startLine";i:120;s:7:"endLine";i:133;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\Serialization";s:21:"implementingClassName";s:27:"Carbon\Traits\Serialization";s:16:"currentClassName";s:27:"Carbon\Traits\Serialization";s:9:"aliasName";N;}s:11:"__serialize";a:20:{s:4:"name";s:11:"__serialize";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:83:"/**
+ * Returns the values to dump on serialize() called on.
+ *
+ * @return array
+ */";s:9:"startLine";i:140;s:7:"endLine";i:174;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\Serialization";s:21:"implementingClassName";s:27:"Carbon\Traits\Serialization";s:16:"currentClassName";s:27:"Carbon\Traits\Serialization";s:9:"aliasName";N;}s:13:"__unserialize";a:20:{s:4:"name";s:13:"__unserialize";s:10:"parameters";a:1:{s:4:"data";a:14:{s:4:"name";s:4:"data";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:179;s:7:"endLine";i:179;s:11:"startColumn";i:35;s:9:"endColumn";i:45;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"void";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:59:"/**
+ * Set locale if specified on unserialize() called.
+ */";s:9:"startLine";i:179;s:7:"endLine";i:202;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\Serialization";s:21:"implementingClassName";s:27:"Carbon\Traits\Serialization";s:16:"currentClassName";s:27:"Carbon\Traits\Serialization";s:9:"aliasName";N;}s:13:"jsonSerialize";a:20:{s:4:"name";s:13:"jsonSerialize";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:53:"/**
+ * Prepare the object for JSON serialization.
+ */";s:9:"startLine";i:207;s:7:"endLine";i:220;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\Serialization";s:21:"implementingClassName";s:27:"Carbon\Traits\Serialization";s:16:"currentClassName";s:27:"Carbon\Traits\Serialization";s:9:"aliasName";N;}s:14:"serializeUsing";a:20:{s:4:"name";s:14:"serializeUsing";s:10:"parameters";a:1:{s:6:"format";a:14:{s:4:"name";s:6:"format";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:3:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:8:"callable";s:12:"isIdentifier";b:1;}}i:2;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"null";s:12:"isIdentifier";b:1;}}}}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:228;s:7:"endLine";i:228;s:11:"startColumn";i:43;s:9:"endColumn";i:70;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"void";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:267:"/**
+ * @deprecated To avoid conflict between different third-party libraries, static setters should not be used.
+ *             You should rather transform Carbon object before the serialization.
+ *
+ * JSON serialize all Carbon instances using the given callback.
+ */";s:9:"startLine";i:228;s:7:"endLine";i:231;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\Serialization";s:21:"implementingClassName";s:27:"Carbon\Traits\Serialization";s:16:"currentClassName";s:27:"Carbon\Traits\Serialization";s:9:"aliasName";N;}s:21:"cleanupDumpProperties";a:20:{s:4:"name";s:21:"cleanupDumpProperties";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"self";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:204:"/**
+ * Cleanup properties attached to the public scope of DateTime when a dump of the date is requested.
+ * foreach ($date as $_) {}
+ * serializer($date)
+ * var_export($date)
+ * get_object_vars($date)
+ */";s:9:"startLine";i:240;s:7:"endLine";i:253;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\Serialization";s:21:"implementingClassName";s:27:"Carbon\Traits\Serialization";s:16:"currentClassName";s:27:"Carbon\Traits\Serialization";s:9:"aliasName";N;}s:12:"dumpTimezone";a:20:{s:4:"name";s:12:"dumpTimezone";s:10:"parameters";a:1:{s:8:"timezone";a:14:{s:4:"name";s:8:"timezone";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:256;s:7:"endLine";i:256;s:11:"startColumn";i:35;s:9:"endColumn";i:49;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:26:"/** @codeCoverageIgnore */";s:9:"startLine";i:256;s:7:"endLine";i:259;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:4;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:27:"Carbon\Traits\Serialization";s:21:"implementingClassName";s:27:"Carbon\Traits\Serialization";s:16:"currentClassName";s:27:"Carbon\Traits\Serialization";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

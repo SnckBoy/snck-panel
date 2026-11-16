@@ -1,0 +1,34 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:17:{s:4:"name";s:11:"json_encode";s:10:"parameters";a:3:{s:5:"value";a:14:{s:4:"name";s:5:"value";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:38;s:7:"endLine";i:38;s:11:"startColumn";i:26;s:9:"endColumn";i:37;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:5:"flags";a:14:{s:4:"name";s:5:"flags";s:7:"default";a:2:{s:4:"code";s:1:"0";s:10:"attributes";a:6:{s:9:"startLine";i:38;s:7:"endLine";i:38;s:13:"startTokenPos";i:23;s:12:"startFilePos";i:1362;s:11:"endTokenPos";i:23;s:10:"endFilePos";i:1362;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:38;s:7:"endLine";i:38;s:11:"startColumn";i:40;s:9:"endColumn";i:53;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}s:5:"depth";a:14:{s:4:"name";s:5:"depth";s:7:"default";a:2:{s:4:"code";s:3:"512";s:10:"attributes";a:6:{s:9:"startLine";i:38;s:7:"endLine";i:38;s:13:"startTokenPos";i:32;s:12:"startFilePos";i:1378;s:11:"endTokenPos";i:32;s:10:"endFilePos";i:1380;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:38;s:7:"endLine";i:38;s:11:"startColumn";i:56;s:9:"endColumn";i:71;s:14:"parameterIndex";i:2;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"false";s:12:"isIdentifier";b:1;}}}}}s:10:"attributes";a:0:{}s:10:"docComment";s:1154:"/**
+ * (PHP 5 &gt;= 5.2.0, PECL json &gt;= 1.2.0)<br/>
+ * Returns the JSON representation of a value
+ * @link https://php.net/manual/en/function.json-encode.php
+ * @param mixed $value <p>
+ * The <i>value</i> being encoded. Can be any type except
+ * a resource.
+ * </p>
+ * <p>
+ * All string data must be UTF-8 encoded.
+ * </p>
+ * <p>PHP implements a superset of
+ * JSON - it will also encode and decode scalar types and <b>NULL</b>. The JSON standard
+ * only supports these values when they are nested inside an array or an object.
+ * </p>
+ * @param int $flags [optional] <p>
+ * Bitmask consisting of <b>JSON_HEX_QUOT</b>,
+ * <b>JSON_HEX_TAG</b>,
+ * <b>JSON_HEX_AMP</b>,
+ * <b>JSON_HEX_APOS</b>,
+ * <b>JSON_NUMERIC_CHECK</b>,
+ * <b>JSON_PRETTY_PRINT</b>,
+ * <b>JSON_UNESCAPED_SLASHES</b>,
+ * <b>JSON_FORCE_OBJECT</b>,
+ * <b>JSON_UNESCAPED_UNICODE</b>.
+ * <b>JSON_THROW_ON_ERROR</b> The behaviour of these
+ * constants is described on
+ * the JSON constants page.
+ * </p>
+ * @param int $depth [optional] <p>
+ * Set the maximum depth. Must be greater than zero.
+ * </p>
+ * @return string|false a JSON encoded string on success or <b>FALSE</b> on failure.
+ */";s:9:"startLine";i:38;s:7:"endLine";i:40;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:8:"isStatic";b:0;s:9:"namespace";N;s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:11:"json_encode";s:8:"filename";s:29:"phpstorm-stubs:json/json.stub";s:13:"extensionName";s:4:"json";s:9:"aliasName";N;}}}}

@@ -1,0 +1,14 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:17:{s:4:"name";s:12:"rawurlencode";s:10:"parameters";a:1:{s:6:"string";a:14:{s:4:"name";s:6:"string";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:19;s:7:"endLine";i:19;s:11:"startColumn";i:27;s:9:"endColumn";i:40;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:23:"JetBrains\PhpStorm\Pure";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:581:"/**
+ * URL-encode according to RFC 3986
+ * @link https://php.net/manual/en/function.rawurlencode.php
+ * @param string $string <p>
+ * The URL to be encoded.
+ * </p>
+ * @return string a string in which all non-alphanumeric characters except
+ * -_. have been replaced with a percent
+ * (%) sign followed by two hex digits. This is the
+ * encoding described in RFC 1738 for
+ * protecting literal characters from being interpreted as special URL
+ * delimiters, and for protecting URLs from being mangled by transmission
+ * media with character conversions (like some email systems).
+ */";s:9:"startLine";i:18;s:7:"endLine";i:21;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:8:"isStatic";b:0;s:9:"namespace";N;s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:12:"rawurlencode";s:8:"filename";s:39:"phpstorm-stubs:standard/standard_2.stub";s:13:"extensionName";s:8:"standard";s:9:"aliasName";N;}}}}

@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-e30570c5f7750017b7826b1c1afb595a5c38afa742ac1232580476d2709283d4-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:58:"illuminate\database\eloquent\concerns\transformstoresource";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

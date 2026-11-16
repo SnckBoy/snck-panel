@@ -1,0 +1,101 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-bb71e1cbe34f3f88a65e7ad192ade967a0f5b8c360e480197ed054ba8f11419c-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:8:"filename";s:147:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../laravel/framework/src/Illuminate/Database/Concerns/ManagesTransactions.php";}}s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:4:"name";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"shortName";s:19:"ManagesTransactions";s:11:"isInterface";b:0;s:7:"isTrait";b:1;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:49:"/**
+ * @mixin \Illuminate\Database\Connection
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:13;s:7:"endLine";i:379;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";N;s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:14:{s:11:"transaction";a:20:{s:4:"name";s:11:"transaction";s:10:"parameters";a:2:{s:8:"callback";a:14:{s:4:"name";s:8:"callback";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:7:"Closure";s:12:"isIdentifier";b:0;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:26;s:7:"endLine";i:26;s:11:"startColumn";i:33;s:9:"endColumn";i:49;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:8:"attempts";a:14:{s:4:"name";s:8:"attempts";s:7:"default";a:2:{s:4:"code";s:1:"1";s:10:"attributes";a:6:{s:9:"startLine";i:26;s:7:"endLine";i:26;s:13:"startTokenPos";i:52;s:12:"startFilePos";i:534;s:11:"endTokenPos";i:52;s:10:"endFilePos";i:534;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:26;s:7:"endLine";i:26;s:11:"startColumn";i:52;s:9:"endColumn";i:64;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:206:"/**
+ * @template TReturn of mixed
+ *
+ * Execute a Closure within a transaction.
+ *
+ * @param  (\Closure(static): TReturn)  $callback
+ * @param  int  $attempts
+ * @return TReturn
+ *
+ * @throws \Throwable
+ */";s:9:"startLine";i:26;s:7:"endLine";i:76;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:18:"declaringClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:21:"implementingClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:16:"currentClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"aliasName";N;}s:26:"handleTransactionException";a:20:{s:4:"name";s:26:"handleTransactionException";s:10:"parameters";a:3:{s:1:"e";a:14:{s:4:"name";s:1:"e";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:9:"Throwable";s:12:"isIdentifier";b:0;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:88;s:7:"endLine";i:88;s:11:"startColumn";i:51;s:9:"endColumn";i:62;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:14:"currentAttempt";a:14:{s:4:"name";s:14:"currentAttempt";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:88;s:7:"endLine";i:88;s:11:"startColumn";i:65;s:9:"endColumn";i:79;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}s:11:"maxAttempts";a:14:{s:4:"name";s:11:"maxAttempts";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:88;s:7:"endLine";i:88;s:11:"startColumn";i:82;s:9:"endColumn";i:93;s:14:"parameterIndex";i:2;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:210:"/**
+ * Handle an exception encountered when running a transacted statement.
+ *
+ * @param  \Throwable  $e
+ * @param  int  $currentAttempt
+ * @param  int  $maxAttempts
+ * @return void
+ *
+ * @throws \Throwable
+ */";s:9:"startLine";i:88;s:7:"endLine";i:115;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:18:"declaringClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:21:"implementingClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:16:"currentClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"aliasName";N;}s:16:"beginTransaction";a:20:{s:4:"name";s:16:"beginTransaction";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:88:"/**
+ * Start a new database transaction.
+ *
+ * @return void
+ *
+ * @throws \Throwable
+ */";s:9:"startLine";i:124;s:7:"endLine";i:139;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:18:"declaringClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:21:"implementingClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:16:"currentClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"aliasName";N;}s:17:"createTransaction";a:20:{s:4:"name";s:17:"createTransaction";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:96:"/**
+ * Create a transaction within the database.
+ *
+ * @return void
+ *
+ * @throws \Throwable
+ */";s:9:"startLine";i:148;s:7:"endLine";i:161;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:18:"declaringClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:21:"implementingClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:16:"currentClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"aliasName";N;}s:15:"createSavepoint";a:20:{s:4:"name";s:15:"createSavepoint";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:95:"/**
+ * Create a save point within the database.
+ *
+ * @return void
+ *
+ * @throws \Throwable
+ */";s:9:"startLine";i:170;s:7:"endLine";i:175;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:18:"declaringClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:21:"implementingClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:16:"currentClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"aliasName";N;}s:31:"handleBeginTransactionException";a:20:{s:4:"name";s:31:"handleBeginTransactionException";s:10:"parameters";a:1:{s:1:"e";a:14:{s:4:"name";s:1:"e";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:9:"Throwable";s:12:"isIdentifier";b:0;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:185;s:7:"endLine";i:185;s:11:"startColumn";i:56;s:9:"endColumn";i:67;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:130:"/**
+ * Handle an exception from a transaction beginning.
+ *
+ * @param  \Throwable  $e
+ * @return void
+ *
+ * @throws \Throwable
+ */";s:9:"startLine";i:185;s:7:"endLine";i:194;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:18:"declaringClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:21:"implementingClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:16:"currentClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"aliasName";N;}s:6:"commit";a:20:{s:4:"name";s:6:"commit";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:94:"/**
+ * Commit the active database transaction.
+ *
+ * @return void
+ *
+ * @throws \Throwable
+ */";s:9:"startLine";i:203;s:7:"endLine";i:220;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:18:"declaringClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:21:"implementingClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:16:"currentClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"aliasName";N;}s:32:"handleCommitTransactionException";a:20:{s:4:"name";s:32:"handleCommitTransactionException";s:10:"parameters";a:3:{s:1:"e";a:14:{s:4:"name";s:1:"e";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:9:"Throwable";s:12:"isIdentifier";b:0;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:232;s:7:"endLine";i:232;s:11:"startColumn";i:57;s:9:"endColumn";i:68;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:14:"currentAttempt";a:14:{s:4:"name";s:14:"currentAttempt";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:232;s:7:"endLine";i:232;s:11:"startColumn";i:71;s:9:"endColumn";i:85;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}s:11:"maxAttempts";a:14:{s:4:"name";s:11:"maxAttempts";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:232;s:7:"endLine";i:232;s:11:"startColumn";i:88;s:9:"endColumn";i:99;s:14:"parameterIndex";i:2;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:204:"/**
+ * Handle an exception encountered when committing a transaction.
+ *
+ * @param  \Throwable  $e
+ * @param  int  $currentAttempt
+ * @param  int  $maxAttempts
+ * @return void
+ *
+ * @throws \Throwable
+ */";s:9:"startLine";i:232;s:7:"endLine";i:251;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:18:"declaringClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:21:"implementingClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:16:"currentClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"aliasName";N;}s:8:"rollBack";a:20:{s:4:"name";s:8:"rollBack";s:10:"parameters";a:1:{s:7:"toLevel";a:14:{s:4:"name";s:7:"toLevel";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:261;s:7:"endLine";i:261;s:13:"startTokenPos";i:998;s:12:"startFilePos";i:7136;s:11:"endTokenPos";i:998;s:10:"endFilePos";i:7139;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:261;s:7:"endLine";i:261;s:11:"startColumn";i:30;s:9:"endColumn";i:44;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:126:"/**
+ * Rollback the active database transaction.
+ *
+ * @param  int|null  $toLevel
+ * @return void
+ *
+ * @throws \Throwable
+ */";s:9:"startLine";i:261;s:7:"endLine";i:290;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:18:"declaringClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:21:"implementingClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:16:"currentClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"aliasName";N;}s:15:"performRollBack";a:20:{s:4:"name";s:15:"performRollBack";s:10:"parameters";a:1:{s:7:"toLevel";a:14:{s:4:"name";s:7:"toLevel";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:300;s:7:"endLine";i:300;s:11:"startColumn";i:40;s:9:"endColumn";i:47;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:119:"/**
+ * Perform a rollback within the database.
+ *
+ * @param  int  $toLevel
+ * @return void
+ *
+ * @throws \Throwable
+ */";s:9:"startLine";i:300;s:7:"endLine";i:313;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:18:"declaringClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:21:"implementingClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:16:"currentClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"aliasName";N;}s:23:"handleRollBackException";a:20:{s:4:"name";s:23:"handleRollBackException";s:10:"parameters";a:1:{s:1:"e";a:14:{s:4:"name";s:1:"e";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:9:"Throwable";s:12:"isIdentifier";b:0;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:323;s:7:"endLine";i:323;s:11:"startColumn";i:48;s:9:"endColumn";i:59;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:117:"/**
+ * Handle an exception from a rollback.
+ *
+ * @param  \Throwable  $e
+ * @return void
+ *
+ * @throws \Throwable
+ */";s:9:"startLine";i:323;s:7:"endLine";i:334;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:2;s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:18:"declaringClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:21:"implementingClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:16:"currentClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"aliasName";N;}s:16:"transactionLevel";a:20:{s:4:"name";s:16:"transactionLevel";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:67:"/**
+ * Get the number of active transactions.
+ *
+ * @return int
+ */";s:9:"startLine";i:341;s:7:"endLine";i:344;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:18:"declaringClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:21:"implementingClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:16:"currentClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"aliasName";N;}s:11:"afterCommit";a:20:{s:4:"name";s:11:"afterCommit";s:10:"parameters";a:1:{s:8:"callback";a:14:{s:4:"name";s:8:"callback";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:354;s:7:"endLine";i:354;s:11:"startColumn";i:33;s:9:"endColumn";i:41;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:142:"/**
+ * Execute the callback after a transaction commits.
+ *
+ * @param  callable  $callback
+ * @return void
+ *
+ * @throws \RuntimeException
+ */";s:9:"startLine";i:354;s:7:"endLine";i:361;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:18:"declaringClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:21:"implementingClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:16:"currentClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"aliasName";N;}s:13:"afterRollBack";a:20:{s:4:"name";s:13:"afterRollBack";s:10:"parameters";a:1:{s:8:"callback";a:14:{s:4:"name";s:8:"callback";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:371;s:7:"endLine";i:371;s:11:"startColumn";i:35;s:9:"endColumn";i:43;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:145:"/**
+ * Execute the callback after a transaction rolls back.
+ *
+ * @param  callable  $callback
+ * @return void
+ *
+ * @throws \RuntimeException
+ */";s:9:"startLine";i:371;s:7:"endLine";i:378;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:28:"Illuminate\Database\Concerns";s:18:"declaringClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:21:"implementingClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:16:"currentClassName";s:48:"Illuminate\Database\Concerns\ManagesTransactions";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

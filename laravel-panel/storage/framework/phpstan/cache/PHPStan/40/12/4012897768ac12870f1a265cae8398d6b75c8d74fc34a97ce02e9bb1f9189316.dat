@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-8e2cca3fadcb0bb6e09cbc145a441c905fad1a62ffc261aa8aab3b7bcb885856-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:44:"illuminate\routing\resolvesroutedependencies";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

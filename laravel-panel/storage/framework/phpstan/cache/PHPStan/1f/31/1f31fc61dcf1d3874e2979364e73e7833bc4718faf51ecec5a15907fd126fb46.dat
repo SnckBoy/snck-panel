@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-3065238d8730da4e7f3bac06eb3808f081a0539079e4d8e1be0a5cb761e52ffd-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:58:"symfony\component\process\exception\processfailedexception";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

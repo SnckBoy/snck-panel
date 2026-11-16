@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-e9ec3990dbe141eaf86b9c5e377af2756da2d27edeb1f7256f317b84f09aac75-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:47:"illuminate\notifications\messages\simplemessage";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

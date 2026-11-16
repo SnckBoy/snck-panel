@@ -1,0 +1,20 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:17:{s:4:"name";s:17:"password_get_info";s:10:"parameters";a:1:{s:4:"hash";a:14:{s:4:"name";s:4:"hash";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:27;s:7:"endLine";i:27;s:11:"startColumn";i:32;s:9:"endColumn";i:43;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:3:{i:0;a:3:{s:4:"name";s:29:"JetBrains\PhpStorm\ArrayShape";s:10:"isRepeated";b:0;s:9:"arguments";a:1:{i:0;a:2:{s:4:"code";s:63:"["algo" => "int", "algoName" => "string", "options" => "array"]";s:10:"attributes";a:6:{s:9:"startLine";i:24;s:7:"endLine";i:24;s:13:"startTokenPos";i:11;s:12:"startFilePos";i:814;s:11:"endTokenPos";i:31;s:10:"endFilePos";i:876;}}}}i:1;a:3:{s:4:"name";s:50:"JetBrains\PhpStorm\Internal\LanguageLevelTypeAware";s:10:"isRepeated";b:0;s:9:"arguments";a:2:{i:0;a:2:{s:4:"code";s:18:"['8.0' => 'array']";s:10:"attributes";a:6:{s:9:"startLine";i:25;s:7:"endLine";i:25;s:13:"startTokenPos";i:38;s:12:"startFilePos";i:938;s:11:"endTokenPos";i:44;s:10:"endFilePos";i:955;}}s:7:"default";a:2:{s:4:"code";s:12:"'array|null'";s:10:"attributes";a:6:{s:9:"startLine";i:25;s:7:"endLine";i:25;s:13:"startTokenPos";i:50;s:12:"startFilePos";i:967;s:11:"endTokenPos";i:50;s:10:"endFilePos";i:978;}}}}i:2;a:3:{s:4:"name";s:4:"Pure";s:10:"isRepeated";b:0;s:9:"arguments";a:0:{}}}s:10:"docComment";s:677:"/**
+ * Returns information about the given hash
+ * @link https://php.net/manual/en/function.password-get-info.php
+ * @param string $hash A hash created by password_hash().
+ * @return array|null Returns an associative array with three elements:
+ * <ul>
+ * <li>
+ * <em>algo</em>, which will match a
+ * {@link https://php.net/manual/en/password.constants.php password algorithm constant}
+ * </li>
+ * <li>
+ * <em>algoName</em>, which has the human readable name of the algorithm
+ * </li>
+ * <li>
+ * <em>options</em>, which includes the options
+ * provided when calling  @link https://php.net/manual/en/function.password-hash.php" password_hash()
+ * </li>
+ * </ul>
+ * @since 5.5
+ */";s:9:"startLine";i:24;s:7:"endLine";i:29;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:8:"isStatic";b:0;s:9:"namespace";N;s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:17:"password_get_info";s:8:"filename";s:37:"phpstorm-stubs:standard/password.stub";s:13:"extensionName";s:8:"standard";s:9:"aliasName";N;}}}}

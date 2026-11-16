@@ -1,0 +1,252 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-bc5c1520c19abcb8a3d04dec0b4b1c1ce223f2520ecb263b163eef730965f75d-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:24:"Carbon\Traits\Boundaries";s:8:"filename";s:119:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../nesbot/carbon/src/Carbon/Traits/Boundaries.php";}}s:9:"namespace";s:13:"Carbon\Traits";s:4:"name";s:24:"Carbon\Traits\Boundaries";s:9:"shortName";s:10:"Boundaries";s:11:"isInterface";b:0;s:7:"isTrait";b:1;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:465:"/**
+ * Trait Boundaries.
+ *
+ * startOf, endOf and derived method for each unit.
+ *
+ * Depends on the following properties:
+ *
+ * @property int $year
+ * @property int $month
+ * @property int $daysInMonth
+ * @property int $quarter
+ *
+ * Depends on the following methods:
+ *
+ * @method $this setTime(int $hour, int $minute, int $second = 0, int $microseconds = 0)
+ * @method $this setDate(int $year, int $month, int $day)
+ * @method $this addMonths(int $value = 1)
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:38;s:7:"endLine";i:469;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";N;s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:26:{s:10:"startOfDay";a:20:{s:4:"name";s:10:"startOfDay";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:161:"/**
+ * Resets the time to 00:00:00 start of day
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->startOfDay();
+ * ```
+ *
+ * @return static
+ */";s:9:"startLine";i:50;s:7:"endLine";i:53;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:8:"endOfDay";a:20:{s:4:"name";s:8:"endOfDay";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:164:"/**
+ * Resets the time to 23:59:59.999999 end of day
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->endOfDay();
+ * ```
+ *
+ * @return static
+ */";s:9:"startLine";i:65;s:7:"endLine";i:68;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:12:"startOfMonth";a:20:{s:4:"name";s:12:"startOfMonth";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:193:"/**
+ * Resets the date to the first day of the month and the time to 00:00:00
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->startOfMonth();
+ * ```
+ *
+ * @return static
+ */";s:9:"startLine";i:80;s:7:"endLine";i:83;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:10:"endOfMonth";a:20:{s:4:"name";s:10:"endOfMonth";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:184:"/**
+ * Resets the date to end of the month and time to 23:59:59.999999
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->endOfMonth();
+ * ```
+ *
+ * @return static
+ */";s:9:"startLine";i:95;s:7:"endLine";i:98;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:14:"startOfQuarter";a:20:{s:4:"name";s:14:"startOfQuarter";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:197:"/**
+ * Resets the date to the first day of the quarter and the time to 00:00:00
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->startOfQuarter();
+ * ```
+ *
+ * @return static
+ */";s:9:"startLine";i:110;s:7:"endLine";i:115;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:12:"endOfQuarter";a:20:{s:4:"name";s:12:"endOfQuarter";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:188:"/**
+ * Resets the date to end of the quarter and time to 23:59:59.999999
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->endOfQuarter();
+ * ```
+ *
+ * @return static
+ */";s:9:"startLine";i:127;s:7:"endLine";i:130;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:11:"startOfYear";a:20:{s:4:"name";s:11:"startOfYear";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:191:"/**
+ * Resets the date to the first day of the year and the time to 00:00:00
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->startOfYear();
+ * ```
+ *
+ * @return static
+ */";s:9:"startLine";i:142;s:7:"endLine";i:145;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:9:"endOfYear";a:20:{s:4:"name";s:9:"endOfYear";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:182:"/**
+ * Resets the date to end of the year and time to 23:59:59.999999
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->endOfYear();
+ * ```
+ *
+ * @return static
+ */";s:9:"startLine";i:157;s:7:"endLine";i:160;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:13:"startOfDecade";a:20:{s:4:"name";s:13:"startOfDecade";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:195:"/**
+ * Resets the date to the first day of the decade and the time to 00:00:00
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->startOfDecade();
+ * ```
+ *
+ * @return static
+ */";s:9:"startLine";i:172;s:7:"endLine";i:177;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:11:"endOfDecade";a:20:{s:4:"name";s:11:"endOfDecade";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:186:"/**
+ * Resets the date to end of the decade and time to 23:59:59.999999
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->endOfDecade();
+ * ```
+ *
+ * @return static
+ */";s:9:"startLine";i:189;s:7:"endLine";i:194;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:14:"startOfCentury";a:20:{s:4:"name";s:14:"startOfCentury";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:197:"/**
+ * Resets the date to the first day of the century and the time to 00:00:00
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->startOfCentury();
+ * ```
+ *
+ * @return static
+ */";s:9:"startLine";i:206;s:7:"endLine";i:211;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:12:"endOfCentury";a:20:{s:4:"name";s:12:"endOfCentury";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:188:"/**
+ * Resets the date to end of the century and time to 23:59:59.999999
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->endOfCentury();
+ * ```
+ *
+ * @return static
+ */";s:9:"startLine";i:223;s:7:"endLine";i:228;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:17:"startOfMillennium";a:20:{s:4:"name";s:17:"startOfMillennium";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:203:"/**
+ * Resets the date to the first day of the millennium and the time to 00:00:00
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->startOfMillennium();
+ * ```
+ *
+ * @return static
+ */";s:9:"startLine";i:240;s:7:"endLine";i:245;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:15:"endOfMillennium";a:20:{s:4:"name";s:15:"endOfMillennium";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:194:"/**
+ * Resets the date to end of the millennium and time to 23:59:59.999999
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->endOfMillennium();
+ * ```
+ *
+ * @return static
+ */";s:9:"startLine";i:257;s:7:"endLine";i:262;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:11:"startOfWeek";a:20:{s:4:"name";s:11:"startOfWeek";s:10:"parameters";a:1:{s:12:"weekStartsAt";a:14:{s:4:"name";s:12:"weekStartsAt";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:278;s:7:"endLine";i:278;s:13:"startTokenPos";i:781;s:12:"startFilePos";i:6987;s:11:"endTokenPos";i:781;s:10:"endFilePos";i:6990;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:3:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:14:"Carbon\WeekDay";s:12:"isIdentifier";b:0;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}i:2;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"null";s:12:"isIdentifier";b:1;}}}}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:278;s:7:"endLine";i:278;s:11:"startColumn";i:33;s:9:"endColumn";i:69;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"static";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:506:"/**
+ * Resets the date to the first day of week (defined in $weekStartsAt) and the time to 00:00:00
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->startOfWeek() . "\n";
+ * echo Carbon::parse('2018-07-25 12:45:16')->locale('ar')->startOfWeek() . "\n";
+ * echo Carbon::parse('2018-07-25 12:45:16')->startOfWeek(Carbon::SUNDAY) . "\n";
+ * ```
+ *
+ * @param WeekDay|int|null $weekStartsAt optional start allow you to specify the day of week to use to start the week
+ *
+ * @return static
+ */";s:9:"startLine";i:278;s:7:"endLine";i:286;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:9:"endOfWeek";a:20:{s:4:"name";s:9:"endOfWeek";s:10:"parameters";a:1:{s:10:"weekEndsAt";a:14:{s:4:"name";s:10:"weekEndsAt";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:302;s:7:"endLine";i:302;s:13:"startTokenPos";i:861;s:12:"startFilePos";i:7860;s:11:"endTokenPos";i:861;s:10:"endFilePos";i:7863;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:3:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:14:"Carbon\WeekDay";s:12:"isIdentifier";b:0;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}i:2;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"null";s:12:"isIdentifier";b:1;}}}}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:302;s:7:"endLine";i:302;s:11:"startColumn";i:31;s:9:"endColumn";i:65;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"static";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:487:"/**
+ * Resets the date to end of week (defined in $weekEndsAt) and time to 23:59:59.999999
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->endOfWeek() . "\n";
+ * echo Carbon::parse('2018-07-25 12:45:16')->locale('ar')->endOfWeek() . "\n";
+ * echo Carbon::parse('2018-07-25 12:45:16')->endOfWeek(Carbon::SATURDAY) . "\n";
+ * ```
+ *
+ * @param WeekDay|int|null $weekEndsAt optional end allow you to specify the day of week to use to end the week
+ *
+ * @return static
+ */";s:9:"startLine";i:302;s:7:"endLine";i:310;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:11:"startOfHour";a:20:{s:4:"name";s:11:"startOfHour";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"static";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:162:"/**
+ * Modify to start of current hour, minutes and seconds become 0
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->startOfHour();
+ * ```
+ */";s:9:"startLine";i:320;s:7:"endLine";i:323;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:9:"endOfHour";a:20:{s:4:"name";s:9:"endOfHour";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"static";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:159:"/**
+ * Modify to end of current hour, minutes and seconds become 59
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->endOfHour();
+ * ```
+ */";s:9:"startLine";i:333;s:7:"endLine";i:336;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:13:"startOfMinute";a:20:{s:4:"name";s:13:"startOfMinute";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"static";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:154:"/**
+ * Modify to start of current minute, seconds become 0
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->startOfMinute();
+ * ```
+ */";s:9:"startLine";i:346;s:7:"endLine";i:349;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:11:"endOfMinute";a:20:{s:4:"name";s:11:"endOfMinute";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"static";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:151:"/**
+ * Modify to end of current minute, seconds become 59
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16')->endOfMinute();
+ * ```
+ */";s:9:"startLine";i:359;s:7:"endLine";i:362;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:13:"startOfSecond";a:20:{s:4:"name";s:13:"startOfSecond";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"static";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:197:"/**
+ * Modify to start of current second, microseconds become 0
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16.334455')
+ *   ->startOfSecond()
+ *   ->format('H:i:s.u');
+ * ```
+ */";s:9:"startLine";i:374;s:7:"endLine";i:377;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:11:"endOfSecond";a:20:{s:4:"name";s:11:"endOfSecond";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"static";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:198:"/**
+ * Modify to end of current second, microseconds become 999999
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16.334455')
+ *   ->endOfSecond()
+ *   ->format('H:i:s.u');
+ * ```
+ */";s:9:"startLine";i:389;s:7:"endLine";i:392;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:18:"startOfMillisecond";a:20:{s:4:"name";s:18:"startOfMillisecond";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"static";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:221:"/**
+ * Modify to start of current millisecond, microseconds such as 12345 become 123000
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16.334455')
+ *   ->startOfSecond()
+ *   ->format('H:i:s.u');
+ * ```
+ */";s:9:"startLine";i:404;s:7:"endLine";i:409;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:16:"endOfMillisecond";a:20:{s:4:"name";s:16:"endOfMillisecond";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"static";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:217:"/**
+ * Modify to end of current millisecond, microseconds such as 12345 become 123999
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16.334455')
+ *   ->endOfSecond()
+ *   ->format('H:i:s.u');
+ * ```
+ */";s:9:"startLine";i:421;s:7:"endLine";i:426;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:7:"startOf";a:20:{s:4:"name";s:7:"startOf";s:10:"parameters";a:2:{s:4:"unit";a:14:{s:4:"name";s:4:"unit";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:11:"Carbon\Unit";s:12:"isIdentifier";b:0;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}}}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:438;s:7:"endLine";i:438;s:11:"startColumn";i:29;s:9:"endColumn";i:45;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:6:"params";a:14:{s:4:"name";s:6:"params";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:1;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:438;s:7:"endLine";i:438;s:11:"startColumn";i:48;s:9:"endColumn";i:63;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"static";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:200:"/**
+ * Modify to start of current given unit.
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16.334455')
+ *   ->startOf(Unit::Month)
+ *   ->endOf(Unit::Week, Carbon::FRIDAY);
+ * ```
+ */";s:9:"startLine";i:438;s:7:"endLine";i:447;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:1;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}s:5:"endOf";a:20:{s:4:"name";s:5:"endOf";s:10:"parameters";a:2:{s:4:"unit";a:14:{s:4:"name";s:4:"unit";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:11:"Carbon\Unit";s:12:"isIdentifier";b:0;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}}}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:459;s:7:"endLine";i:459;s:11:"startColumn";i:27;s:9:"endColumn";i:43;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:6:"params";a:14:{s:4:"name";s:6:"params";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:1;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:459;s:7:"endLine";i:459;s:11:"startColumn";i:46;s:9:"endColumn";i:61;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"static";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:198:"/**
+ * Modify to end of current given unit.
+ *
+ * @example
+ * ```
+ * echo Carbon::parse('2018-07-25 12:45:16.334455')
+ *   ->startOf(Unit::Month)
+ *   ->endOf(Unit::Week, Carbon::FRIDAY);
+ * ```
+ */";s:9:"startLine";i:459;s:7:"endLine";i:468;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:1;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:24:"Carbon\Traits\Boundaries";s:21:"implementingClassName";s:24:"Carbon\Traits\Boundaries";s:16:"currentClassName";s:24:"Carbon\Traits\Boundaries";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

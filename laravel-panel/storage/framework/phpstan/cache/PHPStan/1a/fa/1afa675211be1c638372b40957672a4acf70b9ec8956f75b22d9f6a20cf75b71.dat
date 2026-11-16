@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-78cf6274c8cb061f545cc7738366411fe2966654d6ed651cef4e79ed7cd9fb90-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:36:"illuminate\database\schema\blueprint";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-df3f1333fd7419cacf361642e175dc3c2c55281ae9364f614fbd6a9a2680024b-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:45:"illuminate\auth\access\authorizationexception";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

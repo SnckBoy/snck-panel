@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-30a6c0719c2a2623d6b8b1c74b77c9f8080a09fac2409961d8927ffa3e268768-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:32:"laravel\socialite\contracts\user";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

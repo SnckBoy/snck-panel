@@ -1,0 +1,152 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:17:{s:4:"name";s:10:"preg_match";s:10:"parameters";a:5:{s:7:"pattern";a:14:{s:4:"name";s:7:"pattern";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:156;s:7:"endLine";i:156;s:11:"startColumn";i:25;s:9:"endColumn";i:39;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}s:7:"subject";a:14:{s:4:"name";s:7:"subject";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:156;s:7:"endLine";i:156;s:11:"startColumn";i:42;s:9:"endColumn";i:56;s:14:"parameterIndex";i:1;s:10:"isOptional";b:0;}s:7:"matches";a:14:{s:4:"name";s:7:"matches";s:7:"default";a:2:{s:4:"code";s:5:"\null";s:10:"attributes";a:6:{s:9:"startLine";i:156;s:7:"endLine";i:156;s:13:"startTokenPos";i:30;s:12:"startFilePos";i:4462;s:11:"endTokenPos";i:30;s:10:"endFilePos";i:4465;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"null";s:12:"isIdentifier";b:1;}}}}}s:10:"isVariadic";b:0;s:5:"byRef";b:1;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:156;s:7:"endLine";i:156;s:11:"startColumn";i:59;s:9:"endColumn";i:81;s:14:"parameterIndex";i:2;s:10:"isOptional";b:1;}s:5:"flags";a:14:{s:4:"name";s:5:"flags";s:7:"default";a:2:{s:4:"code";s:1:"0";s:10:"attributes";a:6:{s:9:"startLine";i:156;s:7:"endLine";i:156;s:13:"startTokenPos";i:39;s:12:"startFilePos";i:4481;s:11:"endTokenPos";i:39;s:10:"endFilePos";i:4481;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:156;s:7:"endLine";i:156;s:11:"startColumn";i:84;s:9:"endColumn";i:97;s:14:"parameterIndex";i:3;s:10:"isOptional";b:1;}s:6:"offset";a:14:{s:4:"name";s:6:"offset";s:7:"default";a:2:{s:4:"code";s:1:"0";s:10:"attributes";a:6:{s:9:"startLine";i:156;s:7:"endLine";i:156;s:13:"startTokenPos";i:48;s:12:"startFilePos";i:4498;s:11:"endTokenPos";i:48;s:10:"endFilePos";i:4498;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:156;s:7:"endLine";i:156;s:11:"startColumn";i:100;s:9:"endColumn";i:114;s:14:"parameterIndex";i:4;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:3:"int";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"false";s:12:"isIdentifier";b:1;}}}}}s:10:"attributes";a:0:{}s:10:"docComment";s:3757:"/**
+ * Perform a regular expression match
+ * @link https://php.net/manual/en/function.preg-match.php
+ * @param string $pattern <p>
+ * The pattern to search for, as a string.
+ * </p>
+ * @param string $subject <p>
+ * The input string.
+ * </p>
+ * @param null|string[] &$matches [optional] <p>
+ * If <i>matches</i> is provided, then it is filled with
+ * the results of search. $matches[0] will contain the
+ * text that matched the full pattern, $matches[1]
+ * will have the text that matched the first captured parenthesized
+ * subpattern, and so on.
+ * </p>
+ * @param int $flags [optional] <p>
+ * <i>flags</i> can be the following flag:
+ * <b>PREG_OFFSET_CAPTURE</b>
+ * <blockquote>
+ * If this flag is passed, for every occurring match the appendant string
+ * offset will also be returned. Note that this changes the value of
+ * <i>matches</i> into an array where every element is an
+ * array consisting of the matched string at offset 0
+ * and its string offset into <i>subject</i> at offset 1.
+ * <pre>
+ * <?php
+ * preg_match('/(foo)(bar)(baz)/', 'foobarbaz', $matches, PREG_OFFSET_CAPTURE);
+ * print_r($matches);
+ * ?>
+ * </pre>
+ * The above example will output:
+ * <pre>
+ * Array
+ * (
+ *     [0] => Array
+ *         (
+ *             [0] => foobarbaz
+ *             [1] => 0
+ *         )
+ *
+ *     [1] => Array
+ *         (
+ *             [0] => foo
+ *             [1] => 0
+ *         )
+ *
+ *     [2] => Array
+ *         (
+ *             [0] => bar
+ *             [1] => 3
+ *         )
+ *
+ *     [3] => Array
+ *         (
+ *             [0] => baz
+ *             [1] => 6
+ *         )
+ *
+ * )
+ * </pre>
+ * </blockquote>
+ * <b>PREG_UNMATCHED_AS_NULL</b>
+ * <blockquote>
+ * If this flag is passed, unmatched subpatterns are reported as NULL;
+ * otherwise they are reported as an empty string.
+ * <pre>
+ * <?php
+ * preg_match('/(a)(b)*(c)/', 'ac', $matches);
+ * var_dump($matches);
+ * preg_match('/(a)(b)*(c)/', 'ac', $matches, PREG_UNMATCHED_AS_NULL);
+ * var_dump($matches);
+ * ?>
+ * </pre>
+ * The above example will output:
+ * <pre>
+ * array(4) {
+ *   [0]=>
+ *   string(2) "ac"
+ *   [1]=>
+ *   string(1) "a"
+ *   [2]=>
+ *   string(0) ""
+ *   [3]=>
+ *   string(1) "c"
+ * }
+ * array(4) {
+ *   [0]=>
+ *   string(2) "ac"
+ *   [1]=>
+ *   string(1) "a"
+ *   [2]=>
+ *   NULL
+ *   [3]=>
+ *   string(1) "c"
+ * }
+ * </pre>
+ * </blockquote>
+ * @param int $offset [optional] <p>
+ * Normally, the search starts from the beginning of the subject string.
+ * The optional parameter <i>offset</i> can be used to
+ * specify the alternate place from which to start the search (in bytes).
+ * </p>
+ * <p>
+ * Using <i>offset</i> is not equivalent to passing
+ * substr($subject, $offset) to
+ * <b>preg_match</b> in place of the subject string,
+ * because <i>pattern</i> can contain assertions such as
+ * ^, $ or
+ * (?&lt;=x). Compare:
+ * <pre>
+ * $subject = "abcdef";
+ * $pattern = '/^def/';
+ * preg_match($pattern, $subject, $matches, PREG_OFFSET_CAPTURE, 3);
+ * print_r($matches);
+ * </pre>
+ * The above example will output:</p>
+ * <pre>
+ * Array
+ * (
+ * )
+ * </pre>
+ * <p>
+ * while this example
+ * </p>
+ * <code>
+ * $subject = "abcdef";
+ * $pattern = '/^def/';
+ * preg_match($pattern, substr($subject,3), $matches, PREG_OFFSET_CAPTURE);
+ * print_r($matches);
+ * </code>
+ * <p>
+ * will produce
+ * </p>
+ * <pre>
+ * Array
+ * (
+ *     [0] => Array
+ *         (
+ *             [0] => def
+ *             [1] => 0
+ *         )
+ * )
+ * </pre>
+ * Alternatively, to avoid using substr(), use the \G assertion rather
+ * than the ^ anchor, or the A modifier instead, both of which work with
+ * the offset parameter.
+ * </p>
+ * @return int|false <b>preg_match</b> returns 1 if the <i>pattern</i>
+ * matches given <i>subject</i>, 0 if it does not, or <b>FALSE</b>
+ * if an error occurred.
+ */";s:9:"startLine";i:156;s:7:"endLine";i:158;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:8:"isStatic";b:0;s:9:"namespace";N;s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:10:"preg_match";s:8:"filename";s:29:"phpstorm-stubs:pcre/pcre.stub";s:13:"extensionName";s:4:"pcre";s:9:"aliasName";N;}}}}

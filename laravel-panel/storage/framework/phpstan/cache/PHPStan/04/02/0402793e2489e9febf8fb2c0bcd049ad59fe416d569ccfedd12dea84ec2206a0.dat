@@ -1,0 +1,19 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-1e46d3ac71616a98607a0ae08424c5bda9d576d6f62dafc1d0735ee3c64e091d-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:32:"Illuminate\Support\Facades\Crypt";s:8:"filename";s:131:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../laravel/framework/src/Illuminate/Support/Facades/Crypt.php";}}s:9:"namespace";s:26:"Illuminate\Support\Facades";s:4:"name";s:32:"Illuminate\Support\Facades\Crypt";s:9:"shortName";s:5:"Crypt";s:11:"isInterface";b:0;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:666:"/**
+ * @method static bool supported(string $key, string $cipher)
+ * @method static string generateKey(string $cipher)
+ * @method static string encrypt(mixed $value, bool $serialize = true)
+ * @method static string encryptString(string $value)
+ * @method static mixed decrypt(string $payload, bool $unserialize = true)
+ * @method static string decryptString(string $payload)
+ * @method static bool appearsEncrypted(mixed $value)
+ * @method static string getKey()
+ * @method static array getAllKeys()
+ * @method static array getPreviousKeys()
+ * @method static \Illuminate\Encryption\Encrypter previousKeys(array $keys)
+ *
+ * @see \Illuminate\Encryption\Encrypter
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:20;s:7:"endLine";i:31;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";s:33:"Illuminate\Support\Facades\Facade";s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:1:{s:17:"getFacadeAccessor";a:20:{s:4:"name";s:17:"getFacadeAccessor";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:73:"/**
+ * Get the registered name of the component.
+ *
+ * @return string
+ */";s:9:"startLine";i:27;s:7:"endLine";i:30;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:18;s:9:"namespace";s:26:"Illuminate\Support\Facades";s:18:"declaringClassName";s:32:"Illuminate\Support\Facades\Crypt";s:21:"implementingClassName";s:32:"Illuminate\Support\Facades\Crypt";s:16:"currentClassName";s:32:"Illuminate\Support\Facades\Crypt";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

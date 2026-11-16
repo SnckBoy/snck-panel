@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-817073e06f03a18988be9f89d3b0f4c4fcdc53691542c63c82bbd67d52745c5c-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:46:"illuminate\contracts\database\eloquent\builder";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

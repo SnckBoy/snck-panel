@@ -1,0 +1,244 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-75c6b15488149f3a0c579452b6193a11bd11e3b0cc7d46d9c388262d40211cdf-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:23:"Carbon\Traits\Converter";s:8:"filename";s:118:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../nesbot/carbon/src/Carbon/Traits/Converter.php";}}s:9:"namespace";s:13:"Carbon\Traits";s:4:"name";s:23:"Carbon\Traits\Converter";s:9:"shortName";s:9:"Converter";s:11:"isInterface";b:0;s:7:"isTrait";b:1;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";s:184:"/**
+ * Trait Converter.
+ *
+ * Change date into different string formats and types and
+ * handle the string cast.
+ *
+ * Depends on the following methods:
+ *
+ * @method static copy()
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:39;s:7:"endLine";i:557;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";N;s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:1:{i:0;s:28:"Carbon\Traits\ToStringFormat";}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:34:{s:6:"format";a:20:{s:4:"name";s:6:"format";s:10:"parameters";a:1:{s:6:"format";a:14:{s:4:"name";s:6:"format";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:48;s:7:"endLine";i:48;s:11:"startColumn";i:28;s:9:"endColumn";i:41;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:133:"/**
+ * Returns the formatted date string on success or FALSE on failure.
+ *
+ * @see https://php.net/manual/en/datetime.format.php
+ */";s:9:"startLine";i:48;s:7:"endLine";i:63;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:1;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:9:"rawFormat";a:20:{s:4:"name";s:9:"rawFormat";s:10:"parameters";a:1:{s:6:"format";a:14:{s:4:"name";s:6:"format";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:68;s:7:"endLine";i:68;s:11:"startColumn";i:31;s:9:"endColumn";i:44;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:61:"/**
+ * @see https://php.net/manual/en/datetime.format.php
+ */";s:9:"startLine";i:68;s:7:"endLine";i:71;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:10:"__toString";a:20:{s:4:"name";s:10:"__toString";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:157:"/**
+ * Format the instance as a string using the set format
+ *
+ * @example
+ * ```
+ * echo Carbon::now(); // Carbon instances can be cast to string
+ * ```
+ */";s:9:"startLine";i:81;s:7:"endLine";i:94;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:12:"toDateString";a:20:{s:4:"name";s:12:"toDateString";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:106:"/**
+ * Format the instance as date
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toDateString();
+ * ```
+ */";s:9:"startLine";i:104;s:7:"endLine";i:107;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:21:"toFormattedDateString";a:20:{s:4:"name";s:21:"toFormattedDateString";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:126:"/**
+ * Format the instance as a readable date
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toFormattedDateString();
+ * ```
+ */";s:9:"startLine";i:117;s:7:"endLine";i:120;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:24:"toFormattedDayDateString";a:20:{s:4:"name";s:24:"toFormattedDayDateString";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:144:"/**
+ * Format the instance with the day, and a readable date
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toFormattedDayDateString();
+ * ```
+ */";s:9:"startLine";i:130;s:7:"endLine";i:133;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:12:"toTimeString";a:20:{s:4:"name";s:12:"toTimeString";s:10:"parameters";a:1:{s:13:"unitPrecision";a:14:{s:4:"name";s:13:"unitPrecision";s:7:"default";a:2:{s:4:"code";s:8:"'second'";s:10:"attributes";a:6:{s:9:"startLine";i:143;s:7:"endLine";i:143;s:13:"startTokenPos";i:426;s:12:"startFilePos";i:3297;s:11:"endTokenPos";i:426;s:10:"endFilePos";i:3304;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:143;s:7:"endLine";i:143;s:11:"startColumn";i:34;s:9:"endColumn";i:65;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:106:"/**
+ * Format the instance as time
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toTimeString();
+ * ```
+ */";s:9:"startLine";i:143;s:7:"endLine";i:146;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:16:"toDateTimeString";a:20:{s:4:"name";s:16:"toDateTimeString";s:10:"parameters";a:1:{s:13:"unitPrecision";a:14:{s:4:"name";s:13:"unitPrecision";s:7:"default";a:2:{s:4:"code";s:8:"'second'";s:10:"attributes";a:6:{s:9:"startLine";i:156;s:7:"endLine";i:156;s:13:"startTokenPos";i:465;s:12:"startFilePos";i:3624;s:11:"endTokenPos";i:465;s:10:"endFilePos";i:3631;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:156;s:7:"endLine";i:156;s:11:"startColumn";i:38;s:9:"endColumn";i:69;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:119:"/**
+ * Format the instance as date and time
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toDateTimeString();
+ * ```
+ */";s:9:"startLine";i:156;s:7:"endLine";i:159;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:24:"getTimeFormatByPrecision";a:20:{s:4:"name";s:24:"getTimeFormatByPrecision";s:10:"parameters";a:1:{s:13:"unitPrecision";a:14:{s:4:"name";s:13:"unitPrecision";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:166;s:7:"endLine";i:166;s:11:"startColumn";i:53;s:9:"endColumn";i:73;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:167:"/**
+ * Return a format from H:i to H:i:s.u according to given unit precision.
+ *
+ * @param string $unitPrecision "minute", "second", "millisecond" or "microsecond"
+ */";s:9:"startLine";i:166;s:7:"endLine";i:175;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:17;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:21:"toDateTimeLocalString";a:20:{s:4:"name";s:21:"toDateTimeLocalString";s:10:"parameters";a:1:{s:13:"unitPrecision";a:14:{s:4:"name";s:13:"unitPrecision";s:7:"default";a:2:{s:4:"code";s:8:"'second'";s:10:"attributes";a:6:{s:9:"startLine";i:187;s:7:"endLine";i:187;s:13:"startTokenPos";i:594;s:12:"startFilePos";i:4796;s:11:"endTokenPos";i:594;s:10:"endFilePos";i:4803;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:187;s:7:"endLine";i:187;s:11:"startColumn";i:43;s:9:"endColumn";i:74;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:303:"/**
+ * Format the instance as date and time T-separated with no timezone
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toDateTimeLocalString();
+ * echo "\n";
+ * echo Carbon::now()->toDateTimeLocalString('minute'); // You can specify precision among: minute, second, millisecond and microsecond
+ * ```
+ */";s:9:"startLine";i:187;s:7:"endLine";i:190;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:19:"toDayDateTimeString";a:20:{s:4:"name";s:19:"toDayDateTimeString";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:129:"/**
+ * Format the instance with day, date and time
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toDayDateTimeString();
+ * ```
+ */";s:9:"startLine";i:200;s:7:"endLine";i:203;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:12:"toAtomString";a:20:{s:4:"name";s:12:"toAtomString";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:106:"/**
+ * Format the instance as ATOM
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toAtomString();
+ * ```
+ */";s:9:"startLine";i:213;s:7:"endLine";i:216;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:14:"toCookieString";a:20:{s:4:"name";s:14:"toCookieString";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:110:"/**
+ * Format the instance as COOKIE
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toCookieString();
+ * ```
+ */";s:9:"startLine";i:226;s:7:"endLine";i:229;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:15:"toIso8601String";a:20:{s:4:"name";s:15:"toIso8601String";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:112:"/**
+ * Format the instance as ISO8601
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toIso8601String();
+ * ```
+ */";s:9:"startLine";i:239;s:7:"endLine";i:242;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:14:"toRfc822String";a:20:{s:4:"name";s:14:"toRfc822String";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:110:"/**
+ * Format the instance as RFC822
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toRfc822String();
+ * ```
+ */";s:9:"startLine";i:252;s:7:"endLine";i:255;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:19:"toIso8601ZuluString";a:20:{s:4:"name";s:19:"toIso8601ZuluString";s:10:"parameters";a:1:{s:13:"unitPrecision";a:14:{s:4:"name";s:13:"unitPrecision";s:7:"default";a:2:{s:4:"code";s:8:"'second'";s:10:"attributes";a:6:{s:9:"startLine";i:265;s:7:"endLine";i:265;s:13:"startTokenPos";i:775;s:12:"startFilePos";i:6442;s:11:"endTokenPos";i:775;s:10:"endFilePos";i:6449;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:265;s:7:"endLine";i:265;s:11:"startColumn";i:41;s:9:"endColumn";i:72;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:140:"/**
+ * Convert the instance to UTC and return as Zulu ISO8601
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toIso8601ZuluString();
+ * ```
+ */";s:9:"startLine";i:265;s:7:"endLine";i:270;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:14:"toRfc850String";a:20:{s:4:"name";s:14:"toRfc850String";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:110:"/**
+ * Format the instance as RFC850
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toRfc850String();
+ * ```
+ */";s:9:"startLine";i:280;s:7:"endLine";i:283;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:15:"toRfc1036String";a:20:{s:4:"name";s:15:"toRfc1036String";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:112:"/**
+ * Format the instance as RFC1036
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toRfc1036String();
+ * ```
+ */";s:9:"startLine";i:293;s:7:"endLine";i:296;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:15:"toRfc1123String";a:20:{s:4:"name";s:15:"toRfc1123String";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:112:"/**
+ * Format the instance as RFC1123
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toRfc1123String();
+ * ```
+ */";s:9:"startLine";i:306;s:7:"endLine";i:309;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:15:"toRfc2822String";a:20:{s:4:"name";s:15:"toRfc2822String";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:112:"/**
+ * Format the instance as RFC2822
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toRfc2822String();
+ * ```
+ */";s:9:"startLine";i:319;s:7:"endLine";i:322;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:15:"toRfc3339String";a:20:{s:4:"name";s:15:"toRfc3339String";s:10:"parameters";a:1:{s:8:"extended";a:14:{s:4:"name";s:8:"extended";s:7:"default";a:2:{s:4:"code";s:5:"false";s:10:"attributes";a:6:{s:9:"startLine";i:333;s:7:"endLine";i:333;s:13:"startTokenPos";i:944;s:12:"startFilePos";i:7940;s:11:"endTokenPos";i:944;s:10:"endFilePos";i:7944;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:333;s:7:"endLine";i:333;s:11:"startColumn";i:37;s:9:"endColumn";i:58;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:173:"/**
+ * Format the instance as RFC3339.
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toRfc3339String() . "\n";
+ * echo Carbon::now()->toRfc3339String(true) . "\n";
+ * ```
+ */";s:9:"startLine";i:333;s:7:"endLine";i:336;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:11:"toRssString";a:20:{s:4:"name";s:11:"toRssString";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:104:"/**
+ * Format the instance as RSS
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toRssString();
+ * ```
+ */";s:9:"startLine";i:346;s:7:"endLine";i:349;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:11:"toW3cString";a:20:{s:4:"name";s:11:"toW3cString";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:104:"/**
+ * Format the instance as W3C
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toW3cString();
+ * ```
+ */";s:9:"startLine";i:359;s:7:"endLine";i:362;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:15:"toRfc7231String";a:20:{s:4:"name";s:15:"toRfc7231String";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:112:"/**
+ * Format the instance as RFC7231
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toRfc7231String();
+ * ```
+ */";s:9:"startLine";i:372;s:7:"endLine";i:377;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:7:"toArray";a:20:{s:4:"name";s:7:"toArray";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"array";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:112:"/**
+ * Get default array representation.
+ *
+ * @example
+ * ```
+ * var_dump(Carbon::now()->toArray());
+ * ```
+ */";s:9:"startLine";i:387;s:7:"endLine";i:403;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:8:"toObject";a:20:{s:4:"name";s:8:"toObject";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"object";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:114:"/**
+ * Get default object representation.
+ *
+ * @example
+ * ```
+ * var_dump(Carbon::now()->toObject());
+ * ```
+ */";s:9:"startLine";i:413;s:7:"endLine";i:416;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:8:"toString";a:20:{s:4:"name";s:8:"toString";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:127:"/**
+ * Returns english human-readable complete date string.
+ *
+ * @example
+ * ```
+ * echo Carbon::now()->toString();
+ * ```
+ */";s:9:"startLine";i:426;s:7:"endLine";i:429;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:11:"toISOString";a:20:{s:4:"name";s:11:"toISOString";s:10:"parameters";a:1:{s:10:"keepOffset";a:14:{s:4:"name";s:10:"keepOffset";s:7:"default";a:2:{s:4:"code";s:5:"false";s:10:"attributes";a:6:{s:9:"startLine";i:443;s:7:"endLine";i:443;s:13:"startTokenPos";i:1315;s:12:"startFilePos";i:10832;s:11:"endTokenPos";i:1315;s:10:"endFilePos";i:10836;}}s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:443;s:7:"endLine";i:443;s:11:"startColumn";i:33;s:9:"endColumn";i:56;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"null";s:12:"isIdentifier";b:1;}}}}}s:10:"attributes";a:0:{}s:10:"docComment";s:381:"/**
+ * Return the ISO-8601 string (ex: 1977-04-22T06:00:00Z, if $keepOffset truthy, offset will be kept:
+ * 1977-04-22T01:00:00-05:00).
+ *
+ * @example
+ * ```
+ * echo Carbon::now('America/Toronto')->toISOString() . "\n";
+ * echo Carbon::now('America/Toronto')->toISOString(true) . "\n";
+ * ```
+ *
+ * @param bool $keepOffset Pass true to keep the date offset. Else forced to UTC.
+ */";s:9:"startLine";i:443;s:7:"endLine";i:454;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:6:"toJSON";a:20:{s:4:"name";s:6:"toJSON";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionUnionType";s:4:"data";a:1:{s:5:"types";a:2:{i:0;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:6:"string";s:12:"isIdentifier";b:1;}}i:1;a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"null";s:12:"isIdentifier";b:1;}}}}}s:10:"attributes";a:0:{}s:10:"docComment";s:162:"/**
+ * Return the ISO-8601 string (ex: 1977-04-22T06:00:00Z) with UTC timezone.
+ *
+ * @example
+ * ```
+ * echo Carbon::now('America/Toronto')->toJSON();
+ * ```
+ */";s:9:"startLine";i:464;s:7:"endLine";i:467;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:10:"toDateTime";a:20:{s:4:"name";s:10:"toDateTime";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:8:"DateTime";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:146:"/**
+ * Return native DateTime PHP object matching the current instance.
+ *
+ * @example
+ * ```
+ * var_dump(Carbon::now()->toDateTime());
+ * ```
+ */";s:9:"startLine";i:477;s:7:"endLine";i:481;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:19:"toDateTimeImmutable";a:20:{s:4:"name";s:19:"toDateTimeImmutable";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:17:"DateTimeImmutable";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:166:"/**
+ * Return native toDateTimeImmutable PHP object matching the current instance.
+ *
+ * @example
+ * ```
+ * var_dump(Carbon::now()->toDateTimeImmutable());
+ * ```
+ */";s:9:"startLine";i:491;s:7:"endLine";i:495;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:6:"toDate";a:20:{s:4:"name";s:6:"toDate";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:8:"DateTime";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:166:"/**
+ * @alias toDateTime
+ *
+ * Return native DateTime PHP object matching the current instance.
+ *
+ * @example
+ * ```
+ * var_dump(Carbon::now()->toDate());
+ * ```
+ */";s:9:"startLine";i:507;s:7:"endLine";i:510;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:8:"toPeriod";a:20:{s:4:"name";s:8:"toPeriod";s:10:"parameters";a:3:{s:3:"end";a:14:{s:4:"name";s:3:"end";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:519;s:7:"endLine";i:519;s:13:"startTokenPos";i:1584;s:12:"startFilePos";i:13094;s:11:"endTokenPos";i:1584;s:10:"endFilePos";i:13097;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:519;s:7:"endLine";i:519;s:11:"startColumn";i:30;s:9:"endColumn";i:40;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}s:8:"interval";a:14:{s:4:"name";s:8:"interval";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:519;s:7:"endLine";i:519;s:13:"startTokenPos";i:1591;s:12:"startFilePos";i:13112;s:11:"endTokenPos";i:1591;s:10:"endFilePos";i:13115;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:519;s:7:"endLine";i:519;s:11:"startColumn";i:43;s:9:"endColumn";i:58;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}s:4:"unit";a:14:{s:4:"name";s:4:"unit";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:519;s:7:"endLine";i:519;s:13:"startTokenPos";i:1598;s:12:"startFilePos";i:13126;s:11:"endTokenPos";i:1598;s:10:"endFilePos";i:13129;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:519;s:7:"endLine";i:519;s:11:"startColumn";i:61;s:9:"endColumn";i:72;s:14:"parameterIndex";i:2;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:19:"Carbon\CarbonPeriod";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:467:"/**
+ * Create a iterable CarbonPeriod object from current date to a given end date (and optional interval).
+ *
+ * @param \DateTimeInterface|Carbon|CarbonImmutable|int|null $end      period end date or recurrences count if int
+ * @param int|\DateInterval|Duration|string|null             $interval period default interval or number of the given $unit
+ * @param string|null                                        $unit     if specified, $interval must be an integer
+ */";s:9:"startLine";i:519;s:7:"endLine";i:544;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}s:5:"range";a:20:{s:4:"name";s:5:"range";s:10:"parameters";a:3:{s:3:"end";a:14:{s:4:"name";s:3:"end";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:553;s:7:"endLine";i:553;s:13:"startTokenPos";i:1808;s:12:"startFilePos";i:14358;s:11:"endTokenPos";i:1808;s:10:"endFilePos";i:14361;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:553;s:7:"endLine";i:553;s:11:"startColumn";i:27;s:9:"endColumn";i:37;s:14:"parameterIndex";i:0;s:10:"isOptional";b:1;}s:8:"interval";a:14:{s:4:"name";s:8:"interval";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:553;s:7:"endLine";i:553;s:13:"startTokenPos";i:1815;s:12:"startFilePos";i:14376;s:11:"endTokenPos";i:1815;s:10:"endFilePos";i:14379;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:553;s:7:"endLine";i:553;s:11:"startColumn";i:40;s:9:"endColumn";i:55;s:14:"parameterIndex";i:1;s:10:"isOptional";b:1;}s:4:"unit";a:14:{s:4:"name";s:4:"unit";s:7:"default";a:2:{s:4:"code";s:4:"null";s:10:"attributes";a:6:{s:9:"startLine";i:553;s:7:"endLine";i:553;s:13:"startTokenPos";i:1822;s:12:"startFilePos";i:14390;s:11:"endTokenPos";i:1822;s:10:"endFilePos";i:14393;}}s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:553;s:7:"endLine";i:553;s:11:"startColumn";i:58;s:9:"endColumn";i:69;s:14:"parameterIndex";i:2;s:10:"isOptional";b:1;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:19:"Carbon\CarbonPeriod";s:12:"isIdentifier";b:0;}}s:10:"attributes";a:0:{}s:10:"docComment";s:427:"/**
+ * Create a iterable CarbonPeriod object from current date to a given end date (and optional interval).
+ *
+ * @param \DateTimeInterface|Carbon|CarbonImmutable|null $end      period end date
+ * @param int|\DateInterval|Duration|string|null         $interval period default interval or number of the given $unit
+ * @param string|null                                    $unit     if specified, $interval must be an integer
+ */";s:9:"startLine";i:553;s:7:"endLine";i:556;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:13:"Carbon\Traits";s:18:"declaringClassName";s:23:"Carbon\Traits\Converter";s:21:"implementingClassName";s:23:"Carbon\Traits\Converter";s:16:"currentClassName";s:23:"Carbon\Traits\Converter";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

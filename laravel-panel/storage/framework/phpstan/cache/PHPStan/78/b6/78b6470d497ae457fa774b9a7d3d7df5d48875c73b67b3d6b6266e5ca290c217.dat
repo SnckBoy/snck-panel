@@ -1,0 +1,53 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:9:"Generator";s:8:"filename";s:35:"phpstorm-stubs:standard/_types.stub";s:13:"extensionName";s:8:"standard";s:9:"aliasName";N;}}s:9:"namespace";N;s:4:"name";s:9:"Generator";s:9:"shortName";s:9:"Generator";s:11:"isInterface";b:0;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:32;s:10:"docComment";s:351:"/**
+ * Generator objects are returned from generators, cannot be instantiated via new.
+ * @link https://php.net/manual/en/class.generator.php
+ * @link https://wiki.php.net/rfc/generators
+ *
+ * @template-covariant TKey
+ * @template-covariant TYield
+ * @template TSend
+ * @template-covariant TReturn
+ *
+ * @template-implements Iterator<TKey, TYield>
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:17;s:7:"endLine";i:97;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:15:"parentClassName";N;s:20:"implementsClassNames";a:1:{i:0;s:8:"Iterator";}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:0:{}s:16:"immediateMethods";a:9:{s:6:"rewind";a:20:{s:4:"name";s:6:"rewind";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"void";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:177:"/**
+ * Throws an exception if the generator is currently after the first yield.
+ * @link https://php.net/manual/en/generator.rewind.php
+ * @return void No value is returned.
+ */";s:9:"startLine";i:24;s:7:"endLine";i:26;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Generator";s:21:"implementingClassName";s:9:"Generator";s:16:"currentClassName";s:9:"Generator";s:9:"aliasName";N;}s:5:"valid";a:20:{s:4:"name";s:5:"valid";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"bool";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:216:"/**
+ * Returns false if the generator has been closed, true otherwise.
+ * @link https://php.net/manual/en/generator.valid.php
+ * @return bool Returns false if the iterator has been closed. Otherwise returns true.
+ */";s:9:"startLine";i:32;s:7:"endLine";i:34;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Generator";s:21:"implementingClassName";s:9:"Generator";s:16:"currentClassName";s:9:"Generator";s:9:"aliasName";N;}s:7:"current";a:20:{s:4:"name";s:7:"current";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:220:"/**
+ * Returns whatever was passed to yield or null if nothing was passed or the generator is already closed.
+ * @link https://php.net/manual/en/generator.current.php
+ * @return TYield|null Returns the yielded value.
+ */";s:9:"startLine";i:40;s:7:"endLine";i:42;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Generator";s:21:"implementingClassName";s:9:"Generator";s:16:"currentClassName";s:9:"Generator";s:9:"aliasName";N;}s:3:"key";a:20:{s:4:"name";s:3:"key";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:1:{i:0;a:3:{s:4:"name";s:50:"JetBrains\PhpStorm\Internal\LanguageLevelTypeAware";s:10:"isRepeated";b:0;s:9:"arguments";a:2:{i:0;a:2:{s:4:"code";s:18:"['8.0' => 'mixed']";s:10:"attributes";a:6:{s:9:"startLine";i:48;s:7:"endLine";i:48;s:13:"startTokenPos";i:81;s:12:"startFilePos";i:1778;s:11:"endTokenPos";i:87;s:10:"endFilePos";i:1795;}}s:7:"default";a:2:{s:4:"code";s:28:"'string|float|int|bool|null'";s:10:"attributes";a:6:{s:9:"startLine";i:48;s:7:"endLine";i:48;s:13:"startTokenPos";i:93;s:12:"startFilePos";i:1807;s:11:"endTokenPos";i:93;s:10:"endFilePos";i:1834;}}}}}s:10:"docComment";s:229:"/**
+ * Returns the yielded key or, if none was specified, an auto-incrementing key or null if the generator is already closed.
+ * @link https://php.net/manual/en/generator.key.php
+ * @return TKey|null Returns the yielded key.
+ */";s:9:"startLine";i:48;s:7:"endLine";i:51;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Generator";s:21:"implementingClassName";s:9:"Generator";s:16:"currentClassName";s:9:"Generator";s:9:"aliasName";N;}s:4:"next";a:20:{s:4:"name";s:4:"next";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:4:"void";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:166:"/**
+ * Resumes the generator (unless the generator is already closed).
+ * @link https://php.net/manual/en/generator.next.php
+ * @return void No value is returned.
+ */";s:9:"startLine";i:57;s:7:"endLine";i:59;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Generator";s:21:"implementingClassName";s:9:"Generator";s:16:"currentClassName";s:9:"Generator";s:9:"aliasName";N;}s:4:"send";a:20:{s:4:"name";s:4:"send";s:10:"parameters";a:1:{s:5:"value";a:14:{s:4:"name";s:5:"value";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:67;s:7:"endLine";i:67;s:11:"startColumn";i:30;s:9:"endColumn";i:41;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:379:"/**
+ * Sets the return value of the yield expression and resumes the generator (unless the generator is already closed).
+ * @link https://php.net/manual/en/generator.send.php
+ * @param TSend $value Value to send into the generator. This value will be the return value
+ * of the yield expression the generator is currently at.
+ * @return TYield|null Returns the yielded value.
+ */";s:9:"startLine";i:67;s:7:"endLine";i:69;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Generator";s:21:"implementingClassName";s:9:"Generator";s:16:"currentClassName";s:9:"Generator";s:9:"aliasName";N;}s:5:"throw";a:20:{s:4:"name";s:5:"throw";s:10:"parameters";a:1:{s:9:"exception";a:14:{s:4:"name";s:9:"exception";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:9:"Throwable";s:12:"isIdentifier";b:0;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:75;s:7:"endLine";i:75;s:11:"startColumn";i:31;s:9:"endColumn";i:51;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:129:"/**
+ * Throws an exception at the current suspension point in the generator.
+ * @param Throwable $exception
+ * @return TYield
+ */";s:9:"startLine";i:75;s:7:"endLine";i:77;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Generator";s:21:"implementingClassName";s:9:"Generator";s:16:"currentClassName";s:9:"Generator";s:9:"aliasName";N;}s:9:"getReturn";a:20:{s:4:"name";s:9:"getReturn";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:5:"mixed";s:12:"isIdentifier";b:1;}}s:10:"attributes";a:0:{}s:10:"docComment";s:289:"/**
+ * Returns whatever was passed to return or null if nothing.
+ * Throws an exception if the generator is still valid.
+ * @link https://wiki.php.net/rfc/generator-return-expressions
+ * @return TReturn Returns the generator's return value once it has finished executing.
+ * @since 7.0
+ */";s:9:"startLine";i:85;s:7:"endLine";i:87;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Generator";s:21:"implementingClassName";s:9:"Generator";s:16:"currentClassName";s:9:"Generator";s:9:"aliasName";N;}s:8:"__wakeup";a:20:{s:4:"name";s:8:"__wakeup";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:181:"/**
+ * Serialize callback
+ * Throws an exception as generators can't be serialized.
+ * @link https://php.net/manual/en/generator.wakeup.php
+ * @return void No value is returned.
+ */";s:9:"startLine";i:94;s:7:"endLine";i:96;s:11:"startColumn";i:9;s:9:"endColumn";i:9;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";N;s:18:"declaringClassName";s:9:"Generator";s:21:"implementingClassName";s:9:"Generator";s:16:"currentClassName";s:9:"Generator";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

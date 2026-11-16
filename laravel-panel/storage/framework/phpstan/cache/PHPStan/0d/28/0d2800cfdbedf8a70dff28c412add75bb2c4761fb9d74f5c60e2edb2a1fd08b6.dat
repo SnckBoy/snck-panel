@@ -1,0 +1,71 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:80:"v2-78b9bbb3711f7a9d85154919f3c952726cf56ac3a06f16c72842690766070a37-8.3-6.75.0.4";s:4:"data";a:22:{s:13:"locatedSource";a:2:{s:5:"class";s:60:"PHPStan\BetterReflection\SourceLocator\Located\LocatedSource";s:4:"data";a:2:{s:4:"name";s:31:"Illuminate\Events\QueuedClosure";s:8:"filename";s:130:"/home/runner/work/snck-panel/snck-panel/laravel-panel/vendor/composer/../laravel/framework/src/Illuminate/Events/QueuedClosure.php";}}s:9:"namespace";s:17:"Illuminate\Events";s:4:"name";s:31:"Illuminate\Events\QueuedClosure";s:9:"shortName";s:13:"QueuedClosure";s:11:"isInterface";b:0;s:7:"isTrait";b:0;s:6:"isEnum";b:0;s:12:"isBackedEnum";b:0;s:9:"modifiers";i:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:11;s:7:"endLine";i:178;s:11:"startColumn";i:1;s:9:"endColumn";i:1;s:15:"parentClassName";N;s:20:"implementsClassNames";a:0:{}s:15:"traitClassNames";a:0:{}s:18:"immediateConstants";a:0:{}s:19:"immediateProperties";a:7:{s:7:"closure";a:16:{s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:4:"name";s:7:"closure";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:54:"/**
+ * The underlying Closure.
+ *
+ * @var \Closure
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:18;s:7:"endLine";i:18;s:11:"startColumn";i:5;s:9:"endColumn";i:20;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:10:"connection";a:16:{s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:4:"name";s:10:"connection";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:87:"/**
+ * The name of the connection the job should be sent to.
+ *
+ * @var string|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:25;s:7:"endLine";i:25;s:11:"startColumn";i:5;s:9:"endColumn";i:23;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:5:"queue";a:16:{s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:4:"name";s:5:"queue";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:82:"/**
+ * The name of the queue the job should be sent to.
+ *
+ * @var string|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:32;s:7:"endLine";i:32;s:11:"startColumn";i:5;s:9:"endColumn";i:18;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:12:"messageGroup";a:16:{s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:4:"name";s:12:"messageGroup";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:76:"/**
+ * The job "group" the job should be sent to.
+ *
+ * @var string|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:39;s:7:"endLine";i:39;s:11:"startColumn";i:5;s:9:"endColumn";i:25;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:12:"deduplicator";a:16:{s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:4:"name";s:12:"deduplicator";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:158:"/**
+ * The job deduplicator callback the job should use to generate the deduplication ID.
+ *
+ * @var \Laravel\SerializableClosure\SerializableClosure|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:46;s:7:"endLine";i:46;s:11:"startColumn";i:5;s:9:"endColumn";i:25;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:5:"delay";a:16:{s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:4:"name";s:5:"delay";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";N;s:10:"docComment";s:126:"/**
+ * The number of seconds before the job should be made available.
+ *
+ * @var \DateTimeInterface|\DateInterval|int|null
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:53;s:7:"endLine";i:53;s:11:"startColumn";i:5;s:9:"endColumn";i:18;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}s:14:"catchCallbacks";a:16:{s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:4:"name";s:14:"catchCallbacks";s:9:"modifiers";i:1;s:4:"type";N;s:7:"default";a:2:{s:4:"code";s:2:"[]";s:10:"attributes";a:6:{s:9:"startLine";i:60;s:7:"endLine";i:60;s:13:"startTokenPos";i:85;s:12:"startFilePos";i:1186;s:11:"endTokenPos";i:86;s:10:"endFilePos";i:1187;}}s:10:"docComment";s:80:"/**
+ * All of the "catch" callbacks for the queued closure.
+ *
+ * @var array
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:60;s:7:"endLine";i:60;s:11:"startColumn";i:5;s:9:"endColumn";i:32;s:10:"isPromoted";b:0;s:21:"declaredAtCompileTime";b:1;s:16:"immediateVirtual";b:0;s:14:"immediateHooks";a:0:{}}}s:16:"immediateMethods";a:8:{s:11:"__construct";a:20:{s:4:"name";s:11:"__construct";s:10:"parameters";a:1:{s:7:"closure";a:14:{s:4:"name";s:7:"closure";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:7:"Closure";s:12:"isIdentifier";b:0;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:67;s:7:"endLine";i:67;s:11:"startColumn";i:33;s:9:"endColumn";i:48;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:96:"/**
+ * Create a new queued closure event listener resolver.
+ *
+ * @param  \Closure  $closure
+ */";s:9:"startLine";i:67;s:7:"endLine";i:70;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:17:"Illuminate\Events";s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:16:"currentClassName";s:31:"Illuminate\Events\QueuedClosure";s:9:"aliasName";N;}s:12:"onConnection";a:20:{s:4:"name";s:12:"onConnection";s:10:"parameters";a:1:{s:10:"connection";a:14:{s:4:"name";s:10:"connection";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:78;s:7:"endLine";i:78;s:11:"startColumn";i:34;s:9:"endColumn";i:44;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:116:"/**
+ * Set the desired connection for the job.
+ *
+ * @param  \UnitEnum|string|null  $connection
+ * @return $this
+ */";s:9:"startLine";i:78;s:7:"endLine";i:83;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:17:"Illuminate\Events";s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:16:"currentClassName";s:31:"Illuminate\Events\QueuedClosure";s:9:"aliasName";N;}s:7:"onQueue";a:20:{s:4:"name";s:7:"onQueue";s:10:"parameters";a:1:{s:5:"queue";a:14:{s:4:"name";s:5:"queue";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:91;s:7:"endLine";i:91;s:11:"startColumn";i:29;s:9:"endColumn";i:34;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:106:"/**
+ * Set the desired queue for the job.
+ *
+ * @param  \UnitEnum|string|null  $queue
+ * @return $this
+ */";s:9:"startLine";i:91;s:7:"endLine";i:96;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:17:"Illuminate\Events";s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:16:"currentClassName";s:31:"Illuminate\Events\QueuedClosure";s:9:"aliasName";N;}s:7:"onGroup";a:20:{s:4:"name";s:7:"onGroup";s:10:"parameters";a:1:{s:5:"group";a:14:{s:4:"name";s:5:"group";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:106;s:7:"endLine";i:106;s:11:"startColumn";i:29;s:9:"endColumn";i:34;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:168:"/**
+ * Set the desired job "group".
+ *
+ * This feature is only supported by some queues, such as Amazon SQS.
+ *
+ * @param  \UnitEnum|string  $group
+ * @return $this
+ */";s:9:"startLine";i:106;s:7:"endLine";i:111;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:17:"Illuminate\Events";s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:16:"currentClassName";s:31:"Illuminate\Events\QueuedClosure";s:9:"aliasName";N;}s:16:"withDeduplicator";a:20:{s:4:"name";s:16:"withDeduplicator";s:10:"parameters";a:1:{s:12:"deduplicator";a:14:{s:4:"name";s:12:"deduplicator";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:121;s:7:"endLine";i:121;s:11:"startColumn";i:38;s:9:"endColumn";i:50;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:191:"/**
+ * Set the desired job deduplicator callback.
+ *
+ * This feature is only supported by some queues, such as Amazon SQS FIFO.
+ *
+ * @param  callable|null  $deduplicator
+ * @return $this
+ */";s:9:"startLine";i:121;s:7:"endLine";i:128;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:17:"Illuminate\Events";s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:16:"currentClassName";s:31:"Illuminate\Events\QueuedClosure";s:9:"aliasName";N;}s:5:"delay";a:20:{s:4:"name";s:5:"delay";s:10:"parameters";a:1:{s:5:"delay";a:14:{s:4:"name";s:5:"delay";s:7:"default";N;s:4:"type";N;s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:136;s:7:"endLine";i:136;s:11:"startColumn";i:27;s:9:"endColumn";i:32;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:137:"/**
+ * Set the desired delay in seconds for the job.
+ *
+ * @param  \DateTimeInterface|\DateInterval|int|null  $delay
+ * @return $this
+ */";s:9:"startLine";i:136;s:7:"endLine";i:141;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:17:"Illuminate\Events";s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:16:"currentClassName";s:31:"Illuminate\Events\QueuedClosure";s:9:"aliasName";N;}s:5:"catch";a:20:{s:4:"name";s:5:"catch";s:10:"parameters";a:1:{s:7:"closure";a:14:{s:4:"name";s:7:"closure";s:7:"default";N;s:4:"type";a:2:{s:5:"class";s:55:"PHPStan\BetterReflection\Reflection\ReflectionNamedType";s:4:"data";a:2:{s:4:"name";s:7:"Closure";s:12:"isIdentifier";b:0;}}s:10:"isVariadic";b:0;s:5:"byRef";b:0;s:10:"isPromoted";b:0;s:10:"docComment";N;s:10:"attributes";a:0:{}s:9:"startLine";i:149;s:7:"endLine";i:149;s:11:"startColumn";i:27;s:9:"endColumn";i:42;s:14:"parameterIndex";i:0;s:10:"isOptional";b:0;}}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:136:"/**
+ * Specify a callback that should be invoked if the queued listener job fails.
+ *
+ * @param  \Closure  $closure
+ * @return $this
+ */";s:9:"startLine";i:149;s:7:"endLine";i:154;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:17:"Illuminate\Events";s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:16:"currentClassName";s:31:"Illuminate\Events\QueuedClosure";s:9:"aliasName";N;}s:7:"resolve";a:20:{s:4:"name";s:7:"resolve";s:10:"parameters";a:0:{}s:16:"returnsReference";b:0;s:10:"returnType";N;s:10:"attributes";a:0:{}s:10:"docComment";s:77:"/**
+ * Resolve the actual event listener callback.
+ *
+ * @return \Closure
+ */";s:9:"startLine";i:161;s:7:"endLine";i:177;s:11:"startColumn";i:5;s:9:"endColumn";i:5;s:10:"couldThrow";b:0;s:9:"isClosure";b:0;s:11:"isGenerator";b:0;s:10:"isVariadic";b:0;s:9:"modifiers";i:1;s:9:"namespace";s:17:"Illuminate\Events";s:18:"declaringClassName";s:31:"Illuminate\Events\QueuedClosure";s:21:"implementingClassName";s:31:"Illuminate\Events\QueuedClosure";s:16:"currentClassName";s:31:"Illuminate\Events\QueuedClosure";s:9:"aliasName";N;}}s:10:"traitsData";a:4:{s:7:"aliases";a:0:{}s:9:"modifiers";a:0:{}s:11:"precedences";a:0:{}s:6:"hashes";a:0:{}}}}

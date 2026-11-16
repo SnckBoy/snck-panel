@@ -1,0 +1,1 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:71:"v2-33f93b23ad8b389347461df3205d1ecd5ae313dc0e05c585a5a89b27b9c16e24-8.3";s:4:"data";a:3:{s:7:"classes";a:1:{s:60:"symfony\component\console\command\signalablecommandinterface";b:1;}s:9:"functions";a:0:{}s:9:"constants";a:0:{}}}

@@ -1,0 +1,6 @@
+O:23:"PHPStan\Cache\CacheItem":2:{s:11:"variableKey";s:39:"v3-6.75.0.4-dev-master@e4f5f6c-8.3-ds:2";s:4:"data";a:11:{s:13:"locatedSource";a:2:{s:5:"class";s:68:"PHPStan\BetterReflection\SourceLocator\Located\InternalLocatedSource";s:4:"data";a:4:{s:4:"name";s:20:"FILTER_VALIDATE_BOOL";s:8:"filename";s:33:"phpstorm-stubs:filter/filter.stub";s:13:"extensionName";s:6:"filter";s:9:"aliasName";N;}}s:4:"name";s:20:"FILTER_VALIDATE_BOOL";s:9:"shortName";s:20:"FILTER_VALIDATE_BOOL";s:5:"value";a:2:{s:4:"code";s:3:"258";s:10:"attributes";a:6:{s:9:"startLine";i:9;s:7:"endLine";i:9;s:13:"startTokenPos";i:9;s:12:"startFilePos";i:242;s:11:"endTokenPos";i:9;s:10:"endFilePos";i:244;}}s:10:"docComment";s:203:"/**
+ * ID of "boolean" filter.
+ * @link https://php.net/manual/en/filter.constants.php
+ * @link https://php.net/manual/en/filter.constants.php
+ * @since 8.0 Using `FILTER_VALIDATE_BOOL` is preferred.
+ */";s:10:"attributes";a:0:{}s:9:"startLine";i:9;s:7:"endLine";i:9;s:11:"startColumn";i:1;s:9:"endColumn";i:35;s:9:"namespace";N;}}
