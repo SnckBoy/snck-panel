@@ -205,7 +205,7 @@ php -r '
 APP_HOST="$(php -r '$url = parse_url($argv[1]); echo is_array($url) ? ($url["host"] ?? "") : "";' "$APP_URL")"
 LETSENCRYPT_EMAIL="${SNCK_LETSENCRYPT_EMAIL:-}"
 if [[ "$APP_URL" == https://* ]]; then
-  [[ ! "$APP_HOST" =~ ^[0-9.]+$ ]] || fail 'Automatic HTTPS requires a DNS hostname, not an IP address.'
+  php -r 'exit(filter_var($argv[1], FILTER_VALIDATE_IP) ? 1 : 0);' "$APP_HOST" || fail 'Automatic HTTPS requires a DNS hostname, not an IP address.'
   if [[ -z "$LETSENCRYPT_EMAIL" ]]; then
     LETSENCRYPT_EMAIL="$(prompt_value SNCK_LETSENCRYPT_EMAIL "Email for Let's Encrypt renewal notices" '')"
   fi
