@@ -46,7 +46,7 @@ For the Laravel application:
 - PHP **8.3 or newer**.
 - PHP extensions: `mbstring`, `openssl`, `pdo_pgsql`, and `zip` (Laravel may require additional standard PHP extensions depending on the enabled features).
 - Composer.
-- Node.js **20 or newer** and npm, for frontend asset compilation.
+- Node.js **22 or newer** and npm, for frontend asset compilation.
 - PostgreSQL, with a database and user created for this application.
 - Git and systemd for the CLI installer.
 - Nginx and PHP-FPM are installed by the CLI installer.
@@ -88,10 +88,10 @@ The standard one-command installer downloads the Laravel installer from `main` a
 curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/install.sh | sudo bash
 ```
 
-To test this PR branch before it is merged:
+To test a feature branch before it is merged, replace `BRANCH_NAME` in the following command with the branch name:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/hosting-audit-console/install.sh | sudo env SNCK_BRANCH=feat/hosting-audit-console bash
+curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/BRANCH_NAME/install.sh | sudo env SNCK_BRANCH=BRANCH_NAME bash
 ```
 
 The installer shows an interactive menu for fresh install, update, repair, diagnostics and uninstall. It automatically installs system dependencies, provisions the local PostgreSQL database with a generated password, and detects the VPS public IPv4 address for the initial HTTP URL. For remote PostgreSQL or a custom domain, set `SNCK_DB_HOST`, `SNCK_DB_PORT`, `SNCK_DB_DATABASE`, `SNCK_DB_USERNAME`, `SNCK_DB_PASSWORD`, and/or `SNCK_APP_URL` before running. For automatic HTTPS, also set `SNCK_LETSENCRYPT_EMAIL` and use an `https://` URL after pointing DNS at the VPS. It preserves an existing `.env` and application key when updating an existing install. Uninstall intentionally keeps PostgreSQL data.
