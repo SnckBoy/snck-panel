@@ -70,6 +70,9 @@ if [[ "$APP_URL" == https://* ]]; then
 fi
 
 [[ ! -e "$APP_DIR/.env" ]] || fail "An existing .env was found in $APP_DIR. Refusing to overwrite an existing installation."
+if [[ -d "$APP_DIR" && -n "$(find "$APP_DIR" -mindepth 1 -maxdepth 1 -print -quit)" ]]; then
+  fail "The install directory $APP_DIR is not empty. Choose a fresh SNCK_PANEL_DIR."
+fi
 [[ "$DB_NAME" =~ ^[A-Za-z0-9_]+$ ]] || fail "Invalid database name."
 [[ "$DB_USER" =~ ^[A-Za-z0-9_]+$ ]] || fail "Invalid database username."
 [[ -n "$DB_PASSWORD" ]] || DB_PASSWORD="$(openssl rand -hex 32)"
@@ -116,11 +119,13 @@ npm install --global yarn@1.22.22
 
 systemctl enable --now mariadb redis-server nginx php8.3-fpm cron
 log "Creating the SNCK database and restricted database user..."
+DB_EXISTS="$(mysql --protocol=socket -uroot -Nse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = '$DB_NAME'")"
+USER_EXISTS="$(mysql --protocol=socket -uroot -Nse "SELECT COUNT(*) FROM mysql.user WHERE User = '$DB_USER' AND Host = '127.0.0.1'")"
+[[ "$DB_EXISTS" == "0" && "$USER_EXISTS" == "0" ]] || fail "The requested database or database user already exists. Choose unique SNCK_DB_NAME and SNCK_DB_USER values."
 mysql --protocol=socket -uroot <<SQL
-CREATE DATABASE IF NOT EXISTS `$DB_NAME` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER IF NOT EXISTS '$DB_USER'@'127.0.0.1' IDENTIFIED BY '$DB_PASSWORD';
-ALTER USER '$DB_USER'@'127.0.0.1' IDENTIFIED BY '$DB_PASSWORD';
-GRANT ALL PRIVILEGES ON `$DB_NAME`.* TO '$DB_USER'@'127.0.0.1';
+CREATE DATABASE $DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER '$DB_USER'@'127.0.0.1' IDENTIFIED BY '$DB_PASSWORD';
+GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'127.0.0.1';
 FLUSH PRIVILEGES;
 SQL
 
