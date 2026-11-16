@@ -1,81 +1,243 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# Root entry point for the Laravel/PHP panel. The branch defaults to main;
-# use SNCK_BRANCH=... to install a different branch explicitly.
-BRANCH="${SNCK_BRANCH:-main}"
-REPO_URL="${SNCK_REPO_URL:-https://github.com/SnckBoy/snck-panel.git}"
-FORWARD_ARGS=()
+APP_DIR="${SNCK_PANEL_DIR:-/var/www/snck-panel}"
+BRANCH="${SNCK_BRANCH:-feat/snck-pterodactyl-v1.15.2}"
+REPOSITORY="${SNCK_REPOSITORY:-https://github.com/SnckBoy/snck-panel.git}"
+APP_URL="${SNCK_APP_URL:-}"
+LE_EMAIL="${SNCK_LETSENCRYPT_EMAIL:-}"
+DB_NAME="${SNCK_DB_NAME:-snck_panel}"
+DB_USER="${SNCK_DB_USER:-snck_panel}"
+DB_PASSWORD="${SNCK_DB_PASSWORD:-}"
+SERVICE_AUTHOR="${SNCK_SERVICE_AUTHOR:-}"
 
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --branch=*) BRANCH="${1#*=}"; shift ;;
-    --repo=*) REPO_URL="${1#*=}"; shift ;;
-    -h|--help)
-      cat <<'EOF'
-SNCK Panel — Laravel installer entry point
+log() { printf '\033[1;36m[SNCK]\033[0m %s\n' "$*"; }
+ok() { printf '\033[1;32m[ OK ]\033[0m %s\n' "$*"; }
+fail() { printf '\033[1;31m[ERROR]\033[0m %s\n' "$*" >&2; exit 1; }
+
+usage() {
+  cat <<'EOF'
+SNCK Panel installer (Pterodactyl v1.15.2 based)
 
 Usage:
-  curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/install.sh | sudo bash
+  curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-pterodactyl-v1.15.2/install.sh | sudo bash
 
-Options:
-  --branch=BRANCH
-  --repo=GIT_URL
-  --dry-run
-  --app-dir=/absolute/path
-  --help
+Optional environment:
+  SNCK_BRANCH                 Git branch (default: feat/snck-pterodactyl-v1.15.2)
+  SNCK_PANEL_DIR              Install directory (default: /var/www/snck-panel)
+  SNCK_APP_URL                Panel URL, e.g. https://panel.example.com
+  SNCK_LETSENCRYPT_EMAIL      Required for automatic HTTPS
+  SNCK_DB_NAME                Database name (default: snck_panel)
+  SNCK_DB_USER                Database user (default: snck_panel)
+  SNCK_DB_PASSWORD            Database password (generated if omitted)
+  SNCK_SERVICE_AUTHOR         Email used as the default Egg author
 
-The installer bootstraps PHP 8.3, Composer, Node.js 22, npm, PostgreSQL, Nginx and PHP-FPM. Set SNCK_APP_URL=https://panel.example.com and SNCK_LETSENCRYPT_EMAIL=admin@example.com for automatic HTTPS.
+The installer requires an interactive terminal to create the first administrator.
+It installs the Panel only. Install SNCK Wings separately on every game node.
 EOF
-      exit 0
-      ;;
-    *) FORWARD_ARGS+=("$1"); shift ;;
-  esac
-done
+}
 
-# Interactive installer menu. In non-interactive automation, default to install.
-if [[ -r /dev/tty && "${SNCK_NONINTERACTIVE:-0}" != "1" ]]; then
-  printf '\nSNCK Panel Installer\n'
-  printf '  [1] Fresh install\n  [2] Update existing panel\n  [3] Repair / reinstall dependencies\n  [4] Diagnostics\n  [5] Uninstall\n'
-  read -r -p 'Choose an option [1-5]: ' MENU_CHOICE </dev/tty
-  case "${MENU_CHOICE:-1}" in
-    1|2|3) ;;
-    4)
-      for unit in nginx php8.3-fpm postgresql snck-panel-laravel snck-panel-laravel-scheduler.timer snck-panel-discord-worker.timer; do
-        systemctl status "$unit" --no-pager || true
-      done
-      exit 0
-      ;;
-    5)
-      read -r -p 'Type UNINSTALL to remove SNCK Panel and its service configuration: ' CONFIRM </dev/tty
-      [[ "$CONFIRM" == "UNINSTALL" ]] || { echo 'Uninstall cancelled.'; exit 0; }
-      rm -f /etc/nginx/sites-enabled/snck-panel-laravel /etc/nginx/sites-available/snck-panel-laravel
-      rm -f /etc/php/8.3/fpm/pool.d/snck-panel.conf
-      rm -f /etc/systemd/system/snck-panel-laravel.service /etc/systemd/system/snck-panel-laravel-scheduler.service /etc/systemd/system/snck-panel-laravel-scheduler.timer /etc/systemd/system/snck-panel-discord-worker.service /etc/systemd/system/snck-panel-discord-worker.timer
-      systemctl daemon-reload
-      systemctl reload nginx 2>/dev/null || true
-      rm -rf "${SNCK_PANEL_DIR:-/opt/snck-panel-laravel}"
-      echo 'SNCK Panel application and service configuration removed. PostgreSQL data was kept.'
-      exit 0
-      ;;
-    *) echo 'Invalid menu option.' >&2; exit 2 ;;
-  esac
+if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then usage; exit 0; fi
+[[ "$EUID" -eq 0 ]] || fail "Run this installer as root (sudo)."
+[[ -t 0 && -r /dev/tty ]] || fail "An interactive terminal is required for the first administrator setup."
+command -v openssl >/dev/null 2>&1 || fail "OpenSSL is required to generate secure database credentials."
+
+[[ -r /etc/os-release ]] || fail "Cannot identify this operating system."
+. /etc/os-release
+case "${ID:-}" in
+  ubuntu)
+    [[ "${VERSION_ID:-}" == "22.04" || "${VERSION_ID:-}" == "24.04" ]] || fail "Supported Ubuntu versions: 22.04 and 24.04."
+    ;;
+  debian)
+    [[ "${VERSION_ID:-}" == "11" || "${VERSION_ID:-}" == "12" || "${VERSION_ID:-}" == "13" ]] || fail "Supported Debian versions: 11, 12 and 13."
+    ;;
+  *) fail "Supported operating systems: Ubuntu 22.04/24.04 and Debian 11/12/13." ;;
+esac
+
+if [[ -z "$APP_URL" ]]; then
+  read -r -p "Panel URL (include http:// or https://): " APP_URL </dev/tty
+fi
+[[ "$APP_URL" =~ ^https?://[^/[:space:]]+/?$ ]] || fail "SNCK_APP_URL must be a root HTTP/HTTPS URL without a path."
+APP_URL="${APP_URL%/}"
+APP_HOST="${APP_URL#*://}"
+APP_HOST="${APP_HOST%%/*}"
+APP_HOST="${APP_HOST%%:*}"
+[[ -n "$APP_HOST" ]] || fail "Could not parse the hostname from SNCK_APP_URL."
+if [[ "$APP_URL" == https://* ]]; then
+  [[ ! "$APP_HOST" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || fail "HTTPS requires a DNS hostname, not a raw IP address."
+  [[ -n "$LE_EMAIL" ]] || read -r -p "Let's Encrypt email: " LE_EMAIL </dev/tty
+  [[ "$LE_EMAIL" =~ ^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$ ]] || fail "A valid SNCK_LETSENCRYPT_EMAIL is required for HTTPS."
 fi
 
-INSTALLER_URL="${SNCK_INSTALLER_URL:-https://raw.githubusercontent.com/SnckBoy/snck-panel/$BRANCH/scripts/install-laravel-panel.sh}"
-
-if [[ "$EUID" -ne 0 ]]; then
-  command -v sudo >/dev/null 2>&1 || { echo 'ERROR: sudo is required. Run as root.' >&2; exit 1; }
+[[ ! -e "$APP_DIR/.env" ]] || fail "An existing .env was found in $APP_DIR. Refusing to overwrite an existing installation."
+if [[ -d "$APP_DIR" && -n "$(find "$APP_DIR" -mindepth 1 -maxdepth 1 -print -quit)" ]]; then
+  fail "The install directory $APP_DIR is not empty. Choose a fresh SNCK_PANEL_DIR."
 fi
-command -v curl >/dev/null 2>&1 || { echo 'ERROR: curl is required.' >&2; exit 1; }
-TMP="$(mktemp /tmp/snck-panel-laravel-installer.XXXXXX)"
-trap 'rm -f -- "$TMP"' EXIT
-curl -fsSL --retry 3 --connect-timeout 10 --max-time 120 "$INSTALLER_URL" -o "$TMP"
-chmod 700 "$TMP"
+[[ "$DB_NAME" =~ ^[A-Za-z0-9_]+$ ]] || fail "Invalid database name."
+[[ "$DB_USER" =~ ^[A-Za-z0-9_]+$ ]] || fail "Invalid database username."
+[[ -n "$DB_PASSWORD" ]] || DB_PASSWORD="$(openssl rand -hex 32)"
+[[ "$DB_PASSWORD" =~ ^[A-Za-z0-9]+$ ]] || fail "SNCK_DB_PASSWORD must contain only letters and digits."
+[[ -n "$SERVICE_AUTHOR" ]] || SERVICE_AUTHOR="admin@$APP_HOST"
+[[ "$SERVICE_AUTHOR" =~ ^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$ ]] || fail "SNCK_SERVICE_AUTHOR must be a valid email address."
 
-if [[ "$EUID" -eq 0 ]]; then
-  SNCK_REPO_URL="$REPO_URL" bash "$TMP" --branch="$BRANCH" "${FORWARD_ARGS[@]}"
-else
-  PRESERVE_ENV="SNCK_DB_HOST,SNCK_DB_PORT,SNCK_DB_DATABASE,SNCK_DB_USERNAME,SNCK_DB_PASSWORD,SNCK_DB_SSLMODE,SNCK_APP_URL,SNCK_LETSENCRYPT_EMAIL,SNCK_PANEL_DIR"
-  sudo --preserve-env="$PRESERVE_ENV" env SNCK_REPO_URL="$REPO_URL" bash "$TMP" --branch="$BRANCH" "${FORWARD_ARGS[@]}"
+export DEBIAN_FRONTEND=noninteractive
+log "Installing system packages for $PRETTY_NAME..."
+apt-get update
+apt-get install -y ca-certificates curl gnupg lsb-release software-properties-common apt-transport-https git unzip tar rsync openssl mariadb-server redis-server nginx cron certbot python3-certbot-nginx
+
+if [[ "$ID" == "debian" ]]; then
+  KEYRING_PACKAGE="$(mktemp /tmp/debsuryorg-keyring.XXXXXX.deb)"
+  curl -fsSLo "$KEYRING_PACKAGE" https://packages.sury.org/debsuryorg-archive-keyring.deb
+  dpkg -i "$KEYRING_PACKAGE"
+  rm -f "$KEYRING_PACKAGE"
+  cat >/etc/apt/sources.list.d/php-sury.sources <<EOF
+Types: deb
+URIs: https://packages.sury.org/php/
+Suites: $VERSION_CODENAME
+Components: main
+Signed-By: /usr/share/keyrings/debsuryorg-archive-keyring.gpg
+EOF
+elif [[ "$VERSION_ID" == "22.04" ]]; then
+  add-apt-repository -y ppa:ondrej/php
 fi
+
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+apt-get update
+apt-get install -y php8.3-cli php8.3-common php8.3-gd php8.3-mysql php8.3-mbstring php8.3-bcmath php8.3-xml php8.3-fpm php8.3-curl php8.3-zip php8.3-intl php8.3-opcache nodejs
+update-alternatives --set php /usr/bin/php8.3
+
+if ! command -v composer >/dev/null 2>&1; then
+  EXPECTED_CHECKSUM="$(curl -fsSL https://composer.github.io/installer.sig)"
+  INSTALLER="$(mktemp /tmp/composer-setup.XXXXXX.php)"
+  curl -fsSLo "$INSTALLER" https://getcomposer.org/installer
+  ACTUAL_CHECKSUM="$(php -r 'echo hash_file("sha384", $argv[1]);' "$INSTALLER")"
+  [[ "$EXPECTED_CHECKSUM" == "$ACTUAL_CHECKSUM" ]] || fail "Composer installer checksum verification failed."
+  php "$INSTALLER" --install-dir=/usr/local/bin --filename=composer
+  rm -f "$INSTALLER"
+fi
+npm install --global yarn@1.22.22
+
+systemctl enable --now mariadb redis-server nginx php8.3-fpm cron
+log "Creating the SNCK database and restricted database user..."
+DB_EXISTS="$(mysql --protocol=socket -uroot -Nse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = '$DB_NAME'")"
+USER_EXISTS="$(mysql --protocol=socket -uroot -Nse "SELECT COUNT(*) FROM mysql.user WHERE User = '$DB_USER' AND Host = '127.0.0.1'")"
+[[ "$DB_EXISTS" == "0" && "$USER_EXISTS" == "0" ]] || fail "The requested database or database user already exists. Choose unique SNCK_DB_NAME and SNCK_DB_USER values."
+mysql --protocol=socket -uroot <<SQL
+CREATE DATABASE $DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER '$DB_USER'@'127.0.0.1' IDENTIFIED BY '$DB_PASSWORD';
+GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'127.0.0.1';
+FLUSH PRIVILEGES;
+SQL
+
+log "Downloading SNCK Panel branch $BRANCH..."
+mkdir -p "$(dirname "$APP_DIR")"
+git clone --depth 1 --branch "$BRANCH" "$REPOSITORY" "$APP_DIR"
+cd "$APP_DIR"
+[[ -f LICENSE.md && -f SNCK_UPSTREAM.md && -f artisan ]] || fail "The selected branch is not a complete SNCK Pterodactyl fork."
+
+cp .env.example .env
+COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+composer check-platform-reqs --no-dev
+
+php artisan key:generate --force
+php artisan p:environment:setup --author="$SERVICE_AUTHOR" --url="$APP_URL" --timezone=UTC --cache=redis --session=redis --queue=redis --redis-host=127.0.0.1 --redis-pass= --redis-port=6379 --settings-ui=true --telemetry=0 --no-interaction
+php artisan p:environment:database --host=127.0.0.1 --port=3306 --database="$DB_NAME" --username="$DB_USER" --password="$DB_PASSWORD" --no-interaction
+
+log "Building the frontend assets (this may take several minutes)..."
+yarn install --frozen-lockfile
+yarn tsc
+yarn lint
+yarn build:production
+
+log "Running database migrations and importing default game server templates..."
+php artisan migrate --seed --force --no-interaction
+
+printf '\nCreate the first SNCK Panel administrator. Use a unique password.\n'
+read -r -p "Administrator email: " ADMIN_EMAIL </dev/tty
+read -r -p "Administrator username: " ADMIN_USERNAME </dev/tty
+read -r -p "First name: " ADMIN_FIRST </dev/tty
+read -r -p "Last name: " ADMIN_LAST </dev/tty
+php artisan p:user:make --email="$ADMIN_EMAIL" --username="$ADMIN_USERNAME" --name-first="$ADMIN_FIRST" --name-last="$ADMIN_LAST" --admin=1
+
+chown -R www-data:www-data "$APP_DIR"
+chmod -R 755 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
+
+cat >/etc/nginx/sites-available/snck-panel.conf <<NGINX
+server {
+    listen 80;
+    listen [::]:80;
+    server_name $APP_HOST;
+    root $APP_DIR/public;
+    index index.php;
+    client_max_body_size 100m;
+    charset utf-8;
+
+    location / { try_files \$uri \$uri/ /index.php?\$query_string; }
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt { access_log off; log_not_found off; }
+    access_log off;
+    error_log /var/log/nginx/snck-panel-error.log error;
+
+    location ~ \.php$ {
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+        fastcgi_param HTTP_PROXY "";
+        fastcgi_intercept_errors off;
+        fastcgi_buffer_size 16k;
+        fastcgi_buffers 4 16k;
+    }
+
+    location ~ /\. { deny all; }
+}
+NGINX
+ln -sfn /etc/nginx/sites-available/snck-panel.conf /etc/nginx/sites-enabled/snck-panel.conf
+rm -f /etc/nginx/sites-enabled/default
+
+cat >/etc/systemd/system/snck-panel-queue.service <<SERVICE
+[Unit]
+Description=SNCK Panel Queue Worker
+After=redis-server.service mariadb.service
+
+[Service]
+User=www-data
+Group=www-data
+Restart=always
+ExecStart=/usr/bin/php $APP_DIR/artisan queue:work --queue=high,standard,low --sleep=3 --tries=3
+StartLimitIntervalSec=180
+StartLimitBurst=30
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+SERVICE
+
+cat >/etc/cron.d/snck-panel <<CRON
+* * * * * www-data cd $APP_DIR && /usr/bin/php artisan schedule:run >> /dev/null 2>&1
+CRON
+chmod 0644 /etc/cron.d/snck-panel
+
+if [[ "$APP_URL" == https://* ]]; then
+  log "Requesting Let's Encrypt certificate for $APP_HOST..."
+  nginx -t
+  systemctl reload nginx
+  certbot --nginx --non-interactive --agree-tos --redirect --email "$LE_EMAIL" -d "$APP_HOST"
+fi
+
+cd "$APP_DIR"
+php artisan optimize:clear
+php artisan config:cache
+php artisan view:cache
+nginx -t
+systemctl daemon-reload
+systemctl enable --now snck-panel-queue.service
+systemctl restart php8.3-fpm nginx
+
+install -d -m 0700 /root/snck-panel-secrets
+cp .env /root/snck-panel-secrets/.env.backup
+chmod 0600 /root/snck-panel-secrets/.env.backup
+ok "SNCK Panel installed at $APP_DIR"
+printf '\nPanel URL: %s\nAdmin email: %s\nEnvironment backup: /root/snck-panel-secrets/.env.backup\n' "$APP_URL" "$ADMIN_EMAIL"
+printf 'Next: install SNCK Wings on each game node and configure it from Admin > Nodes.\n'
