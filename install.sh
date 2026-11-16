@@ -25,7 +25,7 @@ Options:
   --app-dir=/absolute/path
   --help
 
-Prerequisites: PHP 8.3+, Composer, Node.js 20+, npm, and a configured PostgreSQL database.
+The installer bootstraps PHP 8.3, Composer, Node.js 22, npm, PostgreSQL, Nginx and PHP-FPM. Set SNCK_APP_URL=https://panel.example.com and SNCK_LETSENCRYPT_EMAIL=admin@example.com for automatic HTTPS.
 EOF
       exit 0
       ;;
