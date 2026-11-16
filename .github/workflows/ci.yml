@@ -120,8 +120,7 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
 
-      - name: Audit Composer dependencies
-        run: composer audit
+
 
       - name: Prepare Laravel environment
         run: |
@@ -150,3 +149,8 @@ jobs:
           DB_USERNAME: snck_panel
           DB_PASSWORD: snck_panel
         run: php artisan test
+
+      # Keep the security gate blocking, but run functional checks first so an
+      # advisory report does not hide unrelated formatting, analysis or test failures.
+      - name: Audit Composer dependencies
+        run: composer audit
