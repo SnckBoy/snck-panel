@@ -6,7 +6,7 @@
 @endsection
 
 @section('content-header')
-    <h1>Advanced Settings<small>Configure advanced settings for Pterodactyl.</small></h1>
+    <h1>Advanced Settings<small>Configure advanced settings for SNCK Panel.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li class="active">Settings</li>
