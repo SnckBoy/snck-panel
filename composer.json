@@ -1,5 +1,5 @@
 {
-    "name": "snck/panel",
+    "name": "pterodactyl/panel",
     "description": "SNCK game server hosting panel, based on Pterodactyl Panel.",
     "license": "MIT",
     "authors": [
