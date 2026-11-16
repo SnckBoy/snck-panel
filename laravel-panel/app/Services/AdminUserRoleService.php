@@ -6,14 +6,14 @@ use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class AdminUserRoleService
 {
     /**
-     * @param array{role?: string, disabled?: bool, password?: string} $changes
+     * @param  array{role?: string, disabled?: bool, password?: string}  $changes
      */
     public function update(User $actor, User $target, array $changes): User
     {
