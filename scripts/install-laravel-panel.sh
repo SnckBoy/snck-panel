@@ -64,17 +64,25 @@ fi
 # on both supported distributions. Debian uses the maintained Sury PHP archive;
 # Ubuntu uses its official PHP 8.3 packages or the Ondrej archive when absent.
 if [[ "${ID:-}" == "debian" ]]; then
-  install -d -m 0755 /usr/share/keyrings
-  curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor --yes -o /usr/share/keyrings/deb.sury.org-php.gpg
-  chmod 0644 /usr/share/keyrings/deb.sury.org-php.gpg
-  printf 'deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ %s main\\n' "${VERSION_CODENAME:?Debian release codename is unavailable}" >/etc/apt/sources.list.d/php-sury.list
+  KEYRING_PACKAGE="/tmp/debsuryorg-archive-keyring.deb"
+  curl -fsSLo "$KEYRING_PACKAGE" https://packages.sury.org/debsuryorg-archive-keyring.deb
+  dpkg -i "$KEYRING_PACKAGE"
+  rm -f "$KEYRING_PACKAGE"
+  cat >/etc/apt/sources.list.d/php-sury.sources <<EOF
+Types: deb
+URIs: https://packages.sury.org/php/
+Suites: ${VERSION_CODENAME:?Debian release codename is unavailable}
+Components: main
+Signed-By: /usr/share/keyrings/debsuryorg-archive-keyring.gpg
+EOF
   apt-get update
 elif [[ "${ID:-}" == "ubuntu" ]] && ! apt-cache policy php8.3-cli 2>/dev/null | grep -q 'Candidate: [^ (]'; then
   add-apt-repository -y ppa:ondrej/php
   apt-get update
 fi
 apt-get install -y php8.3-cli php8.3-common php8.3-mbstring php8.3-xml php8.3-curl php8.3-zip php8.3-bcmath php8.3-gd php8.3-intl php8.3-pgsql php8.3-fpm composer
-if ! command -v node >/dev/null 2>&1 || ! node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 20 ? 0 : 1)'; then
+update-alternatives --set php /usr/bin/php8.3
+if ! command -v node >/dev/null 2>&1 || ! node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 22 ? 0 : 1)'; then
   install -d -m 0755 /etc/apt/keyrings
   curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor --yes -o /etc/apt/keyrings/nodesource.gpg
   echo 'deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main' >/etc/apt/sources.list.d/nodesource.list
@@ -91,7 +99,7 @@ for extension in mbstring openssl pdo_pgsql zip; do
 done
 command -v composer >/dev/null || fail 'Composer is required.'
 command -v node >/dev/null || fail 'Node.js 20+ is required for asset compilation.'
-node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 20 ? 0 : 1)' || fail 'Node.js 20+ is required.'
+node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 22 ? 0 : 1)' || fail 'Node.js 22+ is required.'
 command -v npm >/dev/null || fail 'npm is required.'
 command -v git >/dev/null || fail 'git is required.'
 command -v apt-get >/dev/null || fail 'apt-get is required.'
