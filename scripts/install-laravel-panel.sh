@@ -27,8 +27,8 @@ Options:
   --help
 
 Prerequisites:
-  PHP 8.3+, Composer, Node.js 20+, npm, and a reachable PostgreSQL database.
-  The installer installs Nginx, PHP-FPM 8.3 and the PostgreSQL client.
+  PHP 8.3+, Composer, Node.js 22+, npm, and a reachable PostgreSQL database.
+  The installer bootstraps dependencies; HTTPS requires SNCK_APP_URL=https://... and SNCK_LETSENCRYPT_EMAIL.
 EOF
       exit 0
       ;;
@@ -201,6 +201,16 @@ php -r '
   $hasCredentialsOrSuffix = is_array($url) && (isset($url["user"]) || isset($url["pass"]) || isset($url["query"]) || isset($url["fragment"]));
   exit($validHost && $validScheme && $validPath && ! $hasCredentialsOrSuffix ? 0 : 1);
 ' "$APP_URL" || fail 'APP_URL must be a root HTTP/HTTPS URL with a valid IPv4 address or DNS hostname.'
+
+APP_HOST="$(php -r '$url = parse_url($argv[1]); echo is_array($url) ? ($url["host"] ?? "") : "";' "$APP_URL")"
+LETSENCRYPT_EMAIL="${SNCK_LETSENCRYPT_EMAIL:-}"
+if [[ "$APP_URL" == https://* ]]; then
+  [[ ! "$APP_HOST" =~ ^[0-9.]+$ ]] || fail 'Automatic HTTPS requires a DNS hostname, not an IP address.'
+  if [[ -z "$LETSENCRYPT_EMAIL" ]]; then
+    LETSENCRYPT_EMAIL="$(prompt_value SNCK_LETSENCRYPT_EMAIL "Email for Let's Encrypt renewal notices" '')"
+  fi
+  php -r 'exit(filter_var($argv[1], FILTER_VALIDATE_EMAIL) ? 0 : 1);' "$LETSENCRYPT_EMAIL" || fail 'A valid SNCK_LETSENCRYPT_EMAIL is required when APP_URL uses HTTPS.'
+fi
 # Safely replace dotenv values without evaluating or sourcing .env.
 set_env() {
   local key="$1" value="$2"
@@ -246,7 +256,11 @@ fi
 export DEBIAN_FRONTEND=noninteractive
 log 'Installing Nginx, PHP-FPM and PostgreSQL client...'
 apt-get update
-apt-get install -y nginx php8.3-fpm postgresql-client
+if [[ "$APP_URL" == https://* ]]; then
+  apt-get install -y nginx php8.3-fpm postgresql-client certbot python3-certbot-nginx
+else
+  apt-get install -y nginx php8.3-fpm postgresql-client
+fi
 
 log 'Installing PHP dependencies...'
 export COMPOSER_ALLOW_SUPERUSER=1
@@ -297,7 +311,7 @@ server {
     # cannot intercept requests when its default site is also enabled.
     listen 80 default_server;
     listen [::]:80 default_server;
-    server_name _;
+    server_name ${APP_HOST:-_};
     root $APP_DIR/public;
     index index.php;
     client_max_body_size 512m;
@@ -321,6 +335,13 @@ systemctl restart php8.3-fpm
 systemctl enable --now nginx php8.3-fpm
 # --now does not reload an already-running Nginx process after config changes.
 systemctl reload nginx
+
+if [[ "$APP_URL" == https://* ]]; then
+  log "Requesting Let's Encrypt certificate for $APP_HOST..."
+  certbot --nginx --non-interactive --agree-tos --redirect --email "$LETSENCRYPT_EMAIL" -d "$APP_HOST"
+  nginx -t
+  systemctl reload nginx
+fi
 
 cat >/etc/systemd/system/snck-panel-laravel.service <<EOF
 [Unit]
@@ -403,6 +424,6 @@ systemctl enable --now snck-panel-laravel.service snck-panel-laravel-scheduler.t
 log 'Laravel panel installation completed.'
 printf '\nPanel directory: %s\n' "$APP_DIR"
 printf 'First-owner setup: %s/setup\n' "$APP_URL"
-printf 'HTTP listener: port 80 (configure HTTPS before public use)\n'
+if [[ "$APP_URL" == https://* ]]; then printf 'HTTPS: enabled with a Let\x27s Encrypt certificate for %s\n' "$APP_HOST"; else printf 'HTTP listener: port 80 (set SNCK_APP_URL=https://your-domain and SNCK_LETSENCRYPT_EMAIL to enable HTTPS)\n'; fi
 printf 'Status: systemctl status nginx php8.3-fpm snck-panel-laravel --no-pager\n'
 printf 'Logs: journalctl -u snck-panel-laravel -f\n'
