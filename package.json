@@ -130,7 +130,7 @@
         "webpack-dev-server": "^5.2.2"
     },
     "scripts": {
-        "clean": "mkdir -p public/assets && cd public/assets && find . \\\\( -name \"*.js\" -o -name \"*.map\" \\\\) -type f -delete",
+        "clean": "mkdir -p public/assets && find public/assets -type f -name '*.js' -delete && find public/assets -type f -name '*.map' -delete",
         "test": "jest",
         "tsc": "tsc --noEmit",
         "lint": "eslint ./resources/scripts/**/*.{ts,tsx} --ext .ts,.tsx",
