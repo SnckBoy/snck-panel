@@ -74,4 +74,65 @@ export default createGlobalStyle`
     ::-webkit-scrollbar-corner {
         background: transparent;
     }
+
+    /* SNCK glass theme: keep the upstream component structure and API intact. */
+    body {
+        background-color: #080d1b !important;
+        background-image:
+            radial-gradient(ellipse at 12% 8%, rgba(124, 58, 237, .20), transparent 34rem),
+            radial-gradient(ellipse at 88% 76%, rgba(56, 189, 248, .12), transparent 38rem),
+            linear-gradient(145deg, #080d1b 0%, #10182b 55%, #0b1222 100%);
+        background-attachment: fixed;
+    }
+
+    .bg-neutral-900 {
+        background-color: rgba(8, 13, 27, .78) !important;
+        border-color: rgba(148, 163, 184, .16);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+    }
+
+    .bg-neutral-800 {
+        background-color: rgba(15, 23, 42, .62) !important;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+    }
+
+    .bg-neutral-700 {
+        background-color: rgba(30, 41, 59, .54) !important;
+        border: 1px solid rgba(148, 163, 184, .17);
+        box-shadow: 0 14px 38px rgba(0, 0, 0, .16);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+
+    .bg-neutral-600 {
+        background-color: rgba(51, 65, 85, .56) !important;
+        border-color: rgba(148, 163, 184, .2);
+    }
+
+    .bg-black {
+        background-color: rgba(5, 8, 18, .84) !important;
+    }
+
+    input, select, textarea {
+        background-color: rgba(15, 23, 42, .72) !important;
+        border-color: rgba(148, 163, 184, .25) !important;
+        border-radius: 10px;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        border-color: rgba(167, 139, 250, .85) !important;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, .16);
+    }
+
+    a, button {
+        transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        a, button {
+            transition: none;
+        }
+    }
 `;
