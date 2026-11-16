@@ -19,6 +19,7 @@
     if (auth()->user()->isStaff()) {
         $snckNavigation[] = ['label' => 'Nodes', 'route' => 'nodes.index', 'icon' => 'nodes'];
         $snckNavigation[] = ['label' => 'Snck Theme', 'route' => 'themes.index', 'icon' => 'theme'];
+        $snckNavigation[] = ['label' => 'Audit logs', 'route' => 'admin.audit-logs', 'icon' => 'audit'];
     }
 @endphp
 <div class="snck-shell">
