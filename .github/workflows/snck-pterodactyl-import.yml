@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 concurrency:
   group: snck-pterodactyl-import
@@ -41,7 +40,7 @@ jobs:
           set -euo pipefail
           git fetch origin main
           git switch --force-create "$TARGET_BRANCH" origin/main
-          rsync -a --delete --exclude='.git/' "$RUNNER_TEMP/pterodactyl/" "$GITHUB_WORKSPACE/"
+          rsync -a --delete --exclude='.git/' --exclude='.github/workflows/' "$RUNNER_TEMP/pterodactyl/" "$GITHUB_WORKSPACE/"
           mkdir -p scripts
           cp "$RUNNER_TEMP/rebrand-pterodactyl.py" scripts/rebrand-pterodactyl.py
           python3 scripts/rebrand-pterodactyl.py "$GITHUB_WORKSPACE"
@@ -54,26 +53,4 @@ jobs:
           git commit -m "feat: import Pterodactyl Panel v1.15.2 as SNCK"
           git push --force origin "HEAD:refs/heads/$TARGET_BRANCH"
 
-      - name: Open draft pull request
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TARGET_BRANCH: feat/snck-pterodactyl-v1.15.2
-        run: |
-          set -euo pipefail
-          cat > "$RUNNER_TEMP/pr-body.md" <<'EOF'
-          ## What this branch does
-
-          - Imports the exact Pterodactyl Panel v1.15.2 source commit supplied for this project.
-          - Applies conservative SNCK branding to the app name, login screen, footer, admin links and console prompt.
-          - Preserves the upstream MIT licence and copyright notice in LICENSE.md.
-          - Preserves upstream internal namespaces, database keys, API contracts and Wings paths for compatibility.
-
-          ## Important architecture
-
-          The panel is PHP/Laravel with a React/TypeScript client. Game nodes require the separate Go-based Wings service. The previous SNCK TypeScript daemon is not a compatible substitute and is intentionally not installed by this branch.
-
-          ## Not production-ready yet
-
-          This is an isolated source-import draft. The SNCK one-command installer, matching Wings node installer, clean Ubuntu/Debian installation checks, and full integration validation are the next required steps. Do not install this branch on a production host yet.
-          EOF
-          gh pr create --repo "$GITHUB_REPOSITORY" --base main --head "$TARGET_BRANCH" --title "feat: fork Pterodactyl Panel v1.15.2 as SNCK" --body-file "$RUNNER_TEMP/pr-body.md" --draft
+          echo "Imported branch pushed. Create the review PR with the GitHub integration after the import run succeeds." >> "$GITHUB_STEP_SUMMARY"
