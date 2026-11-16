@@ -69,6 +69,10 @@ jobs:
           cp .env.example .env
           php artisan key:generate --force
 
+      - name: Apply Pint formatting to the legacy role service
+        working-directory: laravel-panel
+        run: ./vendor/bin/pint app/Services/AdminUserRoleService.php
+
       - name: Check PHP formatting
         working-directory: laravel-panel
         run: ./vendor/bin/pint --test
