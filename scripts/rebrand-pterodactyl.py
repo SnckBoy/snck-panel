@@ -39,7 +39,6 @@ def main() -> None:
         raise FileNotFoundError("Upstream LICENSE.md is missing; refusing to import.")
 
     composer = json.loads(read("composer.json"))
-    composer["name"] = "snck/panel"
     composer["description"] = "SNCK game server hosting panel, based on Pterodactyl Panel."
     write("composer.json", json.dumps(composer, indent=4, ensure_ascii=False) + "\n")
 
