@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DiscordRewardsController;
 use App\Http\Controllers\ThemeExportController;
+use App\Livewire\AdminAuditLogs;
+use App\Livewire\AdminDashboard;
 use App\Livewire\AdminUsers;
 use App\Livewire\AdminWorkspace;
 use App\Livewire\CloudflareManager;
@@ -42,11 +44,13 @@ Route::middleware(['auth', 'account.enabled'])->group(function (): void {
     Route::get('/servers/create', ServerCreate::class)->name('servers.create');
     Route::get('/servers/{server}', ServerDetail::class)->name('servers.show');
     Route::middleware('role:owner,admin')->group(function (): void {
+        Route::get('/admin', AdminDashboard::class)->name('admin.index');
         Route::get('/themes', ThemeManager::class)->name('themes.index');
         Route::get('/themes/{theme}/export', ThemeExportController::class)->name('themes.export');
         Route::get('/nodes', InfrastructureManager::class)->name('nodes.index');
         Route::get('/allocations', InfrastructureManager::class)->defaults('tab', 'allocations')->name('allocations.index');
         Route::get('/admin/users', AdminUsers::class)->name('admin.users');
+        Route::get('/admin/audit-logs', AdminAuditLogs::class)->name('admin.audit-logs');
         Route::get('/admin/workspace', AdminWorkspace::class)->name('admin.workspace');
         Route::get('/cloudflare', CloudflareManager::class)->name('cloudflare.index');
         Route::get('/admin/discord/claims', DiscordClaimsAdmin::class)->name('admin.discord.claims');

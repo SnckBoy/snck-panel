@@ -17,8 +17,10 @@
         ['label' => 'Create server', 'route' => 'servers.create', 'icon' => 'plus'],
     ];
     if (auth()->user()->isStaff()) {
+        $snckNavigation[] = ['label' => 'Administration', 'route' => 'admin.index', 'icon' => 'settings'];
         $snckNavigation[] = ['label' => 'Nodes', 'route' => 'nodes.index', 'icon' => 'nodes'];
         $snckNavigation[] = ['label' => 'Snck Theme', 'route' => 'themes.index', 'icon' => 'theme'];
+        $snckNavigation[] = ['label' => 'Audit logs', 'route' => 'admin.audit-logs', 'icon' => 'audit'];
     }
 @endphp
 <div class="snck-shell">

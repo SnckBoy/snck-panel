@@ -16,6 +16,9 @@
         @case('theme')
             <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="4"/>
             @break
+        @case('audit')
+            <path d="M4 5h16M4 12h16M4 19h10"/><circle cx="18" cy="18" r="3"/><path d="M18 16.5v1.8l1.2.7"/>
+            @break
         @case('signout')
             <path d="M10 17l5-5-5-5M15 12H3"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/>
             @break

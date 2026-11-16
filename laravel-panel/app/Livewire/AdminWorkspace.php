@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\ApiKey;
 use App\Services\CloudflareService;
 use App\Services\DiscordRewardsService;
+use App\Services\ServerProvisioner;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -59,7 +60,25 @@ class AdminWorkspace extends Component
     public function loadAll(): void
     {
         $this->authorizeStaff();
-        $this->settings = DB::table('settings')->where('is_encrypted', false)->pluck('value', 'key')->map(fn ($value) => json_decode((string) $value, true))->all();
+        $storedSettings = DB::table('settings')
+            ->where('is_encrypted', false)
+            ->pluck('value', 'key')
+            ->map(fn ($value) => json_decode((string) $value, true))
+            ->all();
+
+        $this->settings = array_merge([
+            'panelName' => config('app.name', 'SNCK Panel'),
+            'enableRegistration' => false,
+            'enableGoogleLogin' => false,
+            'enablePlayit' => false,
+            'enableTutorial' => true,
+            'enableLoginAnimation' => true,
+            'reducedMotion' => false,
+            'quota_max_servers' => ServerProvisioner::DEFAULT_QUOTAS['max_servers'],
+            'quota_total_ram_mb' => ServerProvisioner::DEFAULT_QUOTAS['total_ram_mb'],
+            'quota_total_cpu_percent' => ServerProvisioner::DEFAULT_QUOTAS['total_cpu_percent'],
+            'quota_total_disk_mb' => ServerProvisioner::DEFAULT_QUOTAS['total_disk_mb'],
+        ], $storedSettings);
         $this->keys = ApiKey::query()->where('user_id', auth()->id())->latest()->get()->map(fn (ApiKey $key): array => ['id' => $key->id, 'label' => $key->label, 'scopes' => $key->scopes ?? [], 'revoked' => (bool) $key->revoked_at, 'expires_at' => $this->formatKeyDate($key)])->all();
         $this->discord = app(DiscordRewardsService::class)->publicState(app(DiscordRewardsService::class)->state());
 
@@ -73,11 +92,30 @@ class AdminWorkspace extends Component
     public function saveSettings(): void
     {
         $this->authorizeStaff();
-        $data = $this->validate(['settings.panelName' => ['nullable', 'string', 'max:80'], 'settings.enableRegistration' => ['boolean'], 'settings.enablePlayit' => ['boolean'], 'settings.enableTutorial' => ['boolean'], 'settings.reducedMotion' => ['boolean']]);
-        foreach ($data['settings'] as $key => $value) {
-            DB::table('settings')->updateOrInsert(['key' => $key], ['value' => json_encode($value), 'is_encrypted' => false, 'created_at' => now(), 'updated_at' => now()]);
-        }
-        $this->audit('settings.update', ['keys' => array_keys($data['settings'])]);
+        $data = $this->validate([
+            'settings.panelName' => ['nullable', 'string', 'max:80'],
+            'settings.enableRegistration' => ['boolean'],
+            'settings.enableGoogleLogin' => ['boolean'],
+            'settings.enablePlayit' => ['boolean'],
+            'settings.enableTutorial' => ['boolean'],
+            'settings.enableLoginAnimation' => ['boolean'],
+            'settings.reducedMotion' => ['boolean'],
+            'settings.quota_max_servers' => ['required', 'integer', 'min:1', 'max:10000'],
+            'settings.quota_total_ram_mb' => ['required', 'integer', 'min:1', 'max:16777216'],
+            'settings.quota_total_cpu_percent' => ['required', 'integer', 'min:1', 'max:100000'],
+            'settings.quota_total_disk_mb' => ['required', 'integer', 'min:1', 'max:1099511627776'],
+        ]);
+
+        DB::transaction(function () use ($data): void {
+            foreach ($data['settings'] as $key => $value) {
+                DB::table('settings')->updateOrInsert(
+                    ['key' => $key],
+                    ['value' => json_encode($value), 'is_encrypted' => false, 'created_at' => now(), 'updated_at' => now()],
+                );
+            }
+
+            $this->audit('settings.update', ['keys' => array_keys($data['settings'])]);
+        });
         $this->flash('Settings saved.');
     }
 

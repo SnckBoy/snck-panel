@@ -27,7 +27,7 @@ class AdminUsers extends Component
         $actor = $this->authorizeStaff();
         $user = User::query()->findOrFail($id);
 
-        abort_if($user->isOwner() && !$actor->isOwner(), 403, 'Admins cannot edit an Owner account.');
+        abort_if($user->isOwner() && ! $actor->isOwner(), 403, 'Admins cannot edit an Owner account.');
 
         $this->editing = $user->id;
         $this->role = $user->role;

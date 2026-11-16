@@ -27,8 +27,8 @@ Options:
   --help
 
 Prerequisites:
-  PHP 8.3+, Composer, Node.js 20+, npm, and a reachable PostgreSQL database.
-  The installer installs Nginx, PHP-FPM 8.3 and the PostgreSQL client.
+  PHP 8.3+, Composer, Node.js 22+, npm, and a reachable PostgreSQL database.
+  The installer bootstraps dependencies; HTTPS requires SNCK_APP_URL=https://... and SNCK_LETSENCRYPT_EMAIL.
 EOF
       exit 0
       ;;
@@ -60,13 +60,29 @@ if [[ "${ID:-}" == "ubuntu" && "${VERSION_ID:-}" == "22.04" ]]; then
   add-apt-repository -y ppa:ondrej/php
   apt-get update
 fi
-if ! command -v php >/dev/null 2>&1 || ! php -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);'; then
-  if [[ "${ID:-}" == "debian" ]]; then
-    fail 'PHP 8.3+ is required. Install PHP 8.3 from your Debian PHP repository before continuing.'
-  fi
+# Ensure the exact PHP 8.3 packages required by the FPM service are available
+# on both supported distributions. Debian uses the maintained Sury PHP archive;
+# Ubuntu uses its official PHP 8.3 packages or the Ondrej archive when absent.
+if [[ "${ID:-}" == "debian" ]]; then
+  KEYRING_PACKAGE="/tmp/debsuryorg-archive-keyring.deb"
+  curl -fsSLo "$KEYRING_PACKAGE" https://packages.sury.org/debsuryorg-archive-keyring.deb
+  dpkg -i "$KEYRING_PACKAGE"
+  rm -f "$KEYRING_PACKAGE"
+  cat >/etc/apt/sources.list.d/php-sury.sources <<EOF
+Types: deb
+URIs: https://packages.sury.org/php/
+Suites: ${VERSION_CODENAME:?Debian release codename is unavailable}
+Components: main
+Signed-By: /usr/share/keyrings/debsuryorg-archive-keyring.gpg
+EOF
+  apt-get update
+elif [[ "${ID:-}" == "ubuntu" ]] && ! apt-cache policy php8.3-cli 2>/dev/null | grep -q 'Candidate: [^ (]'; then
+  add-apt-repository -y ppa:ondrej/php
+  apt-get update
 fi
 apt-get install -y php8.3-cli php8.3-common php8.3-mbstring php8.3-xml php8.3-curl php8.3-zip php8.3-bcmath php8.3-gd php8.3-intl php8.3-pgsql php8.3-fpm composer
-if ! command -v node >/dev/null 2>&1 || ! node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 20 ? 0 : 1)'; then
+update-alternatives --set php /usr/bin/php8.3
+if ! command -v node >/dev/null 2>&1 || ! node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 22 ? 0 : 1)'; then
   install -d -m 0755 /etc/apt/keyrings
   curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor --yes -o /etc/apt/keyrings/nodesource.gpg
   echo 'deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main' >/etc/apt/sources.list.d/nodesource.list
@@ -83,7 +99,7 @@ for extension in mbstring openssl pdo_pgsql zip; do
 done
 command -v composer >/dev/null || fail 'Composer is required.'
 command -v node >/dev/null || fail 'Node.js 20+ is required for asset compilation.'
-node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 20 ? 0 : 1)' || fail 'Node.js 20+ is required.'
+node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 22 ? 0 : 1)' || fail 'Node.js 22+ is required.'
 command -v npm >/dev/null || fail 'npm is required.'
 command -v git >/dev/null || fail 'git is required.'
 command -v apt-get >/dev/null || fail 'apt-get is required.'
@@ -193,6 +209,16 @@ php -r '
   $hasCredentialsOrSuffix = is_array($url) && (isset($url["user"]) || isset($url["pass"]) || isset($url["query"]) || isset($url["fragment"]));
   exit($validHost && $validScheme && $validPath && ! $hasCredentialsOrSuffix ? 0 : 1);
 ' "$APP_URL" || fail 'APP_URL must be a root HTTP/HTTPS URL with a valid IPv4 address or DNS hostname.'
+
+APP_HOST="$(php -r '$url = parse_url($argv[1]); echo is_array($url) ? ($url["host"] ?? "") : "";' "$APP_URL")"
+LETSENCRYPT_EMAIL="${SNCK_LETSENCRYPT_EMAIL:-}"
+if [[ "$APP_URL" == https://* ]]; then
+  php -r 'exit(filter_var($argv[1], FILTER_VALIDATE_IP) ? 1 : 0);' "$APP_HOST" || fail 'Automatic HTTPS requires a DNS hostname, not an IP address.'
+  if [[ -z "$LETSENCRYPT_EMAIL" ]]; then
+    LETSENCRYPT_EMAIL="$(prompt_value SNCK_LETSENCRYPT_EMAIL "Email for Let's Encrypt renewal notices" '')"
+  fi
+  php -r 'exit(filter_var($argv[1], FILTER_VALIDATE_EMAIL) ? 0 : 1);' "$LETSENCRYPT_EMAIL" || fail 'A valid SNCK_LETSENCRYPT_EMAIL is required when APP_URL uses HTTPS.'
+fi
 # Safely replace dotenv values without evaluating or sourcing .env.
 set_env() {
   local key="$1" value="$2"
@@ -238,7 +264,11 @@ fi
 export DEBIAN_FRONTEND=noninteractive
 log 'Installing Nginx, PHP-FPM and PostgreSQL client...'
 apt-get update
-apt-get install -y nginx php8.3-fpm postgresql-client
+if [[ "$APP_URL" == https://* ]]; then
+  apt-get install -y nginx php8.3-fpm postgresql-client certbot python3-certbot-nginx
+else
+  apt-get install -y nginx php8.3-fpm postgresql-client
+fi
 
 log 'Installing PHP dependencies...'
 export COMPOSER_ALLOW_SUPERUSER=1
@@ -289,7 +319,7 @@ server {
     # cannot intercept requests when its default site is also enabled.
     listen 80 default_server;
     listen [::]:80 default_server;
-    server_name _;
+    server_name ${APP_HOST:-_};
     root $APP_DIR/public;
     index index.php;
     client_max_body_size 512m;
@@ -313,6 +343,13 @@ systemctl restart php8.3-fpm
 systemctl enable --now nginx php8.3-fpm
 # --now does not reload an already-running Nginx process after config changes.
 systemctl reload nginx
+
+if [[ "$APP_URL" == https://* ]]; then
+  log "Requesting Let's Encrypt certificate for $APP_HOST..."
+  certbot --nginx --non-interactive --agree-tos --redirect --email "$LETSENCRYPT_EMAIL" -d "$APP_HOST"
+  nginx -t
+  systemctl reload nginx
+fi
 
 cat >/etc/systemd/system/snck-panel-laravel.service <<EOF
 [Unit]
@@ -395,6 +432,6 @@ systemctl enable --now snck-panel-laravel.service snck-panel-laravel-scheduler.t
 log 'Laravel panel installation completed.'
 printf '\nPanel directory: %s\n' "$APP_DIR"
 printf 'First-owner setup: %s/setup\n' "$APP_URL"
-printf 'HTTP listener: port 80 (configure HTTPS before public use)\n'
+if [[ "$APP_URL" == https://* ]]; then printf 'HTTPS: enabled with a Let\x27s Encrypt certificate for %s\n' "$APP_HOST"; else printf 'HTTP listener: port 80 (set SNCK_APP_URL=https://your-domain and SNCK_LETSENCRYPT_EMAIL to enable HTTPS)\n'; fi
 printf 'Status: systemctl status nginx php8.3-fpm snck-panel-laravel --no-pager\n'
 printf 'Logs: journalctl -u snck-panel-laravel -f\n'

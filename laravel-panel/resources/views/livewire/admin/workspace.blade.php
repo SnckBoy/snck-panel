@@ -8,10 +8,31 @@
         @endforeach
     </nav>
     @if($section === 'settings')
-        <form wire:submit="saveSettings" class="grid gap-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-5 md:grid-cols-2">
-            <label class="field md:col-span-2">Panel name<input wire:model="settings.panelName"></label>
-            @foreach(['enableRegistration'=>'Allow registration','enablePlayit'=>'Enable Playit','enableTutorial'=>'Show tutorial','reducedMotion'=>'Reduce motion'] as $key=>$label)<label class="flex items-center gap-2 rounded-xl border border-slate-800 p-4 text-sm"><input type="checkbox" wire:model="settings.{{ $key }}">{{ $label }}</label>@endforeach
-            <button class="rounded-lg bg-violet-500 px-4 py-2 text-sm font-semibold md:col-span-2">Save settings</button>
+        <form wire:submit="saveSettings" class="space-y-5">
+            <section class="grid gap-4 rounded-2xl border border-slate-700/70 bg-slate-900/50 p-5 backdrop-blur-xl md:grid-cols-2">
+                <div class="md:col-span-2">
+                    <h2 class="text-lg font-semibold">Panel configuration</h2>
+                    <p class="mt-1 text-sm text-slate-400">Control the public-facing panel experience and account access.</p>
+                </div>
+                <label class="field md:col-span-2">Panel name<input wire:model="settings.panelName" maxlength="80"></label>
+                @foreach(['enableRegistration'=>'Allow public registration','enableGoogleLogin'=>'Enable Google sign-in','enablePlayit'=>'Enable Playit integration','enableTutorial'=>'Show onboarding tutorial','enableLoginAnimation'=>'Show login animation','reducedMotion'=>'Reduce interface motion'] as $key=>$label)
+                    <label class="flex items-center gap-3 rounded-xl border border-slate-700/70 bg-slate-950/50 p-4 text-sm"><input type="checkbox" wire:model="settings.{{ $key }}">{{ $label }}</label>
+                @endforeach
+            </section>
+            <section class="space-y-4 rounded-2xl border border-slate-700/70 bg-slate-900/50 p-5 backdrop-blur-xl">
+                <div>
+                    <h2 class="text-lg font-semibold">Default user hosting quotas</h2>
+                    <p class="mt-1 text-sm text-slate-400">Limits apply to regular users. Owner and Admin accounts can provision servers without these user quotas. RAM and disk values are in MB; CPU 100 equals one CPU core.</p>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    <label class="field">Maximum servers<input type="number" min="1" max="10000" step="1" wire:model="settings.quota_max_servers" required></label>
+                    <label class="field">Total RAM (MB)<input type="number" min="1" max="16777216" step="1" wire:model="settings.quota_total_ram_mb" required></label>
+                    <label class="field">Total CPU (%)<input type="number" min="1" max="100000" step="1" wire:model="settings.quota_total_cpu_percent" required></label>
+                    <label class="field">Total disk (MB)<input type="number" min="1" max="1099511627776" step="1" wire:model="settings.quota_total_disk_mb" required></label>
+                </div>
+                <p class="text-xs text-slate-500">Current safe defaults: 3 servers, 8,192 MB RAM, 400% CPU and 51,200 MB disk. Changes affect new provisioning checks.</p>
+            </section>
+            <button class="rounded-lg bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/30">Save panel settings</button>
         </form>
     @elseif($section === 'cloudflare')
         <section class="space-y-5 rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><form wire:submit="connectCloudflare" class="grid gap-3 md:grid-cols-3"><label class="field md:col-span-2">API token<input type="password" wire:model="cloudflareToken" autocomplete="new-password"></label><label class="field">Account ID (optional)<input wire:model="cloudflareAccountId"></label><button class="rounded-lg bg-violet-500 px-4 py-2 text-sm font-semibold md:col-span-3">Verify and connect</button></form><div><h2 class="mb-2 font-semibold">Accessible zones</h2><div class="grid gap-2 md:grid-cols-3">@forelse($zones as $zone)<div class="rounded-xl border border-slate-800 bg-slate-950 p-3"><strong>{{ $zone['name'] ?? 'Unnamed zone' }}</strong><p class="text-xs text-slate-500">{{ $zone['id'] ?? '' }}</p></div>@empty<p class="text-sm text-slate-500">Connect an account to load zones.</p>@endforelse</div></div></section>

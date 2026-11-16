@@ -29,6 +29,9 @@ The Laravel application currently contains routes and UI components for:
 - Plugin, mod and modpack management endpoints.
 - Per-server subuser management, SFTP credentials, and an SSH/SFTP transport jailed to each server's files.
 - API key management.
+- Owner/Admin control center with live user, server and node counts plus direct access to administration tools.
+- Staff-only audit log console with searchable actor, resource, result, IP address and request context.
+- Configurable non-staff hosting quotas for server count, total RAM, CPU and disk.
 - Discord reward configuration and claim administration.
 - Cloudflare connection and DNS management screens.
 - Theme management and export.
@@ -43,12 +46,12 @@ For the Laravel application:
 - PHP **8.3 or newer**.
 - PHP extensions: `mbstring`, `openssl`, `pdo_pgsql`, and `zip` (Laravel may require additional standard PHP extensions depending on the enabled features).
 - Composer.
-- Node.js **20 or newer** and npm, for frontend asset compilation.
+- Node.js **22 or newer** and npm, for frontend asset compilation.
 - PostgreSQL, with a database and user created for this application.
 - Git and systemd for the CLI installer.
 - Nginx and PHP-FPM are installed by the CLI installer.
 
-The one-command installer bootstraps PHP 8.3 and its required extensions, Composer, Node.js 22, npm, PostgreSQL, Git, Nginx and PHP-FPM on supported Ubuntu releases. It creates a local `snck_panel` PostgreSQL role and database automatically when using the default local database host. For a remote PostgreSQL server, supply `SNCK_DB_HOST`, `SNCK_DB_DATABASE`, `SNCK_DB_USERNAME` and `SNCK_DB_PASSWORD` as environment variables.
+The one-command installer bootstraps PHP 8.3 and its required extensions, Composer, Node.js 22, npm, PostgreSQL, Git, Nginx and PHP-FPM on supported Ubuntu and Debian releases. When `SNCK_APP_URL` is an HTTPS hostname, it can request and configure a Let's Encrypt certificate; DNS must already point to this VPS and inbound TCP ports 80/443 must be reachable. It creates a local `snck_panel` PostgreSQL role and database automatically when using the default local database host. For a remote PostgreSQL server, supply `SNCK_DB_HOST`, `SNCK_DB_DATABASE`, `SNCK_DB_USERNAME` and `SNCK_DB_PASSWORD` as environment variables.
 
 ## Database preparation
 
@@ -65,7 +68,7 @@ Use a strong unique password. If PostgreSQL is on another host, configure its ne
 
 ### 1. Install prerequisites
 
-Install PHP 8.3+ with the required extensions, Composer, Node.js 20+, npm, Git and access to a configured PostgreSQL database. The exact package names can differ between Ubuntu and Debian releases.
+The installer installs the PHP, Composer, Node.js, PostgreSQL, Git, Nginx and PHP-FPM prerequisites on supported Ubuntu/Debian releases. You do not need to install those packages manually.
 
 Verify:
 
@@ -85,13 +88,13 @@ The standard one-command installer downloads the Laravel installer from `main` a
 curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/install.sh | sudo bash
 ```
 
-To test this PR branch before it is merged:
+To test a feature branch before it is merged, replace `BRANCH_NAME` in the following command with the branch name:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/php-migration-final/install.sh | sudo env SNCK_BRANCH=php-migration-final bash
+curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/BRANCH_NAME/install.sh | sudo env SNCK_BRANCH=BRANCH_NAME bash
 ```
 
-The installer shows an interactive menu for fresh install, update, repair, diagnostics and uninstall. It automatically installs system dependencies, provisions the local PostgreSQL database with a generated password, and detects the VPS public IPv4 address for the initial HTTP URL. For remote PostgreSQL or a custom domain, set `SNCK_DB_HOST`, `SNCK_DB_PORT`, `SNCK_DB_DATABASE`, `SNCK_DB_USERNAME`, `SNCK_DB_PASSWORD`, and/or `SNCK_APP_URL` before running. It preserves an existing `.env` and application key when updating an existing install. Uninstall intentionally keeps PostgreSQL data.
+The installer shows an interactive menu for fresh install, update, repair, diagnostics and uninstall. It automatically installs system dependencies, provisions the local PostgreSQL database with a generated password, and detects the VPS public IPv4 address for the initial HTTP URL. For remote PostgreSQL or a custom domain, set `SNCK_DB_HOST`, `SNCK_DB_PORT`, `SNCK_DB_DATABASE`, `SNCK_DB_USERNAME`, `SNCK_DB_PASSWORD`, and/or `SNCK_APP_URL` before running. For automatic HTTPS, also set `SNCK_LETSENCRYPT_EMAIL` and use an `https://` URL after pointing DNS at the VPS. It preserves an existing `.env` and application key when updating an existing install. Uninstall intentionally keeps PostgreSQL data.
 
 Optional installer arguments:
 

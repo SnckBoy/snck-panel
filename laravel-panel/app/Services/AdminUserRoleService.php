@@ -6,14 +6,14 @@ use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class AdminUserRoleService
 {
     /**
-     * @param array{role?: string, disabled?: bool, password?: string} $changes
+     * @param  array{role?: string, disabled?: bool, password?: string}  $changes
      */
     public function update(User $actor, User $target, array $changes): User
     {
@@ -28,7 +28,7 @@ class AdminUserRoleService
             $target = User::query()->lockForUpdate()->findOrFail($target->getKey());
             $this->authorizeActor($actor);
 
-            if ($target->isOwner() && !$actor->isOwner()) {
+            if ($target->isOwner() && ! $actor->isOwner()) {
                 throw new AuthorizationException('Admins cannot modify an Owner account.');
             }
 
@@ -37,7 +37,7 @@ class AdminUserRoleService
                 ? (bool) $changes['disabled']
                 : (bool) $target->disabled;
 
-            if ($nextRole === 'owner' && !$actor->isOwner()) {
+            if ($nextRole === 'owner' && ! $actor->isOwner()) {
                 throw new AuthorizationException('Only the Owner can grant the Owner role.');
             }
 
@@ -49,7 +49,7 @@ class AdminUserRoleService
                 throw ValidationException::withMessages(['user' => 'The last Owner account cannot be demoted.']);
             }
 
-            if ($target->isOwner() && $nextDisabled && !$target->disabled
+            if ($target->isOwner() && $nextDisabled && ! $target->disabled
                 && $owners->where('disabled', false)->count() <= 1) {
                 throw ValidationException::withMessages(['user' => 'The panel must retain at least one enabled Owner account.']);
             }
@@ -93,7 +93,7 @@ class AdminUserRoleService
                 throw ValidationException::withMessages(['user' => 'You cannot delete your own account.']);
             }
 
-            if ($target->isOwner() && !$actor->isOwner()) {
+            if ($target->isOwner() && ! $actor->isOwner()) {
                 throw new AuthorizationException('Admins cannot delete an Owner account.');
             }
 
@@ -101,7 +101,7 @@ class AdminUserRoleService
                 throw ValidationException::withMessages(['user' => 'The last Owner account cannot be deleted.']);
             }
 
-            if ($target->isOwner() && !$target->disabled && $owners->where('disabled', false)->count() <= 1) {
+            if ($target->isOwner() && ! $target->disabled && $owners->where('disabled', false)->count() <= 1) {
                 throw ValidationException::withMessages(['user' => 'The panel must retain at least one enabled Owner account.']);
             }
 
@@ -121,7 +121,7 @@ class AdminUserRoleService
 
     private function authorizeActor(User $actor): void
     {
-        if (!$actor->isStaff()) {
+        if (! $actor->isStaff()) {
             throw new AuthorizationException('Staff access is required.');
         }
     }

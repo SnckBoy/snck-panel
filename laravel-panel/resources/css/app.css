@@ -15,8 +15,11 @@
     --snck-bg: #080d1b;
     --snck-sidebar: #0d1426;
     --snck-panel: #111b30;
-    --snck-panel-soft: #0d172b;
-    --snck-border: #24314a;
+    --snck-panel-soft: rgba(13, 23, 43, .72);
+    --snck-surface: rgba(17, 27, 48, .62);
+    --snck-border: rgba(148, 163, 184, .18);
+    --snck-primary: #a78bfa;
+    --snck-radius: 18px;
     --snck-text: #edf1ff;
     --snck-muted: #8c9ab5;
     --snck-accent: #a78bfa;
@@ -24,12 +27,20 @@
 }
 
 html { min-width: 320px; background: var(--snck-bg); }
-body.snck-app { margin: 0; color: var(--snck-text); background: var(--snck-bg); }
+body.snck-app {
+    margin: 0;
+    color: var(--snck-text);
+    background:
+        radial-gradient(ellipse at 12% 8%, rgba(124, 58, 237, .16), transparent 34rem),
+        radial-gradient(ellipse at 88% 76%, rgba(59, 130, 246, .10), transparent 38rem),
+        var(--snck-bg);
+    background-attachment: fixed;
+}
 .snck-shell { min-height: 100vh; }
 .snck-sidebar {
     position: fixed; inset: 0 auto 0 0; z-index: 30; display: flex; width: 256px;
-    flex-direction: column; padding: 28px 18px 20px; background: var(--snck-sidebar);
-    border-right: 1px solid var(--snck-border);
+    flex-direction: column; padding: 28px 18px 20px; background: rgba(13, 20, 38, .76);
+    border-right: 1px solid var(--snck-border); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
 }
 .snck-brand { display: inline-flex; align-items: center; gap: 7px; width: fit-content; color: var(--snck-text); font-size: 19px; font-weight: 850; letter-spacing: .045em; }
 .snck-brand span { color: var(--snck-accent); }
@@ -57,17 +68,24 @@ body.snck-app { margin: 0; color: var(--snck-text); background: var(--snck-bg); 
 .snck-mobile-header, .snck-mobile-menu { display: none; }
 .snck-main, .snck-main-inner { min-width: 0; }
 .snck-main-inner { overflow-wrap: anywhere; }
+.snck-main-inner article, .snck-main-inner section, .snck-main-inner form {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+.snck-main-inner article, .snck-main-inner section {
+    box-shadow: 0 14px 38px rgba(0, 0, 0, .12);
+}
 
 @media (max-width: 767px) {
     .snck-shell { display: flex; min-height: 100vh; flex-direction: column; }
     .snck-sidebar { display: none; }
-    .snck-mobile-header { position: sticky; top: 0; z-index: 40; display: flex; min-height: 66px; align-items: center; justify-content: space-between; padding: 0 18px; border-bottom: 1px solid var(--snck-border); background: #0d1426f2; backdrop-filter: blur(16px); }
+    .snck-mobile-header { position: sticky; top: 0; z-index: 40; display: flex; min-height: 66px; align-items: center; justify-content: space-between; padding: 0 18px; border-bottom: 1px solid var(--snck-border); background: rgba(13, 20, 38, .78); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
     .snck-brand { font-size: 17px; }
     .snck-mobile-menu { position: relative; display: block; }
     .snck-mobile-menu summary { display: flex; width: 44px; height: 44px; flex-direction: column; align-items: center; justify-content: center; gap: 5px; border: 1px solid var(--snck-border); border-radius: 12px; background: #ffffff08; cursor: pointer; list-style: none; }
     .snck-mobile-menu summary::-webkit-details-marker { display: none; }
     .snck-mobile-menu summary span { width: 18px; height: 2px; border-radius: 2px; background: var(--snck-text); }
-    .snck-mobile-nav { position: fixed; z-index: 50; inset: 66px auto 0 0; display: none; align-content: start; width: min(280px, 84vw); gap: 5px; padding: 16px 12px; border: 1px solid var(--snck-border); border-left: 0; border-radius: 0 16px 16px 0; background: #111b30; box-shadow: 18px 0 48px #0009; }
+    .snck-mobile-nav { position: fixed; z-index: 50; inset: 66px auto 0 0; display: none; align-content: start; width: min(280px, 84vw); gap: 5px; padding: 16px 12px; border: 1px solid var(--snck-border); border-left: 0; border-radius: 0 16px 16px 0; background: rgba(17, 27, 48, .92); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); box-shadow: 18px 0 48px #0009; }
     .snck-mobile-menu[open] .snck-mobile-nav { display: grid; }
     .snck-mobile-menu:not([open]) .snck-mobile-nav { display: none; }
     .snck-mobile-nav a { width: 100%; min-width: 0; }
