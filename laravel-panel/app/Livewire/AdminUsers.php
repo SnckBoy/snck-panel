@@ -10,8 +10,11 @@ use Livewire\Component;
 class AdminUsers extends Component
 {
     public string $editing = '';
+
     public string $role = 'user';
+
     public bool $disabled = false;
+
     public string $password = '';
 
     public function mount(): void
@@ -24,7 +27,7 @@ class AdminUsers extends Component
         $actor = $this->authorizeStaff();
         $user = User::query()->findOrFail($id);
 
-        abort_if($user->isOwner() && ! $actor->isOwner(), 403, 'Admins cannot edit an Owner account.');
+        abort_if($user->isOwner() && !$actor->isOwner(), 403, 'Admins cannot edit an Owner account.');
 
         $this->editing = $user->id;
         $this->role = $user->role;
