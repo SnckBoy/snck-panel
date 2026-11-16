@@ -151,7 +151,10 @@ def main() -> None:
   <text x="112" y="64" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="48" font-weight="750" letter-spacing="-2">SNCK</text>
 </svg>
 """
-    write("public/.gitignore", "/assets/*\\n!/assets/svgs/\\n!/assets/svgs/*.svg\\n")
+    write("public/.gitignore", """/assets/*
+!/assets/svgs/
+!/assets/svgs/*.svg
+""")
     write("public/assets/svgs/snck.svg", svg)
 
     readme = """# SNCK Panel
