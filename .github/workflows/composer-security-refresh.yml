@@ -1,6 +1,8 @@
 name: Composer security refresh
 
 on:
+  push:
+    branches: [feat/hosting-audit-console]
   workflow_dispatch:
   schedule:
     - cron: "17 4 * * 1"
@@ -12,6 +14,20 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: snck_panel_test
+          POSTGRES_USER: snck_panel
+          POSTGRES_PASSWORD: snck_panel
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U snck_panel -d snck_panel_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,6 +62,45 @@ jobs:
       - name: Audit the refreshed dependency graph
         working-directory: laravel-panel
         run: composer audit
+
+      - name: Prepare Laravel environment
+        working-directory: laravel-panel
+        run: |
+          cp .env.example .env
+          php artisan key:generate --force
+
+      - name: Check PHP formatting
+        working-directory: laravel-panel
+        run: ./vendor/bin/pint --test
+
+      - name: Analyze PHP types
+        working-directory: laravel-panel
+        run: ./vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=1G --no-progress
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: laravel-panel/package-lock.json
+
+      - name: Build Laravel frontend
+        working-directory: laravel-panel
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+
+      - name: Run Laravel feature tests
+        working-directory: laravel-panel
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: snck_panel_test
+          DB_USERNAME: snck_panel
+          DB_PASSWORD: snck_panel
+        run: php artisan test
 
       - name: Create dependency update pull request
         uses: peter-evans/create-pull-request@v7
