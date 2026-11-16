@@ -60,10 +60,18 @@ if [[ "${ID:-}" == "ubuntu" && "${VERSION_ID:-}" == "22.04" ]]; then
   add-apt-repository -y ppa:ondrej/php
   apt-get update
 fi
-if ! command -v php >/dev/null 2>&1 || ! php -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);'; then
-  if [[ "${ID:-}" == "debian" ]]; then
-    fail 'PHP 8.3+ is required. Install PHP 8.3 from your Debian PHP repository before continuing.'
-  fi
+# Ensure the exact PHP 8.3 packages required by the FPM service are available
+# on both supported distributions. Debian uses the maintained Sury PHP archive;
+# Ubuntu uses its official PHP 8.3 packages or the Ondrej archive when absent.
+if [[ "${ID:-}" == "debian" ]]; then
+  install -d -m 0755 /usr/share/keyrings
+  curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor --yes -o /usr/share/keyrings/deb.sury.org-php.gpg
+  chmod 0644 /usr/share/keyrings/deb.sury.org-php.gpg
+  printf 'deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ %s main\\n' "${VERSION_CODENAME:?Debian release codename is unavailable}" >/etc/apt/sources.list.d/php-sury.list
+  apt-get update
+elif [[ "${ID:-}" == "ubuntu" ]] && ! apt-cache policy php8.3-cli 2>/dev/null | grep -q 'Candidate: [^ (]'; then
+  add-apt-repository -y ppa:ondrej/php
+  apt-get update
 fi
 apt-get install -y php8.3-cli php8.3-common php8.3-mbstring php8.3-xml php8.3-curl php8.3-zip php8.3-bcmath php8.3-gd php8.3-intl php8.3-pgsql php8.3-fpm composer
 if ! command -v node >/dev/null 2>&1 || ! node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 20 ? 0 : 1)'; then
