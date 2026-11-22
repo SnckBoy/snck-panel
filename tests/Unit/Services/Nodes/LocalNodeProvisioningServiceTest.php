@@ -3,9 +3,9 @@
 namespace Pterodactyl\Tests\Unit\Services\Nodes;
 
 use Pterodactyl\Models\Node;
-use Pterodactyl\Services\Nodes\LocalNodeProvisioningService;
-use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Tests\TestCase;
+use Pterodactyl\Services\Nodes\NodeCreationService;
+use Pterodactyl\Services\Nodes\LocalNodeProvisioningService;
 
 class LocalNodeProvisioningServiceTest extends TestCase
 {
