@@ -85,18 +85,32 @@ class NodesController extends Controller
         $host = $request->getHost();
         $scheme = $request->getScheme();
 
-        if ($scheme !== 'https') {
-            $resolved = filter_var($host, FILTER_VALIDATE_IP) ? $host : gethostbyname($host);
+        $isPrivateHost = static function (string $hostname): bool {
+            $resolved = filter_var($hostname, FILTER_VALIDATE_IP) ? $hostname : gethostbyname($hostname);
             $ip = filter_var($resolved, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
-            $ipLong = $ip ? ip2long($resolved) : false;
-            $isTailnet = $ipLong !== false && (($ipLong & 0xFFC00000) === ip2long('100.64.0.0'));
-            $isPrivate = $ip && (filter_var($resolved, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false || $isTailnet);
-
-            if (!$isPrivate) {
-                $this->alert->danger('For safety, a local node over HTTP is allowed only on a private LAN or Tailscale address. Configure HTTPS for a public hostname, or open the Panel over your private Tailscale address.')->flash();
-
-                return redirect()->route('admin.nodes');
+            if (!$ip) {
+                return false;
             }
+
+            $ipLong = ip2long($resolved);
+            $isTailnet = $ipLong !== false && (($ipLong & 0xFFC00000) === ip2long('100.64.0.0'));
+
+            return filter_var($resolved, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false || $isTailnet;
+        };
+
+        if ($scheme !== 'https' && !$isPrivateHost($host)) {
+            $this->alert->danger('For safety, a local node over HTTP is allowed only on a private LAN or Tailscale address. Configure HTTPS for a public hostname, or open the Panel over your private Tailscale address.')->flash();
+
+            return redirect()->route('admin.nodes');
+        }
+
+        $appUrl = (string) config('app.url');
+        $appUrlScheme = strtolower((string) parse_url($appUrl, PHP_URL_SCHEME));
+        $appUrlHost = parse_url($appUrl, PHP_URL_HOST);
+        if ($appUrlScheme !== 'https' && (!is_string($appUrlHost) || !$isPrivateHost($appUrlHost))) {
+            $this->alert->danger('The Panel APP_URL must use HTTPS or a private LAN/Tailscale address so Wings can securely reach the Panel.')->flash();
+
+            return redirect()->route('admin.nodes');
         }
 
         $existing = Node::query()->where('fqdn', $host)->where('daemonListen', 8080)->first();
