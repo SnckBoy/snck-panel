@@ -15,6 +15,7 @@ pause() { read -r -p "Press Enter to return to the menu..." _ </dev/tty; }
 app_exists() { [[ -f "$APP_DIR/artisan" && -f "$APP_DIR/.env" ]]; }
 
 install_local_node_helper() {
+    if ! command -v sudo >/dev/null 2>&1; then apt-get update && apt-get install -y sudo; fi
     [[ -f "$APP_DIR/scripts/snck-local-node-bootstrap.sh" ]] || fail "Local node bootstrap helper is missing from this branch."
     install -o root -g root -m 0755 "$APP_DIR/scripts/snck-local-node-bootstrap.sh" /usr/local/sbin/snck-local-node-bootstrap
     printf '%s\\n' 'www-data ALL=(root) NOPASSWD: /usr/local/sbin/snck-local-node-bootstrap ""' >/etc/sudoers.d/snck-local-node
