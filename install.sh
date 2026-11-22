@@ -143,14 +143,14 @@ cd "$APP_DIR"
 [[ -f LICENSE.md && -f SNCK_UPSTREAM.md && -f artisan ]] || fail "The selected branch is not a complete SNCK Pterodactyl fork."
 
 cp .env.example .env
+APP_KEY_VALUE="$(openssl rand -base64 32)"
+sed -i "s|^APP_KEY=.*|APP_KEY=base64:${APP_KEY_VALUE}|" .env
 install -d -o www-data -g www-data -m 0775 \
   storage/app/private storage/app/public \
   storage/framework/cache/data storage/framework/sessions \
   storage/framework/views storage/logs
 COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 composer check-platform-reqs --no-dev
-
-php artisan key:generate --force
 php artisan p:environment:setup --author="$SERVICE_AUTHOR" --url="$APP_URL" --timezone=UTC --cache=redis --session=redis --queue=redis --redis-host=127.0.0.1 --redis-pass= --redis-port=6379 --settings-ui=true --telemetry=0 --no-interaction
 php artisan p:environment:database --host=127.0.0.1 --port=3306 --database="$DB_NAME" --username="$DB_USER" --password="$DB_PASSWORD" --no-interaction
 
