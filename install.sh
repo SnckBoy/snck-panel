@@ -189,8 +189,7 @@ read -r -p "Last name: " ADMIN_LAST </dev/tty
 php artisan p:user:make --email="$ADMIN_EMAIL" --username="$ADMIN_USERNAME" --name-first="$ADMIN_FIRST" --name-last="$ADMIN_LAST" --admin=1 </dev/tty
 
 chown -R www-data:www-data "$APP_DIR"
-find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type d -exec chmod 0750 {} +
-find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type f -exec chmod 0640 {} +
+find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type d -exec chmod 0755 {} +
 chmod 0640 "$APP_DIR/.env"
 
 cat >/etc/nginx/sites-available/snck-panel.conf <<NGINX
