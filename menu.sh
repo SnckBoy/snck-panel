@@ -172,6 +172,27 @@ show_menu() {
     echo
 }
 
+usage() {
+    cat <<'EOF'
+SNCK Control Center manager
+
+Usage:
+  curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-control-center-v2/menu.sh | sudo bash
+
+Options:
+  --help       Show this help
+  (no option)  Open the interactive manager menu
+
+Menu actions include fresh install, update, repair, diagnostics, backup,
+Wings installation, service restart, and reversible panel disable.
+EOF
+}
+
+if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
+    usage
+    exit 0
+fi
+
 need_root
 [[ -r /dev/tty ]] || fail "Run from an interactive terminal; menu input requires /dev/tty."
 while true; do
