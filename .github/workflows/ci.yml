@@ -1,156 +1,140 @@
-name: SNCK PANEL CI
+name: SNCK Panel CI
 
 on:
   push:
     branches:
       - main
-      - "repair/**"
-      - "security/**"
-      - "php-migration-final"
+      - "feat/**"
+      - "fix/**"
   pull_request:
     branches: [main]
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  php:
+    name: PHP ${{ matrix.php }} / ${{ matrix.database }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["8.3"]
+        database: ["mariadb:11.4", "mysql:8.4"]
+    services:
+      database:
+        image: ${{ matrix.database }}
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+          MYSQL_DATABASE: testing
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "bash -c 'echo > /dev/tcp/127.0.0.1/3306'"
+          --health-start-period 30s
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
         with:
-          node-version: 22
-          cache: npm
+          php-version: ${{ matrix.php }}
+          extensions: bcmath, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip, intl, sodium, pcntl
+          tools: composer:v2
+          coverage: none
 
-      - name: Install panel dependencies
-        run: npm ci
+      - name: Prepare test environment
+        run: |
+          mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs storage/app/private storage/app/public
+          cp .env.ci .env
 
-      - name: Report all panel dependency vulnerabilities
-        run: npm audit --audit-level=high
+      - name: Validate Composer manifest
+        run: composer validate --strict
 
-      - name: Audit production dependencies
-        run: npm audit --omit=dev --audit-level=high
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
 
-      - name: Test theme and Discord rewards behavior
-        run: npm test
+      - name: Check existing Composer advisories
+        id: composer_audit_before
+        continue-on-error: true
+        run: composer audit
 
-      - name: Lint panel
-        run: npm run lint
+      - name: Update vulnerable Composer dependencies
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feat/snck-pterodactyl-v1.15.2' && steps.composer_audit_before.outcome == 'failure'
+        run: composer update --with-all-dependencies --no-interaction --no-progress --prefer-dist
 
-      - name: Build panel
-        run: npm run build
+      - name: Verify Composer security audit
+        run: composer audit
 
-      - name: Install node daemon dependencies
-        working-directory: node-daemon
-        run: npm ci
+      - name: Commit refreshed Composer lockfile
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feat/snck-pterodactyl-v1.15.2' && matrix.database == 'mariadb:11.4' && steps.composer_audit_before.outcome == 'failure'
+        run: |
+          if ! git diff --quiet -- composer.lock; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add composer.lock
+            git commit -m "chore(deps): update Composer security fixes"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
 
-      - name: Report all node daemon dependency vulnerabilities
-        working-directory: node-daemon
-        run: npm audit --audit-level=high || true
+      - name: Check PHP formatting
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff
 
-      - name: Audit node daemon production dependencies
-        working-directory: node-daemon
-        run: npm audit --omit=dev --audit-level=high
+      - name: Run unit tests
+        run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
+        env:
+          DB_HOST: UNIT_NO_DB
 
-      - name: Build node daemon
-        working-directory: node-daemon
-        run: npm run build
+      - name: Run database integration tests
+        run: vendor/bin/phpunit tests/Integration
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: ${{ job.services.database.ports[3306] }}
+          DB_DATABASE: testing
+          DB_USERNAME: root
+          DB_PASSWORD: ""
 
-      - name: Test node daemon SFTP protocol and jail
-        working-directory: node-daemon
-        run: npm test
-
-      - name: Shell syntax checks
+      - name: Check installer scripts and branding tool
         run: |
           bash -n install.sh
           bash install.sh --help
-          bash -n scripts/snck-menu.sh
-          bash -n scripts/install-panel.sh
-          bash -n scripts/panel-service.sh
-          bash -n scripts/test-service-fallback.sh
-          bash scripts/test-service-fallback.sh
           bash -n node-install.sh
           bash node-install.sh --help
-          bash -n shironex
-          bash -n scripts/install-laravel-panel.sh
-          bash scripts/install-laravel-panel.sh --help
-          bash -n scripts/smoke-test.sh
+          python3 -m py_compile scripts/rebrand-pterodactyl.py
 
-  laravel:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_DB: snck_panel_test
-          POSTGRES_USER: snck_panel
-          POSTGRES_PASSWORD: snck_panel
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U snck_panel -d snck_panel_test"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    defaults:
-      run:
-        working-directory: laravel-panel
+  frontend:
+    name: React frontend
+    runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.3"
-          extensions: mbstring, pdo_pgsql, pgsql, zip, intl, bcmath, pcntl
-          coverage: none
-
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: laravel-panel/package-lock.json
+          node-version: "22.12.0"
+          cache: yarn
 
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --no-progress
-
-
-
-      - name: Prepare Laravel environment
-        run: |
-          cp .env.example .env
-          php artisan key:generate --force
-
-      - name: Check PHP formatting
-        run: ./vendor/bin/pint --test
-
-      - name: Analyze PHP types
-        run: ./vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=1G --no-progress
+      - name: Install Yarn Classic
+        run: npm install --global yarn@1.22.22
 
       - name: Install frontend dependencies
-        run: npm ci --no-audit --no-fund
+        run: yarn install --frozen-lockfile
 
-      - name: Build Laravel frontend
-        run: npm run build
+      - name: Type-check frontend
+        run: yarn tsc
 
-      - name: Run Laravel tests against PostgreSQL
-        env:
-          APP_ENV: testing
-          DB_CONNECTION: pgsql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 5432
-          DB_DATABASE: snck_panel_test
-          DB_USERNAME: snck_panel
-          DB_PASSWORD: snck_panel
-        run: php artisan test
+      - name: Lint frontend
+        run: yarn lint
 
-      # Keep the security gate blocking, but run functional checks first so an
-      # advisory report does not hide unrelated formatting, analysis or test failures.
-      - name: Audit Composer dependencies
-        run: composer audit
+      - name: Build production assets
+        run: yarn build:production

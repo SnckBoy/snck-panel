@@ -1,263 +1,87 @@
 # SNCK Panel
 
-SNCK Panel is a self-hosted Minecraft server management panel. The **Laravel application in `laravel-panel/` is the PHP implementation and the intended primary panel** on this branch.
+SNCK Panel is a game-server hosting control panel forked from the upstream Pterodactyl Panel v1.15.2 source. It keeps the upstream PHP/Laravel backend, React/TypeScript web client, database schema, and node API so the established hosting workflows remain compatible. SNCK adds its own product branding and a translucent purple/blue glass visual theme.
 
-> **Primary implementation:** Laravel is the canonical panel. The root `install.sh` downloads and runs `scripts/install-laravel-panel.sh`; the older React/Express implementation and legacy scripts remain for compatibility work.
+> **Status:** draft release candidate. Automated CI passes on PHP 8.3 with MariaDB 11.4 and MySQL 8.4, and the Composer security audit is clean. A fresh VPS installation and real Wings/Minecraft node lifecycle test are still pending; do not treat this as production-verified yet.
 
-## Project layout
+## Features included in the upstream panel
 
-| Path | Purpose |
-| --- | --- |
-| `install.sh` | Root entry point that fetches and runs the Laravel installer from the selected branch |
-| `laravel-panel/` | Laravel 12 application, Blade/Livewire UI, API routes, migrations and tests |
-| `scripts/install-laravel-panel.sh` | CLI installer for the Laravel application |
-| `scripts/` | Legacy/native panel scripts and utilities |
-| `node-install.sh` | Laravel-compatible node installer; downloads the daemon source, provisions trusted TLS and an SSH host key, and configures the node service |
-| `.github/workflows/` | Repository CI workflows |
+- User accounts, authentication, two-factor authentication, and administrator roles.
+- Server creation and lifecycle management.
+- Nests and Eggs for server templates, startup variables, Docker images, and install scripts.
+- Nodes, allocations, resource limits, and server placement.
+- Live console, power controls, resource graphs, and server activity.
+- File manager, archive operations, file editing, and SFTP.
+- MySQL database provisioning and management.
+- Scheduled tasks and task actions.
+- Server backups and restore workflows.
+- Subusers, permissions, API keys, and application/client APIs.
+- Admin settings, user management, node management, server management, and audit/activity views.
 
-The older React/Vite + Express/TypeScript application remains in the repository for migration/compatibility work. It is not the PHP application's runtime.
+Availability of a feature depends on the node being correctly provisioned and connected to the Panel.
 
-## Main capabilities
+## Architecture
 
-The Laravel application currently contains routes and UI components for:
+| Component | Technology | Role |
+| --- | --- | --- |
+| Panel backend | PHP 8.3+, Laravel | Authentication, admin, API, database, scheduling and server orchestration |
+| Web client | React, TypeScript | Responsive browser interface and live server controls |
+| Node agent | Wings (Go) | Docker-based game server runtime, console, files and SFTP |
+| Database | MariaDB/MySQL | Panel data |
+| Cache and queues | Redis | Sessions, caching and background jobs |
+| Web server | Nginx + PHP-FPM | Serves the Panel |
 
-- User authentication, first-owner setup, account status and role-based administration.
-- Dashboard and Minecraft server listing/creation/detail pages.
-- Node and allocation administration.
-- Server lifecycle actions, console commands, logs and resource statistics.
-- Server file browsing, editing, upload/download, archive operations and backups.
-- Plugin, mod and modpack management endpoints.
-- Per-server subuser management, SFTP credentials, and an SSH/SFTP transport jailed to each server's files.
-- API key management.
-- Owner/Admin control center with live user, server and node counts plus direct access to administration tools.
-- Staff-only audit log console with searchable actor, resource, result, IP address and request context.
-- Configurable non-staff hosting quotas for server count, total RAM, CPU and disk.
-- Discord reward configuration and claim administration.
-- Cloudflare connection and DNS management screens.
-- Theme management and export.
+The panel source ZIP does not contain Wings. The previous SNCK TypeScript daemon is not compatible with the Pterodactyl node API and must not be used with this fork.
 
-Feature availability depends on correct environment configuration and a compatible node daemon. A route or UI being present does not mean every external integration is already production-ready.
+## One-command Panel installation
 
-## Requirements
+Supported installer targets: Ubuntu 22.04/24.04 and Debian 11/12/13.
 
-For the Laravel application:
+    curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-pterodactyl-v1.15.2/install.sh | sudo bash
 
-- Ubuntu 22.04/24.04 or Debian (the installer checks for Ubuntu or Debian).
-- PHP **8.3 or newer**.
-- PHP extensions: `mbstring`, `openssl`, `pdo_pgsql`, and `zip` (Laravel may require additional standard PHP extensions depending on the enabled features).
-- Composer.
-- Node.js **22 or newer** and npm, for frontend asset compilation.
-- PostgreSQL, with a database and user created for this application.
-- Git and systemd for the CLI installer.
-- Nginx and PHP-FPM are installed by the CLI installer.
+The installer bootstraps PHP 8.3 and extensions, Composer, Node.js 22, Yarn Classic, MariaDB, Redis, Nginx, PHP-FPM and Certbot. It creates a restricted database account, builds frontend assets, runs migrations and seeds the default templates, creates the first administrator, configures the queue worker and scheduler, and can request a Let's Encrypt certificate when you provide an HTTPS domain and email.
 
-The one-command installer bootstraps PHP 8.3 and its required extensions, Composer, Node.js 22, npm, PostgreSQL, Git, Nginx and PHP-FPM on supported Ubuntu and Debian releases. When `SNCK_APP_URL` is an HTTPS hostname, it can request and configure a Let's Encrypt certificate; DNS must already point to this VPS and inbound TCP ports 80/443 must be reachable. It creates a local `snck_panel` PostgreSQL role and database automatically when using the default local database host. For a remote PostgreSQL server, supply `SNCK_DB_HOST`, `SNCK_DB_DATABASE`, `SNCK_DB_USERNAME` and `SNCK_DB_PASSWORD` as environment variables.
+The installer is interactive for the Panel URL and first administrator. It preserves existing Nginx sites and stops early if a non-Nginx service already occupies a required web port. Before running it, allow inbound TCP 80; also allow TCP 443 when using HTTPS in your VPS firewall or cloud security group. For a domain with automatic HTTPS, set these before running it:
 
-## Database preparation
+    curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-pterodactyl-v1.15.2/install.sh | sudo env SNCK_APP_URL=https://panel.example.com SNCK_LETSENCRYPT_EMAIL=admin@example.com bash
 
-Create a PostgreSQL database and dedicated login role before running migrations. For example, on a PostgreSQL server where you have administrator access:
+For non-default paths or database credentials, see the environment variables printed by:
 
-```sql
-CREATE ROLE snck_panel LOGIN PASSWORD 'REPLACE_WITH_A_LONG_RANDOM_PASSWORD';
-CREATE DATABASE snck_panel OWNER snck_panel;
-```
+    bash install.sh --help
 
-Use a strong unique password. If PostgreSQL is on another host, configure its network access and TLS policy separately. Never expose PostgreSQL publicly without firewall restrictions and appropriate authentication/TLS.
+## Install a game node (Wings)
 
-## Install the Laravel panel
+Create a node in the Panel first. Copy its numeric node ID and use the Auto-Deploy token from the node's Configuration page.
 
-### 1. Install prerequisites
+    curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-pterodactyl-v1.15.2/node-install.sh | sudo bash -s -- --panel-url https://panel.example.com --node-id 1
 
-The installer installs the PHP, Composer, Node.js, PostgreSQL, Git, Nginx and PHP-FPM prerequisites on supported Ubuntu/Debian releases. You do not need to install those packages manually.
+The installer asks for the one-time token without echoing it, installs Docker, downloads the pinned Wings v1.13.5 binary, verifies its SHA-256 digest, configures Wings from the Panel, and creates a systemd service. Supported node OS: Ubuntu 22.04/24.04 and Debian 12/13. Make sure the node firewall permits the API, SFTP and game allocation ports configured for that node.
 
-Verify:
+## Development and validation
 
-```bash
-php -v
-php -m
-composer --version
-node --version
-npm --version
-```
+Requirements:
 
-### 2. Run the Laravel installer
+- PHP 8.3 and Composer 2.
+- MariaDB/MySQL for integration tests. Redis is required for production cache, sessions and queues; the CI test profile uses isolated array cache and synchronous queues.
+- Node.js 22.12+ and Yarn Classic 1.22.
+- Docker on a node host for Wings integration.
 
-The standard one-command installer downloads the Laravel installer from `main` and installs into `/opt/snck-panel-laravel`:
+Build and test:
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/main/install.sh | sudo bash
-```
+    composer install
+    cp .env.ci .env
+    vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
+    vendor/bin/phpunit tests/Integration
+    composer audit
 
-To test a feature branch before it is merged, replace `BRANCH_NAME` in the following command with the branch name:
+    npm install --global yarn@1.22.22
+    yarn install --frozen-lockfile
+    yarn tsc
+    yarn lint
+    yarn build:production
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/BRANCH_NAME/install.sh | sudo env SNCK_BRANCH=BRANCH_NAME bash
-```
+## Upstream source and licence
 
-The installer shows an interactive menu for fresh install, update, repair, diagnostics and uninstall. It automatically installs system dependencies, provisions the local PostgreSQL database with a generated password, and detects the VPS public IPv4 address for the initial HTTP URL. For remote PostgreSQL or a custom domain, set `SNCK_DB_HOST`, `SNCK_DB_PORT`, `SNCK_DB_DATABASE`, `SNCK_DB_USERNAME`, `SNCK_DB_PASSWORD`, and/or `SNCK_APP_URL` before running. For automatic HTTPS, also set `SNCK_LETSENCRYPT_EMAIL` and use an `https://` URL after pointing DNS at the VPS. It preserves an existing `.env` and application key when updating an existing install. Uninstall intentionally keeps PostgreSQL data.
+This repository contains a modified copy of Pterodactyl Panel, pinned to commit 90b2aa87469da4fffd941b3c99f3c1ca48a01b78 (v1.15.2). The original MIT licence and copyright notice are preserved verbatim in LICENSE.md, with additional attribution in SNCK_UPSTREAM.md. SNCK branding changes deliberately leave internal namespaces, database keys, event names, API contracts and Wings paths intact to avoid breaking compatibility.
 
-Optional installer arguments:
-
-```text
---dry-run
---app-dir=/absolute/path
---repo=https://github.com/SnckBoy/snck-panel.git
---branch=BRANCH_NAME
---help
-```
-
-The installer backs up an existing application directory before replacing it. Review the script before running it on a production host.
-
-### 3. Configure the environment
-
-Edit the deployed environment file:
-
-```bash
-sudo nano /opt/snck-panel-laravel/.env
-```
-
-At minimum, set the production application and database values:
-
-```dotenv
-APP_NAME="SNCK Panel"
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://panel.example.com
-
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=snck_panel
-DB_USERNAME=snck_panel
-DB_PASSWORD=REPLACE_WITH_THE_DATABASE_PASSWORD
-DB_SSLMODE=prefer
-
-SESSION_SECURE_COOKIE=true
-```
-
-Use your real hostname and database details. Choose the PostgreSQL SSL mode that matches your database server's certificate configuration; do not weaken TLS verification just to bypass a certificate problem. Keep `.env` private and never commit it.
-
-The installer generates the Laravel application key if needed, installs Composer/npm dependencies, builds frontend assets and runs migrations. If you change environment values after installation, clear/rebuild Laravel's configuration cache as appropriate:
-
-```bash
-cd /opt/snck-panel-laravel
-sudo -u snck-panel php artisan config:clear
-sudo -u snck-panel php artisan config:cache
-```
-
-### 4. Complete first-owner setup
-
-Open your configured panel URL. When no user exists, the application redirects to the first-owner setup page at:
-
-```text
-https://panel.example.com/setup
-```
-
-Create the initial owner account there. After setup, sign in and configure panel settings before allowing other users to access the service.
-
-## Web server, HTTPS and firewall
-
-The Laravel installer writes an Nginx site listening on HTTP port 80. It does **not** issue TLS certificates or configure Cloudflare Tunnel/Zero Trust. Before exposing the panel to users:
-
-1. Configure a real DNS hostname for the server.
-2. Configure HTTPS using a trusted certificate, or place the panel behind a correctly configured Cloudflare Tunnel/reverse proxy.
-3. Ensure the proxy forwards the original host and HTTPS scheme correctly.
-4. Set `APP_URL` to the public HTTPS URL and `SESSION_SECURE_COOKIE=true`.
-5. Restrict SSH and other administrative ports with your firewall. Do not expose PostgreSQL or a node's Docker API to the public internet.
-
-The installer sets the Nginx virtual host name from `APP_URL` and preserves the existing default Nginx site. Review the generated Nginx configuration before using a host that already serves other websites.
-
-## Services and logs
-
-The installer registers these systemd units:
-
-- `snck-panel-laravel.service` — Laravel queue worker.
-- `snck-panel-laravel-scheduler.timer` — runs Laravel's scheduler.
-- `snck-panel-discord-worker.timer` — runs Discord maintenance.
-- Nginx and PHP 8.3-FPM.
-
-Useful checks:
-
-```bash
-sudo systemctl status nginx php8.3-fpm snck-panel-laravel --no-pager
-sudo systemctl status snck-panel-laravel-scheduler.timer snck-panel-discord-worker.timer --no-pager
-sudo journalctl -u snck-panel-laravel -n 100 --no-pager
-sudo journalctl -u nginx -n 100 --no-pager
-```
-
-Laravel logs are in:
-
-```text
-/opt/snck-panel-laravel/storage/logs/
-```
-
-## Node daemon compatibility
-
-The node daemon communicates with the panel using a separate authenticated HTTP API. The checked-in v1 contract is documented in [NODE_DAEMON_API_V1.md](laravel-panel/docs/NODE_DAEMON_API_V1.md).
-
-Important compatibility and deployment requirements:
-
-- Node credentials are per-node bearer credentials; they are not user login tokens.
-- Panel-to-node traffic must use HTTPS with normal certificate and hostname verification.
-- The PHP client must preserve the frozen v1 methods, paths and payload formats.
-- The Infrastructure page creates a one-time install command using the node's bearer credential. The installer downloads the daemon from the repository's `main` branch; after merging this PR, the installer and panel API contract are aligned.
-- The node FQDN must resolve to the node VPS. The installer obtains a trusted certificate with Let's Encrypt HTTP-01 on TCP port 80, then starts the daemon over HTTPS. It also creates an SSH host key for SFTP.
-
-The node installer configures the SSH/SFTP listener on TCP port 2022 and generates a stable host key. The panel validates each SFTP password through the node-authenticated `/api/node-agent/sftp-auth` endpoint; each login is jailed to that server's directory. Restrict SFTP to trusted networks. Open inbound TCP 80 for certificate issuance/renewal, 6768 for the HTTPS daemon, and 2022 for SFTP.
-
-Do not expose Docker's socket or unauthenticated daemon endpoints to the internet. Use a private network or secure tunnel and firewall rules.
-
-## Development and tests
-
-From the repository root:
-
-```bash
-cd laravel-panel
-composer install
-cp .env.example .env
-php artisan key:generate
-```
-
-Configure a development PostgreSQL database in `.env`, then run:
-
-```bash
-php artisan migrate
-npm ci
-npm run build
-php artisan test
-```
-
-The checked-in PHPUnit configuration also defines an in-memory SQLite test environment for tests that support it. Database-specific behavior should additionally be verified against PostgreSQL.
-
-The repository CI workflow now runs the Laravel test suite against PostgreSQL, PHP formatting and static analysis, the Laravel frontend build, the node-daemon build, and SSH/SFTP protocol integration tests. A green CI run still does not replace a live node provisioning, heartbeat, file-transfer, firewall, and certificate-renewal test.
-
-## Current deployment limitations
-
-This branch is still being consolidated. In particular:
-
-- The Laravel CLI installer requires PHP/Composer/Node/npm to be installed before it starts and requires a working PostgreSQL database.
-- The CLI installer currently assigns the application tree to the `snck-panel` user, while the default PHP-FPM pool may run as `www-data`. Verify and correct PHP-FPM write access for `storage/` and `bootstrap/cache/` before production use; do not solve this by making the whole application world-writable.
-- The panel installer does not configure HTTPS, DNS, Cloudflare Tunnel, PostgreSQL server provisioning, or panel reverse-proxy networking. The separate node installer configures node TLS but requires a public node FQDN and reachable HTTP-01 port 80.
-- Live node provisioning, heartbeat, Docker lifecycle, SFTP file transfer, firewall behavior, and certificate renewal must be verified in the target environment before treating remote-node deployment as production-ready.
-
-## Security notes
-
-- Keep `.env`, database passwords, node credentials, API keys and OAuth secrets private.
-- Use HTTPS for all public panel access and panel-to-node communication.
-- Use unique, strong credentials and least-privilege database accounts.
-- Restrict access to SSH, PostgreSQL and node management ports.
-- Keep backups off-host and test restoration procedures.
-- Set `APP_DEBUG=false` in production.
-- Review security updates for PHP, Laravel, Composer dependencies, Node.js and the operating system.
-
-## Useful documentation
-
-- [Laravel documentation](https://laravel.com/docs/12.x)
-- [Laravel application README](laravel-panel/README.md)
-- [Node daemon v1 API contract](laravel-panel/docs/NODE_DAEMON_API_V1.md)
-- [Repository issues](https://github.com/SnckBoy/snck-panel/issues)
-- [Repository source](https://github.com/SnckBoy/snck-panel)
-
-## License
-
-No repository-level license was verified while preparing this README. Check the repository's license file or obtain the project owner's decision before redistributing the project.
+The upstream project is not affiliated with or endorsing SNCK Panel.
