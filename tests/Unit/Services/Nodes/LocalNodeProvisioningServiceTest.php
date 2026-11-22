@@ -3,11 +3,19 @@
 namespace Pterodactyl\Tests\Unit\Services\Nodes;
 
 use Pterodactyl\Tests\TestCase;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Services\Nodes\LocalNodeProvisioningService;
 
 class LocalNodeProvisioningServiceTest extends TestCase
 {
+    public function testNewNodesDefaultToTenGiBUploadLimit(): void
+    {
+        $node = new Node();
+
+        $this->assertSame(10240, $node->upload_size);
+    }
+
     public function testResourcesContainSafePositiveCapacityValues(): void
     {
         $service = new LocalNodeProvisioningService(\Mockery::mock(NodeCreationService::class));
