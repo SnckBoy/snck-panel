@@ -17,7 +17,7 @@
     <div class="col-xs-12">
         <section class="snck-workspace-intro">
             <div class="snck-workspace-intro-copy">
-                <span class="snck-eyebrow">SNCK / ADMINISTRATION</span>
+                <span class="snck-eyebrow">Administration / SNCK Panel</span>
                 <p>Operational access to the services and configuration that keep your hosting platform running.</p>
             </div>
             <div class="snck-workspace-actions">
