@@ -23,6 +23,37 @@ install_local_node_helper() {
     visudo -cf /etc/sudoers.d/snck-local-node >/dev/null || fail "Local node sudoers rule failed validation."
 }
 
+configure_upload_limits() {
+    local php_ini="/etc/php/8.3/fpm/conf.d/99-snck-upload-limits.ini"
+    install -d -m 0755 "$(dirname "$php_ini")"
+    cat >"$php_ini" <<'PHPINI'
+upload_max_filesize = 10G
+post_max_size = 11G
+max_execution_time = 3600
+max_input_time = 3600
+PHPINI
+    chmod 0644 "$php_ini"
+
+    local nginx_conf="/etc/nginx/sites-available/snck-panel.conf"
+    if [[ -f "$nginx_conf" ]]; then
+        if grep -qE '^[[:space:]]*client_max_body_size[[:space:]]+100m;' "$nginx_conf"; then
+            sed -i -E 's/^[[:space:]]*client_max_body_size[[:space:]]+100m;/    client_max_body_size 11g;/' "$nginx_conf"
+        elif ! grep -qE '^[[:space:]]*client_max_body_size[[:space:]]+' "$nginx_conf"; then
+            sed -i '/^[[:space:]]*index index.php;/a\    client_max_body_size 11g;' "$nginx_conf"
+        fi
+
+        if ! grep -qE '^[[:space:]]*client_body_timeout[[:space:]]+' "$nginx_conf"; then
+            sed -i '/^[[:space:]]*client_max_body_size[[:space:]]+/a\    client_body_timeout 3600s;' "$nginx_conf"
+        fi
+        if ! grep -qE '^[[:space:]]*fastcgi_read_timeout[[:space:]]+' "$nginx_conf"; then
+            sed -i '/^[[:space:]]*fastcgi_pass unix:/a\        fastcgi_read_timeout 3600s;\n        fastcgi_send_timeout 3600s;' "$nginx_conf"
+        fi
+        if ! grep -qE '^[[:space:]]*client_max_body_size[[:space:]]+11g;' "$nginx_conf"; then
+            log "Preserved custom Nginx upload limit; set client_max_body_size to at least 11g for 10 GiB uploads."
+        fi
+    fi
+}
+
 backup_app() {
     app_exists || fail "No existing SNCK Panel installation at $APP_DIR."
     local stamp db_host db_port db_name db_user db_pass
@@ -75,6 +106,7 @@ update_panel() {
     git -c safe.directory="$APP_DIR" fetch --prune origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
     git -c safe.directory="$APP_DIR" checkout -B "$BRANCH" "origin/$BRANCH"
     install_local_node_helper
+    configure_upload_limits
     COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
     if [[ ! -f /opt/snck-yarn/node_modules/yarn/bin/yarn.js ]]; then
         npm install --prefix /opt/snck-yarn --no-save --ignore-scripts --no-audit --no-fund yarn@1.22.22
@@ -103,6 +135,7 @@ repair_panel() {
     app_exists || fail "No existing installation found."
     cd "$APP_DIR"
     install_local_node_helper
+    configure_upload_limits
     php artisan optimize:clear
     php artisan config:cache
     php artisan view:cache
