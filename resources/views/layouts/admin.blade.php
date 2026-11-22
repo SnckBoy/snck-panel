@@ -11,10 +11,10 @@
         <link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
         <link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
         <link rel="manifest" href="/favicons/manifest.json">
-        <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#8b5cf6">
+        <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#c99a55">
         <link rel="shortcut icon" href="/favicons/favicon.ico">
         <meta name="msapplication-config" content="/favicons/browserconfig.xml">
-        <meta name="theme-color" content="#080b16">
+        <meta name="theme-color" content="#0b0d0f">
 
         @include('layouts.scripts')
 
@@ -28,7 +28,7 @@
             {!! Theme::css('css/pterodactyl.css?t={cache-version}') !!}
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-            <link rel="stylesheet" href="{{ asset('css/snck-control-center.css') }}?v=2">
+            <link rel="stylesheet" href="{{ asset('css/snck-control-center.css') }}?v=3">
 
             <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -159,7 +159,7 @@
                             title: 'Do you want to log out?',
                             type: 'warning',
                             showCancelButton: true,
-                            confirmButtonColor: '#7c3aed',
+                            confirmButtonColor: '#c99a55',
                             cancelButtonColor: '#64748b',
                             confirmButtonText: 'Log out'
                         }, function () {
