@@ -126,6 +126,7 @@ class Node extends Model implements Identifiable
         'daemonSFTP' => 2022,
         'daemonListen' => 8080,
         'maintenance_mode' => false,
+        'upload_size' => 10240,
     ];
 
     /**
