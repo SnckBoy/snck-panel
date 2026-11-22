@@ -35,6 +35,24 @@ const GlassPanel = styled.div`
     -webkit-backdrop-filter: blur(20px) saturate(125%);
     backdrop-filter: blur(20px) saturate(125%);
 
+    input:not([type='checkbox']):not([type='radio']) {
+        color: #f1f3f2 !important;
+        background: rgba(255, 255, 255, 0.055) !important;
+        border: 1px solid rgba(255, 255, 255, 0.16) !important;
+        border-radius: 8px;
+        box-shadow: none !important;
+    }
+
+    input:not([type='checkbox']):not([type='radio']):focus {
+        background: rgba(255, 255, 255, 0.075) !important;
+        border-color: #c99a55 !important;
+        box-shadow: 0 0 0 2px rgba(201, 154, 85, 0.18) !important;
+    }
+
+    input::placeholder {
+        color: rgba(225, 231, 228, 0.48);
+    }
+
     @media (max-width: 767px) {
         flex-direction: column;
         gap: 1.5rem;
