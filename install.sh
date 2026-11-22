@@ -160,6 +160,13 @@ git clone --depth 1 --branch "$BRANCH" "$REPOSITORY" "$APP_DIR"
 cd "$APP_DIR"
 [[ -f LICENSE.md && -f SNCK_UPSTREAM.md && -f artisan ]] || fail "The selected branch is not a complete SNCK Pterodactyl fork."
 
+log "Installing the restricted local Wings bootstrap helper..."
+[[ -f scripts/snck-local-node-bootstrap.sh ]] || fail "Local node bootstrap helper is missing from this branch."
+install -o root -g root -m 0755 scripts/snck-local-node-bootstrap.sh /usr/local/sbin/snck-local-node-bootstrap
+printf '%s\\n' 'www-data ALL=(root) NOPASSWD: /usr/local/sbin/snck-local-node-bootstrap ""' >/etc/sudoers.d/snck-local-node
+chmod 0440 /etc/sudoers.d/snck-local-node
+visudo -cf /etc/sudoers.d/snck-local-node >/dev/null || fail "Local node sudoers rule failed validation."
+
 cp .env.example .env
 APP_KEY_VALUE="$(openssl rand -base64 32)"
 sed -i "s|^APP_KEY=.*|APP_KEY=base64:${APP_KEY_VALUE}|" .env
