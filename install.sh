@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 APP_DIR="${SNCK_PANEL_DIR:-/var/www/snck-panel}"
-BRANCH="${SNCK_BRANCH:-feat/snck-pterodactyl-v1.15.2}"
+BRANCH="${SNCK_BRANCH:-feat/snck-control-center-v2}"
 REPOSITORY="${SNCK_REPOSITORY:-https://github.com/SnckBoy/snck-panel.git}"
 APP_URL="${SNCK_APP_URL:-}"
 LE_EMAIL="${SNCK_LETSENCRYPT_EMAIL:-}"
@@ -20,10 +20,10 @@ usage() {
 SNCK Panel installer (Pterodactyl v1.15.2 based)
 
 Usage:
-  curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-pterodactyl-v1.15.2/install.sh | sudo bash
+  curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-control-center-v2/install.sh | sudo bash
 
 Optional environment:
-  SNCK_BRANCH                 Git branch (default: feat/snck-pterodactyl-v1.15.2)
+  SNCK_BRANCH                 Git branch (default: feat/snck-control-center-v2)
   SNCK_PANEL_DIR              Install directory (default: /var/www/snck-panel)
   SNCK_APP_URL                Panel URL, e.g. https://panel.example.com
   SNCK_LETSENCRYPT_EMAIL      Required for automatic HTTPS
