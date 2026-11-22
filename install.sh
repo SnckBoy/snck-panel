@@ -69,7 +69,7 @@ if [[ "$APP_AUTHORITY" == *:* ]]; then
     https://*) [[ "$APP_PORT" == "443" ]] || fail "HTTPS installs must use port 443; configure Nginx for a standard public web port." ;;
   esac
 fi
-[[ "$APP_HOST" =~ ^[A-Za-z0-9][A-Za-z0-9.-]*$ ]] || fail "SNCK_APP_URL must contain a valid DNS hostname or IPv4 address."
+[[ "$APP_HOST" =~ ^([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(\.([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?))*$ && ${#APP_HOST} -le 253 ]] || fail "SNCK_APP_URL must contain a valid DNS hostname or IPv4 address."
 if command -v ss >/dev/null 2>&1; then
   if ss -ltnH '( sport = :80 )' | grep -q . && ! systemctl is-active --quiet nginx; then
     fail "TCP port 80 is already occupied by a non-Nginx service. Stop it or use a fresh VPS before installing SNCK."
@@ -180,6 +180,7 @@ php artisan p:user:make --email="$ADMIN_EMAIL" --username="$ADMIN_USERNAME" --na
 
 chown -R www-data:www-data "$APP_DIR"
 chmod -R 755 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
+chmod 0640 "$APP_DIR/.env"
 
 cat >/etc/nginx/sites-available/snck-panel.conf <<NGINX
 server {
