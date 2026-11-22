@@ -47,7 +47,7 @@ if [[ "${1:-}" == "--run" ]]; then
     esac
 
     TMP="$(mktemp /tmp/snck-wings.XXXXXX)"
-    trap 'rm -f "$TMP"; code=$?; if [[ $code -ne 0 ]]; then printf "[%s] Setup failed (exit %s).\n" "$(date -Is)" "$code"; fi; exit "$code"' EXIT
+    trap 'code=$?; rm -f "$TMP"; if [[ $code -ne 0 ]]; then printf "[%s] Setup failed (exit %s).\n" "$(date -Is)" "$code"; fi; exit "$code"' EXIT
     DOWNLOAD_URL="https://github.com/pterodactyl/wings/releases/download/$WINGS_VERSION/$ASSET"
     log "Downloading Wings $WINGS_VERSION..."
     curl -fsSLo "$TMP" "$DOWNLOAD_URL"
