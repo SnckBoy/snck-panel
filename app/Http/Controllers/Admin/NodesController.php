@@ -99,6 +99,13 @@ class NodesController extends Controller
             }
         }
 
+        $existing = Node::query()->where('fqdn', $host)->where('daemonListen', 8080)->first();
+        if ($existing) {
+            $this->alert->warning('A node already exists for this host on port 8080. Reusing the existing node; no duplicate was created.')->flash();
+
+            return redirect()->route('admin.nodes.view', $existing->id);
+        }
+
         if (is_file('/etc/pterodactyl/config.yml')) {
             $this->alert->danger('A Wings configuration already exists on this host. It will not be overwritten by automatic local-node setup.')->flash();
 
@@ -113,13 +120,6 @@ class NodesController extends Controller
 
                 return redirect()->route('admin.nodes');
             }
-        }
-
-        $existing = Node::query()->where('fqdn', $host)->where('daemonListen', 8080)->first();
-        if ($existing) {
-            $this->alert->warning('A node already exists for this host on port 8080. Reusing the existing node; no duplicate was created.')->flash();
-
-            return redirect()->route('admin.nodes.view', $existing->id);
         }
 
         if ($scheme === 'https') {
@@ -138,13 +138,10 @@ class NodesController extends Controller
             return redirect()->route('admin.nodes');
         }
 
-        $location = Location::query()->first();
-        if (!$location) {
-            $location = Location::query()->create([
-                'short' => 'local',
-                'long' => 'Local node on the Panel host',
-            ]);
-        }
+        $location = Location::query()->firstOrCreate(
+            ['short' => 'local'],
+            ['long' => 'Local node on the Panel host']
+        );
 
         $memory = 1024;
         $meminfo = @file_get_contents('/proc/meminfo');
