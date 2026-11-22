@@ -2,7 +2,7 @@
 
 SNCK Panel is a game-server hosting control panel forked from the upstream Pterodactyl Panel v1.15.2 source. It keeps the upstream PHP/Laravel backend, React/TypeScript web client, database schema, and node API so the established hosting workflows remain compatible. SNCK adds its own product branding and a translucent purple/blue glass visual theme.
 
-> **Status:** migration draft. The source import and CI pipeline are in progress. Do not install this branch on a production host until the PR is marked ready and a clean Ubuntu/Debian installation plus a real Wings node lifecycle test have passed.
+> **Status:** draft release candidate. Automated CI passes on PHP 8.3 with MariaDB 11.4 and MySQL 8.4, and the Composer security audit is clean. A fresh VPS installation and real Wings/Minecraft node lifecycle test are still pending; do not treat this as production-verified yet.
 
 ## Features included in the upstream panel
 
@@ -62,7 +62,7 @@ The installer asks for the one-time token without echoing it, installs Docker, d
 Requirements:
 
 - PHP 8.3 and Composer 2.
-- MariaDB/MySQL and Redis for integration tests.
+- MariaDB/MySQL for integration tests. Redis is required for production cache, sessions and queues; the CI test profile uses isolated array cache and synchronous queues.
 - Node.js 22.12+ and Yarn Classic 1.22.
 - Docker on a node host for Wings integration.
 
