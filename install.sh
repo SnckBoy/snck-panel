@@ -70,6 +70,14 @@ if [[ "$APP_AUTHORITY" == *:* ]]; then
   esac
 fi
 [[ "$APP_HOST" =~ ^[A-Za-z0-9][A-Za-z0-9.-]*$ ]] || fail "SNCK_APP_URL must contain a valid DNS hostname or IPv4 address."
+if command -v ss >/dev/null 2>&1; then
+  if ss -ltnH '( sport = :80 )' | grep -q . && ! systemctl is-active --quiet nginx; then
+    fail "TCP port 80 is already occupied by a non-Nginx service. Stop it or use a fresh VPS before installing SNCK."
+  fi
+  if [[ "$APP_URL" == https://* ]] && ss -ltnH '( sport = :443 )' | grep -q . && ! systemctl is-active --quiet nginx; then
+    fail "TCP port 443 is already occupied by a non-Nginx service. Stop it before enabling HTTPS."
+  fi
+fi
 if [[ "$APP_URL" == https://* ]]; then
   [[ ! "$APP_HOST" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || fail "HTTPS requires a DNS hostname, not a raw IP address."
   [[ -n "$LE_EMAIL" ]] || read -r -p "Let's Encrypt email: " LE_EMAIL </dev/tty
@@ -205,7 +213,6 @@ server {
 }
 NGINX
 ln -sfn /etc/nginx/sites-available/snck-panel.conf /etc/nginx/sites-enabled/snck-panel.conf
-rm -f /etc/nginx/sites-enabled/default
 
 cat >/etc/systemd/system/snck-panel-queue.service <<SERVICE
 [Unit]
