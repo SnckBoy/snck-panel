@@ -77,7 +77,7 @@ class LocalNodeProvisioningService
             'daemonSFTP' => self::SFTP_PORT,
             'daemonListen' => self::API_PORT,
             'maintenance_mode' => false,
-            'upload_size' => 100,
+            'upload_size' => 10240,
         ]);
 
         try {
