@@ -92,7 +92,7 @@ fi
 [[ "$DB_USER" =~ ^[A-Za-z0-9_]+$ ]] || fail "Invalid database username."
 [[ -n "$DB_PASSWORD" ]] || DB_PASSWORD="$(openssl rand -hex 32)"
 [[ "$DB_PASSWORD" =~ ^[A-Za-z0-9]+$ ]] || fail "SNCK_DB_PASSWORD must contain only letters and digits."
-[[ -n "$SERVICE_AUTHOR" ]] || SERVICE_AUTHOR="admin@$APP_HOST"
+[[ -n "$SERVICE_AUTHOR" ]] || SERVICE_AUTHOR="admin@snckpanel.invalid"
 [[ "$SERVICE_AUTHOR" =~ ^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$ ]] || fail "SNCK_SERVICE_AUTHOR must be a valid email address."
 
 export DEBIAN_FRONTEND=noninteractive
