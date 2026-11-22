@@ -41,7 +41,7 @@ Supported installer targets: Ubuntu 22.04/24.04 and Debian 11/12/13.
 
 The installer bootstraps PHP 8.3 and extensions, Composer, Node.js 22, Yarn Classic, MariaDB, Redis, Nginx, PHP-FPM and Certbot. It creates a restricted database account, builds frontend assets, runs migrations and seeds the default templates, creates the first administrator, configures the queue worker and scheduler, and can request a Let's Encrypt certificate when you provide an HTTPS domain and email.
 
-The installer is interactive for the Panel URL and first administrator. For a domain with automatic HTTPS, set these before running it:
+The installer is interactive for the Panel URL and first administrator. It preserves existing Nginx sites and stops early if a non-Nginx service already occupies a required web port. Before running it, allow inbound TCP 80; also allow TCP 443 when using HTTPS in your VPS firewall or cloud security group. For a domain with automatic HTTPS, set these before running it:
 
     curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-pterodactyl-v1.15.2/install.sh | sudo env SNCK_APP_URL=https://panel.example.com SNCK_LETSENCRYPT_EMAIL=admin@example.com bash
 
