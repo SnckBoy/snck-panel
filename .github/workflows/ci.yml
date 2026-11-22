@@ -34,10 +34,11 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd "mysqladmin ping -h 127.0.0.1 --silent"
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-start-period 30s
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 10
+          --health-retries 12
     steps:
       - uses: actions/checkout@v4
 
@@ -49,6 +50,12 @@ jobs:
           tools: composer:v2
           coverage: none
 
+      - name: Prepare test environment
+        run: |
+          cp .env.example .env
+          APP_KEY_VALUE="$(php -r 'echo base64_encode(random_bytes(32));')"
+          sed -i "s|^APP_KEY=.*|APP_KEY=base64:${APP_KEY_VALUE}|" .env
+
       - name: Validate Composer manifest
         run: composer validate --strict
 
@@ -57,9 +64,6 @@ jobs:
 
       - name: Check PHP formatting
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
-
-      - name: Prepare test environment
-        run: cp .env.ci .env
 
       - name: Run unit tests
         run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
