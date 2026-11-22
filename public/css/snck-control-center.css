@@ -77,3 +77,43 @@ a:hover, a:focus { color: #c4b5fd; }
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* Control Center overview components */
+.snck-welcome { position: relative; display: flex; align-items: center; justify-content: space-between; min-height: 260px; padding: 38px 42px; overflow: hidden; border: 1px solid rgba(167,139,250,.28); border-radius: 20px; background: radial-gradient(circle at 82% 25%, rgba(34,211,238,.18), transparent 19rem), linear-gradient(115deg, rgba(76,29,149,.42), rgba(15,23,42,.96) 58%, rgba(8,47,73,.55)); box-shadow: 0 24px 65px rgba(0,0,0,.28); }
+.snck-welcome-copy { position: relative; z-index: 2; max-width: 650px; }
+.snck-eyebrow { display: inline-flex; align-items: center; gap: 8px; color: #a5f3fc; font-size: 10px; font-weight: 800; letter-spacing: .18em; }
+.snck-welcome h2 { margin: 16px 0 10px; color: #fff; font-size: clamp(30px, 4vw, 46px); line-height: 1.08; font-weight: 800; letter-spacing: -.045em; }
+.snck-welcome p { color: #b9c7dc; font-size: 15px; }
+.snck-welcome-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.snck-welcome-actions .btn-default { color: #e5e7eb; background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.16); }
+.snck-welcome-mark { position: absolute; right: 7%; top: 50%; transform: translateY(-50%) rotate(-10deg); display: flex; align-items: center; gap: 10px; color: rgba(196,181,253,.12); font-size: clamp(65px, 11vw, 140px); font-weight: 950; letter-spacing: -.09em; user-select: none; }
+.snck-welcome-mark i { color: rgba(34,211,238,.24); font-size: .65em; }
+.snck-section-heading { margin: 25px 0 8px; }
+.snck-section-heading h3 { margin: 0 0 5px; color: #f1f5f9; font-size: 20px; font-weight: 750; }
+.snck-section-heading p { color: var(--snck-muted); font-size: 13px; }
+.snck-workspace-grid > div { margin-bottom: 14px; }
+.snck-workspace-card { display: flex; align-items: center; gap: 14px; min-height: 112px; height: 100%; padding: 18px; color: var(--snck-text) !important; text-decoration: none !important; background: linear-gradient(145deg, rgba(23,32,51,.96), rgba(15,23,42,.9)); border: 1px solid var(--snck-line); border-radius: 15px; box-shadow: 0 12px 32px rgba(0,0,0,.16); transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+.snck-workspace-card:hover { transform: translateY(-3px); border-color: rgba(139,92,246,.55); box-shadow: 0 18px 38px rgba(0,0,0,.24), 0 0 0 1px rgba(139,92,246,.1); }
+.snck-card-icon { display: grid; flex: 0 0 46px; width: 46px; height: 46px; place-items: center; border-radius: 13px; font-size: 18px; }
+.snck-card-icon.purple { color: #c4b5fd; background: rgba(139,92,246,.18); }
+.snck-card-icon.cyan { color: #67e8f9; background: rgba(34,211,238,.14); }
+.snck-card-icon.blue { color: #93c5fd; background: rgba(59,130,246,.16); }
+.snck-card-icon.green { color: #6ee7b7; background: rgba(16,185,129,.14); }
+.snck-card-icon.orange { color: #fdba74; background: rgba(249,115,22,.14); }
+.snck-card-icon.pink { color: #f9a8d4; background: rgba(236,72,153,.14); }
+.snck-card-copy { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 5px; }
+.snck-card-copy strong { color: #f1f5f9; font-size: 15px; }
+.snck-card-copy small { color: #9eacc3; font-size: 12px; line-height: 1.5; }
+.snck-card-arrow { color: #71819e; font-size: 13px; }
+.snck-release-note { display: flex; align-items: center; gap: 15px; margin-top: 12px; padding: 18px 20px; border: 1px solid var(--snck-line); border-radius: 14px; background: rgba(17,24,39,.72); }
+.snck-release-note > div { display: grid; flex: 0 0 40px; width: 40px; height: 40px; place-items: center; color: #a5f3fc; background: rgba(34,211,238,.12); border-radius: 12px; }
+.snck-release-note section { flex: 1; }
+.snck-release-note strong { color: #e2e8f0; }
+.snck-release-note p { margin: 4px 0 0; color: #9eacc3; font-size: 12px; line-height: 1.55; }
+.snck-release-note > a { white-space: nowrap; font-size: 12px; }
+@media (max-width: 767px) {
+    .snck-welcome { min-height: 230px; padding: 25px 22px; }
+    .snck-welcome-mark { right: -6%; top: 15%; transform: rotate(-10deg); font-size: 58px; }
+    .snck-release-note { align-items: flex-start; flex-wrap: wrap; }
+    .snck-release-note > a { margin-left: 55px; }
+}
