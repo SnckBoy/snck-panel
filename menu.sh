@@ -43,10 +43,13 @@ PHPINI
         fi
 
         if ! grep -qE '^[[:space:]]*client_body_timeout[[:space:]]+' "$nginx_conf"; then
-            sed -i '/^[[:space:]]*client_max_body_size[[:space:]]+/a\    client_body_timeout 3600s;' "$nginx_conf"
+            sed -i -E '/^[[:space:]]*client_max_body_size[[:space:]]+/a\    client_body_timeout 3600s;' "$nginx_conf"
         fi
         if ! grep -qE '^[[:space:]]*fastcgi_read_timeout[[:space:]]+' "$nginx_conf"; then
-            sed -i '/^[[:space:]]*fastcgi_pass unix:/a\        fastcgi_read_timeout 3600s;\n        fastcgi_send_timeout 3600s;' "$nginx_conf"
+            sed -i '/^[[:space:]]*fastcgi_pass unix:/a\        fastcgi_read_timeout 3600s;' "$nginx_conf"
+        fi
+        if ! grep -qE '^[[:space:]]*fastcgi_send_timeout[[:space:]]+' "$nginx_conf"; then
+            sed -i '/^[[:space:]]*fastcgi_pass unix:/a\        fastcgi_send_timeout 3600s;' "$nginx_conf"
         fi
         if ! grep -qE '^[[:space:]]*client_max_body_size[[:space:]]+11g;' "$nginx_conf"; then
             log "Preserved custom Nginx upload limit; set client_max_body_size to at least 11g for 10 GiB uploads."
