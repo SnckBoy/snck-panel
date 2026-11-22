@@ -34,7 +34,7 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-cmd "bash -c 'echo > /dev/tcp/127.0.0.1/3306'"
           --health-start-period 30s
           --health-interval 10s
           --health-timeout 5s
