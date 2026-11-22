@@ -10,7 +10,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,6 +20,8 @@ jobs:
   php:
     name: PHP ${{ matrix.php }} / ${{ matrix.database }}
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
