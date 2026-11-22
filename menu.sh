@@ -18,7 +18,7 @@ install_local_node_helper() {
     if ! command -v sudo >/dev/null 2>&1; then apt-get update && apt-get install -y sudo; fi
     [[ -f "$APP_DIR/scripts/snck-local-node-bootstrap.sh" ]] || fail "Local node bootstrap helper is missing from this branch."
     install -o root -g root -m 0755 "$APP_DIR/scripts/snck-local-node-bootstrap.sh" /usr/local/sbin/snck-local-node-bootstrap
-    printf '%s\\n' 'www-data ALL=(root) NOPASSWD: /usr/local/sbin/snck-local-node-bootstrap ""' >/etc/sudoers.d/snck-local-node
+    printf '%s\n' 'www-data ALL=(root) NOPASSWD: /usr/local/sbin/snck-local-node-bootstrap ""' >/etc/sudoers.d/snck-local-node
     chmod 0440 /etc/sudoers.d/snck-local-node
     visudo -cf /etc/sudoers.d/snck-local-node >/dev/null || fail "Local node sudoers rule failed validation."
 }
