@@ -6,7 +6,6 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
@@ -19,6 +18,7 @@ use Pterodactyl\Services\Nodes\NodeDeletionService;
 use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest;
+use Pterodactyl\Services\Nodes\LocalNodeProvisioningService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Node\AllocationFormRequest;
@@ -39,6 +39,7 @@ class NodesController extends Controller
         protected AssignmentService $assignmentService,
         protected CacheRepository $cache,
         protected NodeCreationService $creationService,
+        protected LocalNodeProvisioningService $localNodeProvisioningService,
         protected NodeDeletionService $deletionService,
         protected LocationRepositoryInterface $locationRepository,
         protected NodeRepositoryInterface $repository,
@@ -82,139 +83,15 @@ class NodesController extends Controller
      */
     public function createLocalNode(Request $request): RedirectResponse
     {
-        $host = $request->getHost();
-        $scheme = $request->getScheme();
-
-        $isPrivateHost = static function (string $hostname): bool {
-            $resolved = filter_var($hostname, FILTER_VALIDATE_IP) ? $hostname : gethostbyname($hostname);
-            $ip = filter_var($resolved, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
-            if (!$ip) {
-                return false;
-            }
-
-            $ipLong = ip2long($resolved);
-            $isTailnet = $ipLong !== false && (($ipLong & 0xFFC00000) === ip2long('100.64.0.0'));
-
-            return filter_var($resolved, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false || $isTailnet;
-        };
-
-        if ($scheme !== 'https' && !$isPrivateHost($host)) {
-            $this->alert->danger('For safety, a local node over HTTP is allowed only on a private LAN or Tailscale address. Configure HTTPS for a public hostname, or open the Panel over your private Tailscale address.')->flash();
+        try {
+            $node = $this->localNodeProvisioningService->provision($request->getHost(), $request->getScheme());
+        } catch (\RuntimeException $exception) {
+            $this->alert->danger($exception->getMessage())->flash();
 
             return redirect()->route('admin.nodes');
         }
 
-        $appUrl = (string) config('app.url');
-        $appUrlScheme = strtolower((string) parse_url($appUrl, PHP_URL_SCHEME));
-        $appUrlHost = parse_url($appUrl, PHP_URL_HOST);
-        if ($appUrlScheme !== 'https' && (!is_string($appUrlHost) || !$isPrivateHost($appUrlHost))) {
-            $this->alert->danger('The Panel APP_URL must use HTTPS or a private LAN/Tailscale address so Wings can securely reach the Panel.')->flash();
-
-            return redirect()->route('admin.nodes');
-        }
-
-        $existing = Node::query()->where('fqdn', $host)->where('daemonListen', 8080)->first();
-        if ($existing) {
-            $this->alert->warning('A node already exists for this host on port 8080. Reusing the existing node; no duplicate was created.')->flash();
-
-            return redirect()->route('admin.nodes.view', $existing->id);
-        }
-
-        if (is_file('/etc/pterodactyl/config.yml')) {
-            $this->alert->danger('A Wings configuration already exists on this host. It will not be overwritten by automatic local-node setup.')->flash();
-
-            return redirect()->route('admin.nodes');
-        }
-
-        foreach ([8080, 2022] as $port) {
-            $socket = @stream_socket_client('tcp://127.0.0.1:' . $port, $errno, $errstr, 0.5);
-            if (is_resource($socket)) {
-                fclose($socket);
-                $this->alert->danger('Local node setup needs TCP ports 8080 and 2022, but port ' . $port . ' is already in use.')->flash();
-
-                return redirect()->route('admin.nodes');
-            }
-        }
-
-        if ($scheme === 'https') {
-            $certificate = '/etc/letsencrypt/live/' . strtolower($host);
-            if (!is_file($certificate . '/fullchain.pem') || !is_file($certificate . '/privkey.pem')) {
-                $this->alert->danger('HTTPS is active, but the matching Let’s Encrypt certificate is missing. Install a valid certificate for this hostname before creating the local node.')->flash();
-
-                return redirect()->route('admin.nodes');
-            }
-        }
-
-        $helper = '/usr/local/sbin/snck-local-node-bootstrap';
-        if (!is_executable($helper) || !is_file('/etc/sudoers.d/snck-local-node')) {
-            $this->alert->danger('Local node setup helper is not installed. Run the SNCK Panel updater once, then try again.')->flash();
-
-            return redirect()->route('admin.nodes');
-        }
-
-        $location = Location::query()->firstOrCreate(
-            ['short' => 'local'],
-            ['long' => 'Local node on the Panel host']
-        );
-
-        $memory = 1024;
-        $meminfo = @file_get_contents('/proc/meminfo');
-        if (is_string($meminfo) && preg_match('/^MemTotal:\\s+(\\d+)/m', $meminfo, $matches)) {
-            $memory = max(512, (int) floor(((int) $matches[1]) / 1024) - 2048);
-        }
-
-        $diskBytes = @disk_total_space('/var/lib/pterodactyl') ?: @disk_total_space('/');
-        $disk = max(1024, (int) floor(((float) $diskBytes) / 1048576) - 10240);
-
-        $node = $this->creationService->handle([
-            'name' => 'Local Node',
-            'description' => 'Automatically provisioned on the Panel host.',
-            'location_id' => $location->id,
-            'public' => true,
-            'fqdn' => $host,
-            'scheme' => $scheme,
-            'behind_proxy' => false,
-            'memory' => $memory,
-            'memory_overallocate' => 0,
-            'disk' => $disk,
-            'disk_overallocate' => 0,
-            'daemonBase' => '/var/lib/pterodactyl/volumes',
-            'daemonSFTP' => 2022,
-            'daemonListen' => 8080,
-            'maintenance_mode' => false,
-            'upload_size' => 100,
-        ]);
-
-        $process = proc_open(
-            ['/usr/bin/sudo', '-n', $helper],
-            [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
-            $pipes
-        );
-
-        if (!is_resource($process)) {
-            $node->delete();
-            $this->alert->danger('Could not start the local Wings installer. No node was retained.')->flash();
-
-            return redirect()->route('admin.nodes');
-        }
-
-        fwrite($pipes[0], $node->id . PHP_EOL . $node->getYamlConfiguration());
-        fclose($pipes[0]);
-        stream_get_contents($pipes[1]);
-        fclose($pipes[1]);
-        $errors = stream_get_contents($pipes[2]);
-        fclose($pipes[2]);
-        $exitCode = proc_close($process);
-
-        if ($exitCode !== 0) {
-            $node->delete();
-            logger()->error('Local Wings bootstrap could not be queued.', ['node_id' => $node->id, 'error' => trim((string) $errors)]);
-            $this->alert->danger('Local node setup could not be started. Check sudo permissions and the SNCK local-node setup log. No node was retained.')->flash();
-
-            return redirect()->route('admin.nodes');
-        }
-
-        $this->alert->success('Local node setup started. Wings is installing in the background; the node will show online after its API responds. Allow TCP 8080 and SFTP 2022 through your VPS firewall and cloud security group.')->flash();
+        $this->alert->success('Local node setup started. The node will show online only after the Panel receives an authenticated Wings health response.')->flash();
 
         return redirect()->route('admin.nodes.view', $node->id);
     }
