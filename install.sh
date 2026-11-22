@@ -130,7 +130,17 @@ if ! command -v composer >/dev/null 2>&1; then
   php "$INSTALLER" --install-dir=/usr/local/bin --filename=composer
   rm -f "$INSTALLER"
 fi
-npm install --global yarn@1.22.22
+# Install Yarn Classic into a fixed location and invoke its JS entry point.
+# This avoids npm 11's global-bin/PATH and install-script policy differences.
+YARN_PREFIX="/opt/snck-yarn"
+YARN_JS="$YARN_PREFIX/node_modules/yarn/bin/yarn.js"
+if [[ ! -f "$YARN_JS" ]]; then
+  log "Installing Yarn Classic 1.22.22..."
+  npm install --prefix "$YARN_PREFIX" --no-save --ignore-scripts --no-audit --no-fund yarn@1.22.22
+fi
+[[ -f "$YARN_JS" ]] || fail "Yarn installation did not create $YARN_JS."
+YARN=(node "$YARN_JS")
+"${YARN[@]}" --version | grep -qx "1.22.22" || fail "Yarn Classic 1.22.22 could not be started."
 
 systemctl enable --now mariadb redis-server nginx php8.3-fpm cron
 log "Creating the SNCK database and restricted database user..."
@@ -163,10 +173,10 @@ php artisan p:environment:setup --author="$SERVICE_AUTHOR" --url="$APP_URL" --ti
 php artisan p:environment:database --host=127.0.0.1 --port=3306 --database="$DB_NAME" --username="$DB_USER" --password="$DB_PASSWORD" --no-interaction
 
 log "Building the frontend assets (this may take several minutes)..."
-yarn install --frozen-lockfile
-yarn tsc
-yarn lint
-yarn build:production
+"${YARN[@]}" install --frozen-lockfile
+"${YARN[@]}" tsc
+"${YARN[@]}" lint
+"${YARN[@]}" build:production
 
 log "Running database migrations and importing default game server templates..."
 php artisan migrate --seed --force --no-interaction
