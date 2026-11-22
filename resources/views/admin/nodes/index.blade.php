@@ -24,6 +24,12 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Node List</h3>
                 <div class="box-tools search01">
+                    <form action="{{ route('admin.nodes.local') }}" method="POST" style="display:inline-block;margin-right:8px;">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Install Wings and register this server as a local node?')">
+                            <i class="fa fa-server"></i> Create Local Node
+                        </button>
+                    </form>
                     <form action="{{ route('admin.nodes') }}" method="GET">
                         <div class="input-group input-group-sm">
                             <input type="text" name="filter[name]" class="form-control pull-right" value="{{ request()->input('filter.name') }}" placeholder="Search Nodes">
