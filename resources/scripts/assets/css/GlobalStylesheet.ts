@@ -146,5 +146,12 @@ export default createGlobalStyle`
         #logo a { font-size:16px; gap:6px; padding-left:3px; padding-right:3px; }
         #logo a::before { flex:0 0 27px; width:27px; height:27px; }
         .bg-neutral-900.shadow-md a, .bg-neutral-900.shadow-md button { padding-left:8px; padding-right:8px; }
+        .bg-neutral-900.shadow-md > div > div:last-child { flex:0 1 auto; min-width:0; }
+        .bg-neutral-900.shadow-md > div > div:last-child > a,
+        .bg-neutral-900.shadow-md > div > div:last-child > button,
+        .bg-neutral-900.shadow-md > div > div:last-child > .navigation-link {
+            padding-left:10px;
+            padding-right:10px;
+        }
     }
 `;
