@@ -98,7 +98,7 @@ fi
 export DEBIAN_FRONTEND=noninteractive
 log "Installing system packages for $PRETTY_NAME..."
 apt-get update
-apt-get install -y ca-certificates curl gnupg lsb-release software-properties-common apt-transport-https git unzip tar rsync openssl mariadb-server redis-server nginx cron certbot python3-certbot-nginx sudo sudo
+apt-get install -y ca-certificates curl gnupg lsb-release software-properties-common apt-transport-https git unzip tar rsync openssl mariadb-server redis-server nginx cron certbot python3-certbot-nginx sudo
 
 if [[ "$ID" == "debian" ]]; then
   KEYRING_PACKAGE="$(mktemp /tmp/debsuryorg-keyring.XXXXXX.deb)"
