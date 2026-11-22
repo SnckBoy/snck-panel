@@ -7,7 +7,9 @@ on:
       - "feat/**"
       - "fix/**"
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - "feat/**"
 
 permissions:
   contents: read
