@@ -145,7 +145,7 @@ class NodesController extends Controller
         ]);
 
         $process = proc_open(
-            ['/usr/bin/sudo', '-n', $helper, (string) $node->id],
+            ['/usr/bin/sudo', '-n', $helper],
             [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
             $pipes
         );
@@ -157,7 +157,7 @@ class NodesController extends Controller
             return redirect()->route('admin.nodes');
         }
 
-        fwrite($pipes[0], $node->getYamlConfiguration());
+        fwrite($pipes[0], $node->id . PHP_EOL . $node->getYamlConfiguration());
         fclose($pipes[0]);
         $output = stream_get_contents($pipes[1]);
         fclose($pipes[1]);
