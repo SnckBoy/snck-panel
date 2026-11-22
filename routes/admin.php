@@ -158,6 +158,7 @@ Route::group(['prefix' => 'nodes'], function () {
     Route::get('/view/{node:id}/system-information', Admin\Nodes\SystemInformationController::class);
 
     Route::post('/new', [Admin\NodesController::class, 'store']);
+    Route::post('/local', [Admin\NodesController::class, 'createLocalNode'])->name('admin.nodes.local');
     Route::post('/view/{node:id}/allocation', [Admin\NodesController::class, 'createAllocation']);
     Route::post('/view/{node:id}/allocation/remove', [Admin\NodesController::class, 'allocationRemoveBlock'])->name('admin.nodes.view.allocation.removeBlock');
     Route::post('/view/{node:id}/allocation/alias', [Admin\NodesController::class, 'allocationSetAlias'])->name('admin.nodes.view.allocation.setAlias');
