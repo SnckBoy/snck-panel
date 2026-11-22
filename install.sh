@@ -174,6 +174,15 @@ install -d -o www-data -g www-data -m 0775 \
   storage/app/private storage/app/public \
   storage/framework/cache/data storage/framework/sessions \
   storage/framework/views storage/logs
+install -d -m 0755 /etc/php/8.3/fpm/conf.d
+cat >/etc/php/8.3/fpm/conf.d/99-snck-upload-limits.ini <<'PHPINI'
+upload_max_filesize = 10G
+post_max_size = 11G
+max_execution_time = 3600
+max_input_time = 3600
+PHPINI
+chmod 0644 /etc/php/8.3/fpm/conf.d/99-snck-upload-limits.ini
+
 COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 composer check-platform-reqs --no-dev
 php artisan p:environment:setup --author="$SERVICE_AUTHOR" --url="$APP_URL" --timezone=UTC --cache=redis --session=redis --queue=redis --redis-host=127.0.0.1 --redis-pass= --redis-port=6379 --settings-ui=true --telemetry=0 --no-interaction
@@ -206,7 +215,8 @@ server {
     server_name $APP_HOST;
     root $APP_DIR/public;
     index index.php;
-    client_max_body_size 100m;
+    client_max_body_size 11g;
+    client_body_timeout 3600s;
     charset utf-8;
 
     location / { try_files \$uri \$uri/ /index.php?\$query_string; }
@@ -223,6 +233,8 @@ server {
         fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
         fastcgi_param HTTP_PROXY "";
         fastcgi_intercept_errors off;
+        fastcgi_read_timeout 3600s;
+        fastcgi_send_timeout 3600s;
         fastcgi_buffer_size 16k;
         fastcgi_buffers 4 16k;
     }
