@@ -63,7 +63,7 @@ update_panel() {
     cd "$APP_DIR"
     php artisan down || true
     was_down=1
-    git fetch --prune origin "$BRANCH"
+    git fetch --prune origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
     git checkout -B "$BRANCH" "origin/$BRANCH"
     COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
     if [[ ! -f /opt/snck-yarn/node_modules/yarn/bin/yarn.js ]]; then
