@@ -74,7 +74,7 @@ jobs:
         run: composer audit
 
       - name: Commit refreshed Composer lockfile
-        if: github.event_name == 'push' && github.ref == 'refs/heads/feat/snck-pterodactyl-v1.15.2' && steps.composer_audit_before.outcome == 'failure'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feat/snck-pterodactyl-v1.15.2' && matrix.database == 'mariadb:11.4' && steps.composer_audit_before.outcome == 'failure'
         run: |
           if ! git diff --quiet -- composer.lock; then
             git config user.name "github-actions[bot]"
