@@ -75,154 +75,176 @@ export default createGlobalStyle`
         background: transparent;
     }
 
-    /* SNCK glass theme: keep the upstream component structure and API intact. */
-    body {
-        background-color: #080d1b !important;
-        background-image:
-            radial-gradient(ellipse at 12% 8%, rgba(124, 58, 237, .20), transparent 34rem),
-            radial-gradient(ellipse at 88% 76%, rgba(56, 189, 248, .12), transparent 38rem),
-            linear-gradient(145deg, #080d1b 0%, #10182b 55%, #0b1222 100%);
-        background-attachment: fixed;
+    /* SNCK matte console theme: solid surfaces, no glass blur or gradient fields. */
+    :root {
+        color-scheme: dark;
+        --snck-client-bg: #090a0c;
+        --snck-client-panel: #111416;
+        --snck-client-raised: #191d20;
+        --snck-client-line: #2a3034;
+        --snck-client-text: #e8e8e4;
+        --snck-client-muted: #a4a7a7;
+        --snck-client-accent: #d8aa57;
     }
 
+    html, body {
+        max-width: 100%;
+        overflow-x: clip;
+        background: var(--snck-client-bg) !important;
+        background-image: none !important;
+        color: var(--snck-client-text);
+    }
+
+    #app { min-height: 100vh; width: 100%; max-width: 100%; overflow-x: clip; }
+
     .bg-neutral-900 {
-        background-color: rgba(8, 13, 27, .78) !important;
-        border-color: rgba(148, 163, 184, .16);
-        backdrop-filter: blur(22px);
-        -webkit-backdrop-filter: blur(22px);
+        background-color: #0b0d0f !important;
+        border-color: var(--snck-client-line) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
     }
 
     .bg-neutral-800 {
-        background-color: rgba(15, 23, 42, .62) !important;
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
+        background-color: var(--snck-client-panel) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
     }
 
     .bg-neutral-700 {
-        background-color: rgba(30, 41, 59, .54) !important;
-        border: 1px solid rgba(148, 163, 184, .17);
-        box-shadow: 0 14px 38px rgba(0, 0, 0, .16);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+        background-color: var(--snck-client-raised) !important;
+        border: 1px solid var(--snck-client-line) !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
     }
 
     .bg-neutral-600 {
-        background-color: rgba(51, 65, 85, .56) !important;
-        border-color: rgba(148, 163, 184, .2);
+        background-color: #22282c !important;
+        border-color: #3a4247 !important;
     }
 
-    .bg-black {
-        background-color: rgba(5, 8, 18, .84) !important;
-    }
+    .bg-black { background-color: #060708 !important; }
 
     input, select, textarea {
-        background-color: rgba(15, 23, 42, .72) !important;
-        border-color: rgba(148, 163, 184, .25) !important;
-        border-radius: 10px;
+        background-color: #0d1012 !important;
+        border-color: #394146 !important;
+        border-radius: 4px !important;
+        color: var(--snck-client-text) !important;
     }
 
     input:focus, select:focus, textarea:focus {
-        border-color: rgba(167, 139, 250, .85) !important;
-        box-shadow: 0 0 0 3px rgba(139, 92, 246, .16);
+        border-color: var(--snck-client-accent) !important;
+        box-shadow: 0 0 0 2px rgba(216, 170, 87, .16) !important;
     }
 
     a, button {
-        transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+        -webkit-tap-highlight-color: transparent;
+        transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease;
     }
 
-    /* SNCK client control plane navigation and interaction polish. */
+    #logo { flex: 0 0 auto; min-width: max-content; }
     #logo a {
         display: inline-flex;
         align-items: center;
-        gap: 11px;
-        font-weight: 800;
-        letter-spacing: .035em;
+        gap: 9px;
+        white-space: nowrap;
+        font-weight: 700;
+        letter-spacing: .01em;
+        color: var(--snck-client-text) !important;
     }
 
     #logo a::before {
         content: 'S';
         display: inline-grid;
-        width: 32px;
-        height: 32px;
+        flex: 0 0 30px;
+        width: 30px;
+        height: 30px;
         place-items: center;
-        color: white;
-        font-size: 17px;
-        font-weight: 900;
-        border-radius: 10px;
-        background: linear-gradient(135deg, #7c3aed, #0891b2);
-        box-shadow: 0 5px 18px rgba(124, 58, 237, .32);
-    }
-
-    body > #app,
-    body #app {
-        min-height: 100vh;
-    }
-
-    .navigation-link,
-    nav a,
-    #logo a {
-        -webkit-tap-highlight-color: transparent;
+        color: #101010;
+        font-size: 16px;
+        font-weight: 800;
+        border-radius: 5px;
+        background: var(--snck-client-accent);
+        box-shadow: none;
     }
 
     .bg-neutral-900.shadow-md {
         position: sticky;
         top: 0;
         z-index: 40;
-        border-bottom: 1px solid rgba(148, 163, 184, .18);
-        box-shadow: 0 10px 32px rgba(0, 0, 0, .22);
+        width: 100%;
+        max-width: 100%;
+        border-bottom: 1px solid var(--snck-client-line);
+        box-shadow: none !important;
     }
 
     .bg-neutral-900.shadow-md > div {
-        min-height: 62px;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        min-height: 60px;
+        box-sizing: border-box;
         padding-left: 12px;
         padding-right: 12px;
     }
 
+    .bg-neutral-900.shadow-md > div > * { min-width: 0; }
     .bg-neutral-900.shadow-md a,
     .bg-neutral-900.shadow-md button {
-        border-radius: 10px;
+        min-width: 40px;
+        min-height: 40px;
+        border-radius: 4px !important;
     }
 
-    button:not(:disabled):active {
-        transform: translateY(1px);
-    }
+    button:not(:disabled):active { transform: translateY(1px); }
 
     :focus-visible {
-        outline: 2px solid rgba(34, 211, 238, .9);
+        outline: 2px solid var(--snck-client-accent);
         outline-offset: 3px;
     }
 
+    ::selection { color: #090a0c; background: var(--snck-client-accent); }
+
     @media (max-width: 640px) {
         .bg-neutral-900.shadow-md > div {
-            min-width: 0;
+            gap: 2px;
             min-height: 56px;
-            padding-left: 8px;
-            padding-right: 8px;
+            padding-left: 7px;
+            padding-right: 7px;
         }
 
         #logo a {
-            gap: 8px;
-            padding-left: 8px;
-            padding-right: 8px;
-            font-size: 18px;
+            gap: 6px;
+            padding-left: 3px;
+            padding-right: 3px;
+            font-size: 16px;
         }
 
         #logo a::before {
-            width: 28px;
-            height: 28px;
-            font-size: 15px;
+            flex-basis: 27px;
+            width: 27px;
+            height: 27px;
+            font-size: 14px;
         }
 
         .bg-neutral-900.shadow-md a,
         .bg-neutral-900.shadow-md button {
-            padding-left: 12px;
-            padding-right: 12px;
+            min-width: 36px;
+            padding-left: 8px;
+            padding-right: 8px;
         }
     }
 
+    @media (max-width: 360px) {
+        #logo a { font-size: 14px; }
+        .bg-neutral-900.shadow-md > div { gap: 0; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
-        a, button {
-            transition: none;
-        }
+        a, button { transition: none; }
     }
 `;
