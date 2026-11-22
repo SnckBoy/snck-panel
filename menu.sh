@@ -79,8 +79,7 @@ update_panel() {
     php artisan config:cache
     php artisan view:cache
     chown -R www-data:www-data "$APP_DIR"
-    find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type d -exec chmod 0750 {} +
-    find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type f -exec chmod 0640 {} +
+    find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type d -exec chmod 0755 {} +
     chmod 640 "$APP_DIR/.env"
     nginx -t
     systemctl restart snck-panel-queue php8.3-fpm nginx cron
@@ -97,8 +96,7 @@ repair_panel() {
     php artisan config:cache
     php artisan view:cache
     chown -R www-data:www-data "$APP_DIR"
-    find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type d -exec chmod 0750 {} +
-    find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type f -exec chmod 0640 {} +
+    find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type d -exec chmod 0755 {} +
     chmod 640 "$APP_DIR/.env"
     nginx -t
     systemctl daemon-reload
