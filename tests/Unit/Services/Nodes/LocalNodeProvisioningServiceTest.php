@@ -2,10 +2,10 @@
 
 namespace Pterodactyl\Tests\Unit\Services\Nodes;
 
-use Pterodactyl\Tests\TestCase;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Services\Nodes\LocalNodeProvisioningService;
+use Pterodactyl\Services\Nodes\NodeCreationService;
+use Pterodactyl\Tests\TestCase;
 
 class LocalNodeProvisioningServiceTest extends TestCase
 {
