@@ -18,6 +18,7 @@ if [[ "${1:-}" == "--run" ]]; then
     trap 'code=$?; printf "[%s] Setup failed (exit %s).\n" "$(date -Is)" "$code"; exit "$code"' ERR
 
     [[ -s "$CONFIG_FILE" ]] || fail "Node configuration file is missing."
+    if ss -ltnH | grep -Eq ":(8080|2022)[[:space:]]"; then fail "TCP port 8080 or 2022 is already in use."; fi
     [[ ! -e /etc/pterodactyl/config.yml ]] || fail "An existing Wings configuration was found. Refusing to overwrite it."
     [[ -r /etc/os-release ]] || fail "Cannot identify operating system."
     . /etc/os-release
@@ -84,6 +85,7 @@ SERVICE
         journalctl -u wings -n 80 --no-pager
         fail "Wings failed to start. See $LOG_FILE and journalctl -u wings."
     }
+    rm -f "$CONFIG_FILE"
     log "Wings service is active for local node $NODE_ID."
     log "Open TCP 8080 (node API) and 2022 (SFTP) in the VPS/cloud firewall as required."
     exit 0
