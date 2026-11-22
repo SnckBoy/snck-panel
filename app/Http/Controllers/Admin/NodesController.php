@@ -119,11 +119,11 @@ class NodesController extends Controller
         $memory = 1024;
         $meminfo = @file_get_contents('/proc/meminfo');
         if (is_string($meminfo) && preg_match('/^MemTotal:\\s+(\\d+)/m', $meminfo, $matches)) {
-            $memory = max(1024, (int) floor(((int) $matches[1]) / 1024));
+            $memory = max(512, (int) floor(((int) $matches[1]) / 1024) - 2048);
         }
 
         $diskBytes = @disk_total_space('/var/lib/pterodactyl') ?: @disk_total_space('/');
-        $disk = max(1024, (int) floor(((float) $diskBytes) / 1048576));
+        $disk = max(1024, (int) floor(((float) $diskBytes) / 1048576) - 10240);
 
         $node = $this->creationService->handle([
             'name' => 'Local Node',
