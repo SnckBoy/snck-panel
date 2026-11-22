@@ -123,4 +123,28 @@ export default createGlobalStyle`
             transition-duration: .01ms !important;
         }
     }
+
+    /* Keep the client navigation in one row on narrow phone screens. */
+    html, body, #app { width:100%; max-width:100%; overflow-x:clip; }
+    .bg-neutral-900.shadow-md { width:100%; max-width:100%; }
+    .bg-neutral-900.shadow-md > div {
+        display:flex;
+        flex-wrap:nowrap;
+        align-items:center;
+        gap:6px;
+        width:100%;
+        max-width:100%;
+        min-width:0;
+        box-sizing:border-box;
+    }
+    .bg-neutral-900.shadow-md > div > * { min-width:0; }
+    #logo { flex:0 0 auto; min-width:max-content; }
+    #logo a { display:inline-flex; align-items:center; gap:7px; white-space:nowrap; flex-shrink:0; }
+    .bg-neutral-900.shadow-md a, .bg-neutral-900.shadow-md button { min-width:36px; min-height:40px; }
+    @media (max-width:640px) {
+        .bg-neutral-900.shadow-md > div { gap:2px; padding-left:7px; padding-right:7px; }
+        #logo a { font-size:16px; gap:6px; padding-left:3px; padding-right:3px; }
+        #logo a::before { flex:0 0 27px; width:27px; height:27px; }
+        .bg-neutral-900.shadow-md a, .bg-neutral-900.shadow-md button { padding-left:8px; padding-right:8px; }
+    }
 `;
