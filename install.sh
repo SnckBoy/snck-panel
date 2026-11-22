@@ -39,7 +39,7 @@ EOF
 
 if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then usage; exit 0; fi
 [[ "$EUID" -eq 0 ]] || fail "Run this installer as root (sudo)."
-[[ -t 0 && -r /dev/tty ]] || fail "An interactive terminal is required for the first administrator setup."
+[[ -r /dev/tty ]] || fail "An interactive terminal is required for the first administrator setup."
 command -v openssl >/dev/null 2>&1 || fail "OpenSSL is required to generate secure database credentials."
 
 [[ -r /etc/os-release ]] || fail "Cannot identify this operating system."
