@@ -130,6 +130,96 @@ export default createGlobalStyle`
         transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
     }
 
+    /* SNCK client control plane navigation and interaction polish. */
+    #logo a {
+        display: inline-flex;
+        align-items: center;
+        gap: 11px;
+        font-weight: 800;
+        letter-spacing: .035em;
+    }
+
+    #logo a::before {
+        content: 'S';
+        display: inline-grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        color: white;
+        font-size: 17px;
+        font-weight: 900;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #7c3aed, #0891b2);
+        box-shadow: 0 5px 18px rgba(124, 58, 237, .32);
+    }
+
+    body > #app,
+    body #app {
+        min-height: 100vh;
+    }
+
+    .navigation-link,
+    nav a,
+    #logo a {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .bg-neutral-900.shadow-md {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        border-bottom: 1px solid rgba(148, 163, 184, .18);
+        box-shadow: 0 10px 32px rgba(0, 0, 0, .22);
+    }
+
+    .bg-neutral-900.shadow-md > div {
+        min-height: 62px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .bg-neutral-900.shadow-md a,
+    .bg-neutral-900.shadow-md button {
+        border-radius: 10px;
+    }
+
+    button:not(:disabled):active {
+        transform: translateY(1px);
+    }
+
+    :focus-visible {
+        outline: 2px solid rgba(34, 211, 238, .9);
+        outline-offset: 3px;
+    }
+
+    @media (max-width: 640px) {
+        .bg-neutral-900.shadow-md > div {
+            min-width: 0;
+            min-height: 56px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        #logo a {
+            gap: 8px;
+            padding-left: 8px;
+            padding-right: 8px;
+            font-size: 18px;
+        }
+
+        #logo a::before {
+            width: 28px;
+            height: 28px;
+            font-size: 15px;
+        }
+
+        .bg-neutral-900.shadow-md a,
+        .bg-neutral-900.shadow-md button {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+    }
+
     @media (prefers-reduced-motion: reduce) {
         a, button {
             transition: none;
