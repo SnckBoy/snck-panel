@@ -59,10 +59,17 @@ if [[ -z "$APP_URL" ]]; then
 fi
 [[ "$APP_URL" =~ ^https?://[^/[:space:]]+/?$ ]] || fail "SNCK_APP_URL must be a root HTTP/HTTPS URL without a path."
 APP_URL="${APP_URL%/}"
-APP_HOST="${APP_URL#*://}"
-APP_HOST="${APP_HOST%%/*}"
-APP_HOST="${APP_HOST%%:*}"
-[[ -n "$APP_HOST" ]] || fail "Could not parse the hostname from SNCK_APP_URL."
+APP_AUTHORITY="${APP_URL#*://}"
+APP_AUTHORITY="${APP_AUTHORITY%/}"
+APP_HOST="${APP_AUTHORITY%%:*}"
+if [[ "$APP_AUTHORITY" == *:* ]]; then
+  APP_PORT="${APP_AUTHORITY##*:}"
+  case "$APP_URL" in
+    http://*) [[ "$APP_PORT" == "80" ]] || fail "HTTP installs must use port 80; configure Nginx for a standard public web port." ;;
+    https://*) [[ "$APP_PORT" == "443" ]] || fail "HTTPS installs must use port 443; configure Nginx for a standard public web port." ;;
+  esac
+fi
+[[ "$APP_HOST" =~ ^[A-Za-z0-9][A-Za-z0-9.-]*$ ]] || fail "SNCK_APP_URL must contain a valid DNS hostname or IPv4 address."
 if [[ "$APP_URL" == https://* ]]; then
   [[ ! "$APP_HOST" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || fail "HTTPS requires a DNS hostname, not a raw IP address."
   [[ -n "$LE_EMAIL" ]] || read -r -p "Let's Encrypt email: " LE_EMAIL </dev/tty
@@ -161,7 +168,7 @@ read -r -p "Administrator email: " ADMIN_EMAIL </dev/tty
 read -r -p "Administrator username: " ADMIN_USERNAME </dev/tty
 read -r -p "First name: " ADMIN_FIRST </dev/tty
 read -r -p "Last name: " ADMIN_LAST </dev/tty
-php artisan p:user:make --email="$ADMIN_EMAIL" --username="$ADMIN_USERNAME" --name-first="$ADMIN_FIRST" --name-last="$ADMIN_LAST" --admin=1
+php artisan p:user:make --email="$ADMIN_EMAIL" --username="$ADMIN_USERNAME" --name-first="$ADMIN_FIRST" --name-last="$ADMIN_LAST" --admin=1 </dev/tty
 
 chown -R www-data:www-data "$APP_DIR"
 chmod -R 755 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
