@@ -52,6 +52,7 @@ jobs:
 
       - name: Prepare test environment
         run: |
+          mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs storage/app/private storage/app/public
           cp .env.example .env
           APP_KEY_VALUE="$(php -r 'echo base64_encode(random_bytes(32));')"
           sed -i "s|^APP_KEY=.*|APP_KEY=base64:${APP_KEY_VALUE}|" .env
