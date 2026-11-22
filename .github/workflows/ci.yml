@@ -10,7 +10,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -61,6 +61,29 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-interaction --no-progress --prefer-dist
 
+      - name: Check existing Composer advisories
+        id: composer_audit_before
+        continue-on-error: true
+        run: composer audit
+
+      - name: Update vulnerable Composer dependencies
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feat/snck-pterodactyl-v1.15.2' && steps.composer_audit_before.outcome == 'failure'
+        run: composer update --with-all-dependencies --no-interaction --no-progress --prefer-dist
+
+      - name: Verify Composer security audit
+        run: composer audit
+
+      - name: Commit refreshed Composer lockfile
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feat/snck-pterodactyl-v1.15.2' && steps.composer_audit_before.outcome == 'failure'
+        run: |
+          if ! git diff --quiet -- composer.lock; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add composer.lock
+            git commit -m "chore(deps): update Composer security fixes"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
       - name: Check PHP formatting
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
 
@@ -78,9 +101,6 @@ jobs:
           DB_DATABASE: testing
           DB_USERNAME: root
           DB_PASSWORD: ""
-
-      - name: Audit Composer dependencies
-        run: composer audit
 
       - name: Check installer scripts and branding tool
         run: |
