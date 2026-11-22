@@ -55,6 +55,9 @@ On the Panel host, open **Admin → Nodes** and select **Create Local Node**. SN
 
 Requirements and network notes:
 
+- New nodes default to a 10 GiB (10,240 MiB) per-file Wings upload limit. Fresh installs configure Nginx for 11 GiB request bodies and PHP-FPM for 10 GiB file uploads / 11 GiB POST bodies. This leaves room for multipart overhead.
+- Existing node-specific upload limits are preserved by the migration. Increase them from the node settings only when you intend to change an existing node. Large uploads still require enough free disk space, bandwidth, and client timeout tolerance.
+
 - Run the Panel on Ubuntu 20.04/22.04/24.04 or Debian 11/12/13 with systemd.
 - HTTP is accepted only when the Panel is opened through a private LAN or Tailscale address. Public hostnames must use HTTPS with a valid Let's Encrypt certificate for the same hostname.
 - TCP 8080 (Wings API) and 2022 (SFTP) must be reachable from the clients that use the node. Allow them in the VPS firewall and cloud security group where applicable. The installer cannot change AWS or another cloud provider's security-group rules.
