@@ -37,13 +37,13 @@ The panel source ZIP does not contain Wings. The previous SNCK TypeScript daemon
 
 Supported installer targets: Ubuntu 22.04/24.04 and Debian 11/12/13.
 
-    curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-pterodactyl-v1.15.2/install.sh | sudo bash
+    curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-control-center-v2/menu.sh | sudo bash
 
 The installer bootstraps PHP 8.3 and extensions, Composer, Node.js 22, Yarn Classic, MariaDB, Redis, Nginx, PHP-FPM and Certbot. It creates a restricted database account, builds frontend assets, runs migrations and seeds the default templates, creates the first administrator, configures the queue worker and scheduler, and can request a Let's Encrypt certificate when you provide an HTTPS domain and email.
 
-The installer is interactive for the Panel URL and first administrator. It preserves existing Nginx sites and stops early if a non-Nginx service already occupies a required web port. Before running it, allow inbound TCP 80; also allow TCP 443 when using HTTPS in your VPS firewall or cloud security group. For a domain with automatic HTTPS, set these before running it:
+The interactive SNCK Control Center menu provides fresh installation, safe update (with database and environment backup), repair, diagnostics, backup, Wings installation, service restart, and reversible disable options. Fresh installation is interactive for the Panel URL and first administrator. It preserves existing Nginx sites and stops early if a non-Nginx service already occupies a required web port. Before running it, allow inbound TCP 80; also allow TCP 443 when using HTTPS in your VPS firewall or cloud security group. For a domain with automatic HTTPS, set these before running it:
 
-    curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-pterodactyl-v1.15.2/install.sh | sudo env SNCK_APP_URL=https://panel.example.com SNCK_LETSENCRYPT_EMAIL=admin@example.com bash
+    curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-control-center-v2/install.sh | sudo env SNCK_APP_URL=https://panel.example.com SNCK_LETSENCRYPT_EMAIL=admin@example.com bash
 
 For non-default paths or database credentials, see the environment variables printed by:
 
@@ -53,7 +53,7 @@ For non-default paths or database credentials, see the environment variables pri
 
 Create a node in the Panel first. Copy its numeric node ID and use the Auto-Deploy token from the node's Configuration page.
 
-    curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-pterodactyl-v1.15.2/node-install.sh | sudo bash -s -- --panel-url https://panel.example.com --node-id 1
+    curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-control-center-v2/node-install.sh | sudo bash -s -- --panel-url https://panel.example.com --node-id 1
 
 The installer asks for the one-time token without echoing it, installs Docker, downloads the pinned Wings v1.13.5 binary, verifies its SHA-256 digest, configures Wings from the Panel, and creates a systemd service. Supported node OS: Ubuntu 22.04/24.04 and Debian 12/13. Make sure the node firewall permits the API, SFTP and game allocation ports configured for that node.
 
