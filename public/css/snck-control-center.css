@@ -56,6 +56,9 @@ a:hover, a:focus { color: var(--snck-accent-hover); }
 .control-label, label { color: #cbd0cf; }
 .help-block { color: var(--snck-muted); }
 .btn { border: 1px solid #3b4145; border-radius: 4px !important; font-weight: 600; padding: 8px 13px; transition: background-color .14s ease, border-color .14s ease, color .14s ease; }
+.btn { min-height: 40px; }
+.sidebar-menu > li > a { min-height: 44px; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, .btn:focus-visible { outline: 2px solid var(--snck-accent) !important; outline-offset: 2px; }
 .btn:hover { filter: none; }
 .btn-primary, .btn-info { color: #17130b !important; background: var(--snck-accent) !important; border-color: var(--snck-accent) !important; box-shadow: none !important; }
 .btn-primary:hover, .btn-info:hover { color: #100e09 !important; background: var(--snck-accent-hover) !important; border-color: var(--snck-accent-hover) !important; }
