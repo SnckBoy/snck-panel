@@ -79,7 +79,8 @@ update_panel() {
     php artisan config:cache
     php artisan view:cache
     chown -R www-data:www-data "$APP_DIR"
-    chmod -R 755 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
+    find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type d -exec chmod 0750 {} +
+    find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type f -exec chmod 0640 {} +
     chmod 640 "$APP_DIR/.env"
     nginx -t
     systemctl restart snck-panel-queue php8.3-fpm nginx cron
@@ -96,7 +97,8 @@ repair_panel() {
     php artisan config:cache
     php artisan view:cache
     chown -R www-data:www-data "$APP_DIR"
-    chmod -R 755 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
+    find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type d -exec chmod 0750 {} +
+    find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type f -exec chmod 0640 {} +
     chmod 640 "$APP_DIR/.env"
     nginx -t
     systemctl daemon-reload
@@ -114,8 +116,8 @@ diagnostics() {
         cd "$APP_DIR"
         php artisan --version
         grep '^APP_URL=' .env || true
-        printf 'Git branch: '; git branch --show-current 2>/dev/null || true
-        printf 'Git commit: '; git rev-parse --short HEAD 2>/dev/null || true
+        printf 'Git branch: '; git -c safe.directory="$APP_DIR" -C "$APP_DIR" branch --show-current 2>/dev/null || true
+        printf 'Git commit: '; git -c safe.directory="$APP_DIR" -C "$APP_DIR" rev-parse --short HEAD 2>/dev/null || true
         printf 'HTTP: '; APP_URL_VALUE="$(php -r 'require "vendor/autoload.php"; $e=Dotenv\Dotenv::createImmutable(getcwd())->safeLoad(); echo $e["APP_URL"] ?? "";')"
         if [[ -n "$APP_URL_VALUE" ]]; then curl -kLsS -o /dev/null -w '%{http_code}\n' --max-time 10 "$APP_URL_VALUE" || true; else echo "APP_URL unavailable"; fi
     else
