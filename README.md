@@ -49,6 +49,20 @@ For non-default paths or database credentials, see the environment variables pri
 
     bash install.sh --help
 
+## Create a local node with one click
+
+On the Panel host, open **Admin → Nodes** and select **Create Local Node**. SNCK creates the node record using the host's available memory and disk, installs Docker and the pinned Wings binary, writes the node configuration with the Panel-generated credentials, and starts the Wings systemd service in the background. The action is idempotent for the same Panel hostname and does not overwrite an existing Wings configuration.
+
+Requirements and network notes:
+
+- Run the Panel on Ubuntu 22.04/24.04 or Debian 12/13 with systemd.
+- HTTP is accepted only when the Panel is opened through a private LAN or Tailscale address. Public hostnames must use HTTPS with a valid Let's Encrypt certificate for the same hostname.
+- TCP 8080 (Wings API) and 2022 (SFTP) must be reachable from the clients that use the node. Allow them in the VPS firewall and cloud security group where applicable. The installer cannot change AWS or another cloud provider's security-group rules.
+- The setup runs asynchronously. The node is online only after Wings starts and its API responds; a failed setup is logged to `/var/log/snck-local-node-NODE_ID.log` and `journalctl` under the generated `snck-local-node-setup-*` unit.
+- An existing `/etc/pterodactyl/config.yml` or occupied node ports 8080/2022 cause the action to stop rather than overwrite or interfere with an existing daemon.
+
+The SNCK installer and updater install a root-owned bootstrap helper and grant the `www-data` account permission to invoke only that helper with no command-line arguments. The helper receives the node configuration over standard input and performs the privileged installation as a systemd unit.
+
 ## Install a game node (Wings)
 
 Create a node in the Panel first. Copy its numeric node ID and use the Auto-Deploy token from the node's Configuration page.
