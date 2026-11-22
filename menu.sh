@@ -14,6 +14,14 @@ need_root() { [[ "$EUID" -eq 0 ]] || fail "Run with sudo or as root."; }
 pause() { read -r -p "Press Enter to return to the menu..." _ </dev/tty; }
 app_exists() { [[ -f "$APP_DIR/artisan" && -f "$APP_DIR/.env" ]]; }
 
+install_local_node_helper() {
+    [[ -f "$APP_DIR/scripts/snck-local-node-bootstrap.sh" ]] || fail "Local node bootstrap helper is missing from this branch."
+    install -o root -g root -m 0755 "$APP_DIR/scripts/snck-local-node-bootstrap.sh" /usr/local/sbin/snck-local-node-bootstrap
+    printf '%s\\n' 'www-data ALL=(root) NOPASSWD: /usr/local/sbin/snck-local-node-bootstrap ""' >/etc/sudoers.d/snck-local-node
+    chmod 0440 /etc/sudoers.d/snck-local-node
+    visudo -cf /etc/sudoers.d/snck-local-node >/dev/null || fail "Local node sudoers rule failed validation."
+}
+
 backup_app() {
     app_exists || fail "No existing SNCK Panel installation at $APP_DIR."
     local stamp db_host db_port db_name db_user db_pass
@@ -65,6 +73,7 @@ update_panel() {
     was_down=1
     git -c safe.directory="$APP_DIR" fetch --prune origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
     git -c safe.directory="$APP_DIR" checkout -B "$BRANCH" "origin/$BRANCH"
+    install_local_node_helper
     COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
     if [[ ! -f /opt/snck-yarn/node_modules/yarn/bin/yarn.js ]]; then
         npm install --prefix /opt/snck-yarn --no-save --ignore-scripts --no-audit --no-fund yarn@1.22.22
@@ -92,6 +101,7 @@ update_panel() {
 repair_panel() {
     app_exists || fail "No existing installation found."
     cd "$APP_DIR"
+    install_local_node_helper
     php artisan optimize:clear
     php artisan config:cache
     php artisan view:cache
