@@ -136,6 +136,10 @@ cd "$APP_DIR"
 [[ -f LICENSE.md && -f SNCK_UPSTREAM.md && -f artisan ]] || fail "The selected branch is not a complete SNCK Pterodactyl fork."
 
 cp .env.example .env
+install -d -o www-data -g www-data -m 0775 \
+  storage/app/private storage/app/public \
+  storage/framework/cache/data storage/framework/sessions \
+  storage/framework/views storage/logs
 COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 composer check-platform-reqs --no-dev
 
