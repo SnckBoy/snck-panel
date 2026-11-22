@@ -211,3 +211,46 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     .snck-tool-list { grid-template-columns:minmax(0,1fr); gap:0; }
     .snck-tool-row { min-height:68px; }
 }
+
+/* Layout containment: keep wide tables and long form content inside the admin viewport. */
+.content-wrapper,
+.content,
+.content-header,
+.box,
+.panel,
+.box-body,
+.panel-body,
+.form-group {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.table-responsive {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.form-control {
+    max-width: 100%;
+}
+
+@media (max-width: 767px) {
+    .content-wrapper,
+    .right-side {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .content .row {
+        min-width: 0;
+    }
+
+    .content img,
+    .content video,
+    .content canvas {
+        max-width: 100%;
+        height: auto;
+    }
+}
