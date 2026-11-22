@@ -29,9 +29,7 @@ const GlassPanel = styled.div`
     border: 1px solid rgba(255, 255, 255, 0.13);
     border-radius: 18px;
     background: rgba(7, 10, 13, 0.76);
-    box-shadow:
-        0 24px 70px rgba(0, 0, 0, 0.48),
-        inset 0 1px 0 rgba(255, 255, 255, 0.055);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.055);
     -webkit-backdrop-filter: blur(20px) saturate(125%);
     backdrop-filter: blur(20px) saturate(125%);
 
@@ -147,11 +145,7 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
         </Form>
         <Footer>
             &copy; 2015 - {new Date().getFullYear()}&nbsp;
-            <a
-                rel={'noopener nofollow noreferrer'}
-                href={'https://github.com/SnckBoy/snck-panel'}
-                target={'_blank'}
-            >
+            <a rel={'noopener nofollow noreferrer'} href={'https://github.com/SnckBoy/snck-panel'} target={'_blank'}>
                 SNCK Panel
             </a>
         </Footer>
