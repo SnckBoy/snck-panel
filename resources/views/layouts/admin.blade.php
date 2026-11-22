@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>{{ config('app.name', 'SNCK Panel') }} - @yield('title')</title>
-        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <meta content="width=device-width, initial-scale=1" name="viewport">
         <meta name="_token" content="{{ csrf_token() }}">
 
         <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
@@ -28,7 +28,7 @@
             {!! Theme::css('css/pterodactyl.css?t={cache-version}') !!}
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-            <link rel="stylesheet" href="{{ asset('css/snck-control-center.css') }}?v=4">
+            <link rel="stylesheet" href="{{ asset('css/snck-control-center.css') }}?v=5">
 
             <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -43,7 +43,7 @@
                     <span>{{ config('app.name', 'SNCK Panel') }}</span>
                 </a>
                 <nav class="navbar navbar-static-top">
-                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button" aria-label="Toggle navigation" aria-controls="snck-admin-sidebar">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -63,7 +63,7 @@
                     </div>
                 </nav>
             </header>
-            <aside class="main-sidebar">
+            <aside class="main-sidebar" id="snck-admin-sidebar">
                 <section class="sidebar">
                     <ul class="sidebar-menu">
                         <li class="header">SNCK CONTROL CENTER</li>
