@@ -85,6 +85,36 @@ class NodesController extends Controller
         $host = $request->getHost();
         $scheme = $request->getScheme();
 
+        if ($scheme !== 'https') {
+            $resolved = filter_var($host, FILTER_VALIDATE_IP) ? $host : gethostbyname($host);
+            $ip = filter_var($resolved, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+            $ipLong = $ip ? ip2long($resolved) : false;
+            $isTailnet = $ipLong !== false && (($ipLong & 0xFFC00000) === ip2long('100.64.0.0'));
+            $isPrivate = $ip && (filter_var($resolved, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false || $isTailnet);
+
+            if (!$isPrivate) {
+                $this->alert->danger('For safety, a local node over HTTP is allowed only on a private LAN or Tailscale address. Configure HTTPS for a public hostname, or open the Panel over your private Tailscale address.')->flash();
+
+                return redirect()->route('admin.nodes');
+            }
+        }
+
+        if (is_file('/etc/pterodactyl/config.yml')) {
+            $this->alert->danger('A Wings configuration already exists on this host. It will not be overwritten by automatic local-node setup.')->flash();
+
+            return redirect()->route('admin.nodes');
+        }
+
+        foreach ([8080, 2022] as $port) {
+            $socket = @stream_socket_client('tcp://127.0.0.1:' . $port, $errno, $errstr, 0.5);
+            if (is_resource($socket)) {
+                fclose($socket);
+                $this->alert->danger('Local node setup needs TCP ports 8080 and 2022, but port ' . $port . ' is already in use.')->flash();
+
+                return redirect()->route('admin.nodes');
+            }
+        }
+
         $existing = Node::query()->where('fqdn', $host)->where('daemonListen', 8080)->first();
         if ($existing) {
             $this->alert->warning('A node already exists for this host on port 8080. Reusing the existing node; no duplicate was created.')->flash();
@@ -159,7 +189,7 @@ class NodesController extends Controller
 
         fwrite($pipes[0], $node->id . PHP_EOL . $node->getYamlConfiguration());
         fclose($pipes[0]);
-        $output = stream_get_contents($pipes[1]);
+        stream_get_contents($pipes[1]);
         fclose($pipes[1]);
         $errors = stream_get_contents($pipes[2]);
         fclose($pipes[2]);
