@@ -109,6 +109,7 @@ jobs:
           bash -n install.sh
           bash install.sh --help
           bash -n menu.sh
+          bash menu.sh --help
           bash -n node-install.sh
           bash node-install.sh --help
           python3 -m py_compile scripts/rebrand-pterodactyl.py
