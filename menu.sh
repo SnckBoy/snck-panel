@@ -53,8 +53,8 @@ install_panel() {
 update_panel() {
     app_exists || fail "No existing installation found."
     [[ -d "$APP_DIR/.git" ]] || fail "This installation has no Git metadata; automatic update is unsafe."
-    git -C "$APP_DIR" diff --quiet || fail "Uncommitted tracked changes detected. Commit or back them up before updating."
-    [[ -z "$(git -C "$APP_DIR" status --porcelain)" ]] || fail "Working tree is not clean. Resolve local changes before updating."
+    git -c safe.directory="$APP_DIR" -C "$APP_DIR" diff --quiet || fail "Uncommitted tracked changes detected. Commit or back them up before updating."
+    [[ -z "$(git -c safe.directory="$APP_DIR" -C "$APP_DIR" status --porcelain)" ]] || fail "Working tree is not clean. Resolve local changes before updating."
     local backup
     backup="$(backup_app)"
     log "Backup saved to $backup"
@@ -63,8 +63,8 @@ update_panel() {
     cd "$APP_DIR"
     php artisan down || true
     was_down=1
-    git fetch --prune origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
-    git checkout -B "$BRANCH" "origin/$BRANCH"
+    git -c safe.directory="$APP_DIR" fetch --prune origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+    git -c safe.directory="$APP_DIR" checkout -B "$BRANCH" "origin/$BRANCH"
     COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
     if [[ ! -f /opt/snck-yarn/node_modules/yarn/bin/yarn.js ]]; then
         npm install --prefix /opt/snck-yarn --no-save --ignore-scripts --no-audit --no-fund yarn@1.22.22
