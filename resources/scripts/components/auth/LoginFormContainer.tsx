@@ -2,6 +2,7 @@ import React, { forwardRef } from 'react';
 import { Form } from 'formik';
 import styled from 'styled-components/macro';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import tw from 'twin.macro';
 
 type Props = React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement> & {
     title?: string;
@@ -114,7 +115,7 @@ const Footer = styled.p`
 
 export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => (
     <Container>
-        <FlashMessageRender css="margin: 0 0 0.75rem;" />
+        <FlashMessageRender css={tw`mb-3`} />
         <Form {...props} ref={ref}>
             <GlassPanel>
                 <Brand>
