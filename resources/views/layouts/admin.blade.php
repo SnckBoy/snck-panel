@@ -11,10 +11,10 @@
         <link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
         <link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
         <link rel="manifest" href="/favicons/manifest.json">
-        <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#bc6e3c">
+        <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#8b5cf6">
         <link rel="shortcut icon" href="/favicons/favicon.ico">
         <meta name="msapplication-config" content="/favicons/browserconfig.xml">
-        <meta name="theme-color" content="#0e4688">
+        <meta name="theme-color" content="#080b16">
 
         @include('layouts.scripts')
 
@@ -28,6 +28,7 @@
             {!! Theme::css('css/pterodactyl.css?t={cache-version}') !!}
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+            <link rel="stylesheet" href="{{ asset('css/snck-control-center.css') }}?v=1">
 
             <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -56,12 +57,8 @@
                                     <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
                                 </a>
                             </li>
-                            <li>
-                                <li><a href="{{ route('index') }}" data-toggle="tooltip" data-placement="bottom" title="Exit Admin Control"><i class="fa fa-server"></i></a></li>
-                            </li>
-                            <li>
-                                <li><a href="{{ route('auth.logout') }}" id="logoutButton" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa fa-sign-out"></i></a></li>
-                            </li>
+                            <li><a href="{{ route('index') }}" data-toggle="tooltip" data-placement="bottom" title="Exit Admin Control"><i class="fa fa-server"></i></a></li>
+                            <li><a href="{{ route('auth.logout') }}" id="logoutButton" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa fa-sign-out"></i></a></li>
                         </ul>
                     </div>
                 </nav>
@@ -69,58 +66,38 @@
             <aside class="main-sidebar">
                 <section class="sidebar">
                     <ul class="sidebar-menu">
-                        <li class="header">BASIC ADMINISTRATION</li>
+                        <li class="header">SNCK CONTROL CENTER</li>
                         <li class="{{ Route::currentRouteName() !== 'admin.index' ?: 'active' }}">
-                            <a href="{{ route('admin.index') }}">
-                                <i class="fa fa-home"></i> <span>Overview</span>
-                            </a>
+                            <a href="{{ route('admin.index') }}"><i class="fa fa-th-large"></i> <span>Overview</span></a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.settings') ?: 'active' }}">
-                            <a href="{{ route('admin.settings')}}">
-                                <i class="fa fa-wrench"></i> <span>Settings</span>
-                            </a>
+                            <a href="{{ route('admin.settings') }}"><i class="fa fa-sliders"></i> <span>Settings</span></a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.api') ?: 'active' }}">
-                            <a href="{{ route('admin.api.index')}}">
-                                <i class="fa fa-gamepad"></i> <span>Application API</span>
-                            </a>
+                            <a href="{{ route('admin.api.index') }}"><i class="fa fa-key"></i> <span>Application API</span></a>
                         </li>
-                        <li class="header">MANAGEMENT</li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.databases') ?: 'active' }}">
-                            <a href="{{ route('admin.databases') }}">
-                                <i class="fa fa-database"></i> <span>Databases</span>
-                            </a>
+                        <li class="header">INFRASTRUCTURE</li>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.nodes') ?: 'active' }}">
+                            <a href="{{ route('admin.nodes') }}"><i class="fa fa-cubes"></i> <span>Nodes</span></a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.locations') ?: 'active' }}">
-                            <a href="{{ route('admin.locations') }}">
-                                <i class="fa fa-globe"></i> <span>Locations</span>
-                            </a>
+                            <a href="{{ route('admin.locations') }}"><i class="fa fa-map-marker"></i> <span>Locations</span></a>
                         </li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.nodes') ?: 'active' }}">
-                            <a href="{{ route('admin.nodes') }}">
-                                <i class="fa fa-sitemap"></i> <span>Nodes</span>
-                            </a>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.databases') ?: 'active' }}">
+                            <a href="{{ route('admin.databases') }}"><i class="fa fa-database"></i> <span>Databases</span></a>
                         </li>
+                        <li class="header">GAME SERVICES</li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.servers') ?: 'active' }}">
-                            <a href="{{ route('admin.servers') }}">
-                                <i class="fa fa-server"></i> <span>Servers</span>
-                            </a>
+                            <a href="{{ route('admin.servers') }}"><i class="fa fa-server"></i> <span>Servers</span></a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.users') ?: 'active' }}">
-                            <a href="{{ route('admin.users') }}">
-                                <i class="fa fa-users"></i> <span>Users</span>
-                            </a>
-                        </li>
-                        <li class="header">SERVICE MANAGEMENT</li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.mounts') ?: 'active' }}">
-                            <a href="{{ route('admin.mounts') }}">
-                                <i class="fa fa-magic"></i> <span>Mounts</span>
-                            </a>
+                            <a href="{{ route('admin.users') }}"><i class="fa fa-users"></i> <span>Users</span></a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.nests') ?: 'active' }}">
-                            <a href="{{ route('admin.nests') }}">
-                                <i class="fa fa-th-large"></i> <span>Nests</span>
-                            </a>
+                            <a href="{{ route('admin.nests') }}"><i class="fa fa-cubes"></i> <span>Nests &amp; Eggs</span></a>
+                        </li>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.mounts') ?: 'active' }}">
+                            <a href="{{ route('admin.mounts') }}"><i class="fa fa-folder-open"></i> <span>Mounts</span></a>
                         </li>
                     </ul>
                 </section>
@@ -144,9 +121,7 @@
                             @endif
                             @foreach (Alert::getMessages() as $type => $messages)
                                 @foreach ($messages as $message)
-                                    <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
-                                        {{ $message }}
-                                    </div>
+                                    <div class="alert alert-{{ $type }} alert-dismissable" role="alert">{{ $message }}</div>
                                 @endforeach
                             @endforeach
                         </div>
@@ -159,7 +134,7 @@
                     <strong><i class="fa fa-fw {{ $appIsGit ? 'fa-git-square' : 'fa-code-fork' }}"></i></strong> {{ $appVersion }}<br />
                     <strong><i class="fa fa-fw fa-clock-o"></i></strong> {{ round(microtime(true) - LARAVEL_START, 3) }}s
                 </div>
-                Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/">SNCK Panel · based on Pterodactyl</a>.
+                Copyright &copy; {{ date('Y') }} <a href="https://github.com/SnckBoy/snck-panel">SNCK Panel</a> · Game server control plane.
             </footer>
         </div>
         @section('footer-scripts')
@@ -180,34 +155,31 @@
                 <script>
                     $('#logoutButton').on('click', function (event) {
                         event.preventDefault();
-
-                        var that = this;
                         swal({
                             title: 'Do you want to log out?',
                             type: 'warning',
                             showCancelButton: true,
-                            confirmButtonColor: '#d9534f',
-                            cancelButtonColor: '#d33',
+                            confirmButtonColor: '#7c3aed',
+                            cancelButtonColor: '#64748b',
                             confirmButtonText: 'Log out'
                         }, function () {
-                             $.ajax({
+                            $.ajax({
                                 type: 'POST',
                                 url: '{{ route('auth.logout') }}',
-                                data: {
-                                    _token: '{{ csrf_token() }}'
-                                },complete: function () {
-                                    window.location.href = '{{route('auth.login')}}';
+                                data: { _token: '{{ csrf_token() }}' },
+                                complete: function () {
+                                    window.location.href = '{{ route('auth.login') }}';
                                 }
+                            });
                         });
                     });
-                });
                 </script>
             @endif
 
             <script>
                 $(function () {
                     $('[data-toggle="tooltip"]').tooltip();
-                })
+                });
             </script>
         @show
     </body>
