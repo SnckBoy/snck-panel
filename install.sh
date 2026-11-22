@@ -98,7 +98,7 @@ fi
 export DEBIAN_FRONTEND=noninteractive
 log "Installing system packages for $PRETTY_NAME..."
 apt-get update
-apt-get install -y ca-certificates curl gnupg lsb-release software-properties-common apt-transport-https git unzip tar rsync openssl mariadb-server redis-server nginx cron certbot python3-certbot-nginx sudo
+apt-get install -y ca-certificates curl gnupg lsb-release software-properties-common apt-transport-https git unzip tar rsync openssl mariadb-server redis-server nginx cron certbot python3-certbot-nginx sudo sudo
 
 if [[ "$ID" == "debian" ]]; then
   KEYRING_PACKAGE="$(mktemp /tmp/debsuryorg-keyring.XXXXXX.deb)"
@@ -163,7 +163,7 @@ cd "$APP_DIR"
 log "Installing the restricted local Wings bootstrap helper..."
 [[ -f scripts/snck-local-node-bootstrap.sh ]] || fail "Local node bootstrap helper is missing from this branch."
 install -o root -g root -m 0755 scripts/snck-local-node-bootstrap.sh /usr/local/sbin/snck-local-node-bootstrap
-printf '%s\\n' 'www-data ALL=(root) NOPASSWD: /usr/local/sbin/snck-local-node-bootstrap ""' >/etc/sudoers.d/snck-local-node
+printf '%s\n' 'www-data ALL=(root) NOPASSWD: /usr/local/sbin/snck-local-node-bootstrap ""' >/etc/sudoers.d/snck-local-node
 chmod 0440 /etc/sudoers.d/snck-local-node
 visudo -cf /etc/sudoers.d/snck-local-node >/dev/null || fail "Local node sudoers rule failed validation."
 
