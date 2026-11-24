@@ -18,6 +18,7 @@ use Pterodactyl\Services\Nodes\NodeDeletionService;
 use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest;
+use Pterodactyl\Services\Nodes\LocalNodeProvisioningService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Node\AllocationFormRequest;
@@ -38,6 +39,7 @@ class NodesController extends Controller
         protected AssignmentService $assignmentService,
         protected CacheRepository $cache,
         protected NodeCreationService $creationService,
+        protected LocalNodeProvisioningService $localNodeProvisioningService,
         protected NodeDeletionService $deletionService,
         protected LocationRepositoryInterface $locationRepository,
         protected NodeRepositoryInterface $repository,
@@ -74,6 +76,24 @@ class NodesController extends Controller
         $this->alert->info(trans('admin/node.notices.node_created'))->flash();
 
         return redirect()->route('admin.nodes.view.allocation', $node->id);
+    }
+
+    /**
+     * Create and bootstrap a Wings node on this Panel host.
+     */
+    public function createLocalNode(Request $request): RedirectResponse
+    {
+        try {
+            $node = $this->localNodeProvisioningService->provision($request->getHost(), $request->getScheme());
+        } catch (\RuntimeException $exception) {
+            $this->alert->danger($exception->getMessage())->flash();
+
+            return redirect()->route('admin.nodes');
+        }
+
+        $this->alert->success('Local node setup started. The node will show online only after the Panel receives an authenticated Wings health response.')->flash();
+
+        return redirect()->route('admin.nodes.view', $node->id);
     }
 
     /**

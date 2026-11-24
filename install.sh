@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 APP_DIR="${SNCK_PANEL_DIR:-/var/www/snck-panel}"
-BRANCH="${SNCK_BRANCH:-feat/snck-pterodactyl-v1.15.2}"
+BRANCH="${SNCK_BRANCH:-feat/snck-control-center-v2}"
 REPOSITORY="${SNCK_REPOSITORY:-https://github.com/SnckBoy/snck-panel.git}"
 APP_URL="${SNCK_APP_URL:-}"
 LE_EMAIL="${SNCK_LETSENCRYPT_EMAIL:-}"
@@ -20,10 +20,10 @@ usage() {
 SNCK Panel installer (Pterodactyl v1.15.2 based)
 
 Usage:
-  curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-pterodactyl-v1.15.2/install.sh | sudo bash
+  curl -fsSL https://raw.githubusercontent.com/SnckBoy/snck-panel/feat/snck-control-center-v2/install.sh | sudo bash
 
 Optional environment:
-  SNCK_BRANCH                 Git branch (default: feat/snck-pterodactyl-v1.15.2)
+  SNCK_BRANCH                 Git branch (default: feat/snck-control-center-v2)
   SNCK_PANEL_DIR              Install directory (default: /var/www/snck-panel)
   SNCK_APP_URL                Panel URL, e.g. https://panel.example.com
   SNCK_LETSENCRYPT_EMAIL      Required for automatic HTTPS
@@ -98,7 +98,7 @@ fi
 export DEBIAN_FRONTEND=noninteractive
 log "Installing system packages for $PRETTY_NAME..."
 apt-get update
-apt-get install -y ca-certificates curl gnupg lsb-release software-properties-common apt-transport-https git unzip tar rsync openssl mariadb-server redis-server nginx cron certbot python3-certbot-nginx
+apt-get install -y ca-certificates curl gnupg lsb-release software-properties-common apt-transport-https git unzip tar rsync openssl mariadb-server redis-server nginx cron certbot python3-certbot-nginx sudo
 
 if [[ "$ID" == "debian" ]]; then
   KEYRING_PACKAGE="$(mktemp /tmp/debsuryorg-keyring.XXXXXX.deb)"
@@ -160,6 +160,13 @@ git clone --depth 1 --branch "$BRANCH" "$REPOSITORY" "$APP_DIR"
 cd "$APP_DIR"
 [[ -f LICENSE.md && -f SNCK_UPSTREAM.md && -f artisan ]] || fail "The selected branch is not a complete SNCK Pterodactyl fork."
 
+log "Installing the restricted local Wings bootstrap helper..."
+[[ -f scripts/snck-local-node-bootstrap.sh ]] || fail "Local node bootstrap helper is missing from this branch."
+install -o root -g root -m 0755 scripts/snck-local-node-bootstrap.sh /usr/local/sbin/snck-local-node-bootstrap
+printf '%s\n' 'www-data ALL=(root) NOPASSWD: /usr/local/sbin/snck-local-node-bootstrap ""' >/etc/sudoers.d/snck-local-node
+chmod 0440 /etc/sudoers.d/snck-local-node
+visudo -cf /etc/sudoers.d/snck-local-node >/dev/null || fail "Local node sudoers rule failed validation."
+
 cp .env.example .env
 APP_KEY_VALUE="$(openssl rand -base64 32)"
 sed -i "s|^APP_KEY=.*|APP_KEY=base64:${APP_KEY_VALUE}|" .env
@@ -167,6 +174,15 @@ install -d -o www-data -g www-data -m 0775 \
   storage/app/private storage/app/public \
   storage/framework/cache/data storage/framework/sessions \
   storage/framework/views storage/logs
+install -d -m 0755 /etc/php/8.3/fpm/conf.d
+cat >/etc/php/8.3/fpm/conf.d/99-snck-upload-limits.ini <<'PHPINI'
+upload_max_filesize = 10G
+post_max_size = 11G
+max_execution_time = 3600
+max_input_time = 3600
+PHPINI
+chmod 0644 /etc/php/8.3/fpm/conf.d/99-snck-upload-limits.ini
+
 COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 composer check-platform-reqs --no-dev
 php artisan p:environment:setup --author="$SERVICE_AUTHOR" --url="$APP_URL" --timezone=UTC --cache=redis --session=redis --queue=redis --redis-host=127.0.0.1 --redis-pass= --redis-port=6379 --settings-ui=true --telemetry=0 --no-interaction
@@ -189,7 +205,7 @@ read -r -p "Last name: " ADMIN_LAST </dev/tty
 php artisan p:user:make --email="$ADMIN_EMAIL" --username="$ADMIN_USERNAME" --name-first="$ADMIN_FIRST" --name-last="$ADMIN_LAST" --admin=1 </dev/tty
 
 chown -R www-data:www-data "$APP_DIR"
-chmod -R 755 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
+find "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" -type d -exec chmod 0755 {} +
 chmod 0640 "$APP_DIR/.env"
 
 cat >/etc/nginx/sites-available/snck-panel.conf <<NGINX
@@ -199,7 +215,8 @@ server {
     server_name $APP_HOST;
     root $APP_DIR/public;
     index index.php;
-    client_max_body_size 100m;
+    client_max_body_size 11g;
+    client_body_timeout 3600s;
     charset utf-8;
 
     location / { try_files \$uri \$uri/ /index.php?\$query_string; }
@@ -216,6 +233,8 @@ server {
         fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
         fastcgi_param HTTP_PROXY "";
         fastcgi_intercept_errors off;
+        fastcgi_read_timeout 3600s;
+        fastcgi_send_timeout 3600s;
         fastcgi_buffer_size 16k;
         fastcgi_buffers 4 16k;
     }

@@ -56,12 +56,12 @@ export default () => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@snck~ \u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
-    const fitAddon = new FitAddon();
-    const searchAddon = new SearchAddon();
-    const searchBar = new SearchBarAddon({ searchAddon });
-    const webLinksAddon = new WebLinksAddon();
-    const unicode11Addon = new Unicode11Addon();
-    const scrollDownHelperAddon = new ScrollDownHelperAddon();
+    const fitAddon = useMemo(() => new FitAddon(), []);
+    const searchAddon = useMemo(() => new SearchAddon(), []);
+    const searchBar = useMemo(() => new SearchBarAddon({ searchAddon }), [searchAddon]);
+    const webLinksAddon = useMemo(() => new WebLinksAddon(), []);
+    const unicode11Addon = useMemo(() => new Unicode11Addon(), []);
+    const scrollDownHelperAddon = useMemo(() => new ScrollDownHelperAddon(), []);
     const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
     const [canSendCommands] = usePermissions(['control.console']);
     const serverId = ServerContext.useStoreState((state) => state.server.data!.id);

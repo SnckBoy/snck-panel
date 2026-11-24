@@ -39,9 +39,9 @@ done
 [[ -r /etc/os-release ]] || fail "Cannot detect operating system."
 . /etc/os-release
 case "${ID:-}" in
-  ubuntu) [[ "${VERSION_ID:-}" == "22.04" || "${VERSION_ID:-}" == "24.04" ]] || fail "Supported Ubuntu versions: 22.04 and 24.04." ;;
-  debian) [[ "${VERSION_ID:-}" == "12" || "${VERSION_ID:-}" == "13" ]] || fail "Supported Debian versions: 12 and 13." ;;
-  *) fail "Supported node OS: Ubuntu 22.04/24.04 or Debian 12/13." ;;
+  ubuntu) [[ "${VERSION_ID:-}" == "20.04" || "${VERSION_ID:-}" == "22.04" || "${VERSION_ID:-}" == "24.04" ]] || fail "Supported Ubuntu versions: 20.04, 22.04 and 24.04." ;;
+  debian) [[ "${VERSION_ID:-}" == "11" || "${VERSION_ID:-}" == "12" || "${VERSION_ID:-}" == "13" ]] || fail "Supported Debian versions: 11, 12 and 13." ;;
+  *) fail "Supported node OS: Ubuntu 20.04/22.04/24.04 or Debian 11/12/13." ;;
 esac
 
 [[ "$PANEL_URL" == https://* ]] || fail "Panel URL must use HTTPS."

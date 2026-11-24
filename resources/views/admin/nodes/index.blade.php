@@ -24,6 +24,12 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Node List</h3>
                 <div class="box-tools search01">
+                    <form action="{{ route('admin.nodes.local') }}" method="POST" style="display:inline-block;margin-right:8px;">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Install Wings and register this server as a local node?')">
+                            <i class="fa fa-server"></i> Create Local Node
+                        </button>
+                    </form>
                     <form action="{{ route('admin.nodes') }}" method="GET">
                         <div class="input-group input-group-sm">
                             <input type="text" name="filter[name]" class="form-control pull-right" value="{{ request()->input('filter.name') }}" placeholder="Search Nodes">
@@ -50,7 +56,7 @@
                         </tr>
                         @foreach ($nodes as $node)
                             <tr>
-                                <td class="text-center text-muted left-icon" data-action="ping" data-secret="{{ $node->getDecryptedKey() }}" data-location="{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/api/system"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
+                                <td class="text-center text-muted left-icon" data-action="ping" data-health="{{ route('admin.nodes.view.health', $node->id) }}"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
                                 <td>{!! $node->maintenance_mode ? '<span class="label label-warning"><i class="fa fa-wrench"></i></span> ' : '' !!}<a href="{{ route('admin.nodes.view', $node->id) }}">{{ $node->name }}</a></td>
                                 <td>{{ $node->location->short }}</td>
                                 <td>{{ $node->memory }} MiB</td>
@@ -80,10 +86,7 @@
         $('td[data-action="ping"]').each(function(i, element) {
             $.ajax({
                 type: 'GET',
-                url: $(element).data('location'),
-                headers: {
-                    'Authorization': 'Bearer ' + $(element).data('secret'),
-                },
+                url: $(element).data('health'),
                 timeout: 5000
             }).done(function (data) {
                 $(element).find('i').tooltip({

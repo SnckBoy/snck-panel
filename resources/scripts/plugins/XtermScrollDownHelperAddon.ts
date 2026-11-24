@@ -1,41 +1,49 @@
 import { Terminal, ITerminalAddon } from 'xterm';
 
 export class ScrollDownHelperAddon implements ITerminalAddon {
-    private terminal: Terminal = new Terminal();
+    private terminal?: Terminal;
     private element?: HTMLDivElement;
+    private subscriptions: Array<{ dispose: () => void }> = [];
 
     activate(terminal: Terminal): void {
         this.terminal = terminal;
 
-        this.terminal.onScroll(() => {
-            if (this.isScrolledDown()) {
-                this.hide();
-            }
-        });
-
-        this.terminal.onLineFeed(() => {
-            if (!this.isScrolledDown()) {
-                this.show();
-            }
-        });
+        this.subscriptions.push(
+            terminal.onScroll(() => {
+                if (this.isScrolledDown()) {
+                    this.hide();
+                }
+            }),
+            terminal.onLineFeed(() => {
+                if (!this.isScrolledDown()) {
+                    this.show();
+                }
+            })
+        );
 
         this.show();
     }
 
     dispose(): void {
-        // ignore
+        this.subscriptions.forEach((subscription) => subscription.dispose());
+        this.subscriptions = [];
+        this.element?.remove();
+        this.element = undefined;
+        this.terminal = undefined;
     }
 
     show(): void {
-        if (!this.terminal || !this.terminal.element) {
+        const terminal = this.terminal;
+        if (!terminal?.element) {
             return;
         }
+
         if (this.element) {
             this.element.style.visibility = 'visible';
             return;
         }
 
-        this.terminal.element.style.position = 'relative';
+        terminal.element.style.position = 'relative';
 
         this.element = document.createElement('div');
         this.element.innerHTML =
@@ -49,12 +57,21 @@ export class ScrollDownHelperAddon implements ITerminalAddon {
         this.element.style.backgroundColor = '#252526';
         this.element.style.zIndex = '999';
         this.element.style.cursor = 'pointer';
+        this.element.setAttribute('aria-label', 'Scroll console to latest output');
+        this.element.setAttribute('role', 'button');
+        this.element.tabIndex = 0;
 
         this.element.addEventListener('click', () => {
-            this.terminal.scrollToBottom();
+            this.terminal?.scrollToBottom();
+        });
+        this.element.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                this.terminal?.scrollToBottom();
+            }
         });
 
-        this.terminal.element.appendChild(this.element);
+        terminal.element.appendChild(this.element);
     }
 
     hide(): void {
@@ -64,6 +81,10 @@ export class ScrollDownHelperAddon implements ITerminalAddon {
     }
 
     isScrolledDown(): boolean {
+        if (!this.terminal) {
+            return true;
+        }
+
         return this.terminal.buffer.active.viewportY === this.terminal.buffer.active.baseY;
     }
 }

@@ -7,7 +7,9 @@ on:
       - "feat/**"
       - "fix/**"
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - "feat/**"
 
 permissions:
   contents: read
@@ -108,6 +110,8 @@ jobs:
         run: |
           bash -n install.sh
           bash install.sh --help
+          bash -n menu.sh
+          bash menu.sh --help
           bash -n node-install.sh
           bash node-install.sh --help
           python3 -m py_compile scripts/rebrand-pterodactyl.py
