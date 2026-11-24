@@ -117,9 +117,11 @@ log "Preflight passed for ${PRETTY_NAME:-$ID}; PHP $(php -r 'echo PHP_VERSION;')
 TMP="$(mktemp -d /tmp/snck-panel-install.XXXXXX)"
 trap 'rm -rf -- "$TMP"' EXIT
 PRESERVED_ENV=""
+EXISTING_ENV=0
 if [[ -f "$APP_DIR/.env" ]]; then
   cp -a -- "$APP_DIR/.env" "$TMP/existing.env"
   PRESERVED_ENV="$TMP/existing.env"
+  EXISTING_ENV=1
 fi
 log "Cloning $REPO_URL ($BRANCH)..."
 git clone --depth 1 --branch "$BRANCH" "$REPO_URL" "$TMP/repo"
@@ -145,6 +147,15 @@ else
 fi
 chmod 600 .env
 
+# Read a value from the preserved .env so updates keep working credentials.
+env_get() {
+  local key="$1" value
+  value="$(grep -E "^${key}=" "$APP_DIR/.env" 2>/dev/null | tail -n 1 | cut -d= -f2- || true)"
+  value="${value%\"}"
+  value="${value#\"}"
+  printf '%s' "$value"
+}
+
 # Collect database settings before migrations. Values may be supplied through
 # SNCK_DB_* for automated deployments, otherwise the operator is prompted.
 prompt_value() {
@@ -158,12 +169,25 @@ prompt_value() {
     printf '%s' "$current"
   fi
 }
-DB_HOST="$(prompt_value SNCK_DB_HOST 'PostgreSQL host' '127.0.0.1')"
-DB_PORT="$(prompt_value SNCK_DB_PORT 'PostgreSQL port' '5432')"
-DB_DATABASE="$(prompt_value SNCK_DB_DATABASE 'PostgreSQL database' 'snck_panel')"
-DB_USERNAME="$(prompt_value SNCK_DB_USERNAME 'PostgreSQL username' 'snck_panel')"
-if [[ -n "${SNCK_DB_PASSWORD:-}" ]]; then
-  DB_PASSWORD="$SNCK_DB_PASSWORD"
+# Environment variables win, then values from an existing .env (updates), then prompts.
+DB_HOST="${SNCK_DB_HOST:-}"
+DB_PORT="${SNCK_DB_PORT:-}"
+DB_DATABASE="${SNCK_DB_DATABASE:-}"
+DB_USERNAME="${SNCK_DB_USERNAME:-}"
+DB_PASSWORD="${SNCK_DB_PASSWORD:-}"
+if (( EXISTING_ENV )); then
+  DB_HOST="${DB_HOST:-$(env_get DB_HOST)}"
+  DB_PORT="${DB_PORT:-$(env_get DB_PORT)}"
+  DB_DATABASE="${DB_DATABASE:-$(env_get DB_DATABASE)}"
+  DB_USERNAME="${DB_USERNAME:-$(env_get DB_USERNAME)}"
+  DB_PASSWORD="${DB_PASSWORD:-$(env_get DB_PASSWORD)}"
+fi
+DB_HOST="${DB_HOST:-$(prompt_value SNCK_DB_HOST 'PostgreSQL host' '127.0.0.1')}"
+DB_PORT="${DB_PORT:-$(prompt_value SNCK_DB_PORT 'PostgreSQL port' '5432')}"
+DB_DATABASE="${DB_DATABASE:-$(prompt_value SNCK_DB_DATABASE 'PostgreSQL database' 'snck_panel')}"
+DB_USERNAME="${DB_USERNAME:-$(prompt_value SNCK_DB_USERNAME 'PostgreSQL username' 'snck_panel')}"
+if [[ -n "$DB_PASSWORD" ]]; then
+  :
 elif [[ "$DB_HOST" == "127.0.0.1" || "$DB_HOST" == "localhost" ]]; then
   DB_PASSWORD="$(openssl rand -hex 32)"
   log 'Generated a strong PostgreSQL password automatically.'
@@ -173,8 +197,18 @@ fi
 [[ "$DB_PORT" =~ ^[0-9]+$ && "$DB_PORT" -ge 1 && "$DB_PORT" -le 65535 ]] || fail 'Invalid PostgreSQL port.'
 [[ -n "$DB_HOST" && -n "$DB_DATABASE" && -n "$DB_USERNAME" && -n "$DB_PASSWORD" ]] || fail 'Database settings cannot be empty.'
 
-# Create a least-privilege local database role/database when using the local PostgreSQL server.
-if [[ "$DB_HOST" == "127.0.0.1" || "$DB_HOST" == "localhost" ]]; then
+# Create a least-privilege local database role/database when using the local
+# PostgreSQL server. Updates that reuse the credentials already stored in .env
+# keep the existing role and password untouched.
+BOOTSTRAP_DB=1
+if (( EXISTING_ENV )); then
+  EXISTING_DB_PASSWORD="$(env_get DB_PASSWORD)"
+  if [[ -n "$EXISTING_DB_PASSWORD" && "$DB_PASSWORD" == "$EXISTING_DB_PASSWORD" ]]; then
+    BOOTSTRAP_DB=0
+    log 'Reusing the existing PostgreSQL role and password from .env.'
+  fi
+fi
+if [[ ( "$DB_HOST" == "127.0.0.1" || "$DB_HOST" == "localhost" ) && "$BOOTSTRAP_DB" == 1 ]]; then
   command -v openssl >/dev/null 2>&1 || fail 'openssl is required to generate a database password.'
   runuser -u postgres -- psql -v ON_ERROR_STOP=1 -v dbname="$DB_DATABASE" -v dbuser="$DB_USERNAME" -v dbpass="$DB_PASSWORD" <<'SQL'
 SELECT format('CREATE ROLE %I LOGIN PASSWORD %L', :'dbuser', :'dbpass')
@@ -186,9 +220,11 @@ SELECT format('ALTER DATABASE %I OWNER TO %I', :'dbname', :'dbuser') \gexec
 SQL
 fi
 
-if [[ -n "${SNCK_APP_URL:-}" ]]; then
-  APP_URL="$SNCK_APP_URL"
-else
+APP_URL="${SNCK_APP_URL:-}"
+if [[ -z "$APP_URL" ]] && (( EXISTING_ENV )); then
+  APP_URL="$(env_get APP_URL)"
+fi
+if [[ -z "$APP_URL" ]]; then
   PUBLIC_IP="$(curl -4 -fsS --max-time 8 https://api.ipify.org 2>/dev/null || true)"
   DEFAULT_APP_URL="http://${PUBLIC_IP:-localhost}"
   if [[ -r /dev/tty ]]; then
@@ -428,6 +464,11 @@ EOF
 
 systemctl daemon-reload
 systemctl enable --now snck-panel-laravel.service snck-panel-laravel-scheduler.timer snck-panel-discord-worker.timer
+# An update must restart the queue worker so it picks up the newly deployed code.
+if (( EXISTING_ENV )); then
+  systemctl restart snck-panel-laravel.service
+  systemctl reload php8.3-fpm 2>/dev/null || systemctl restart php8.3-fpm 2>/dev/null || true
+fi
 
 log 'Laravel panel installation completed.'
 printf '\nPanel directory: %s\n' "$APP_DIR"
